@@ -3,6 +3,7 @@
 一个简洁、高密度、可自定义的浏览器新标签页扩展。
 
 SimpleTab 用空间、分组和网站卡片整理常用链接，并提供搜索、拖拽排序、浏览器书签导入、主题设置及本地备份等功能。项目基于 Manifest V3 开发，适用于 Chrome、Microsoft Edge 等 Chromium 浏览器。
+<img width="2558" height="1252" alt="40b8b404dbb7803220912a9d31b726f2" src="https://github.com/user-attachments/assets/958db5ed-4896-4253-b742-fe90a01976e9" />
 
 ## 功能特点
 
@@ -18,7 +19,7 @@ SimpleTab 用空间、分组和网站卡片整理常用链接，并提供搜索�
 - 自定义程序坞按钮及显示方式
 - 使用 JSON 文件导入、导出全部数据和设置
 - 响应式布局，适配不同尺寸的浏览器窗口
-
+<img width="1105" height="928" alt="9e5e0fbbf6e1c0beae1d2b6f472b99ea" src="https://github.com/user-attachments/assets/601ae93a-be91-483b-b97f-6c62817297a3" />
 ## 安装
 
 ### 从 GitHub Release 安装
