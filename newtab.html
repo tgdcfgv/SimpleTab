@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新标签页</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components/header.css">
+  <link rel="stylesheet" href="css/components/main-content.css">
+  <link rel="stylesheet" href="css/components/footer.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/modals.css">
+  <link rel="stylesheet" href="css/components/ui-components.css">
+  <link rel="stylesheet" href="css/components/store.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="search-container">
+        <select id="searchEngineSelect" data-icon-only="true">
+          <option value="google" data-url="https://www.google.com">Google</option>
+          <option value="bing" data-url="https://www.bing.com">Bing</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="搜索已保存的网站，或直接回车搜索..." autocomplete="off">
+        <div id="searchResults" class="search-results hidden"></div>
+      </div>
+    </header>
+
+    <main class="groups-container" id="groupsContainer">
+      <!-- 分组内容动态生成 -->
+    </main>
+    
+    <footer class="bottom-bar">
+      <div class="sync-status" id="syncStatus">
+        <span class="status-dot"></span>
+        <span class="status-text">本地已保存</span>
+      </div>
+    </footer>
+
+    <nav class="space-dock" id="spaceDock" aria-label="程序坞">
+      <div class="dock-actions" aria-label="快捷操作">
+        <button id="settingsBtn" class="dock-action-btn" title="设置" aria-label="设置">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+        <button id="addGroupBtn" class="dock-action-btn" title="添加分组" aria-label="添加分组">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        </button>
+        <button id="addSiteBtn" class="dock-action-btn" title="添加网站" aria-label="添加网站">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <button id="appStoreBtn" class="dock-action-btn" title="应用商店" aria-label="应用商店">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </button>
+      </div>
+      <span class="dock-divider" aria-hidden="true"></span>
+      <div class="space-switcher">
+        <button type="button" class="space-tab-hint" id="spaceTabHint" title="按 Tab 切换空间" disabled>
+          <span class="tab-keycap">Tab</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"></polyline><line x1="4" y1="12" x2="15" y2="12"></line><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+        </button>
+        <div class="space-dock-list" id="spaceDockList"></div>
+        <button type="button" class="space-edit-btn" id="spaceEditBtn" title="编辑空间" aria-label="编辑空间">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- 弹窗遮罩 -->
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <!-- 添加/编辑网站弹窗 -->
+    <div id="siteModal" class="modal hidden">
+      <h3 id="siteModalTitle">添加网站</h3>
+      <form id="siteForm" class="compact-form">
+        <input type="hidden" id="siteId">
+        <div class="form-group">
+          <label for="siteUrl">网址</label>
+          <input type="url" id="siteUrl" required placeholder="https://example.com" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="siteTitle">名称</label>
+          <input type="text" id="siteTitle" placeholder="留空自动获取" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="siteIconUrl">自定义图标</label>
+          <div class="inline-input-action">
+            <input type="url" id="siteIconUrl" placeholder="可选，留空自动获取" autocomplete="off">
+            <button type="button" id="refetchIconBtn">一键爬取</button>
+          </div>
+        </div>
+        <div class="form-group stacked-form-group">
+          <label>所属分组</label>
+          <div id="siteGroupSelection" class="group-selection-grid"></div>
+          <input type="hidden" id="siteGroup" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" id="cancelSiteBtn">取消</button>
+          <button type="submit" class="btn primary">保存</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 添加/编辑分组弹窗 -->
+    <div id="groupModal" class="modal hidden">
+      <h3 id="groupModalTitle">添加分组</h3>
+      <form id="groupForm" class="compact-form">
+        <input type="hidden" id="groupId">
+        <div class="form-group">
+          <label for="groupName">分组名称</label>
+          <input type="text" id="groupName" required placeholder="例如：设计工具" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>一行显示个数</label>
+          <div class="number-stepper">
+            <button type="button" class="stepper-btn" id="decreaseLinksPerRow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <input type="text" id="groupLinksPerRow" value="自动" readonly>
+            <button type="button" class="stepper-btn" id="increaseLinksPerRow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" id="cancelGroupBtn">取消</button>
+          <button type="submit" class="btn primary">保存</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div id="settingsModal" class="modal hidden">
+      <div class="settings-header">
+        <div>
+          <h3>设置</h3>
+        </div>
+        <button type="button" class="settings-close-btn" id="closeSettingsBtn" aria-label="关闭设置" title="关闭">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="settings-body">
+        <nav class="settings-sidebar" aria-label="设置分类">
+          <button type="button" class="settings-nav-btn active" data-settings-panel="settingsAppearance">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 9 9c0-1.1-.9-2-2-2h-1.2a2 2 0 0 1-1.7-3l.2-.3A2.4 2.4 0 0 0 14.2 3H12z"></path><circle cx="7.5" cy="10.5" r=".8" fill="currentColor"></circle><circle cx="10" cy="6.8" r=".8" fill="currentColor"></circle></svg>
+            <span>外观</span>
+          </button>
+          <button type="button" class="settings-nav-btn" data-settings-panel="settingsBrowsing">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h10M7 12h7M7 16h4"></path></svg>
+            <span>浏览与显示</span>
+          </button>
+          <button type="button" class="settings-nav-btn" data-settings-panel="settingsSearch">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <span>搜索引擎</span>
+          </button>
+          <button type="button" class="settings-nav-btn" data-settings-panel="settingsDock">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="5"></rect><circle cx="12" cy="8" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="16" r="1"></circle></svg>
+            <span>程序坞</span>
+          </button>
+          <button type="button" class="settings-nav-btn" data-settings-panel="settingsTransfer">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><polyline points="7 8 12 3 17 8"></polyline><path d="M5 13v6h14v-6"></path></svg>
+            <span>导入与导出</span>
+          </button>
+          <button type="button" class="settings-nav-btn" data-settings-panel="settingsMyData">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19H2"></path></svg>
+            <span>我的数据</span>
+          </button>
+        </nav>
+        <div class="settings-content">
+        <section class="settings-section active" id="settingsAppearance">
+          <div class="settings-section-heading">
+            <div><h4>外观</h4></div>
+          </div>
+          <div class="settings-list">
+            <div class="setting-item">
+              <div class="setting-copy"><label for="themeSelect">主题</label></div>
+              <select id="themeSelect" class="setting-select">
+                <option value="light" data-icon-name="light">浅色</option>
+                <option value="dark" data-icon-name="dark">深色</option>
+                <option value="system" data-icon-name="system">跟随系统</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy"><label for="wallpaperUpload">自定义壁纸</label></div>
+              <div class="setting-button-group">
+                <label class="btn secondary" for="wallpaperUpload">选择图片
+                  <input type="file" id="wallpaperUpload" accept="image/*" hidden>
+                </label>
+                <button type="button" class="btn quiet" id="clearWallpaperBtn">清除</button>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy"><label for="accentColorInput">强调色</label></div>
+              <div class="accent-color-control">
+                <input type="color" id="accentColorInput" value="#6366f1" aria-label="选择强调色">
+                <button type="button" class="btn secondary accent-apply-btn" id="applyAccentColorBtn">应用</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-section" id="settingsBrowsing">
+          <div class="settings-section-heading">
+            <div><h4>浏览与显示</h4></div>
+          </div>
+          <div class="settings-list">
+            <div class="setting-item">
+              <div class="setting-copy"><label for="openModeSelect">打开方式</label></div>
+              <select id="openModeSelect" class="setting-select">
+                <option value="current-tab" data-icon-name="current-tab">当前标签页</option>
+                <option value="new-tab" data-icon-name="new-tab">新标签页</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy"><label for="cardModeSelect">链接显示</label></div>
+              <select id="cardModeSelect" class="setting-select">
+                <option value="icon-text" data-icon-name="icon-text">图标与文字</option>
+                <option value="icon-only" data-icon-name="icon-only">仅显示图标</option>
+              </select>
+            </div>
+            <div class="setting-item" id="iconSizeSetting" style="display: none;">
+              <div class="setting-copy"><label for="iconSizeSlider">图标大小</label></div>
+              <div class="setting-slider">
+                <input type="range" id="iconSizeSlider" min="16" max="48" value="24">
+                <span id="iconSizeValue">24px</span>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy"><label for="compactModeToggle">紧凑模式</label></div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="compactModeToggle" class="toggle-input">
+                <label for="compactModeToggle" class="toggle-label"></label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-section" id="settingsSearch">
+          <div class="settings-section-heading">
+            <div><h4>搜索引擎</h4></div>
+          </div>
+          <div class="search-engine-settings search-engine-settings-flat" id="searchEngineSettings"></div>
+        </section>
+
+        <section class="settings-section" id="settingsDock">
+          <div class="settings-section-heading">
+            <div><h4>程序坞</h4></div>
+          </div>
+          <div class="settings-list">
+            <div class="setting-item">
+              <div class="setting-copy"><label for="dockPositionSelect">显示位置</label></div>
+              <select id="dockPositionSelect" class="setting-select">
+                <option value="left" data-icon-name="dock-left">左侧</option>
+                <option value="right" data-icon-name="dock-right">右侧</option>
+                <option value="bottom" data-icon-name="dock-bottom">底部</option>
+                <option value="hidden" data-icon-name="dock-hidden">隐藏</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy"><label for="dockTabHintToggle">Tab 切换提示</label></div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="dockTabHintToggle" class="toggle-input">
+                <label for="dockTabHintToggle" class="toggle-label"></label>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy"><label for="dockEditButtonToggle">空间编辑入口</label></div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="dockEditButtonToggle" class="toggle-input">
+                <label for="dockEditButtonToggle" class="toggle-label"></label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-section" id="settingsTransfer">
+          <div class="settings-section-heading">
+            <div>
+              <h4>导入与导出</h4>
+              <p>备份或恢复 SimpleTab 的全部内容与设置。</p>
+            </div>
+          </div>
+          <div class="settings-feature-grid">
+            <article class="settings-feature-card">
+              <div class="settings-feature-icon">
+                <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"></path><polyline points="7 9 12 4 17 9"></polyline><path d="M5 14v5h14v-5"></path></svg>
+              </div>
+              <div>
+                <h5>导出备份</h5>
+                <p>保存空间、分组、网站、排序和外观设置。</p>
+              </div>
+              <button type="button" class="btn primary" id="exportBtnNew">导出 JSON</button>
+            </article>
+            <article class="settings-feature-card">
+              <div class="settings-feature-icon">
+                <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"></path><polyline points="7 11 12 16 17 11"></polyline><path d="M5 14v5h14v-5"></path></svg>
+              </div>
+              <div>
+                <h5>导入恢复</h5>
+                <p>从 JSON 备份恢复；当前数据将被备份内容覆盖。</p>
+              </div>
+              <label class="btn secondary settings-file-button" for="importFileNew">选择文件
+                <input type="file" id="importFileNew" accept=".json,application/json" hidden>
+              </label>
+            </article>
+          </div>
+        </section>
+
+        <section class="settings-section" id="settingsMyData">
+          <div class="settings-section-heading">
+            <div>
+              <h4>我的数据</h4>
+              <p id="dataOverviewSummary">正在统计本地数据…</p>
+            </div>
+          </div>
+          <div class="data-overview-grid" id="dataOverviewGrid"></div>
+          <p class="data-overview-note">占比按空间、分组和网站项目总数计算，数据仅保存在本地浏览器中。</p>
+        </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- 空间编辑弹窗 -->
+    <div id="spaceModal" class="modal hidden">
+      <div class="space-modal-heading">
+        <h3>编辑空间</h3>
+        <p>拖动左侧手柄调整顺序，修改会在完成后保存。</p>
+      </div>
+      <div class="space-editor-list" id="spaceEditorList"></div>
+      <button type="button" class="btn secondary space-add-btn" id="addSpaceBtn">新建空间</button>
+      <div class="modal-actions">
+        <button type="button" class="btn quiet" id="cancelSpaceBtn">取消</button>
+        <button type="button" class="btn primary" id="saveSpaceBtn">完成</button>
+      </div>
+    </div>
+
+    <!-- 应用商店弹窗 -->
+    <div id="appStoreModal" class="modal hidden">
+      <h3>热门网站</h3>
+      <div id="appStoreContent" class="store-content">
+        <!-- Categories and links will be rendered here -->
+      </div>
+      <div class="form-group">
+        <label for="storeGroupSelect">添加到分组</label>
+        <select id="storeGroupSelect"></select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="closeAppStoreBtn">取消</button>
+        <button type="button" class="btn primary" id="addStoreLinksBtn">添加选中 (<span id="selectedLinksCount">0</span>)</button>
+      </div>
+    </div>
+
+    <!-- 确认弹窗 -->
+    <div id="confirmModal" class="modal hidden">
+      <h3 id="confirmTitle">确认操作</h3>
+      <p id="confirmMessage" style="margin-bottom: 24px; color: var(--text-secondary);"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="cancelConfirmBtn">取消</button>
+        <button type="button" class="btn primary" id="okConfirmBtn" style="background: #EF4444; border-color: #EF4444;">删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右键菜单 -->
+  <div id="contextMenu" class="context-menu hidden">
+    <div class="context-menu-item" id="contextAddSite">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      添加网站
+    </div>
+    <div class="context-menu-item" id="contextAddGroup">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+      添加分组
+    </div>
+    <div class="context-menu-item" id="contextSettings">
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33A1.65 1.65 0 0 0 14 20.83V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.09 14H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8.92a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 4.2l.06.06a1.65 1.65 0 0 0 1.82.33H9A1.65 1.65 0 0 0 10 3.09V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1.08 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.12.6.65 1.03 1.26 1.03H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg>
+      设置
+    </div>
+    <div class="context-menu-divider" id="contextDivider" style="display: none; height: 1px; background: var(--card-border); margin: 4px 0;"></div>
+    <div class="context-menu-item" id="contextEditSite" style="display: none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      编辑网站
+    </div>
+    <div class="context-menu-item" id="contextDeleteSite" style="display: none; color: #EF4444;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      删除网站
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

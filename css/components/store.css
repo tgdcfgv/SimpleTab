@@ -1,0 +1,259 @@
+/* Store Modal */
+#appStoreModal {
+  width: min(960px, 96vw) !important;
+  max-width: 96vw !important;
+  height: min(860px, 92vh);
+  max-height: 92vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 28px;
+}
+
+#appStoreModal.hidden {
+  display: none !important;
+}
+
+#appStoreModal h3 {
+  margin-bottom: 16px;
+}
+
+.store-shell {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 16px;
+  min-height: 0;
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.store-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  padding-right: 4px;
+  border-right: 1px solid var(--card-border);
+}
+
+.store-menu-btn {
+  width: 100%;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-color);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.store-menu-btn:hover {
+  background: var(--item-hover-bg);
+}
+
+.store-menu-btn.active {
+  background: var(--item-hover-bg);
+  border-color: var(--card-border);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.store-menu-count {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.store-main {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.store-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 4px 0 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.store-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--card-border);
+  flex-wrap: nowrap;
+}
+
+.store-footer .form-group {
+  margin-bottom: 0 !important;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Hide the text label inside store footer form-group */
+.store-footer .form-group > label:first-child {
+  display: none !important;
+}
+
+.store-footer .modal-actions {
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.store-status {
+  margin-top: 8px;
+  min-height: 18px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.store-status.success {
+  color: #16A34A;
+}
+
+.store-status.warning {
+  color: #EF4444;
+}
+
+.store-category {
+  margin-bottom: 20px;
+}
+.store-category-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--card-border);
+}
+.store-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+/* Store link item â€?icon + name left, circle-check right */
+.store-link-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-color);
+  border: 1.5px solid var(--card-border);
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  user-select: none;
+  position: relative;
+}
+.store-link-item:hover {
+  border-color: var(--primary-color);
+  background: var(--item-hover-bg);
+}
+.store-link-item:has(input:checked) {
+  border-color: var(--primary-color);
+  background: var(--focus-ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 20%, transparent);
+}
+
+/* Hide native checkbox â€?replaced by custom circle */
+.store-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Custom circle-check (right side) */
+.store-circle-check {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--card-border);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.18s, background 0.18s;
+}
+.store-link-item:has(input:checked) .store-circle-check {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+}
+.store-circle-check svg {
+  display: none;
+}
+.store-link-item:has(input:checked) .store-circle-check svg {
+  display: block;
+}
+
+.store-icon {
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.store-name {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-color);
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  #appStoreModal {
+    width: 94vw !important;
+    height: 88vh;
+    padding: 18px;
+  }
+
+  .store-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .store-menu {
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--card-border);
+    padding: 0 0 10px 0;
+  }
+
+  .store-menu-btn {
+    width: auto;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  .store-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .store-footer .modal-actions {
+    justify-content: stretch;
+  }
+
+  .store-footer .btn {
+    flex: 1;
+  }
+}
+

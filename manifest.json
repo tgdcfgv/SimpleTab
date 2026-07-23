@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "极简新标签页 (SimpleTab)",
+  "version": "2.0",
+  "description": "极简高密度新标签页管理扩展，支持分组、搜索与拖拽管理",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "permissions": [
+    "storage",
+    "favicon"
+  ],
+  "optional_permissions": [
+    "bookmarks"
+  ]
+}
