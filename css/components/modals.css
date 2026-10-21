@@ -997,3 +997,15 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .4); backdrop-filter: blur(8p
 .btn:focus-visible, .settings-close-btn:focus-visible, .dock-action-btn:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 3px; }
 #accountBtn[data-signed-in="true"] { color: var(--primary-color); }
 #accountBtn[data-signed-in="true"]::after { content: ''; position: absolute; right: 5px; bottom: 5px; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+.capture-modal select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background: var(--bg-color);
+  color: var(--text-color);
+  font: inherit;
+}
+#captureMessage { overflow-wrap: anywhere; }

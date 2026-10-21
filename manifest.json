@@ -1,14 +1,29 @@
 {
   "manifest_version": 3,
+  "minimum_chrome_version": "102",
   "name": "SimTab - 极简新标签页",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "无需登录即可整理网站并在浏览器本地保存；登录账户后切换到独立的云端内容，跨设备同步。",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
+  "background": {
+    "service_worker": "js/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "保存当前页面到 SimTab"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": "Alt+Shift+S"
+    }
+  },
   "permissions": [
     "storage",
-    "favicon"
+    "favicon",
+    "activeTab",
+    "contextMenus"
   ],
   "optional_permissions": [
     "bookmarks"

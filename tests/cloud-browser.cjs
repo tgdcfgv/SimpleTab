@@ -1,3 +1,4 @@
+const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.html';
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 (async () => {
@@ -25,7 +26,7 @@ const assert = require('node:assert/strict');
     }
     return reply({},400);
   });
-  await page.goto('http://127.0.0.1:8091/newtab.html');
+  await page.goto(APP_URL);
   await page.waitForFunction(()=>!document.querySelector('.app-container').inert);
   assert.equal(await page.locator('#accountDialog').evaluate(el=>el.open),false);
   await page.evaluate(async()=>{const s=await import('./js/storage.js');s.appData.groups[0].name='Local group';await s.syncManager.saveData();});
@@ -149,7 +150,7 @@ const assert = require('node:assert/strict');
     }};
   });
   const extensionPage=await extensionContext.newPage();
-  await extensionPage.goto('http://127.0.0.1:8091/newtab.html');
+  await extensionPage.goto(APP_URL);
   await extensionPage.waitForFunction(()=>!document.querySelector('.app-container').inert);
   await extensionPage.evaluate(async()=>{const s=await import('./js/storage.js');s.appData.groups[0].name='Extension local';await s.syncManager.saveData();});
   assert.equal(await extensionPage.evaluate(()=>localStorage.getItem('appData')),null);

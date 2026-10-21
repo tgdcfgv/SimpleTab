@@ -1,12 +1,14 @@
+import { getWallpaperUrl } from './wallpaper.js';
+import { icon, siteIconFallback } from './icons.js';
 import { appData, SEARCH_ENGINES, setActiveSpace, syncManager } from './storage.js';
 import { getFaviconUrl, escapeHTML } from './utils.js';
 import { draggedItem, draggedItemType, handleDragEnd, handleDragLeaveGroup, handleDragOver, handleDragOverGroup, handleDragStart, handleDrop, handleDropOnGroup, handleGroupDragStart, moveGroupTo } from './drag.js';
 import { openGroupModal, showConfirm, updateCustomSelectOptions, updateCustomSelectTrigger } from './modals.js';
 
-const siteIconFallback = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM5YWEwYTYiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjxsaW5lIHgxPSIxMiIgeTE9IjgiIHgyPSIxMiIgeTI9IjEyIj48L2xpbmU+PGxpbmUgeDE9IjEyIiB5MT0iMTYiIHgyPSIxMi4wMSIgeTI9IjE2Ij48L2xpbmU+PC9zdmc+';
 
 export function render() {
   const container = document.getElementById('groupsContainer');
+  document.dispatchEvent(new Event('simtab-render'));
   const openLinksInNewTab = !!appData.settings.openLinksInNewTab;
   const linkTargetAttrs = openLinksInNewTab ? ' target="_blank" rel="noopener noreferrer"' : '';
   container.innerHTML = '';
@@ -19,11 +21,9 @@ export function render() {
     container.style.display = 'grid';
   }
 
-  const cols = [
-    document.createElement('div'),
-    document.createElement('div'),
-    document.createElement('div')
-  ];
+  const columnCount = getColumnCount(container);
+  renderedColumnCount = columnCount;
+  const cols = Array.from({ length: columnCount }, () => document.createElement('div'));
   cols.forEach((c, i) => {
     c.className = 'group-col';
     c.dataset.colIndex = i;
@@ -43,7 +43,12 @@ export function render() {
     });
   });
 
-  appData.groups.forEach((g, i) => { if (g.column === undefined) g.column = i % 3; });
+  appData.groups.forEach((g, i) => {
+    if (!Number.isInteger(g.column) || g.column < 0) {
+      g.column = i % columnCount;
+      g.columnCount = columnCount;
+    }
+  });
 
   appData.groups.forEach((group, index) => {
     const card = document.createElement('div');
@@ -91,9 +96,7 @@ export function render() {
     header.className = 'group-header';
     header.innerHTML = `
       <div class="group-title-container">
-        <svg class="fold-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(${group.collapsed ? '-90deg' : '0'});">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
+        ${icon('chevron-down', 16, 'fold-icon', `transform: rotate(${group.collapsed ? '-90deg' : '0'});`)}
         <span class="group-title">${escapeHTML(group.name)}</span>
         <div class="group-collapsed-icons">
           ${group.links.slice(0, 6).map(link => {
@@ -108,10 +111,10 @@ export function render() {
       </div>
       <div class="group-actions">
         <button class="group-action-btn edit-group-btn" title="编辑" data-id="${escapeHTML(group.id)}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          ${icon('square-pen', 14)}
         </button>
         <button class="group-action-btn delete-group-btn" title="删除" data-id="${escapeHTML(group.id)}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          ${icon('trash', 14)}
         </button>
       </div>
     `;
@@ -202,7 +205,9 @@ export function render() {
     wrapper.appendChild(grid);
     card.appendChild(wrapper);
     
-    cols[group.column].appendChild(card);
+    const column = (group.columnCount || 3) === columnCount
+      ? group.column % columnCount : index % columnCount;
+    cols[column].appendChild(card);
   });
 
   cols.forEach(col => {
@@ -219,13 +224,8 @@ function getSpaceDockIcon(space, index) {
         ? 'favorites'
         : index === 0 ? 'home' : index === 1 ? 'work' : index === 2 ? 'favorites' : 'space';
 
-  const icons = {
-    home: '<path d="M3 10.8 12 3l9 7.8"></path><path d="M5.5 9.5V21h13V9.5"></path><path d="M9.5 21v-6h5v6"></path>',
-    work: '<rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M3 12h18"></path><path d="M10 12v2h4v-2"></path>',
-    favorites: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3z"></path>',
-    space: '<rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect>'
-  };
-  return `<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[iconKey]}</svg>`;
+  const icons = { home: 'house', work: 'briefcase-business', favorites: 'star', space: 'grid-2x2' };
+  return icon(icons[iconKey], 19);
 }
 
 export function renderSpaceDock() {
@@ -275,7 +275,10 @@ export function initSpaceShortcuts() {
 }
 
 
+let wallpaperRender = 0;
+
 export function applySettings() {
+  const wallpaperRequest = ++wallpaperRender;
   document.documentElement.dataset.compact = appData.settings.compactMode;
   document.documentElement.dataset.cardMode = appData.settings.cardDisplayMode || 'icon-text';
   document.documentElement.dataset.dockPosition = appData.settings.dockPosition || 'bottom';
@@ -314,8 +317,8 @@ export function applySettings() {
     }
   }
 
-  if (appData.settings.wallpaper) {
-    document.body.style.backgroundImage = `url(${appData.settings.wallpaper})`;
+  if (appData.settings.wallpaper && !appData.settings.wallpaper.startsWith('data:')) {
+    document.body.style.backgroundImage = `url(${JSON.stringify(appData.settings.wallpaper)})`;
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'center';
     document.body.style.backgroundAttachment = 'fixed';
@@ -327,12 +330,28 @@ export function applySettings() {
     document.body.style.backgroundPosition = '';
     document.body.style.backgroundAttachment = '';
   }
+  getWallpaperUrl().then(url => {
+    if (!url || wallpaperRequest !== wallpaperRender) return;
+    document.body.style.backgroundImage = `url(${JSON.stringify(url)})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundAttachment = 'fixed';
+  }).catch(error => console.warn('无法读取本机壁纸', error));
 }
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  if (appData.settings.theme === 'system') {
+  if (appData?.settings.theme === 'system') {
     applySettings();
   }
 });
 
 
+
+let renderedColumnCount = 0;
+function getColumnCount(container) {
+  return getComputedStyle(container).gridTemplateColumns.split(' ').filter(Boolean).length || 1;
+}
+const groupContainer = document.getElementById('groupsContainer');
+new ResizeObserver(() => {
+  if (appData && !draggedItem && getColumnCount(groupContainer) !== renderedColumnCount) render();
+}).observe(groupContainer);

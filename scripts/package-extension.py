@@ -10,6 +10,10 @@ for folder in ('css', 'js', 'icons'):
 for icon in manifest['icons'].values():
     assert (root / icon).is_file(), icon
 assert manifest.get('host_permissions') == ['https://zyttspnlrdzjosnitijb.supabase.co/*'], 'Unexpected host permissions'
+assert set(manifest['permissions']) == {'storage', 'favicon', 'activeTab', 'contextMenus'}, 'Unexpected permissions'
+assert manifest['background']['type'] == 'module'
+assert (root / manifest['background']['service_worker']).is_file(), 'Missing service worker'
+assert '_execute_action' in manifest['commands'], 'Missing capture shortcut'
 output = root / 'dist' / f"SimTab-{manifest['version']}-edge.zip"
 output.parent.mkdir(exist_ok=True)
 with ZipFile(output, 'w', ZIP_DEFLATED) as archive:

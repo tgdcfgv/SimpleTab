@@ -99,7 +99,7 @@ body {
 }
 
 .app-container {
-  max-width: 1440px;
+  max-width: 2400px;
   margin: 0 auto;
   padding: 64px 48px 32px;
   display: flex;

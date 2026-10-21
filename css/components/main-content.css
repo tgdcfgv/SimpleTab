@@ -1,16 +1,10 @@
 /* Main Content */
 .groups-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 24px;
   align-items: stretch;
   flex: 1;
-}
-
-@media (max-width: 1024px) {
-  .groups-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (max-width: 768px) {
@@ -20,6 +14,7 @@
 }
 
 .group-col {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 24px;

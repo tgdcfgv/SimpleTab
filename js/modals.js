@@ -1,3 +1,6 @@
+import { saveWallpaper, clearWallpaper } from './wallpaper.js';
+import { safeWebUrl, safeImageUrl } from './urls.js';
+import { icon } from './icons.js';
 import { appData, createTemporaryGroup, SEARCH_ENGINES, setActiveSpace, syncManager } from './storage.js';
 import { generateId, getFaviconUrl } from './utils.js';
 import { applySettings, render } from './render.js';
@@ -128,7 +131,8 @@ document.getElementById('groupForm').addEventListener('submit', (e) => {
       name,
       collapsed: false,
       links: [],
-      column: appData.groups.length % 3,
+      column: appData.groups.length % (document.querySelectorAll('#groupsContainer > .group-col').length || 3),
+      columnCount: document.querySelectorAll('#groupsContainer > .group-col').length || 3,
       linksPerRow: currentLinksPerRow
     });
   }
@@ -275,9 +279,9 @@ document.getElementById('siteForm').addEventListener('submit', (e) => {
     return;
   }
 
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    url = 'https://' + url;
-  }
+  url = safeWebUrl(url, { allowBare: true });
+  if (!url) return alert('请输入有效的 HTTP 或 HTTPS 网址。');
+  if (customIcon && !safeImageUrl(customIcon)) return alert('请输入有效的 HTTP/HTTPS 图片地址或图片数据。');
   if (!title) {
     try {
       title = new URL(url).hostname.replace('www.', '');
@@ -567,24 +571,28 @@ document.getElementById('searchEngineSelect').addEventListener('change', (e) => 
   syncManager.saveData();
 });
 
-document.getElementById('wallpaperUpload').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      appData.settings.wallpaper = event.target.result;
-      syncManager.saveData();
-      applySettings();
-    };
-    reader.readAsDataURL(file);
-  }
-  e.target.value = ''; // reset file input
+document.getElementById('wallpaperUpload').addEventListener('change', async (e) => {
+  const input = e.target;
+  const file = input.files[0];
+  input.disabled = true;
+  try {
+    if (!file) return;
+    await saveWallpaper(file);
+    appData.settings.wallpaper = null;
+    await syncManager.saveData();
+    applySettings();
+  } catch (error) {
+    alert(`壁纸保存失败：${error.message}`);
+  } finally { input.value = ''; input.disabled = false; }
 });
 
-document.getElementById('clearWallpaperBtn').addEventListener('click', () => {
-  appData.settings.wallpaper = null;
-  syncManager.saveData();
-  applySettings();
+document.getElementById('clearWallpaperBtn').addEventListener('click', async () => {
+  try {
+    await clearWallpaper();
+    appData.settings.wallpaper = null;
+    await syncManager.saveData();
+    applySettings();
+  } catch (error) { alert(`移除壁纸失败：${error.message}`); }
 });
 
 document.getElementById('exportBtnNew').addEventListener('click', () => syncManager.exportData());
@@ -649,11 +657,11 @@ function renderSpaceEditor() {
     item.dataset.id = space.id;
     item.innerHTML = `
       <button type="button" class="space-icon-btn space-drag-handle" title="按住拖动排序" aria-label="按住拖动排序" draggable="true">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="7" x2="19" y2="7"></line><line x1="5" y1="12" x2="19" y2="12"></line><line x1="5" y1="17" x2="19" y2="17"></line></svg>
+        ${icon('menu', 17)}
       </button>
       <input type="text" value="${escapeAttr(space.name)}" aria-label="空间名称">
       <button type="button" class="space-icon-btn danger delete-space" title="删除空间" aria-label="删除空间" ${spaceEditorDraft.length <= 1 ? 'disabled' : ''}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        ${icon('x', 16)}
       </button>
     `;
 
@@ -771,23 +779,21 @@ modalOverlay.addEventListener('click', (e) => {
 
 function getCustomSelectIconMarkup(option, size = 16) {
   const icons = {
-    'current-tab': '<rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h10"></path>',
-    'new-tab': '<rect x="3" y="5" width="14" height="16" rx="2"></rect><path d="M14 3h7v7"></path><path d="m13 11 8-8"></path>',
-    'icon-text': '<rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="12" r="2"></circle><path d="M12 10h6M12 14h5"></path>',
-    'icon-only': '<rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="14" width="6" height="6" rx="1"></rect>',
-    light: '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>',
-    dark: '<path d="M20.5 14.2A8 8 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2z"></path>',
-    system: '<rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path>',
-    'dock-left': '<rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 3v18"></path>',
-    'dock-right': '<rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M16 3v18"></path>',
-    'dock-bottom': '<rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 16h18"></path>',
-    'dock-hidden': '<path d="M3 3l18 18"></path><path d="M10.6 10.7a2 2 0 0 0 2.7 2.7"></path><path d="M9.9 4.2A10.5 10.5 0 0 1 12 4c5 0 8.5 4 9.5 8a13.7 13.7 0 0 1-2 4.2M6.6 6.6A13.8 13.8 0 0 0 2.5 12c1 4 4.5 8 9.5 8 1 0 2-.2 2.9-.5"></path>'
-  };
+    "current-tab": "app-window",
+    "new-tab": "external-link",
+    "icon-text": "panel-top",
+    "icon-only": "grid-2x2",
+    "light": "sun",
+    "dark": "moon",
+    "system": "monitor",
+    "dock-left": "panel-left",
+    "dock-right": "panel-right",
+    "dock-bottom": "panel-bottom",
+    "dock-hidden": "eye-off"
+};
 
-  const iconPath = icons[option.dataset.iconName];
-  if (iconPath) {
-    return `<svg class="select-option-icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPath}</svg>`;
-  }
+  const iconName = icons[option.dataset.iconName];
+  if (iconName) return icon(iconName, size, 'select-option-icon');
 
   const iconSrc = option.dataset.url ? getFaviconUrl(option.dataset.url) : option.dataset.icon;
   return iconSrc ? `<img src="${iconSrc}" width="${size}" height="${size}" style="border-radius:4px" alt="">` : '';
@@ -819,6 +825,7 @@ function sizeSettingSelectFromOptions(select, container) {
 }
 
 export function updateCustomSelectOptions(select) {
+  if (select.dataset.native === 'true') return;
   let container = select.nextElementSibling;
   if (!container || !container.classList.contains('custom-select-container')) {
     container = document.createElement('div');
@@ -826,7 +833,7 @@ export function updateCustomSelectOptions(select) {
     
     const trigger = document.createElement('div');
     trigger.className = 'custom-select-trigger-global';
-    trigger.innerHTML = `<div class="selected-content"></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+    trigger.innerHTML = `<div class="selected-content"></div>${icon('chevron-down', 14)}`;
     
     const optionsContainer = document.createElement('div');
     optionsContainer.className = 'custom-select-options-global hidden';

@@ -103,6 +103,14 @@ export function handleGroupDragStart(e) {
 }
 
 export function moveGroupTo(sourceId, colIndex, targetId = null, position = 'after') {
+  // Persist the visible placement before reordering so drops work at every width.
+  const columns = document.querySelectorAll('#groupsContainer > .group-col');
+  columns.forEach((column, index) => {
+    column.querySelectorAll(':scope > .group-card').forEach(card => {
+      const group = appData.groups.find(item => item.id === card.dataset.id);
+      if (group) { group.column = index; group.columnCount = columns.length; }
+    });
+  });
   const sourceIndex = appData.groups.findIndex(g => g.id === sourceId);
   if (sourceIndex === -1) return;
   const sourceGroup = appData.groups[sourceIndex];

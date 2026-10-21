@@ -1,0 +1,82 @@
+/* UI glyphs share a square canvas and a consistent visible stroke. */
+:root {
+  --ui-icon-size: 20px;
+  --ui-icon-stroke: 1.65;
+}
+
+svg.lucide {
+  display: block;
+  width: var(--ui-icon-size);
+  height: var(--ui-icon-size);
+  flex: 0 0 auto;
+  stroke-width: var(--ui-icon-stroke);
+  vertical-align: middle;
+}
+
+svg.lucide > * {
+  vector-effect: non-scaling-stroke;
+}
+
+/* Dock controls use one size, including the account and space-edit icons. */
+.dock-action-btn,
+.space-dock-btn,
+.space-edit-btn {
+  --ui-icon-size: 20px;
+  line-height: 1;
+}
+
+.group-action-btn {
+  --ui-icon-size: 16px;
+  --ui-icon-stroke: 1.5;
+}
+
+.fold-icon,
+.custom-select-trigger-global > svg,
+.space-tab-hint {
+  --ui-icon-size: 14px;
+  --ui-icon-stroke: 1.5;
+}
+
+.settings-nav-btn,
+.settings-close-btn,
+.space-icon-btn,
+.select-option-icon {
+  --ui-icon-size: 18px;
+}
+
+.stepper-btn,
+.context-menu-item {
+  --ui-icon-size: 16px;
+  --ui-icon-stroke: 1.5;
+}
+
+.store-circle-check {
+  --ui-icon-size: 12px;
+  --ui-icon-stroke: 1.8;
+}
+
+.sync-choice {
+  --ui-icon-size: 22px;
+}
+
+.sync-choice svg {
+  margin-top: 0;
+}
+
+/* Raster favicons keep their own size settings and sit on the same baseline. */
+.site-btn img,
+.collapsed-icon-link img,
+.search-result-item img,
+.store-icon,
+.search-engine-identity img,
+.selected-content img,
+.custom-option-global img {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.store-icon {
+  width: 18px;
+  height: 18px;
+}

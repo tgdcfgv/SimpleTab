@@ -1,4 +1,6 @@
-import { appData, linkStore, syncManager } from './storage.js';
+import { icon as lucideIcon } from './icons.js';
+import { appData, syncManager } from './storage.js';
+import { linkStore } from './catalog.js';
 import { generateId, getFaviconUrl } from './utils.js';
 import { render } from './render.js';
 import { closeAllModals, modalOverlay, openGroupModal } from './modals.js';
@@ -93,7 +95,7 @@ function flattenBrowserBookmarks(nodes, folderPath = [], result = [], seenUrls =
     if (node.url) {
       try {
         const protocol = new URL(node.url).protocol;
-        if (['http:', 'https:', 'ftp:', 'file:'].includes(protocol) && !seenUrls.has(node.url)) {
+        if (['http:', 'https:'].includes(protocol) && !seenUrls.has(node.url)) {
           seenUrls.add(node.url);
           result.push({
             name: node.title || node.url,
@@ -294,7 +296,7 @@ export async function renderAppStoreCategory() {
     // Circle-check indicator on right side
     const circleCheck = document.createElement('span');
     circleCheck.className = 'store-circle-check';
-    circleCheck.innerHTML = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"></polyline></svg>`;
+    circleCheck.innerHTML = lucideIcon('check', 11).replace('stroke="currentColor"', 'stroke="white"');
 
     label.appendChild(checkbox);
     label.appendChild(icon);
@@ -407,134 +409,19 @@ export function renderAppStore() {
   setStoreSelectionFromGroup(currentStoreGroupId);
   renderStoreMenu();
   renderAppStoreCategory();
-  return;
-
-  const content = document.getElementById('appStoreContent');
-  content.innerHTML = '';
-  selectedStoreLinks = [];
-  document.getElementById('selectedLinksCount').textContent = '0';
-
-  linkStore.forEach(category => {
-    const categoryDiv = document.createElement('div');
-    categoryDiv.className = 'store-category';
-    categoryDiv.style.marginBottom = '20px';
-
-    const title = document.createElement('h4');
-    title.textContent = category.name;
-    title.style.margin = '0 0 10px 0';
-    title.style.color = 'var(--text-primary)';
-    categoryDiv.appendChild(title);
-
-    const grid = document.createElement('div');
-    grid.className = 'sites-grid';
-    grid.style.padding = '0';
-
-    category.links.forEach(link => {
-      const label = document.createElement('label');
-      label.style.display = 'flex';
-      label.style.alignItems = 'center';
-      label.style.gap = '8px';
-      label.style.padding = '8px';
-      label.style.border = '1px solid var(--border-color)';
-      label.style.borderRadius = 'var(--radius-md)';
-      label.style.cursor = 'pointer';
-      label.style.background = 'var(--bg-secondary)';
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.value = JSON.stringify(link);
-      checkbox.className = 'store-checkbox';
-
-      checkbox.addEventListener('change', (e) => {
-        if (e.target.checked) {
-          selectedStoreLinks.push(link);
-        } else {
-          selectedStoreLinks = selectedStoreLinks.filter(l => l.url !== link.url);
-        }
-        document.getElementById('selectedLinksCount').textContent = selectedStoreLinks.length;
-      });
-
-      const iconSrc = getFaviconUrl(link.url);
-      const img = document.createElement('img');
-      img.src = iconSrc;
-      img.width = 16;
-      img.height = 16;
-      img.style.borderRadius = '2px';
-
-      const span = document.createElement('span');
-      span.textContent = link.name;
-      span.style.fontSize = '12px';
-      span.style.whiteSpace = 'nowrap';
-      span.style.overflow = 'hidden';
-      span.style.textOverflow = 'ellipsis';
-      span.style.flex = '1';
-
-      label.appendChild(checkbox);
-      label.appendChild(img);
-      label.appendChild(span);
-      grid.appendChild(label);
-    });
-
-    categoryDiv.appendChild(grid);
-    content.appendChild(categoryDiv);
-  });
-
-  const groupSelect = document.getElementById('storeGroupSelect');
-  groupSelect.innerHTML = '';
-  appData.groups.forEach(g => {
-    const opt = document.createElement('option');
-    opt.value = g.id;
-    opt.textContent = g.name;
-    groupSelect.appendChild(opt);
-  });
 }
-
-document.getElementById('appStoreBtn').addEventListener('click', () => {
-  if (!appData || appData.groups.length === 0) return alert('请先创廻一个分组！');
-  renderAppStore();
-  closeAllModals();
-  document.getElementById('modalOverlay').classList.remove('hidden');
-  appStoreModal.classList.remove('hidden');
-});
 
 document.getElementById('closeAppStoreBtn').addEventListener('click', closeAllModals);
 
-document.getElementById('addStoreLinksBtn').addEventListener('click', () => {
-  if (selectedStoreLinks.length === 0) return;
-  const groupId = document.getElementById('storeGroupSelect').value;
-  const group = appData.groups.find(g => g.id === groupId);
-  
-  if (group) {
-    let count = 0;
-    selectedStoreLinks.forEach(link => {
-      if (!group.links.find(l => l.url === link.url)) {
-        group.links.push({
-          id: generateId(),
-          title: link.name,
-          url: link.url
-        });
-        count++;
-      }
-    });
-    if (count > 0) {
-      syncManager.saveData();
-      render();
-    }
-    closeAllModals();
-  }
-});
-
-document.getElementById('appStoreBtn').addEventListener('click', (e) => {
-  e.stopImmediatePropagation();
+document.getElementById('appStoreBtn').addEventListener('click', () => {
   if (!appData) return;
   renderAppStore();
   closeAllModals();
   document.getElementById('modalOverlay').classList.remove('hidden');
   appStoreModal.classList.remove('hidden');
-}, true);
+});
 
-document.getElementById('addStoreLinksBtn').addEventListener('click', async (e) => {
-  e.stopImmediatePropagation();
+document.getElementById('addStoreLinksBtn').addEventListener('click', async () => {
 
   const groupId = currentStoreGroupId || document.getElementById('storeGroupSelect').value;
   const group = appData.groups.find(g => g.id === groupId);
@@ -570,11 +457,11 @@ document.getElementById('addStoreLinksBtn').addEventListener('click', async (e) 
   });
 
   try {
-    await syncManager.saveData();
+    if (!await syncManager.saveData()) throw new Error(syncManager.error || '更改尚未保存，请重试同步');
     render();
     closeAllModals();
   } catch (error) {
     setStoreStatus(`保存失败：${error.message}`, 'warning');
   }
-}, true);
+});
 
