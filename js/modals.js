@@ -560,6 +560,9 @@ settingsModal.addEventListener('keydown', event => {
 document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
 
 function selectSettingsPanel(panelId) {
+  const nextPanel = document.getElementById(panelId);
+  if (!nextPanel?.classList.contains('settings-section')) return;
+  const changed = !nextPanel.classList.contains('active');
   document.querySelectorAll('.settings-nav-btn').forEach(button => {
     const active = button.dataset.settingsPanel === panelId;
     button.classList.toggle('active', active);
@@ -568,6 +571,7 @@ function selectSettingsPanel(panelId) {
   document.querySelectorAll('.settings-section').forEach(panel => {
     panel.classList.toggle('active', panel.id === panelId);
   });
+  if (changed) settingsModal.querySelector('.settings-content').scrollTop = 0;
   if (panelId === 'settingsData') renderDataOverview();
 }
 

@@ -1,9 +1,11 @@
 /* Store Modal */
 #appStoreModal {
-  width: min(960px, 96vw) !important;
-  max-width: 96vw !important;
-  height: min(860px, 92vh);
-  max-height: 92vh !important;
+  width: min(960px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  height: min(860px, calc(100dvh - 40px));
+  max-height: calc(100dvh - 40px) !important;
+  box-sizing: border-box;
+  overflow: hidden;
   display: flex !important;
   flex-direction: column !important;
   padding: 28px;
@@ -15,6 +17,7 @@
 
 #appStoreModal h3 {
   margin-bottom: 16px;
+  flex-shrink: 0;
 }
 
 .store-shell {
@@ -87,13 +90,13 @@
 }
 
 .store-footer {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   padding-top: 16px;
+  flex-shrink: 0;
   border-top: 1px solid var(--card-border);
-  flex-wrap: nowrap;
 }
 
 .store-footer .form-group {
@@ -117,6 +120,26 @@
   min-height: 18px;
   color: var(--text-secondary);
   font-size: 12px;
+}
+
+.store-status:empty {
+  display: none;
+}
+
+.store-content .empty-group-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.store-content .empty-group-state .btn {
+  flex-shrink: 0;
+  max-width: 100%;
+  white-space: normal;
 }
 
 .store-status.success {
@@ -144,7 +167,7 @@
   gap: 10px;
 }
 
-/* Store link item â€?icon + name left, circle-check right */
+/* Store link: icon and name on the left, check on the right. */
 .store-link-item {
   display: flex;
   align-items: center;
@@ -168,7 +191,7 @@
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 20%, transparent);
 }
 
-/* Hide native checkbox â€?replaced by custom circle */
+/* Native checkbox uses the custom circle indicator. */
 .store-checkbox {
   position: absolute;
   opacity: 0;
@@ -220,8 +243,10 @@
 
 @media (max-width: 720px) {
   #appStoreModal {
-    width: 94vw !important;
-    height: 88vh;
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    height: calc(100dvh - 32px);
+    max-height: calc(100dvh - 32px) !important;
     padding: 18px;
   }
 
@@ -249,6 +274,7 @@
   }
 
   .store-footer .modal-actions {
+    width: 100%;
     justify-content: stretch;
   }
 

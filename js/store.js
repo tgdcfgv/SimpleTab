@@ -201,31 +201,31 @@ export async function renderAppStoreCategory() {
   if (category.dynamicType === BROWSER_BOOKMARKS_TYPE && !browserBookmarksLoaded) {
     const state = document.createElement('div');
     state.className = 'empty-group-state';
-    state.textContent = '正在读取我的收藏夹…';
+    const message = document.createElement('span');
+    message.textContent = '正在读取我的收藏夹…';
+    state.appendChild(message);
     content.appendChild(state);
 
     if (!globalThis.chrome?.runtime?.id || !globalThis.chrome?.permissions?.request) {
-      state.textContent = '网页版无法直接读取 Edge 收藏夹。可在“设置 → 账户与同步”导入书签 HTML 文件，或使用扩展版。';
+      message.textContent = '网页版无法直接读取浏览器收藏夹。可在“设置 → 账户与同步”导入书签 HTML 文件，或使用扩展版。';
       const installLink = document.createElement('a');
       installLink.className = 'btn primary';
       installLink.href = 'install.html';
       installLink.target = '_blank';
       installLink.rel = 'noopener noreferrer';
       installLink.textContent = '查看扩展安装方法';
-      state.append(document.createElement('br'), installLink);
+      state.appendChild(installLink);
       return;
     }
 
     const granted = await requestBookmarksPermission();
     if (!granted) {
-      state.textContent = '需要允许读取书签，才能显示我的收藏夹。';
+      message.textContent = '需要允许读取书签，才能显示我的收藏夹。';
       const retryBtn = document.createElement('button');
       retryBtn.type = 'button';
       retryBtn.className = 'btn primary';
       retryBtn.textContent = '允许读取收藏夹';
-      retryBtn.style.marginTop = '12px';
       retryBtn.addEventListener('click', renderAppStoreCategory);
-      state.appendChild(document.createElement('br'));
       state.appendChild(retryBtn);
       return;
     }
@@ -237,7 +237,7 @@ export async function renderAppStoreCategory() {
       renderStoreMenu();
       if (activeStoreCategoryId === category.id) renderAppStoreCategory();
     } catch (error) {
-      state.textContent = `读取收藏夹失败：${error.message}`;
+      message.textContent = `读取收藏夹失败：${error.message}`;
     }
     return;
   }

@@ -119,25 +119,23 @@ function renderDropdown(links, suggestions, query) {
 
       const iconWrap = document.createElement('span');
       iconWrap.className = 'search-suggest-icon-wrap';
-      iconWrap.innerHTML = icon('search', 16);
+      iconWrap.innerHTML = icon('arrow-up-right', 16);
 
       const title = document.createElement('span');
       title.className = 'site-title search-suggest-title';
       title.textContent = text;
 
-      const action = document.createElement('span');
-      action.className = 'search-suggest-action';
-      action.textContent = '搜索 ↗';
-
-      item.append(iconWrap, title, action);
+      item.append(iconWrap, title);
       searchResults.append(item);
     });
   }
 
-  const hint = document.createElement('div');
-  hint.className = 'search-result-item search-result-hint';
-  hint.textContent = `按回车使用 ${engine.name} 搜索；↑↓ 选择${suggestions.length ? '；Tab 补全' : ''}`;
-  searchResults.append(hint);
+  if (results.length === 0) {
+    searchResults.classList.add('hidden');
+    searchInput.setAttribute('aria-expanded', 'false');
+    searchInput.removeAttribute('aria-activedescendant');
+    return;
+  }
 
   searchResults.classList.remove('hidden');
   searchInput.setAttribute('aria-expanded', 'true');
@@ -212,15 +210,7 @@ searchResults.addEventListener('click', e => {
     hideResults();
     return;
   }
-  const hint = e.target.closest('.search-result-hint');
-  if (hint) {
-    const query = searchInput.value.trim();
-    if (query) {
-      const engine = SEARCH_ENGINES.find(item => item.id === appData.settings.searchEngine) || SEARCH_ENGINES[0];
-      openUrl(engine.searchUrl + encodeURIComponent(query));
-      hideResults();
-    }
-  }
+
 });
 
 // Clear stale URLs when switching accounts, importing or removing saved content.

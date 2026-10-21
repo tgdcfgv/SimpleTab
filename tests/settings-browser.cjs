@@ -14,6 +14,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.click('#settingsBtn');
     assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['常规', '外观', '内容与布局', '账户与同步', '关于']);
     assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
+    assert.equal(await page.locator('#settingsGeneral .settings-group').first().evaluate(el => getComputedStyle(el).animationName), 'settings-reveal');
     for (const [panel, controls] of Object.entries({
       settingsGeneral: ['openModeSelect', 'dockTabHintToggle', 'searchEngineSettings'],
       settingsAppearance: ['themeSelect', 'wallpaperUpload', 'accentColorInput'],
@@ -43,7 +44,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.screenshot({ path: '/tmp/simtab-settings-appearance.png', animations: 'disabled' });
     await page.click('[data-settings-panel="settingsData"]');
     assert(await page.locator('#dataOverviewSummary').innerText().then(text => text.includes('本地存储')));
-    assert.equal(await page.locator('#accountEmail').isVisible(), true);
+    assert.equal(await page.locator('#openAuthModalBtn').isVisible(), true);
     const oldGroups = await page.evaluate(async () => (await import('./js/storage.js')).appData.groups.length);
     await page.setInputFiles('#bookmarkFile', { name: 'bookmarks.html', mimeType: 'text/html', buffer: Buffer.from('<a href="https://example.com/new-bookmark">新书签</a>') });
     await page.waitForFunction(() => document.querySelector('#bookmarkImportStatus').textContent.includes('已导入 1'));
@@ -73,9 +74,15 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     assert.equal(await page.evaluate(() => document.querySelector('#settingsModal').contains(document.activeElement)), true);
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#settingsModal').isVisible(), false);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.click('#settingsBtn');
+    await page.click('[data-settings-panel="settingsGeneral"]');
+    assert.equal(await page.locator('#settingsGeneral .settings-group').first().evaluate(el => getComputedStyle(el).animationName), 'none');
+    assert.equal(await page.locator('#dockTabHintToggle + label').evaluate(el => getComputedStyle(el, '::before').transitionDuration), '0s');
+    await page.keyboard.press('Escape');
     await page.click('#accountBtn');
-    assert.equal(await page.locator('#settingsData').isVisible(), true);
+    assert.equal(await page.locator('#authModal').isVisible(), true);
     assert.deepEqual(errors, []);
-    console.log('PASS: consolidated navigation, icon slider persistence, inline login, bookmark import, JSON export, responsive panels, standalone about panel, keyboard focus, account shortcut, no page errors.');
+    console.log('PASS: consolidated navigation, icon slider persistence, login entry, bookmark import, JSON export, responsive panels, standalone about panel, keyboard focus, reduced motion, account shortcut, no page errors.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });

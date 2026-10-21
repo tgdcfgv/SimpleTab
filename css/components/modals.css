@@ -103,29 +103,53 @@ dialog.modal[open] {
    2. MACOS SYSTEM SETTINGS
    ------------------------------------------------------------ */
 #settingsModal {
-  width: min(800px, calc(100vw - 32px));
-  max-width: 800px;
-  height: min(650px, calc(100vh - 36px));
-  max-height: 650px;
+  width: min(880px, calc(100vw - 32px));
+  max-width: 880px;
+  height: min(680px, calc(100dvh - 36px));
+  max-height: 680px;
   padding: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius-xl);
+  border-radius: 24px;
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-modal);
+  --settings-muted: #616775;
+  --settings-pane: #f6f7fa;
+}
+
+[data-theme="dark"] #settingsModal {
+  --settings-muted: #ababb4;
+  --settings-pane: #18181b;
 }
 
 .settings-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 52px;
-  padding: 0 18px 0 24px;
+  height: 68px;
+  padding: 0 22px 0 26px;
   border-bottom: 1px solid var(--border-subtle);
-  background: var(--bg-canvas);
+  background: var(--bg-surface-elevated);
   flex-shrink: 0;
+}
+
+.settings-header-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-header-identity img {
+  border-radius: 8px;
+}
+
+.settings-save-hint {
+  margin-left: auto;
+  margin-right: 18px;
+  font-size: 12px;
+  color: var(--settings-muted);
 }
 
 .settings-header h3 {
@@ -162,7 +186,7 @@ dialog.modal[open] {
 
 .settings-body {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
+  grid-template-columns: 192px minmax(0, 1fr);
   flex: 1;
   min-height: 0;
 }
@@ -171,9 +195,9 @@ dialog.modal[open] {
 .settings-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 14px 10px;
-  background: var(--bg-canvas);
+  gap: 6px;
+  padding: 22px 12px;
+  background: var(--bg-surface-elevated);
   border-right: 1px solid var(--border-subtle);
   overflow-y: auto;
 }
@@ -183,8 +207,8 @@ dialog.modal[open] {
   align-items: center;
   gap: 10px;
   width: 100%;
-  min-height: 34px;
-  padding: 6px 10px;
+  min-height: 44px;
+  padding: 8px 12px;
   border: none;
   border-radius: var(--radius-md);
   color: var(--text-secondary);
@@ -204,7 +228,7 @@ dialog.modal[open] {
 
 .settings-nav-btn.active {
   background: var(--accent-subtle);
-  color: var(--accent-color);
+  color: var(--text-primary);
   font-weight: var(--weight-semibold);
 }
 
@@ -215,14 +239,25 @@ dialog.modal[open] {
 
 .settings-nav-btn svg {
   flex-shrink: 0;
+  color: var(--settings-muted);
+}
+
+.settings-nav-btn.active svg {
+  color: var(--accent-color);
+}
+
+.settings-nav-btn:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 /* Settings Content */
 .settings-content {
-  padding: 20px 24px;
+  padding: 30px 32px;
   overflow-y: auto;
   min-height: 0;
-  background: var(--bg-surface-elevated);
+  background: var(--settings-pane);
+  scrollbar-gutter: stable;
 }
 
 .settings-section {
@@ -234,41 +269,42 @@ dialog.modal[open] {
 }
 
 .settings-section-heading {
-  margin-bottom: 16px;
+  margin-bottom: 26px;
 }
 
 .settings-section-heading h4 {
-  font-size: 18px;
-  font-weight: var(--weight-bold);
+  font-size: 24px;
+  letter-spacing: -0.6px;
+  font-weight: var(--weight-semibold);
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin: 0 0 8px;
 }
 
 .settings-section-heading p {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.4;
+  font-size: 13px;
+  color: var(--settings-muted);
+  line-height: 1.6;
   margin: 0;
 }
 
 .settings-subheading {
   font-size: 12px;
   font-weight: var(--weight-semibold);
-  color: var(--text-secondary);
-  margin: 18px 4px 8px;
+  color: var(--settings-muted);
+  margin: 24px 2px 10px;
 }
 
 .settings-section-heading + .settings-subheading {
   margin-top: 8px;
 }
 
-/* macOS Grouped List Container */
+/* Quiet surfaces keep related preferences together. */
 .settings-group {
-  background: var(--bg-canvas);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 18px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgb(0 0 0 / 2%);
 }
 
 /* Aligned Form Row */
@@ -277,8 +313,8 @@ dialog.modal[open] {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 48px;
-  padding: 10px 14px;
+  min-height: 66px;
+  padding: 16px 18px;
   border-bottom: 1px solid var(--border-subtle);
   background: transparent;
   box-sizing: border-box;
@@ -298,16 +334,16 @@ dialog.modal[open] {
 .setting-copy label,
 .setting-copy .setting-label,
 .setting-copy #cardDisplayLabel {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: var(--weight-medium);
   color: var(--text-primary);
   cursor: pointer;
 }
 
 .setting-copy small {
-  font-size: 11px;
-  color: var(--text-secondary);
-  line-height: 1.4;
+  font-size: 12px;
+  color: var(--settings-muted);
+  line-height: 1.6;
 }
 
 .setting-control {
@@ -340,8 +376,9 @@ dialog.modal[open] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 44px;
-  padding: 8px 14px;
+  min-height: 58px;
+  padding: 12px 18px;
+  box-sizing: border-box;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -368,7 +405,7 @@ dialog.modal[open] {
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   padding: 3px;
-  background: var(--bg-surface-elevated);
+  background: var(--bg-subtle);
 }
 
 .card-display-segments {
@@ -391,8 +428,8 @@ dialog.modal[open] {
 }
 
 .card-display-option[aria-pressed="true"] {
-  background: var(--bg-canvas);
-  color: var(--accent-color);
+  background: var(--bg-surface-elevated);
+  color: var(--text-primary);
   font-weight: var(--weight-semibold);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
@@ -440,6 +477,16 @@ dialog.modal[open] {
 .account-panel {
   padding: 0;
 }
+
+#settingsModal .account-disclaimer {
+  padding: 12px 18px;
+  color: var(--settings-muted);
+  line-height: 1.6;
+}
+
+#settingsModal .account-disclaimer small { font-size: 12px; }
+#settingsModal .account-disclaimer a { color: var(--text-primary); }
+
 
 .account-profile-row {
   display: flex;
@@ -846,6 +893,30 @@ dialog.modal[open] {
   gap: 14px;
 }
 
+.auth-modal .auth-input {
+  height: 40px;
+  font-size: 14px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+}
+
+.auth-modal .auth-input:-webkit-autofill,
+.auth-modal .auth-input:-webkit-autofill:hover,
+.auth-modal .auth-input:-webkit-autofill:focus,
+.auth-modal .auth-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  height: 40px;
+  font-size: 14px;
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-md);
+}
+
 .auth-verify-card {
   display: flex;
   flex-direction: column;
@@ -937,26 +1008,46 @@ dialog.modal[open] {
 }
 
 .auth-footer-notice {
-  margin-top: 20px;
+  margin-top: 22px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 10px;
   text-align: center;
 }
 
 .auth-notice-item {
-  font-size: 11px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.auth-notice-tip {
+  font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.4;
+}
+
+.auth-terms-notice {
+  font-size: 11px;
+  color: var(--text-tertiary);
 }
 
 .auth-link {
   color: var(--text-secondary);
   text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border-default);
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
 }
 
 .auth-link:hover {
   color: var(--accent-color);
+  text-decoration-color: var(--accent-color);
+}
+
+#authStepVerify .auth-subtitle:not(.auth-title-group .auth-subtitle) {
+  margin-top: 16px;
+  font-size: 12px;
+  text-align: center;
 }
 
 /* ------------------------------------------------------------
@@ -1003,43 +1094,94 @@ dialog.modal[open] {
   display: none !important;
 }
 
+/* A short left-to-right reveal follows the reading order. */
+@keyframes settings-reveal {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #settingsModal:not(.hidden) .settings-sidebar {
+    animation: settings-reveal 280ms var(--ease-default) both;
+  }
+
+  .settings-section.active > * {
+    animation: settings-reveal 320ms var(--ease-default) backwards;
+  }
+
+  .settings-section.active > :nth-child(2) { animation-delay: 30ms; }
+  .settings-section.active > :nth-child(3) { animation-delay: 55ms; }
+  .settings-section.active > :nth-child(4) { animation-delay: 80ms; }
+  .settings-section.active > :nth-child(n + 5) { animation-delay: 105ms; }
+}
+
+#settingsModal .custom-select-trigger-global {
+  background: var(--bg-subtle);
+  border-color: transparent;
+  border-radius: 9px;
+  gap: 14px;
+}
+
+#settingsModal .custom-select-trigger-global:hover {
+  border-color: var(--border-hover);
+}
+
+#settingsModal .custom-select-trigger-global:focus-visible {
+  border-color: var(--accent-color);
+}
+
 /* Responsive Rules for Settings Modal */
 @media (max-width: 620px) {
+  #settingsModal { border-radius: 20px; }
+
+  .settings-header { height: 60px; padding: 0 16px; }
+
   .settings-body {
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
   }
 
   .settings-sidebar {
-    flex-direction: row;
-    padding: 8px 10px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+    padding: 10px 8px;
     border-right: none;
     border-bottom: 1px solid var(--border-subtle);
-    overflow-x: auto;
-    overflow-y: hidden;
   }
 
   .settings-nav-btn {
-    width: auto;
-    flex-shrink: 0;
-    padding: 6px 12px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 8px 2px;
+    font-size: 11px;
+    text-align: center;
   }
 
-  .settings-content {
-    padding: 14px 16px;
-  }
-
-  .data-overview-strip {
-    grid-template-columns: 1fr;
-  }
-
-  .setting-item {
+  .settings-content { padding: 24px 16px; }
+  .settings-section-heading h4 { font-size: 22px; }
+  .data-overview-strip { grid-template-columns: 1fr; }
+  .setting-item { padding: 14px; gap: 12px; }
+  .setting-item:has(.setting-button-group),
+  .card-display-setting {
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
   }
-
-  .setting-control {
+  .card-display-setting .setting-control,
+  .setting-item:has(.setting-button-group) .setting-control {
     justify-content: flex-start;
+  }
+  .setting-button-group { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #settingsModal,
+  #settingsModal *,
+  #settingsModal *::before,
+  #settingsModal *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }

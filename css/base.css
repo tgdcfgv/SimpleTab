@@ -128,7 +128,7 @@
 
   --site-height: 36px;
   --favicon-size: 18px;
-  --card-padding: 20px;
+  --card-padding: 12px;
 }
 
 [data-theme="dark"] {
@@ -191,7 +191,7 @@
 [data-compact="true"] {
   --site-height: 28px;
   --favicon-size: 16px;
-  --card-padding: 16px;
+  --card-padding: 8px;
 }
 
 * {
