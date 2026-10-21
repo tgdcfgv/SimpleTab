@@ -12,10 +12,7 @@ export function getFaviconUrl(url) {
       u.searchParams.set("size", "64");
       return u.toString();
     }
-    const domain = urlObj.hostname;
-    const iconUrl = new URL(`https://unavatar.io/${domain}`);
-    iconUrl.searchParams.set('fallback', `https://icons.duckduckgo.com/ip3/${domain}.ico`);
-    return iconUrl.toString();
+    return `https://a.favicon.im/${urlObj.hostname}?larger=true`;
   } catch (e) {
     return siteIconFallback;
   }
