@@ -78,3 +78,35 @@ test('new login requires a direction choice and token refresh preserves it', asy
   cloud.storeSession({ ...cloud.session, needs_choice: false });
   assert.equal(JSON.parse(values.get('simtab.auth')).needs_choice, false);
 });
+
+test('sendOtp sends otp request with email and create_user', async () => {
+  let calledUrl = '';
+  let calledBody = null;
+  globalThis.fetch = async (url, options) => {
+    calledUrl = url;
+    calledBody = JSON.parse(options.body);
+    return response({});
+  };
+  await cloud.sendOtp('user@example.test');
+  assert.match(calledUrl, /\/auth\/v1\/otp$/);
+  assert.equal(calledBody.email, 'user@example.test');
+  assert.equal(calledBody.create_user, true);
+});
+
+test('verifyOtp sends verification request and stores session directly', async () => {
+  cloud.storeSession(null);
+  let calledUrl = '';
+  let calledBody = null;
+  globalThis.fetch = async (url, options) => {
+    calledUrl = url;
+    calledBody = JSON.parse(options.body);
+    return response(session());
+  };
+  const result = await cloud.verifyOtp({ email: 'user@example.test', token: '123456' });
+  assert.match(calledUrl, /\/auth\/v1\/verify$/);
+  assert.equal(calledBody.email, 'user@example.test');
+  assert.equal(calledBody.token, '123456');
+  assert.equal(calledBody.type, 'email');
+  assert.equal(cloud.session.needs_choice, false);
+  assert.equal(result.access_token, 'test-token');
+});

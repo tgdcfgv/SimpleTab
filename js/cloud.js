@@ -6,24 +6,36 @@ const SESSION_KEY = 'simtab.auth';
 export const cloud = {
   session: null,
   async request(path, { method = 'GET', body, token, headers = {} } = {}) {
-    const response = await fetch(`${SUPABASE_URL}${path}`, {
-      method, cache: 'no-store', signal: AbortSignal.timeout(20000),
-      headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}), ...headers },
-      ...(body === undefined ? {} : { body: JSON.stringify(body) })
-    });
+    let response;
+    try {
+      response = await fetch(`${SUPABASE_URL}${path}`, {
+        method, cache: 'no-store', signal: AbortSignal.timeout(20000),
+        headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}), ...headers },
+        ...(body === undefined ? {} : { body: JSON.stringify(body) })
+      });
+    } catch (networkError) {
+      const err = new Error('连接失败，请稍后重试');
+      err.cause = networkError;
+      throw err;
+    }
     const text = await response.text();
     const result = text ? JSON.parse(text) : null;
     if (!response.ok) {
       const messages = {
-        invalid_credentials: '邮箱或密码不正确。',
-        email_not_confirmed: '请先完成邮箱验证，再登录。',
-        email_address_not_authorized: '当前发信服务仅允许组织成员邮箱注册，请使用你的 Supabase 组织邮箱。',
-        over_email_send_rate_limit: '验证邮件发送过于频繁，请稍后重试。',
-        weak_password: '密码强度不足，请使用更长、更复杂的密码。'
+        invalid_credentials: '邮箱或密码不正确',
+        email_not_confirmed: '请先完成邮箱验证，再登录',
+        email_address_not_authorized: '当前发信服务仅允许组织成员邮箱注册，请使用你的 Supabase 组织邮箱',
+        over_email_send_rate_limit: '操作过于频繁，请稍后再试',
+        over_request_rate_limit: '操作过于频繁，请稍后再试',
+        otp_expired: '验证码已过期，请重新获取',
+        invalid_grant: '验证码不正确，请重新输入',
+        bad_jwt: '验证码不正确，请重新输入',
+        weak_password: '密码强度不足，请使用更长、更复杂的密码'
       };
       const error = new Error(messages[result?.error_code || result?.code] || result?.msg || result?.message || result?.error_description || '云端请求失败，请重试。');
       error.status = response.status;
+      error.code = result?.error_code || result?.code;
       throw error;
     }
     return result;
@@ -67,6 +79,39 @@ export const cloud = {
     if (navigator.locks) return navigator.locks.request('simtab-auth-refresh', refresh);
     if (!this.refreshing) this.refreshing = refresh().finally(() => { this.refreshing = null; });
     return this.refreshing;
+  },
+  async sendOtp(email) {
+    return await this.request('/auth/v1/otp', {
+      method: 'POST',
+      body: { email, create_user: true }
+    });
+  },
+  async verifyOtp({ email, token, token_hash, type = 'email' }) {
+    let body;
+    if (token_hash) {
+      body = { token_hash, type };
+    } else {
+      body = { email, token, type };
+    }
+    let session;
+    try {
+      session = await this.request('/auth/v1/verify', { method: 'POST', body });
+    } catch (error) {
+      if (!token_hash && type === 'email' && (error.code === 'invalid_grant' || error.status === 400)) {
+        try {
+          session = await this.request('/auth/v1/verify', {
+            method: 'POST',
+            body: { email, token, type: 'signup' }
+          });
+        } catch {
+          throw error;
+        }
+      } else {
+        throw error;
+      }
+    }
+    this.storeSession({ ...session, needs_choice: false });
+    return session;
   },
   async login(email, password) {
     const session = await this.request('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password } });

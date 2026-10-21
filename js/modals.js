@@ -6,13 +6,16 @@ import { generateId, getFaviconUrl } from './utils.js';
 import { applySettings, render } from './render.js';
 import { searchInput } from './search.js';
 import { appStoreModal, currentStoreGroupId, renderAppStoreCategory, renderStoreGroupSelection, renderStoreMenu, setStoreSelectionFromGroup } from './store.js';
+import { openAuthModal, closeAuthModal, showToast } from './auth-modal.js';
 
+export { openAuthModal, closeAuthModal, showToast };
 
 export const modalOverlay = document.getElementById('modalOverlay');
 export const siteModal = document.getElementById('siteModal');
 export const groupModal = document.getElementById('groupModal');
 export const settingsModal = document.getElementById('settingsModal');
 export const spaceModal = document.getElementById('spaceModal');
+export const authModal = document.getElementById('authModal');
 
 export const confirmModal = document.getElementById('confirmModal');
 export let confirmCallback = null;
@@ -46,6 +49,8 @@ export function closeAllModals(notify = true) {
   if (spaceModal) spaceModal.classList.add('hidden');
   if (appStoreModal) appStoreModal.classList.add('hidden');
   if (confirmModal) confirmModal.classList.add('hidden');
+  const authModalEl = document.getElementById('authModal');
+  if (authModalEl) authModalEl.classList.add('hidden');
   if (settingsWereOpen && notify) document.dispatchEvent(new Event('simtab-settings-close'));
 }
 

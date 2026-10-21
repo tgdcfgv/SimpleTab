@@ -205,7 +205,7 @@ export async function renderAppStoreCategory() {
     content.appendChild(state);
 
     if (!globalThis.chrome?.runtime?.id || !globalThis.chrome?.permissions?.request) {
-      state.textContent = '网页版无法直接读取 Edge 收藏夹。可在“设置 → 账户与数据”导入书签 HTML 文件，或使用扩展版。';
+      state.textContent = '网页版无法直接读取 Edge 收藏夹。可在“设置 → 账户与同步”导入书签 HTML 文件，或使用扩展版。';
       const installLink = document.createElement('a');
       installLink.className = 'btn primary';
       installLink.href = 'install.html';

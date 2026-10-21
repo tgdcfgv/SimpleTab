@@ -12,7 +12,17 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.goto(APP_URL);
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
-    assert.equal(await page.locator('.settings-nav-btn').count(), 4);
+    assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['常规', '外观', '内容与布局', '账户与同步', '关于']);
+    assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
+    for (const [panel, controls] of Object.entries({
+      settingsGeneral: ['openModeSelect', 'dockTabHintToggle', 'searchEngineSettings'],
+      settingsAppearance: ['themeSelect', 'wallpaperUpload', 'accentColorInput'],
+      settingsContent: ['cardDisplayLabel', 'iconSizeSlider', 'compactModeToggle', 'dockPositionSelect', 'dockEditButtonToggle'],
+      settingsData: ['accountPanel', 'dataOverviewGrid', 'bookmarkFile', 'exportBtnNew', 'importFileNew']
+    })) {
+      for (const id of controls) assert.equal(await page.locator(`#${id}`).evaluate(el => el.closest('.settings-section').id), panel);
+    }
+    await page.click('[data-settings-panel="settingsContent"]');
     assert.equal(await page.locator('#iconSizeSetting').isVisible(), false);
     await page.click('button[data-card-mode="icon-only"]');
     await page.locator('#iconSizeSlider').fill('48');
@@ -27,6 +37,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.reload();
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
+    await page.click('[data-settings-panel="settingsContent"]');
     assert.equal(await page.locator('button[data-card-mode="icon-only"]').getAttribute('aria-pressed'), 'true');
     assert.equal(await page.locator('#iconSizeSlider').inputValue(), '48');
     await page.screenshot({ path: '/tmp/simtab-settings-appearance.png', animations: 'disabled' });
@@ -45,7 +56,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     for (const width of [390, 620, 760, 1400]) {
       await page.setViewportSize({ width, height: 844 });
       assert.equal(await page.locator('.settings-sidebar').evaluate(el => el.scrollWidth > el.clientWidth + 1), false);
-      for (const panel of ['settingsAppearance', 'settingsData', 'settingsSearch', 'settingsAbout']) {
+      for (const panel of ['settingsGeneral', 'settingsAppearance', 'settingsContent', 'settingsData', 'settingsAbout']) {
         await page.click(`[data-settings-panel="${panel}"]`);
         assert.equal(await page.locator('.settings-content').evaluate(el => el.scrollWidth > el.clientWidth + 1), false, `${panel} overflows at ${width}`);
       }
