@@ -12,7 +12,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.goto(APP_URL);
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
-    assert.equal(await page.locator('.settings-nav-btn').count(), 3);
+    assert.equal(await page.locator('.settings-nav-btn').count(), 4);
     assert.equal(await page.locator('#iconSizeSetting').isVisible(), false);
     await page.click('button[data-card-mode="icon-only"]');
     await page.locator('#iconSizeSlider').fill('48');
@@ -45,7 +45,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     for (const width of [390, 620, 760, 1400]) {
       await page.setViewportSize({ width, height: 844 });
       assert.equal(await page.locator('.settings-sidebar').evaluate(el => el.scrollWidth > el.clientWidth + 1), false);
-      for (const panel of ['settingsAppearance', 'settingsData', 'settingsSearch']) {
+      for (const panel of ['settingsAppearance', 'settingsData', 'settingsSearch', 'settingsAbout']) {
         await page.click(`[data-settings-panel="${panel}"]`);
         assert.equal(await page.locator('.settings-content').evaluate(el => el.scrollWidth > el.clientWidth + 1), false, `${panel} overflows at ${width}`);
       }
@@ -53,7 +53,9 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.setViewportSize({ width: 390, height: 844 });
     await page.click('[data-settings-panel="settingsData"]');
     await page.screenshot({ path: '/tmp/simtab-settings-data-mobile.png', animations: 'disabled' });
-    await page.click('.settings-about summary');
+    await page.click('[data-settings-panel="settingsAbout"]');
+    assert.equal(await page.locator('#settingsData').isVisible(), false);
+    assert.equal(await page.locator('#appVersion').innerText(), 'v2.3.0');
     assert.equal(await page.getByRole('link', { name: '扩展安装说明' }).isVisible(), true);
     await page.locator('#closeSettingsBtn').focus();
     await page.keyboard.press('Shift+Tab');
@@ -63,6 +65,6 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.click('#accountBtn');
     assert.equal(await page.locator('#settingsData').isVisible(), true);
     assert.deepEqual(errors, []);
-    console.log('PASS: consolidated navigation, icon slider persistence, inline login, bookmark import, JSON export, responsive panels, footer links, keyboard focus, account shortcut, no page errors.');
+    console.log('PASS: consolidated navigation, icon slider persistence, inline login, bookmark import, JSON export, responsive panels, standalone about panel, keyboard focus, account shortcut, no page errors.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });
