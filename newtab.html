@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SimTab · 新标签页</title>
   <meta name="referrer" content="no-referrer">
-  <link rel="icon" href="icons/icon-32.png">
+  <link rel="icon" type="image/svg+xml" href="icons/simtab.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components/header.css">
   <link rel="stylesheet" href="css/components/main-content.css">
@@ -97,7 +100,7 @@
             <input id="authEmailInput" type="email" class="auth-input" placeholder="name@example.com" autocomplete="email" required spellcheck="false" inputmode="email">
             <p id="authEmailError" class="auth-error-msg" role="alert" aria-live="polite" hidden></p>
           </div>
-          <button id="authEmailSubmitBtn" class="btn primary auth-submit-btn" type="submit">继续</button>
+          <button id="authEmailSubmitBtn" class="btn primary auth-submit-btn" type="submit">发送验证码</button>
         </form>
         <div class="auth-footer-notice">
           <p class="auth-notice-item">首次使用将自动创建账户</p>
@@ -107,45 +110,23 @@
         </div>
       </div>
 
-      <!-- 步骤 2：查收验证邮件 -->
+      <!-- 步骤 2：输入邮箱验证码 -->
       <div id="authStepVerify" class="auth-step" hidden>
         <div class="auth-title-group">
-          <h3 class="auth-title">查收你的验证邮件</h3>
-          <p class="auth-subtitle">我们已向 <strong id="authMaskedEmail"></strong> 发送了验证邮件</p>
+          <h3 class="auth-title">输入验证码</h3>
+          <p class="auth-subtitle">验证码已发送至 <strong id="authMaskedEmail"></strong></p>
         </div>
-
-        <div class="auth-verify-card">
-          <div class="auth-verify-hero-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-check"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>
-          </div>
-          <p class="auth-verify-guide">点击邮件中的<strong>验证链接</strong>即可自动完成登录，无需关闭此页面。</p>
-          <div class="auth-waiting-status" role="status">
-            <span class="auth-pulse-dot"></span>
-            <span id="authWaitingText">正在等待邮箱确认…</span>
-          </div>
-          <a id="authOpenMailboxBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn primary auth-open-mail-btn">
-            <span>前往邮箱查收</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-          </a>
-        </div>
-
-        <div class="auth-manual-toggle-wrapper">
-          <button type="button" id="authManualToggleBtn" class="auth-manual-toggle-btn" aria-expanded="false">
-            <span>收到了验证码或无法直接点击？手动验证</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down toggle-arrow"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-        </div>
-
-        <form id="authVerifyForm" class="auth-manual-form" hidden novalidate>
+        <form id="authVerifyForm" class="auth-form" novalidate>
           <div class="auth-input-wrapper">
-            <input id="authManualInput" type="text" class="auth-input" placeholder="输入 6 位验证码，或粘贴完整验证链接" autocomplete="one-time-code" spellcheck="false">
+            <input id="authManualInput" type="text" class="auth-input" aria-label="邮箱验证码" placeholder="输入邮件中的验证码" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6,10}" minlength="6" maxlength="10" required spellcheck="false">
             <p id="authVerifyError" class="auth-error-msg" role="alert" aria-live="polite" hidden></p>
           </div>
-          <button id="authVerifySubmitBtn" class="btn secondary auth-manual-submit-btn" type="submit">提交验证</button>
+          <button id="authVerifySubmitBtn" class="btn primary auth-submit-btn" type="submit">验证并登录</button>
         </form>
+        <p class="auth-subtitle">未收到邮件？请检查垃圾邮件，或稍后重新发送。</p>
 
         <div class="auth-verify-actions">
-          <button type="button" id="authResendBtn" class="auth-text-btn" disabled>重新发送 (45s)</button>
+          <button type="button" id="authResendBtn" class="auth-text-btn" disabled>重新发送 (60s)</button>
           <span class="auth-action-divider">·</span>
           <button type="button" id="authChangeEmailBtn" class="auth-text-btn">更换邮箱</button>
         </div>
@@ -489,7 +470,7 @@
           <div class="settings-section-heading"><div><h4>关于</h4></div></div>
           <div class="settings-group settings-about">
             <div class="settings-about-identity">
-              <img src="icons/icon-48.png" width="48" height="48" alt="">
+              <img src="icons/icon-48.png" width="48" height="48" alt="SimTab">
               <div>
                 <h5>SimTab</h5>
                 <span id="appVersion">v2.4.1</span>

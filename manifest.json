@@ -12,7 +12,13 @@
     "type": "module"
   },
   "action": {
-    "default_title": "保存当前页面到 SimTab"
+    "default_title": "保存当前页面到 SimTab",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
   },
   "commands": {
     "_execute_action": {

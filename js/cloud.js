@@ -3,6 +3,25 @@ export const SUPABASE_URL = 'https://zyttspnlrdzjosnitijb.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_VYNEnxYwYEWMoQgSH7nKNQ_elImzIYs';
 const SESSION_KEY = 'simtab.auth';
 
+// Mail links may contain an unused token hash or an already-issued session.
+export function parseAuthUrl(value) {
+  const url = new URL(value);
+  const hash = new URLSearchParams(url.hash.slice(1));
+  const error = hash.get('error_description') || hash.get('error') || url.searchParams.get('error_description') || url.searchParams.get('error');
+  if (error) return { error: '验证链接无效或已过期，请重新发送邮件并使用最新链接。' };
+  if (hash.has('access_token')) {
+    if (!hash.get('refresh_token')) return { error: '验证链接不完整，请复制完整链接。' };
+    const expiresIn = Number(hash.get('expires_in') || 3600);
+    return { session: {
+      access_token: hash.get('access_token'), refresh_token: hash.get('refresh_token'),
+      expires_at: Number(hash.get('expires_at')) || Math.floor(Date.now() / 1000) + (Number.isFinite(expiresIn) ? expiresIn : 3600),
+      needs_choice: false
+    } };
+  }
+  const tokenHash = url.searchParams.get('token_hash') || url.searchParams.get('token');
+  return tokenHash ? { tokenHash, type: url.searchParams.get('type') || 'email' } : null;
+}
+
 export const cloud = {
   session: null,
   async request(path, { method = 'GET', body, token, headers = {} } = {}) {
@@ -20,12 +39,18 @@ export const cloud = {
       throw err;
     }
     const text = await response.text();
-    const result = text ? JSON.parse(text) : null;
+    let result = null;
+    try { result = text ? JSON.parse(text) : null; }
+    catch {
+      const error = new Error('云端服务暂时无法响应，请稍后重试');
+      error.status = response.status;
+      throw error;
+    }
     if (!response.ok) {
       const messages = {
         invalid_credentials: '邮箱或密码不正确',
         email_not_confirmed: '请先完成邮箱验证，再登录',
-        email_address_not_authorized: '当前发信服务仅允许组织成员邮箱注册，请使用你的 Supabase 组织邮箱',
+        email_address_not_authorized: '邮件服务尚未开放此邮箱，请联系管理员配置 SMTP 发信服务',
         over_email_send_rate_limit: '操作过于频繁，请稍后再试',
         over_request_rate_limit: '操作过于频繁，请稍后再试',
         otp_expired: '验证码或验证链接已过期，请重新获取',
@@ -51,61 +76,36 @@ export const cloud = {
   },
   handleAuthCallback() {
     if (typeof window === 'undefined') return null;
-    try {
-      // 1. 处理 Hash 参数 (Supabase 邮件链接点击重定向最常用的模式)
-      const hash = window.location.hash ? window.location.hash.substring(1) : '';
-      if (hash) {
-        const hashParams = new URLSearchParams(hash);
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-        const expiresIn = parseInt(hashParams.get('expires_in') || '3600', 10);
-        const error = hashParams.get('error') || hashParams.get('error_description');
-
-        if (error) {
-          try {
-            history.replaceState(null, document.title, window.location.pathname + window.location.search);
-          } catch {}
-          return { error: hashParams.get('error_description') || error };
-        }
-
-        if (accessToken) {
-          const session = {
-            access_token: accessToken,
-            refresh_token: refreshToken || '',
-            expires_at: Math.floor(Date.now() / 1000) + expiresIn,
-            needs_choice: false
-          };
-          this.storeSession(session);
-          try {
-            history.replaceState(null, document.title, window.location.pathname + window.location.search);
-          } catch {}
-          this.broadcastAuth('login', { email: session.user?.email });
-          return { session, type: hashParams.get('type') || 'magiclink' };
-        }
-      }
-
-      // 2. 处理 Query 参数
-      const searchParams = new URLSearchParams(window.location.search);
-      const searchError = searchParams.get('error') || searchParams.get('error_description');
-      if (searchError) {
-        try {
-          history.replaceState(null, document.title, window.location.pathname);
-        } catch {}
-        return { error: searchParams.get('error_description') || searchError };
-      }
-
-      const tokenHash = searchParams.get('token_hash') || searchParams.get('token');
-      const type = searchParams.get('type') || 'email';
-      if (tokenHash) {
-        try {
-          history.replaceState(null, document.title, window.location.pathname);
-        } catch {}
-        return { tokenHash, type };
-      }
-    } catch (e) {
-      console.warn('handleAuthCallback error:', e);
+    const result = parseAuthUrl(window.location.href || `https://callback.invalid${window.location.pathname}${window.location.search}${window.location.hash}`);
+    if (result) {
+      // Remove credentials even when verification fails; never leave them in history.
+      try { history.replaceState(null, '', window.location.pathname); } catch {}
     }
-    return null;
+    return result;
+  },
+  async acceptSession(session) {
+    if (!session?.access_token || !session.refresh_token) throw new Error('验证未返回有效登录信息，请重新获取邮件。');
+    let verified = session;
+    if (session.expires_at <= Date.now() / 1000 + 60) {
+      verified = await this.request('/auth/v1/token?grant_type=refresh_token', {
+        method: 'POST', body: { refresh_token: session.refresh_token }
+      });
+    }
+    const user = await this.request('/auth/v1/user', { token: verified.access_token });
+    this.storeSession({ ...verified, user, needs_choice: false });
+    this.broadcastAuth('login');
+    return this.session;
+  },
+  async verifyEmailInput(value, email) {
+    if (/^https?:\/\//i.test(value)) {
+      const parsed = parseAuthUrl(value);
+      if (parsed?.error) throw new Error(parsed.error);
+      if (parsed?.session) return this.acceptSession(parsed.session);
+      if (!parsed?.tokenHash) throw new Error('此链接中未包含有效的验证信息，请复制完整链接。');
+      return this.verifyOtp({ token_hash: parsed.tokenHash, type: parsed.type });
+    }
+    if (/^\d{6,10}$/.test(value)) return this.verifyOtp({ email, token: value, type: 'email' });
+    throw new Error('请输入邮件中的验证码或完整验证链接。');
   },
   storeSession(session) {
     this.session = session?.access_token ? {
@@ -118,13 +118,14 @@ export const cloud = {
     else localStorage.removeItem(SESSION_KEY);
   },
   async restore() {
-    // 优先尝试从 URL 回调中解析登录状态
     const callbackResult = this.handleAuthCallback();
-    if (callbackResult?.tokenHash) {
+    this.authError = callbackResult?.error || '';
+    if (callbackResult?.session || callbackResult?.tokenHash) {
       try {
-        await this.verifyOtp({ token_hash: callbackResult.tokenHash, type: callbackResult.type });
-      } catch (err) {
-        console.warn('URL token verification failed:', err);
+        if (callbackResult.session) await this.acceptSession(callbackResult.session);
+        else await this.verifyOtp({ token_hash: callbackResult.tokenHash, type: callbackResult.type });
+      } catch (error) {
+        this.authError = error.message;
       }
     }
 
@@ -133,8 +134,9 @@ export const cloud = {
     if (!this.session) return null;
     try {
       const token = await this.token();
-      this.session.user = await this.request('/auth/v1/user', { token });
-      return this.session.user;
+      const user = await this.request('/auth/v1/user', { token });
+      this.storeSession({ ...this.session, user });
+      return user;
     } catch (error) {
       if ([400, 401, 403].includes(error.status)) this.storeSession(null);
       throw error;
@@ -158,20 +160,12 @@ export const cloud = {
     return this.refreshing;
   },
   async sendOtp(email) {
-    const redirectTo = (typeof window !== 'undefined' && window.location?.origin)
-      ? `${window.location.origin}${window.location.pathname}`
-      : undefined;
-    const body = {
-      email,
-      create_user: true
-    };
-    if (redirectTo) {
-      body.options = { email_redirect_to: redirectTo };
-      body.email_redirect_to = redirectTo;
-    }
-    return await this.request('/auth/v1/otp', {
-      method: 'POST',
-      body
+    const location = typeof window === 'undefined' ? null : window.location;
+    // Extension origins can be "null"; use href to retain chrome-extension://.
+    const pageUrl = location?.href ? new URL(location.href) : null;
+    const redirectTo = pageUrl ? `${pageUrl.protocol}//${pageUrl.host}${pageUrl.pathname}` : null;
+    return this.request(`/auth/v1/otp${redirectTo ? `?redirect_to=${encodeURIComponent(redirectTo)}` : ''}`, {
+      method: 'POST', body: { email, create_user: true }
     });
   },
   async verifyOtp({ email, token, token_hash, type = 'email' }) {
@@ -207,8 +201,9 @@ export const cloud = {
         throw error;
       }
     }
+    if (!session?.access_token || !session.refresh_token || !session.user?.id) throw new Error('验证未返回有效登录信息，请重新获取邮件。');
     this.storeSession({ ...session, needs_choice: false });
-    this.broadcastAuth('login', { email: session.user?.email });
+    this.broadcastAuth('login');
     return session;
   },
   async login(email, password) {

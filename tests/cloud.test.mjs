@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cloud } from '../js/cloud.js';
+import { cloud, parseAuthUrl } from '../js/cloud.js';
 const values = new Map();
 globalThis.localStorage = { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value), removeItem: key => values.delete(key) };
 const session = () => ({ access_token: 'test-token', refresh_token: 'refresh-token', expires_at: Date.now() / 1000 + 3600, user: { id: 'user-a', email: 'test@example.test' } });
@@ -54,7 +54,7 @@ test('simultaneous first writes report a conflict', async () => {
 test('network failures are reported without caching account data', async () => {
   cloud.storeSession(session());
   globalThis.fetch = async () => { throw new TypeError('offline'); };
-  await assert.rejects(cloud.write({ private: 'bookmark' }, 2), /offline/);
+  await assert.rejects(cloud.write({ private: 'bookmark' }, 2), error => error.cause?.message === 'offline');
   assert.equal(values.has('appData'), false);
 });
 
@@ -126,8 +126,7 @@ test('handleAuthCallback extracts session from URL hash and clears it', async ()
   };
   const res = cloud.handleAuthCallback();
   assert.equal(res.session.access_token, 'hash-token');
-  assert.equal(res.type, 'magiclink');
-  assert.equal(cloud.session.access_token, 'hash-token');
+  assert.equal(cloud.session, null); // Must validate the user before accepting URL credentials.
   assert.equal(replacedUrl, '/newtab.html');
 });
 
@@ -142,4 +141,61 @@ test('verifyOtp handles token_hash and fallback type', async () => {
   assert.equal(calledBody.token_hash, 'pkce_hash_123');
   assert.equal(calledBody.type, 'signup');
   assert.equal(result.access_token, 'test-token');
+});
+
+
+test('OTP redirect is a query parameter, including extension origins', async () => {
+  for (const href of ['https://simtab.example/newtab.html?old=1#old', 'chrome-extension://abc/newtab.html']) {
+    globalThis.window = { location: { href } };
+    globalThis.fetch = async (url, options) => {
+      assert.equal(new URL(url).searchParams.get('redirect_to'), href.split('?')[0].split('#')[0]);
+      assert.deepEqual(JSON.parse(options.body), { email: 'user@example.test', create_user: true });
+      return response({});
+    };
+    await cloud.sendOtp('user@example.test');
+  }
+  delete globalThis.window;
+});
+
+test('accepting a pasted callback validates and persists the user', async () => {
+  cloud.storeSession(null);
+  globalThis.fetch = async (url, options) => {
+    assert.match(url, /\/auth\/v1\/user$/);
+    assert.equal(options.headers.Authorization, 'Bearer link-token');
+    return response(session().user);
+  };
+  const result = await cloud.verifyEmailInput('http://localhost:3000/#access_token=link-token&refresh_token=link-refresh&expires_in=3600');
+  assert.equal(result.user.id, 'user-a');
+  assert.equal(JSON.parse(values.get('simtab.auth')).user.id, 'user-a');
+});
+
+test('eight digit OTP is sent as an email token, not a hash', async () => {
+  globalThis.fetch = async (url, options) => {
+    assert.deepEqual(JSON.parse(options.body), { email: 'user@example.test', token: '12345678', type: 'email' });
+    return response(session());
+  };
+  await cloud.verifyEmailInput('12345678', 'user@example.test');
+});
+
+test('unused signup links preserve their verification type', async () => {
+  globalThis.fetch = async (url, options) => {
+    assert.deepEqual(JSON.parse(options.body), { token_hash: 'unused-hash', type: 'signup' });
+    return response(session());
+  };
+  await cloud.verifyEmailInput('https://example.test/verify?token=unused-hash&type=signup');
+});
+
+test('invalid verification responses cannot report a successful login', async () => {
+  cloud.storeSession(null);
+  globalThis.fetch = async () => response({});
+  await assert.rejects(cloud.verifyOtp({ email: 'user@example.test', token: '123456' }), /有效登录信息/);
+  assert.equal(cloud.session, null);
+  await assert.rejects(cloud.verifyEmailInput('https://example.test/'), /未包含有效/);
+  await assert.rejects(cloud.verifyEmailInput('https://example.test/#error=access_denied&error_description=expired'), /过期/);
+  assert.equal(parseAuthUrl('https://example.test/#access_token=incomplete').session, undefined);
+});
+
+test('HTML gateway errors produce a retryable message instead of JSON errors', async () => {
+  globalThis.fetch = async () => new Response('<html>Bad Gateway</html>', { status: 502 });
+  await assert.rejects(cloud.sendOtp('user@example.test'), error => error.status === 502 && /稍后重试/.test(error.message));
 });

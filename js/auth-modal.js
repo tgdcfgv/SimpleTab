@@ -7,7 +7,7 @@ let resendTimer = null;
 let currentEmail = '';
 let currentStep = 'email'; // 'email' | 'verification'
 let isSubmitting = false;
-let crossTabListenerInitialized = false;
+
 
 export function showToast(message, duration = 3000) {
   let toast = document.getElementById('simtabToast');
@@ -43,30 +43,6 @@ export function maskEmail(email) {
   }
   const prefix = name.slice(0, 2);
   return `${prefix}***@${domain}`;
-}
-
-export function getMailboxWebUrl(email) {
-  if (!email || !email.includes('@')) return null;
-  const domain = email.split('@')[1].toLowerCase();
-  const map = {
-    'gmail.com': { name: 'Gmail', url: 'https://mail.google.com' },
-    'qq.com': { name: 'QQ 邮箱', url: 'https://mail.qq.com' },
-    'foxmail.com': { name: 'Foxmail', url: 'https://mail.qq.com' },
-    '163.com': { name: '163 网易邮箱', url: 'https://mail.163.com' },
-    '126.com': { name: '126 网易邮箱', url: 'https://mail.126.com' },
-    'yeah.net': { name: 'Yeah 邮箱', url: 'https://mail.yeah.net' },
-    'outlook.com': { name: 'Outlook', url: 'https://outlook.live.com' },
-    'hotmail.com': { name: 'Hotmail', url: 'https://outlook.live.com' },
-    'live.com': { name: 'Live 邮箱', url: 'https://outlook.live.com' },
-    'icloud.com': { name: 'iCloud 邮件', url: 'https://www.icloud.com/mail' },
-    'sina.com': { name: '新浪邮箱', url: 'https://mail.sina.com.cn' },
-    'sina.cn': { name: '新浪邮箱', url: 'https://mail.sina.com.cn' },
-    'sohu.com': { name: '搜狐邮箱', url: 'https://mail.sohu.com' },
-    'yahoo.com': { name: 'Yahoo Mail', url: 'https://mail.yahoo.com' },
-    'proton.me': { name: 'Proton Mail', url: 'https://mail.proton.me' },
-    'protonmail.com': { name: 'Proton Mail', url: 'https://mail.proton.me' }
-  };
-  return map[domain] || { name: '邮箱', url: `https://mail.${domain}` };
 }
 
 export function checkIfNewUser(user) {
@@ -107,6 +83,7 @@ export function closeAuthModal(force = false) {
   if (!authModal || authModal.classList.contains('hidden')) return;
 
   authModal.classList.add('hidden');
+  if (resendTimer) { clearInterval(resendTimer); resendTimer = null; }
   const anyOtherModalOpen = [...document.querySelectorAll('#modalOverlay .modal')]
     .some(modal => modal.id !== 'authModal' && !modal.classList.contains('hidden'));
   if (!anyOtherModalOpen) {
@@ -123,11 +100,7 @@ function switchStep(step) {
   const backBtn = document.getElementById('authBackBtn');
   const emailInput = document.getElementById('authEmailInput');
   const maskedEmail = document.getElementById('authMaskedEmail');
-  const openMailboxBtn = document.getElementById('authOpenMailboxBtn');
-  const manualForm = document.getElementById('authVerifyForm');
   const manualInput = document.getElementById('authManualInput');
-  const manualToggleBtn = document.getElementById('authManualToggleBtn');
-  const waitingText = document.getElementById('authWaitingText');
 
   clearErrors();
 
@@ -145,22 +118,12 @@ function switchStep(step) {
     if (stepVerify) stepVerify.hidden = false;
     if (backBtn) backBtn.hidden = false;
     if (maskedEmail) maskedEmail.textContent = maskEmail(currentEmail);
-    if (waitingText) waitingText.textContent = '正在等待邮箱确认…';
-
-    // 智能配置“前往邮箱”按钮
-    const mailbox = getMailboxWebUrl(currentEmail);
-    if (openMailboxBtn && mailbox) {
-      openMailboxBtn.href = mailbox.url;
-      const btnText = openMailboxBtn.querySelector('span');
-      if (btnText) btnText.textContent = `前往 ${mailbox.name} 查收`;
+    if (manualInput) {
+      manualInput.value = '';
+      setTimeout(() => manualInput.focus(), 50);
     }
 
-    // 重置备用验证区域
-    if (manualForm) manualForm.hidden = true;
-    if (manualToggleBtn) manualToggleBtn.setAttribute('aria-expanded', 'false');
-    if (manualInput) manualInput.value = '';
-
-    startResendCountdown(45);
+    startResendCountdown(60);
   }
 }
 
@@ -193,7 +156,7 @@ function showVerifyError(msg) {
   }
 }
 
-function startResendCountdown(seconds = 45) {
+function startResendCountdown(seconds = 60) {
   const resendBtn = document.getElementById('authResendBtn');
   if (!resendBtn) return;
 
@@ -247,7 +210,7 @@ async function handleEmailSubmit(event) {
     isSubmitting = false;
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = '继续';
+      submitBtn.textContent = '发送验证码';
     }
   }
 }
@@ -269,7 +232,9 @@ async function onLoginSuccess(session) {
       applySettings();
       render();
     } catch (err) {
-      console.error('Initial sync error:', err);
+      syncManager.error = err.message || '登录成功，但读取云端内容失败，请重试。';
+      syncManager.status = 'error';
+      syncManager.updateStatusUI();
     }
   }
   document.dispatchEvent(new Event('simtab-sync'));
@@ -284,8 +249,8 @@ async function handleManualVerify(event) {
   const submitBtn = document.getElementById('authVerifySubmitBtn');
   const val = manualInput?.value.trim() || '';
 
-  if (!val) {
-    showVerifyError('请输入 6 位验证码或粘贴完整的验证链接');
+  if (!/^\d{6,10}$/.test(val)) {
+    showVerifyError('请输入邮件中的 6 至 10 位数字验证码');
     manualInput?.focus();
     return;
   }
@@ -297,92 +262,33 @@ async function handleManualVerify(event) {
   }
 
   try {
-    let session;
-    if (/^https?:\/\//i.test(val)) {
-      // 完整 URL 链接解析
-      const url = new URL(val);
-      const token = url.searchParams.get('token') || url.searchParams.get('token_hash');
-      const type = url.searchParams.get('type') || 'email';
-      if (!token) throw new Error('此链接中未包含有效的验证令牌');
-      session = await cloud.verifyOtp({ token_hash: token, type });
-    } else {
-      const digitsOnly = val.replace(/\D/g, '');
-      if (digitsOnly.length === 6 && digitsOnly === val) {
-        // 6 位纯数字验证码
-        session = await cloud.verifyOtp({ email: currentEmail, token: val, type: 'email' });
-      } else {
-        // 独立的 token / token_hash 字符串
-        session = await cloud.verifyOtp({ token_hash: val, type: 'email' });
-      }
-    }
+    const session = await cloud.verifyOtp({ email: currentEmail, token: val, type: 'email' });
 
     await onLoginSuccess(session);
   } catch (error) {
-    showVerifyError(error.message || '验证失败，请确认验证码或链接有效');
+    showVerifyError(error.message || '验证失败，请确认验证码有效');
   } finally {
     isSubmitting = false;
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = '提交验证';
+      submitBtn.textContent = '验证并登录';
     }
   }
-}
-
-function setupCrossTabAuthListener() {
-  if (crossTabListenerInitialized) return;
-  crossTabListenerInitialized = true;
-
-  // 1. BroadcastChannel 跨标签页监听
-  if (typeof BroadcastChannel !== 'undefined') {
-    try {
-      const channel = new BroadcastChannel('simtab-auth-sync');
-      channel.onmessage = async event => {
-        if (event.data?.action === 'login') {
-          const authModal = document.getElementById('authModal');
-          if (authModal && !authModal.classList.contains('hidden')) {
-            const waitingText = document.getElementById('authWaitingText');
-            if (waitingText) waitingText.textContent = '验证成功，正在同步…';
-            setTimeout(async () => {
-              closeAuthModal(true);
-              showToast('登录成功');
-              if (syncManager) {
-                try {
-                  await syncManager.loadCloud();
-                  applySettings();
-                  render();
-                } catch (e) {}
-              }
-              document.dispatchEvent(new Event('simtab-sync'));
-            }, 300);
-          }
-        }
-      };
-    } catch {}
-  }
-
-  // 2. storage 事件监听
-  window.addEventListener('storage', event => {
-    if (event.key === 'simtab.auth' && event.newValue) {
-      const authModal = document.getElementById('authModal');
-      if (authModal && !authModal.classList.contains('hidden')) {
-        closeAuthModal(true);
-        showToast('登录成功');
-      }
-    }
-  });
 }
 
 export function initAuthModal() {
   const authModal = document.getElementById('authModal');
   if (!authModal) return;
 
-  setupCrossTabAuthListener();
+  if (cloud.authError) {
+    openAuthModal();
+    showEmailError(cloud.authError);
+    cloud.authError = '';
+  }
 
   const emailForm = document.getElementById('authEmailForm');
   const emailInput = document.getElementById('authEmailInput');
-  const manualForm = document.getElementById('authVerifyForm');
   const manualInput = document.getElementById('authManualInput');
-  const manualToggleBtn = document.getElementById('authManualToggleBtn');
   const backBtn = document.getElementById('authBackBtn');
   const closeBtn = document.getElementById('closeAuthBtn');
   const resendBtn = document.getElementById('authResendBtn');
@@ -395,20 +301,8 @@ export function initAuthModal() {
     clearErrors();
   });
 
-  // 手动折叠/展开按钮
-  manualToggleBtn?.addEventListener('click', () => {
-    if (!manualForm) return;
-    const willShow = manualForm.hidden;
-    manualForm.hidden = !willShow;
-    manualToggleBtn.setAttribute('aria-expanded', String(willShow));
-    manualToggleBtn.classList.toggle('expanded', willShow);
-    if (willShow) {
-      setTimeout(() => manualInput?.focus(), 50);
-    }
-  });
-
   // 手动验证表单提交
-  manualForm?.addEventListener('submit', handleManualVerify);
+  document.getElementById('authVerifyForm')?.addEventListener('submit', handleManualVerify);
   manualInput?.addEventListener('input', () => {
     clearErrors();
   });
@@ -429,18 +323,19 @@ export function initAuthModal() {
   resendBtn?.addEventListener('click', async () => {
     if (isSubmitting || resendBtn.disabled) return;
     clearErrors();
+    isSubmitting = true;
     resendBtn.disabled = true;
     resendBtn.textContent = '正在发送…';
     try {
       await cloud.sendOtp(currentEmail);
-      startResendCountdown(45);
-      showToast('验证邮件已重新发送');
-      const waitingText = document.getElementById('authWaitingText');
-      if (waitingText) waitingText.textContent = '正在等待邮箱确认…';
+      startResendCountdown(60);
+      showToast('验证码已重新发送');
     } catch (err) {
       showVerifyError(err.message || '操作过于频繁，请稍后再试');
       resendBtn.disabled = false;
       resendBtn.textContent = '重新发送';
+    } finally {
+      isSubmitting = false;
     }
   });
 
