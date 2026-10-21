@@ -39,3 +39,22 @@ chrome.action.onClicked.addListener(launch);
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === CAPTURE_MENU_ID) launch({ ...tab, url: info.pageUrl || tab?.url });
 });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message?.action === 'bing-suggest') {
+    const q = message.query?.trim() || '';
+    if (!q) {
+      sendResponse({ ok: true, data: [q, []] });
+      return false;
+    }
+    const url = `https://www.bing.com/osjson.aspx?query=${encodeURIComponent(q)}&cc=cn`;
+    fetch(url, { headers: { Accept: 'application/json, text/plain, */*' } })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => sendResponse({ ok: true, data }))
+      .catch(err => sendResponse({ ok: false, error: err.message }));
+    return true;
+  }
+});
