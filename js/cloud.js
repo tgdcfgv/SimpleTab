@@ -28,9 +28,9 @@ export const cloud = {
         email_address_not_authorized: '当前发信服务仅允许组织成员邮箱注册，请使用你的 Supabase 组织邮箱',
         over_email_send_rate_limit: '操作过于频繁，请稍后再试',
         over_request_rate_limit: '操作过于频繁，请稍后再试',
-        otp_expired: '验证码已过期，请重新获取',
-        invalid_grant: '验证码不正确，请重新输入',
-        bad_jwt: '验证码不正确，请重新输入',
+        otp_expired: '验证码或验证链接已过期，请重新获取',
+        invalid_grant: '验证码或验证链接无效，请重新输入或获取新邮件',
+        bad_jwt: '验证码或验证链接无效，请重新输入',
         weak_password: '密码强度不足，请使用更长、更复杂的密码'
       };
       const error = new Error(messages[result?.error_code || result?.code] || result?.msg || result?.message || result?.error_description || '云端请求失败，请重试。');
@@ -39,6 +39,73 @@ export const cloud = {
       throw error;
     }
     return result;
+  },
+  broadcastAuth(action, data = {}) {
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        const channel = new BroadcastChannel('simtab-auth-sync');
+        channel.postMessage({ action, ...data, timestamp: Date.now() });
+        channel.close();
+      }
+    } catch {}
+  },
+  handleAuthCallback() {
+    if (typeof window === 'undefined') return null;
+    try {
+      // 1. 处理 Hash 参数 (Supabase 邮件链接点击重定向最常用的模式)
+      const hash = window.location.hash ? window.location.hash.substring(1) : '';
+      if (hash) {
+        const hashParams = new URLSearchParams(hash);
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const expiresIn = parseInt(hashParams.get('expires_in') || '3600', 10);
+        const error = hashParams.get('error') || hashParams.get('error_description');
+
+        if (error) {
+          try {
+            history.replaceState(null, document.title, window.location.pathname + window.location.search);
+          } catch {}
+          return { error: hashParams.get('error_description') || error };
+        }
+
+        if (accessToken) {
+          const session = {
+            access_token: accessToken,
+            refresh_token: refreshToken || '',
+            expires_at: Math.floor(Date.now() / 1000) + expiresIn,
+            needs_choice: false
+          };
+          this.storeSession(session);
+          try {
+            history.replaceState(null, document.title, window.location.pathname + window.location.search);
+          } catch {}
+          this.broadcastAuth('login', { email: session.user?.email });
+          return { session, type: hashParams.get('type') || 'magiclink' };
+        }
+      }
+
+      // 2. 处理 Query 参数
+      const searchParams = new URLSearchParams(window.location.search);
+      const searchError = searchParams.get('error') || searchParams.get('error_description');
+      if (searchError) {
+        try {
+          history.replaceState(null, document.title, window.location.pathname);
+        } catch {}
+        return { error: searchParams.get('error_description') || searchError };
+      }
+
+      const tokenHash = searchParams.get('token_hash') || searchParams.get('token');
+      const type = searchParams.get('type') || 'email';
+      if (tokenHash) {
+        try {
+          history.replaceState(null, document.title, window.location.pathname);
+        } catch {}
+        return { tokenHash, type };
+      }
+    } catch (e) {
+      console.warn('handleAuthCallback error:', e);
+    }
+    return null;
   },
   storeSession(session) {
     this.session = session?.access_token ? {
@@ -51,6 +118,16 @@ export const cloud = {
     else localStorage.removeItem(SESSION_KEY);
   },
   async restore() {
+    // 优先尝试从 URL 回调中解析登录状态
+    const callbackResult = this.handleAuthCallback();
+    if (callbackResult?.tokenHash) {
+      try {
+        await this.verifyOtp({ token_hash: callbackResult.tokenHash, type: callbackResult.type });
+      } catch (err) {
+        console.warn('URL token verification failed:', err);
+      }
+    }
+
     try { this.session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
     catch { this.storeSession(null); }
     if (!this.session) return null;
@@ -81,9 +158,20 @@ export const cloud = {
     return this.refreshing;
   },
   async sendOtp(email) {
+    const redirectTo = (typeof window !== 'undefined' && window.location?.origin)
+      ? `${window.location.origin}${window.location.pathname}`
+      : undefined;
+    const body = {
+      email,
+      create_user: true
+    };
+    if (redirectTo) {
+      body.options = { email_redirect_to: redirectTo };
+      body.email_redirect_to = redirectTo;
+    }
     return await this.request('/auth/v1/otp', {
       method: 'POST',
-      body: { email, create_user: true }
+      body
     });
   },
   async verifyOtp({ email, token, token_hash, type = 'email' }) {
@@ -97,11 +185,20 @@ export const cloud = {
     try {
       session = await this.request('/auth/v1/verify', { method: 'POST', body });
     } catch (error) {
-      if (!token_hash && type === 'email' && (error.code === 'invalid_grant' || error.status === 400)) {
+      if (!token_hash && (error.code === 'invalid_grant' || error.status === 400)) {
         try {
           session = await this.request('/auth/v1/verify', {
             method: 'POST',
             body: { email, token, type: 'signup' }
+          });
+        } catch {
+          throw error;
+        }
+      } else if (token_hash && (error.code === 'invalid_grant' || error.status === 400) && type !== 'signup') {
+        try {
+          session = await this.request('/auth/v1/verify', {
+            method: 'POST',
+            body: { token_hash, type: 'signup' }
           });
         } catch {
           throw error;
@@ -111,6 +208,7 @@ export const cloud = {
       }
     }
     this.storeSession({ ...session, needs_choice: false });
+    this.broadcastAuth('login', { email: session.user?.email });
     return session;
   },
   async login(email, password) {

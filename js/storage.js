@@ -58,7 +58,12 @@ export const syncManager = {
     if (!el) return;
     const labels = { local: '本地已保存', saved: '云端已保存', unsynced: '有未保存更改', syncing: '云端同步中…',
       signedout: '请登录以使用云端数据', error: this.conflict ? '存在同步冲突 · 点击处理' : (this.mode === 'local' ? '本地保存失败 · 点击重试' : '同步失败 · 点击重试') };
-    el.querySelector('.status-dot').className = ['saved', 'local'].includes(this.status) ? 'status-dot' : 'status-dot unsynced';
+    let dotClass = 'status-dot';
+    if (this.status === 'syncing') dotClass = 'status-dot syncing';
+    else if (this.status === 'error') dotClass = 'status-dot error';
+    else if (this.conflict) dotClass = 'status-dot conflict';
+    else if (this.status === 'unsynced') dotClass = 'status-dot unsynced';
+    el.querySelector('.status-dot').className = dotClass;
     el.querySelector('.status-text').textContent = labels[this.status];
     el.title = this.error || (this.mode === 'local' ? '数据保存在此浏览器，登录后切换到云端内容' : '点击同步云端数据');
     document.dispatchEvent(new Event('simtab-sync'));

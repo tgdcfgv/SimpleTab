@@ -1,4 +1,252 @@
-/* Custom Global Select styles */
+/* ============================================================
+   DESIGN SYSTEM: FORMS & CONTROLS
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. BUTTON SYSTEM
+   ------------------------------------------------------------ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-primary);
+  box-sizing: border-box;
+  transition: background var(--transition-fast),
+              border-color var(--transition-fast),
+              color var(--transition-fast),
+              box-shadow var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Primary Button - Always uses high-contrast foreground */
+.btn.primary {
+  background: var(--primary-color);
+  color: var(--primary-fg, #FFFFFF) !important;
+  border-color: transparent;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  color: var(--primary-fg, #FFFFFF) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+
+/* Secondary Button - Subtle outlined */
+.btn.secondary {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background: var(--item-hover-bg);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+/* Quiet / Ghost Button */
+.btn.quiet {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+
+.btn.quiet:hover:not(:disabled) {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+/* Danger Button */
+.btn.danger {
+  background: var(--color-danger);
+  color: var(--color-danger-fg, #FFFFFF) !important;
+  border-color: transparent;
+}
+
+.btn.danger:hover:not(:disabled) {
+  background: var(--color-danger-hover);
+  color: var(--color-danger-fg, #FFFFFF) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-danger) 25%, transparent);
+}
+
+/* Button Sizes */
+.btn-sm {
+  min-height: 30px;
+  padding: 0 12px;
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+  min-height: 42px;
+  padding: 0 20px;
+  font-size: var(--text-base);
+  border-radius: var(--radius-md);
+}
+
+a.btn {
+  text-decoration: none;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------
+   2. INPUT & TEXTAREA SYSTEM
+   ------------------------------------------------------------ */
+.form-input,
+.form-group input,
+.form-group select,
+.auth-input,
+.compact-form input:not(#groupLinksPerRow),
+input[type="text"]:not(#searchInput):not(#groupLinksPerRow),
+input[type="url"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  background: var(--input-bg);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast),
+              background var(--transition-fast);
+}
+
+textarea {
+  height: auto;
+  min-height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.form-input:focus,
+.form-group input:focus,
+.form-group select:focus,
+.auth-input:focus,
+.compact-form input:not(#groupLinksPerRow):focus,
+input[type="text"]:not(#searchInput):not(#groupLinksPerRow):focus,
+input[type="url"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+  opacity: 1;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.6;
+  background: var(--bg-muted);
+  cursor: not-allowed;
+}
+
+input[type="color"] {
+  width: 40px;
+  height: 32px;
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  background: var(--bg-subtle);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.form-group {
+  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
+.form-hint {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+.inline-input-action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.inline-input-action input {
+  min-width: 0;
+  flex: 1;
+}
+
+.inline-input-action button {
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-color);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.inline-input-action button:hover {
+  color: var(--accent-hover);
+}
+
+/* ------------------------------------------------------------
+   3. SELECT SYSTEM (CUSTOM & NATIVE)
+   ------------------------------------------------------------ */
 .custom-select-container {
   position: relative;
   display: inline-block;
@@ -9,19 +257,29 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--bg-color);
-  border: 1px solid var(--card-border);
+  padding: 0 12px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
-  color: var(--text-color);
-  font-size: 14px;
+  color: var(--text-primary);
+  font-size: var(--text-sm);
   cursor: pointer;
-  transition: all 0.2s;
-  height: 44px;
+  height: 36px;
+  min-height: 36px;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  user-select: none;
 }
 
 .custom-select-trigger-global:hover {
-  border-color: var(--primary-color);
+  border-color: var(--border-hover);
+}
+
+.custom-select-container.open .custom-select-trigger-global,
+.custom-select-trigger-global:focus-visible {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+  outline: none;
 }
 
 .custom-select-trigger-global .selected-content {
@@ -47,100 +305,66 @@
   top: calc(100% + 4px);
   left: 0;
   width: 100%;
-  background: var(--bg-color);
+  background: var(--bg-surface-elevated);
   border-radius: var(--radius-md);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-popover);
+  border: 1px solid var(--border-default);
   z-index: 1001;
-  padding: 6px;
+  padding: 4px;
   display: flex;
   flex-direction: column;
   gap: 2px;
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.2s, transform 0.2s, pointer-events 0.2s;
-  max-height: 200px;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  max-height: 220px;
   overflow-y: auto;
 }
 
-[data-theme="dark"] .search-results,
 [data-theme="dark"] .custom-select-options-global {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   background: #222224;
 }
 
 .custom-select-options-global.hidden {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-6px);
   pointer-events: none;
   display: flex !important;
-}
-
-.group-selection-grid {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 6px;
-  max-height: 100px;
-  overflow-y: auto;
-}
-
-.group-select-btn {
-  padding: 6px 14px;
-  border: 1.5px solid var(--card-border);
-  border-radius: 20px;
-  background: var(--bg-color);
-  color: var(--text-color);
-  font-size: 13px;
-  cursor: pointer;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: all 0.18s;
-  flex-shrink: 0;
-}
-
-.group-select-btn:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
-}
-
-.group-select-btn.active {
-  border-color: var(--primary-color);
-  background: var(--primary-color);
-  color: var(--bg-color);
-  font-weight: 500;
-}
-
-[data-theme="dark"] .group-select-btn.active {
-  color: #111112;
-}
-
-.group-select-btn.new-group {
-  border-style: dashed;
-  color: var(--text-secondary);
-}
-
-.group-select-btn.new-group:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
 }
 
 .custom-option-global {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 14px;
-  color: var(--text-color);
-  transition: background 0.15s;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  min-height: 30px;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.custom-option-global:hover, .custom-option-global.active {
-  background: var(--item-hover-bg);
+.custom-option-global:hover {
+  background: var(--bg-subtle);
+}
+
+.custom-option-global.active {
+  background: var(--accent-subtle);
+  color: var(--accent-color);
+  font-weight: var(--weight-semibold);
+}
+
+/* Native select element */
+select {
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  padding: 0 10px;
+  font-size: var(--text-sm);
+  cursor: pointer;
 }
 
 /* Specific styling for the engine select in the search bar */
@@ -152,7 +376,7 @@
 .search-container .custom-select-trigger-global {
   background: transparent;
   border: none;
-  border-right: 1px solid var(--card-border);
+  border-right: 1px solid var(--border-default);
   border-radius: 26px 0 0 26px;
   padding: 0 16px;
   height: 52px;
@@ -160,9 +384,9 @@
 }
 
 .search-container .custom-select-trigger-global:hover {
-  background: var(--item-hover-bg);
+  background: var(--bg-subtle);
   border-color: transparent;
-  border-right-color: var(--card-border);
+  border-right-color: var(--border-default);
 }
 
 .search-container .custom-select-options-global {
@@ -170,9 +394,158 @@
   left: 0;
 }
 
+/* ------------------------------------------------------------
+   4. SWITCH SYSTEM (MAC-STYLE TOGGLE)
+   ------------------------------------------------------------ */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 22px;
+  flex-shrink: 0;
+}
 
-/* Links styled as actions must keep the same contrast as buttons. */
-a.btn { text-decoration: none; text-align: center; }
-a.btn.primary { color: #fff; }
-.data-overview-note a { color: var(--accent-color, #6366f1); }
-#bookmarkImportStatus { grid-column: 1 / -1; }
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.toggle-label {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--border-hover);
+  transition: background-color var(--transition-fast);
+  border-radius: var(--radius-full);
+}
+
+.toggle-label::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #FFFFFF;
+  transition: transform var(--transition-fast);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.toggle-input:checked + .toggle-label {
+  background-color: var(--accent-color);
+}
+
+.toggle-input:checked + .toggle-label::before {
+  transform: translateX(16px);
+}
+
+.toggle-input:focus-visible + .toggle-label {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.toggle-input:disabled + .toggle-label {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------------------------
+   5. NUMBER STEPPER
+   ------------------------------------------------------------ */
+.number-stepper {
+  display: inline-flex;
+  align-items: center;
+  background: var(--input-bg);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 36px;
+}
+
+.stepper-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.stepper-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.number-stepper input {
+  width: 52px;
+  text-align: center;
+  border: none !important;
+  background: transparent !important;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+/* ------------------------------------------------------------
+   6. GROUP SELECTION PILLS
+   ------------------------------------------------------------ */
+.group-selection-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.group-select-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.group-select-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.group-select-btn.active {
+  border-color: var(--accent-color);
+  background: var(--accent-color);
+  color: var(--accent-fg, #FFFFFF) !important;
+  font-weight: var(--weight-medium);
+}
+
+.group-select-btn.new-group {
+  border-style: dashed;
+  color: var(--text-secondary);
+}
+
+.group-select-btn.new-group:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.data-overview-note a {
+  color: var(--accent-color);
+}

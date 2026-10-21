@@ -1,4 +1,7 @@
-/* Responsive */
+/* ============================================================
+   RESPONSIVE LAYOUT & POPUP MENUS
+   ============================================================ */
+
 @media (max-width: 768px) {
   .app-container {
     padding: 40px 20px 20px;
@@ -25,111 +28,106 @@
   }
 }
 
-.number-stepper {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  height: 44px;
-  background: var(--bg-color);
-}
-.stepper-btn {
-  background: transparent;
-  border: none;
-  width: 44px;
-  height: 100%;
-  cursor: pointer;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s;
-}
-.stepper-btn:hover {
-  background: var(--item-hover-bg);
-  color: var(--text-color);
-}
-#groupLinksPerRow {
-  flex: 1;
-  border: none;
-  background: transparent;
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-color);
-  pointer-events: none;
-  width: 100%;
-  padding: 0;
-}
-
-.theme-selector {
-  display: flex;
-  gap: 8px;
-  background: var(--bg-color);
-  padding: 4px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--card-border);
-}
-#openModeSelector {
-  min-width: 240px;
-}
-.theme-btn {
-  flex: 1;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 8px;
-  cursor: pointer;
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-.theme-btn:hover {
-  color: var(--text-color);
-  background: var(--item-hover-bg);
-}
-.theme-btn.active {
-  color: var(--primary-color);
-  background: var(--focus-ring);
-}
-
+/* ============================================================
+   DESIGN SYSTEM: CONTEXT MENU
+   ============================================================ */
 .context-menu {
   position: fixed;
-  background: var(--modal-bg);
-  border: 1px solid var(--card-border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background: var(--bg-surface-elevated);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-popover);
   border-radius: var(--radius-md);
-  padding: 6px;
+  padding: 4px;
   z-index: 2000;
   display: flex;
   flex-direction: column;
   min-width: 160px;
   opacity: 1;
   transform: scale(1);
-  transition: opacity 0.1s, transform 0.1s;
+  transform-origin: top left;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
 }
+
 [data-theme="dark"] .context-menu {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  background: #222224;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  background: #202022;
 }
+
 .context-menu.hidden {
   opacity: 0;
-  transform: scale(0.95);
+  transform: scale(0.96);
   pointer-events: none;
 }
+
 .context-menu-item {
-  padding: 10px 12px;
+  padding: 7px 10px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--text-color);
+  gap: 8px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
   cursor: pointer;
   border-radius: var(--radius-sm);
-  transition: background 0.15s;
+  user-select: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
+
 .context-menu-item:hover {
-  background: var(--item-hover-bg);
+  background: var(--bg-subtle);
+}
+
+.context-menu-item.danger,
+#contextDeleteSite {
+  color: var(--color-danger) !important;
+}
+
+.context-menu-item.danger:hover,
+#contextDeleteSite:hover {
+  background: var(--color-danger-subtle) !important;
+  color: var(--color-danger-text) !important;
+}
+
+.context-menu-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 4px 2px;
+}
+
+/* Segmented Theme / Option Switcher */
+.theme-selector {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-canvas);
+  padding: 3px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+}
+
+.theme-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.theme-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+}
+
+.theme-btn.active {
+  color: var(--accent-color);
+  background: var(--bg-surface-elevated);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-weight: var(--weight-semibold);
 }

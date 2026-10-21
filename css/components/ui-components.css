@@ -1,50 +1,8 @@
-/* Custom Toggle Switch */
-.toggle-switch {
-  position: relative;
-  width: 44px;
-  height: 24px;
-}
+/* ============================================================
+   UI COMPONENTS & DRAG INTERACTIONS
+   ============================================================ */
 
-.toggle-input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-label {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--card-border);
-  transition: .3s;
-  border-radius: 24px;
-}
-
-.toggle-label:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .3s;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.toggle-input:checked + .toggle-label {
-  background-color: var(--primary-color);
-}
-
-.toggle-input:checked + .toggle-label:before {
-  transform: translateX(20px);
-}
-
-/* Drag and Drop visually */
+/* Drag and Drop Visual Feedback */
 .site-btn.dragging {
   opacity: 0.32;
   transform: scale(0.94);
@@ -54,17 +12,56 @@
   opacity: 0.4;
   transform: scale(0.98);
 }
+
 .group-card.drag-over-top {
-  border-top: 3px solid var(--primary-color);
-}
-.group-card.drag-over-bottom {
-  border-bottom: 3px solid var(--primary-color);
-}
-.group-col.drag-over-col {
-  background: rgba(0,0,0,0.02);
-  border-radius: var(--radius-lg);
-}
-[data-theme="dark"] .group-col.drag-over-col {
-  background: rgba(255,255,255,0.02);
+  border-top: 3px solid var(--accent-color);
 }
 
+.group-card.drag-over-bottom {
+  border-bottom: 3px solid var(--accent-color);
+}
+
+.group-col.drag-over-col {
+  background: var(--bg-subtle);
+  border-radius: var(--radius-lg);
+}
+
+/* Status Dots and Micro Indicators */
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.status-dot.syncing {
+  background-color: var(--color-info);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-info) 60%, transparent);
+  animation: pulse-dot 1.6s infinite ease-in-out;
+}
+
+.status-dot.error,
+.status-dot.conflict {
+  background-color: var(--color-warning);
+}
+
+.status-dot.offline {
+  background-color: var(--text-tertiary);
+}
+
+@keyframes pulse-dot {
+  0% {
+    transform: scale(0.92);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-info) 60%, transparent);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 5px transparent;
+  }
+  100% {
+    transform: scale(0.92);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}

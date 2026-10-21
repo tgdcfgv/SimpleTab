@@ -1,14 +1,14 @@
-# SimTab 2.3.0 · Edge 商店提交资料
+# SimTab 2.4.0 · Edge 商店提交资料
 
 状态：安装包及文案已准备；尚未提交审核。注册、审核及上线状态以 Partner Center 为准。
 
 ## 基本信息
 
 - 名称：SimTab - 极简新标签页
-- 版本：2.3.0
+- 版本：2.4.0
 - 主要语言：简体中文（zh-CN）
 - 建议分类：生产力（Productivity）
-- 安装包：dist/SimTab-2.3.0-edge.zip
+- 安装包：dist/SimTab-2.4.0-edge.zip
 - 商店图标：store-assets/logo-300.png（300 × 300 PNG）
 - 支持页面：https://github.com/tgdcfgv/SimpleTab/issues
 - 隐私政策：privacy.html（提交前必须发布为公开 HTTPS 页面并验证可访问）
@@ -58,7 +58,7 @@ bookmarks (optional): Requested only when the user chooses the browser bookmarks
 
 ## 审核测试说明 / Notes for certification
 
-Sign-in is optional. Guest mode works immediately and saves data locally. Before store submission, configure production SMTP and provide a dedicated reviewer test account through Partner Center (never publish credentials in this repository). Install the extension and open a new tab to use guest mode; sign in to test the separate cloud content. The new-tab override is the core functionality. On an HTTP/HTTPS page, click the extension action or page menu item 保存当前页面到 SimTab to open the save dialog. Choose a space and group before saving; duplicate URLs in that group are not added again. Cancelling adds nothing. The default shortcut is Alt+Shift+S; reassign it in extension shortcut settings if occupied. Open the website library (dock button labelled 应用商店), select 我的收藏夹, and grant the optional bookmarks permission to view and select bookmarks. Refusing permission leaves the other features available. Settings > 账户与同步 provides HTML bookmark import and installation information. Importing HTML adds a new group without replacing existing groups. Settings > 账户与同步 provides JSON backup/restore; JSON restore replaces existing app data. All executable code is packaged locally. Remote images are data, not executable code. The extension does not scrape web pages or use a CORS proxy.
+Sign-in is optional. Guest mode works immediately and saves data locally. Before store submission, configure production SMTP and provide a dedicated reviewer test account through Partner Center (never publish credentials in this repository). Install the extension and open a new tab to use guest mode; sign in to test the separate cloud content. The new-tab override is the core functionality. On an HTTP/HTTPS page, click the extension action or page menu item 保存当前页面到 SimTab to open the save dialog. Choose a space and group before saving; duplicate URLs in that group are not added again. Cancelling adds nothing. The default shortcut is Alt+Shift+S; reassign it in extension shortcut settings if occupied. Open the website library (dock button labelled 网站库), select 我的收藏夹, and grant the optional bookmarks permission to view and select bookmarks. Refusing permission leaves the other features available. Settings > 账户与同步 provides HTML bookmark import and installation information. Importing HTML adds a new group without replacing existing groups. Settings > 账户与同步 provides JSON backup/restore; JSON restore replaces existing app data. All executable code is packaged locally. Remote images are data, not executable code. The extension does not scrape web pages or use a CORS proxy.
 
 ## 数据使用声明核对
 

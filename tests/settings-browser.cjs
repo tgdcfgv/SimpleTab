@@ -66,7 +66,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.screenshot({ path: '/tmp/simtab-settings-data-mobile.png', animations: 'disabled' });
     await page.click('[data-settings-panel="settingsAbout"]');
     assert.equal(await page.locator('#settingsData').isVisible(), false);
-    assert.equal(await page.locator('#appVersion').innerText(), 'v2.3.0');
+    assert.equal(await page.locator('#appVersion').innerText(), 'v2.4.0');
     assert.equal(await page.getByRole('link', { name: '扩展安装说明' }).isVisible(), true);
     await page.locator('#closeSettingsBtn').focus();
     await page.keyboard.press('Shift+Tab');

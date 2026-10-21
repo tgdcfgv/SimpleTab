@@ -55,7 +55,7 @@
         <button id="addSiteBtn" class="dock-action-btn" title="添加网站" aria-label="添加网站">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14" /> <path d="M12 5v14" /></svg>
         </button>
-        <button id="appStoreBtn" class="dock-action-btn" title="应用商店" aria-label="应用商店">
+        <button id="appStoreBtn" class="dock-action-btn" title="网站库" aria-label="网站库">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check" aria-hidden="true"><circle cx="12" cy="12" r="10" /> <path d="m16 9-5.5 5.5L8 12" /></svg>
         </button>
       </div>
@@ -107,26 +107,43 @@
         </div>
       </div>
 
-      <!-- 步骤 2：验证邮箱（6位验证码） -->
+      <!-- 步骤 2：查收验证邮件 -->
       <div id="authStepVerify" class="auth-step" hidden>
         <div class="auth-title-group">
-          <h3 class="auth-title">验证你的邮箱</h3>
-          <p class="auth-subtitle" id="authVerifySubtitle">我们已向 <span id="authMaskedEmail"></span> 发送验证码</p>
+          <h3 class="auth-title">查收你的验证邮件</h3>
+          <p class="auth-subtitle">我们已向 <strong id="authMaskedEmail"></strong> 发送了验证邮件</p>
         </div>
-        <form id="authVerifyForm" class="auth-form" novalidate>
-          <div class="auth-code-container">
-            <div class="auth-code-inputs" id="authCodeInputs">
-              <input type="text" class="auth-code-digit" inputmode="numeric" maxlength="1" pattern="[0-9]*" autocomplete="off" aria-label="第 1 位验证码">
-              <input type="text" class="auth-code-digit" inputmode="numeric" maxlength="1" pattern="[0-9]*" autocomplete="off" aria-label="第 2 位验证码">
-              <input type="text" class="auth-code-digit" inputmode="numeric" maxlength="1" pattern="[0-9]*" autocomplete="off" aria-label="第 3 位验证码">
-              <input type="text" class="auth-code-digit" inputmode="numeric" maxlength="1" pattern="[0-9]*" autocomplete="off" aria-label="第 4 位验证码">
-              <input type="text" class="auth-code-digit" inputmode="numeric" maxlength="1" pattern="[0-9]*" autocomplete="off" aria-label="第 5 位验证码">
-              <input type="text" class="auth-code-digit" inputmode="numeric" maxlength="1" pattern="[0-9]*" autocomplete="off" aria-label="第 6 位验证码">
-            </div>
+
+        <div class="auth-verify-card">
+          <div class="auth-verify-hero-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-check"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>
+          </div>
+          <p class="auth-verify-guide">点击邮件中的<strong>验证链接</strong>即可自动完成登录，无需关闭此页面。</p>
+          <div class="auth-waiting-status" role="status">
+            <span class="auth-pulse-dot"></span>
+            <span id="authWaitingText">正在等待邮箱确认…</span>
+          </div>
+          <a id="authOpenMailboxBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn primary auth-open-mail-btn">
+            <span>前往邮箱查收</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+          </a>
+        </div>
+
+        <div class="auth-manual-toggle-wrapper">
+          <button type="button" id="authManualToggleBtn" class="auth-manual-toggle-btn" aria-expanded="false">
+            <span>收到了验证码或无法直接点击？手动验证</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down toggle-arrow"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+
+        <form id="authVerifyForm" class="auth-manual-form" hidden novalidate>
+          <div class="auth-input-wrapper">
+            <input id="authManualInput" type="text" class="auth-input" placeholder="输入 6 位验证码，或粘贴完整验证链接" autocomplete="one-time-code" spellcheck="false">
             <p id="authVerifyError" class="auth-error-msg" role="alert" aria-live="polite" hidden></p>
           </div>
-          <button id="authVerifySubmitBtn" class="btn primary auth-submit-btn" type="submit">验证并登录</button>
+          <button id="authVerifySubmitBtn" class="btn secondary auth-manual-submit-btn" type="submit">提交验证</button>
         </form>
+
         <div class="auth-verify-actions">
           <button type="button" id="authResendBtn" class="auth-text-btn" disabled>重新发送 (45s)</button>
           <span class="auth-action-divider">·</span>
@@ -232,52 +249,67 @@
         <section class="settings-section active" id="settingsGeneral">
           <div class="settings-section-heading"><div><h4>常规</h4></div></div>
           <h5 class="settings-subheading">浏览行为</h5>
-          <div class="settings-list">
+          <div class="settings-group">
             <div class="setting-item">
               <div class="setting-copy"><label for="openModeSelect">打开方式</label></div>
-              <select id="openModeSelect" class="setting-select">
-                <option value="current-tab" data-icon-name="current-tab">当前标签页</option>
-                <option value="new-tab" data-icon-name="new-tab">新标签页</option>
-              </select>
+              <div class="setting-control">
+                <select id="openModeSelect" class="setting-select">
+                  <option value="current-tab" data-icon-name="current-tab">当前标签页</option>
+                  <option value="new-tab" data-icon-name="new-tab">新标签页</option>
+                </select>
+              </div>
             </div>
             <div class="setting-item">
               <div class="setting-copy"><label for="dockTabHintToggle">Tab 切换提示</label></div>
-              <div class="toggle-switch">
-                <input type="checkbox" id="dockTabHintToggle" class="toggle-input">
-                <label for="dockTabHintToggle" class="toggle-label"></label>
+              <div class="setting-control">
+                <div class="toggle-switch">
+                  <input type="checkbox" id="dockTabHintToggle" class="toggle-input">
+                  <label for="dockTabHintToggle" class="toggle-label"></label>
+                </div>
               </div>
             </div>
           </div>
           <h5 class="settings-subheading">搜索引擎</h5>
-          <div class="search-engine-settings search-engine-settings-flat" id="searchEngineSettings"></div>
+          <div class="settings-group">
+            <div class="search-engine-settings search-engine-settings-flat" id="searchEngineSettings"></div>
+          </div>
         </section>
 
         <section class="settings-section" id="settingsAppearance">
           <div class="settings-section-heading"><div><h4>外观</h4></div></div>
-          <h5 class="settings-subheading">主题与壁纸</h5>
-          <div class="settings-list">
+          <h5 class="settings-subheading">主题与视觉</h5>
+          <div class="settings-group">
             <div class="setting-item">
-              <div class="setting-copy"><label for="themeSelect">主题</label></div>
-              <select id="themeSelect" class="setting-select">
-                <option value="light" data-icon-name="light">浅色</option>
-                <option value="dark" data-icon-name="dark">深色</option>
-                <option value="system" data-icon-name="system">跟随系统</option>
-              </select>
-            </div>
-            <div class="setting-item">
-              <div class="setting-copy"><label for="wallpaperUpload">自定义壁纸</label><small>仅保存在当前浏览器，不随账户同步或导出</small></div>
-              <div class="setting-button-group">
-                <label class="btn secondary" for="wallpaperUpload">选择图片
-                  <input type="file" id="wallpaperUpload" accept="image/png,image/jpeg,image/gif,image/webp,image/avif" hidden>
-                </label>
-                <button type="button" class="btn quiet" id="clearWallpaperBtn">清除</button>
+              <div class="setting-copy"><label for="themeSelect">主题模式</label></div>
+              <div class="setting-control">
+                <select id="themeSelect" class="setting-select">
+                  <option value="light" data-icon-name="light">浅色</option>
+                  <option value="dark" data-icon-name="dark">深色</option>
+                  <option value="system" data-icon-name="system">跟随系统</option>
+                </select>
               </div>
             </div>
             <div class="setting-item">
               <div class="setting-copy"><label for="accentColorInput">强调色</label></div>
-              <div class="accent-color-control">
-                <input type="color" id="accentColorInput" value="#6366f1" aria-label="选择强调色">
-                <button type="button" class="btn secondary accent-apply-btn" id="applyAccentColorBtn">应用</button>
+              <div class="setting-control">
+                <div class="accent-color-control">
+                  <input type="color" id="accentColorInput" value="#6366f1" aria-label="选择强调色">
+                  <button type="button" class="btn secondary btn-sm accent-apply-btn" id="applyAccentColorBtn">应用</button>
+                </div>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy">
+                <label for="wallpaperUpload">自定义壁纸</label>
+                <small>仅保存在当前浏览器，不随账户同步或导出</small>
+              </div>
+              <div class="setting-control">
+                <div class="setting-button-group">
+                  <label class="btn secondary btn-sm" for="wallpaperUpload">选择图片
+                    <input type="file" id="wallpaperUpload" accept="image/png,image/jpeg,image/gif,image/webp,image/avif" hidden>
+                  </label>
+                  <button type="button" class="btn quiet btn-sm" id="clearWallpaperBtn">清除</button>
+                </div>
               </div>
             </div>
           </div>
@@ -286,44 +318,52 @@
         <section class="settings-section" id="settingsContent">
           <div class="settings-section-heading"><div><h4>内容与布局</h4></div></div>
           <h5 class="settings-subheading">网站卡片</h5>
-          <div class="settings-list">
+          <div class="settings-group">
             <div class="setting-item card-display-setting">
               <div class="setting-copy"><span id="cardDisplayLabel">链接显示方式</span></div>
-              <div class="card-display-control">
-                <div class="card-display-segments" role="group" aria-labelledby="cardDisplayLabel">
-                  <button type="button" class="card-display-option" data-card-mode="icon-text" aria-pressed="true">图标 + 文字</button>
-                  <button type="button" class="card-display-option" data-card-mode="icon-only" aria-pressed="false">仅图标</button>
-                </div>
-                <div id="iconSizeSetting" class="icon-size-inline" hidden>
-                  <label for="iconSizeSlider">图标大小</label>
-                  <div class="setting-slider"><input type="range" id="iconSizeSlider" min="16" max="48" value="24"><span id="iconSizeValue">24px</span></div>
+              <div class="setting-control">
+                <div class="card-display-control">
+                  <div class="card-display-segments" role="group" aria-labelledby="cardDisplayLabel">
+                    <button type="button" class="card-display-option" data-card-mode="icon-text" aria-pressed="true">图标 + 文字</button>
+                    <button type="button" class="card-display-option" data-card-mode="icon-only" aria-pressed="false">仅图标</button>
+                  </div>
+                  <div id="iconSizeSetting" class="icon-size-inline" hidden>
+                    <label for="iconSizeSlider">图标大小</label>
+                    <div class="setting-slider"><input type="range" id="iconSizeSlider" min="16" max="48" value="24"><span id="iconSizeValue">24px</span></div>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="setting-item">
               <div class="setting-copy"><label for="compactModeToggle">紧凑模式</label></div>
-              <div class="toggle-switch">
-                <input type="checkbox" id="compactModeToggle" class="toggle-input">
-                <label for="compactModeToggle" class="toggle-label"></label>
+              <div class="setting-control">
+                <div class="toggle-switch">
+                  <input type="checkbox" id="compactModeToggle" class="toggle-input">
+                  <label for="compactModeToggle" class="toggle-label"></label>
+                </div>
               </div>
             </div>
           </div>
           <h5 class="settings-subheading">程序坞（Dock）</h5>
-          <div class="settings-list">
+          <div class="settings-group">
             <div class="setting-item">
               <div class="setting-copy"><label for="dockPositionSelect">显示位置</label></div>
-              <select id="dockPositionSelect" class="setting-select">
-                <option value="left" data-icon-name="dock-left">左侧</option>
-                <option value="right" data-icon-name="dock-right">右侧</option>
-                <option value="bottom" data-icon-name="dock-bottom" selected>底部</option>
-                <option value="hidden" data-icon-name="dock-hidden">隐藏</option>
-              </select>
+              <div class="setting-control">
+                <select id="dockPositionSelect" class="setting-select">
+                  <option value="left" data-icon-name="dock-left">左侧</option>
+                  <option value="right" data-icon-name="dock-right">右侧</option>
+                  <option value="bottom" data-icon-name="dock-bottom" selected>底部</option>
+                  <option value="hidden" data-icon-name="dock-hidden">隐藏</option>
+                </select>
+              </div>
             </div>
             <div class="setting-item">
               <div class="setting-copy"><label for="dockEditButtonToggle">编辑按钮显示</label></div>
-              <div class="toggle-switch">
-                <input type="checkbox" id="dockEditButtonToggle" class="toggle-input">
-                <label for="dockEditButtonToggle" class="toggle-label"></label>
+              <div class="setting-control">
+                <div class="toggle-switch">
+                  <input type="checkbox" id="dockEditButtonToggle" class="toggle-input">
+                  <label for="dockEditButtonToggle" class="toggle-label"></label>
+                </div>
               </div>
             </div>
           </div>
@@ -333,92 +373,137 @@
           <div class="settings-section-heading">
             <div>
               <h4>账户与同步</h4>
-              <p id="dataOverviewSummary">正在统计数据…</p>
+              <p id="dataOverviewSummary">正在连接云端服务…</p>
             </div>
           </div>
-          <h5 class="settings-subheading">数据看板</h5>
-          <div class="data-overview-grid" id="dataOverviewGrid"></div>
-          <p class="data-overview-note" id="dataOverviewNote">正在读取当前数据来源…</p>
+
+          <!-- 1. Account 身份信息放前面 -->
           <h5 class="settings-subheading" id="accountTitle">账户与同步</h5>
-          <div id="accountPanel" class="account-panel" aria-labelledby="accountTitle">
+          <div id="accountPanel" class="settings-group account-panel" aria-labelledby="accountTitle">
             <!-- 未登录状态卡片 -->
-            <div id="accountLoggedOutCard" class="account-logged-out-card">
-              <div class="account-promo-content">
-                <div class="account-promo-icon" aria-hidden="true">☁️</div>
-                <div class="account-promo-text">
-                  <h6 class="account-promo-title">登录后跨设备同步</h6>
-                  <p class="account-promo-desc">快捷方式、布局和偏好设置可以在你的设备之间同步。</p>
+            <div id="accountLoggedOutCard" class="account-profile-row">
+              <div class="account-profile-info">
+                <div class="account-avatar-placeholder" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                </div>
+                <div>
+                  <div class="account-profile-name">未登录账户</div>
+                  <div class="account-profile-desc">登录后可跨设备自动同步快捷方式与设置</div>
                 </div>
               </div>
-              <div class="account-actions">
-                <button type="button" class="btn primary" id="openAuthModalBtn">登录或创建账户</button>
+              <div class="account-profile-actions">
+                <button type="button" class="btn primary btn-sm" id="openAuthModalBtn">登录或注册</button>
               </div>
             </div>
 
             <!-- 登录后状态 -->
-            <div id="accountDetails" hidden>
-              <div class="account-identity">
-                <strong id="accountEmailLabel"></strong>
-                <span id="accountSyncStatus" class="account-sync-status" role="status">
-                  <span class="status-dot"></span>
-                  <span class="status-text">已同步</span>
-                </span>
+            <div id="accountDetails" hidden class="account-details-block">
+              <div class="account-profile-row">
+                <div class="account-profile-info">
+                  <div class="account-avatar-placeholder signed-in" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <div>
+                    <div class="account-profile-name" id="accountEmailLabel"></div>
+                    <div class="account-sync-badge-wrap">
+                      <span id="accountSyncStatus" class="account-sync-status" role="status">
+                        <span class="status-dot"></span>
+                        <span class="status-text">已同步</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="account-profile-actions">
+                  <button type="button" class="btn primary btn-sm" id="accountSync">立即同步</button>
+                  <button type="button" class="btn quiet btn-sm" id="accountLogout">退出登录</button>
+                </div>
               </div>
-              <div class="account-actions">
-                <button type="button" class="btn primary" id="accountSync">管理同步</button>
-                <button type="button" class="btn secondary" id="accountLogout">退出登录</button>
-              </div>
-              <div class="account-actions">
-                <button type="button" class="btn secondary" id="accountMigrate">将本地内容复制到云端</button>
-                <button type="button" class="btn secondary" id="accountReload" hidden>读取云端版本</button>
+              <div class="setting-item">
+                <div class="setting-copy">
+                  <span class="setting-label">云端数据维护</span>
+                  <small>将当前浏览器的本地内容上传合并至云端数据库</small>
+                </div>
+                <div class="setting-control">
+                  <button type="button" class="btn secondary btn-sm" id="accountMigrate">上传本地至云端</button>
+                  <button type="button" class="btn secondary btn-sm" id="accountReload" hidden>放弃本地并重新拉取</button>
+                </div>
               </div>
             </div>
-            <p id="accountMessage" role="status" aria-live="polite"></p>
-            <small>未登录内容保存在此浏览器；登录后显示云端内容。云端离线修改仅暂存于当前页面，请确认“已同步”后再关闭。<a href="privacy.html" target="_blank" rel="noopener noreferrer">隐私政策</a></small>
+
+            <p id="accountMessage" role="status" aria-live="polite" class="account-message"></p>
+            <div class="account-disclaimer">
+              <small>未登录数据保存在此浏览器；登录后显示云端内容。<a href="privacy.html" target="_blank" rel="noopener noreferrer">隐私政策</a></small>
+            </div>
             <!-- 兼容隐藏字段 -->
-            <div id="accountLoginFields" hidden><input id="accountEmail" type="hidden"><input id="accountPassword" type="hidden"></div>
+            <div id="accountLoginFields" hidden><input id="accountEmail" type="hidden"><input id="accountPassword" type="hidden"><input id="accountCode" type="hidden"></div>
           </div>
-          <h5 class="settings-subheading">导入与备份</h5>
-          <div class="settings-feature-grid">
-            <article class="settings-feature-card">
-              <div class="settings-feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload" aria-hidden="true"><path d="M12 3v12" /> <path d="m17 8-5-5-5 5" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></svg>
+
+          <!-- 2. Backup / Import / Export 独立成清晰区域 -->
+          <h5 class="settings-subheading">数据备份与迁移</h5>
+          <div class="settings-group">
+            <div class="setting-item">
+              <div class="setting-copy">
+                <span class="setting-label">导出数据备份</span>
+                <small>保存所有空间、分组、网址和偏好设置（JSON）</small>
               </div>
-              <div>
-                <h5>导出备份</h5>
-                <p>保存空间、分组、网站、排序和外观设置。</p>
+              <div class="setting-control">
+                <button type="button" class="btn secondary btn-sm" id="exportBtnNew">导出 JSON</button>
               </div>
-              <button type="button" class="btn primary" id="exportBtnNew">导出 JSON</button>
-            </article>
-            <article class="settings-feature-card">
-              <div class="settings-feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download" aria-hidden="true"><path d="M12 15V3" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <path d="m7 10 5 5 5-5" /></svg>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy">
+                <span class="setting-label">恢复数据备份</span>
+                <small>从 JSON 文件恢复（将覆盖当前内容）</small>
               </div>
-              <div>
-                <h5>导入恢复</h5>
-                <p>从 JSON 备份恢复；当前数据将被备份内容覆盖。</p>
+              <div class="setting-control">
+                <label class="btn secondary btn-sm settings-file-button" for="importFileNew">选择文件
+                  <input type="file" id="importFileNew" accept=".json,application/json" hidden>
+                </label>
               </div>
-              <label class="btn secondary settings-file-button" for="importFileNew">选择文件
-                <input type="file" id="importFileNew" accept=".json,application/json" hidden>
-              </label>
-            </article>
-            <article class="settings-feature-card bookmark-import-card"><div><h5>导入书签文件</h5><p>在 Edge 收藏夹菜单中导出 HTML 文件，再在这里导入。会添加到当前空间的新分组，不覆盖已有内容。</p></div><label class="btn secondary settings-file-button" for="bookmarkFile">选择书签 HTML<input type="file" id="bookmarkFile" accept=".html,.htm,text/html" hidden></label><p id="bookmarkImportStatus" role="status" aria-live="polite"></p></article>
+            </div>
+            <div class="setting-item">
+              <div class="setting-copy">
+                <span class="setting-label">导入浏览器书签</span>
+                <small>从 Edge / Chrome 导出的 HTML 书签，添加为新分组</small>
+              </div>
+              <div class="setting-control">
+                <label class="btn secondary btn-sm settings-file-button" for="bookmarkFile">选择书签 HTML
+                  <input type="file" id="bookmarkFile" accept=".html,.htm,text/html" hidden>
+                </label>
+              </div>
+            </div>
+            <div id="bookmarkImportStatus" class="bookmark-import-status" role="status" aria-live="polite"></div>
+          </div>
+
+          <!-- 3. Statistics 不要占很大面积 -->
+          <h5 class="settings-subheading">存储与数据概览</h5>
+          <div class="settings-group data-stats-group">
+            <div class="data-overview-strip" id="dataOverviewGrid"></div>
+            <div class="data-overview-footnote">
+              <span id="dataOverviewNote">正在读取当前数据来源…</span>
+            </div>
           </div>
         </section>
 
         <section class="settings-section" id="settingsAbout">
           <div class="settings-section-heading"><div><h4>关于</h4></div></div>
-          <article class="settings-about">
-            <div class="settings-about-identity"><img src="icons/icon-48.png" width="48" height="48" alt=""><div><h5>SimTab</h5><span id="appVersion">v2.3.0</span></div></div>
+          <div class="settings-group settings-about">
+            <div class="settings-about-identity">
+              <img src="icons/icon-48.png" width="48" height="48" alt="">
+              <div>
+                <h5>SimTab</h5>
+                <span id="appVersion">v2.4.0</span>
+              </div>
+            </div>
             <p id="extensionEnvironment">将常用网站放在每一个新标签页。</p>
-            <p>扩展版可替换新标签页，并在你授权后读取收藏夹。</p>
+            <p class="settings-about-sub">扩展版可替换新标签页，并在你授权后读取收藏夹。</p>
             <nav class="settings-about-links" aria-label="关于 SimTab">
               <a href="install.html" target="_blank" rel="noopener noreferrer">扩展安装说明</a>
               <a href="privacy.html" target="_blank" rel="noopener noreferrer">隐私政策</a>
               <a href="https://github.com/tgdcfgv/SimpleTab" target="_blank" rel="noopener noreferrer">开源项目</a>
               <a href="https://github.com/tgdcfgv/SimpleTab/issues" target="_blank" rel="noopener noreferrer">反馈问题</a>
             </nav>
-          </article>
+          </div>
         </section>
         </div>
       </div>
@@ -438,9 +523,9 @@
       </div>
     </div>
 
-    <!-- 应用商店弹窗 -->
+    <!-- 网站库弹窗 -->
     <div id="appStoreModal" class="modal hidden">
-      <h3>热门网站</h3>
+      <h3>网站库</h3>
       <div id="appStoreContent" class="store-content">
         <!-- Categories and links will be rendered here -->
       </div>

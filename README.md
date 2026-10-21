@@ -84,7 +84,7 @@ python3 -m http.server 8080 --directory .pages-output
 - 点击程序坞中的“添加分组”或“添加网站”创建内容。
 - 拖动分组标题或网站卡片可以调整顺序。
 - 在搜索框中输入关键词可查找已保存的网站；按回车可使用当前搜索引擎搜索。
-- 点击“应用商店”可从预设分类中批量添加常用网站。
+- 点击“网站库”可从预设分类中批量添加常用网站。
 - 在“设置 → 账户与同步”中创建 JSON 备份或恢复已有数据。
 - 浏览器书签权限只会在使用对应功能时申请。
 
@@ -178,6 +178,10 @@ SimTab/
 - 安装 Playwright Chromium 后运行 `node tests/capture-browser.cjs`，可通过 `SIMTAB_CHROMIUM_PATH` 指定支持加载未打包扩展的 Chromium。测试使用临时用户配置、真实 MV3 扩展和模拟云端接口。
 
 后续阶段：跨空间移动与撤销、触摸拖拽、云端冲突合并与实时更新、Vite/TypeScript 迁移及其余弹窗模块拆分。
+
+## 2.4.0 发布记录
+
+建立全套 Design System（统一 Button、Input、Select、Switch、Menu、Dialog 与共享 Token）；重做 Settings 为 macOS System Settings 风格对齐表单，优先展示 Account 身份与明确的 Sync 状态，独立备份恢复区域并精简 Statistics；重做颜色与深色模式，解耦 Accent，加入 WCAG 相对亮度自动白字/黑字判断并修复按钮对比度；应用商店正式更名为“网站库”。
 
 ## 2.3.0 发布记录
 

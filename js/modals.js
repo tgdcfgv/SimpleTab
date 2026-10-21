@@ -447,8 +447,8 @@ export function renderDataOverview() {
   const links = groups.flatMap(group => Array.isArray(group.links) ? group.links : []);
   const items = [
     { label: '网站', value: links.length, color: 'var(--primary-color)' },
-    { label: '分组', value: groups.length, color: '#F59E0B' },
-    { label: '空间', value: spaces.length, color: '#10B981' }
+    { label: '分组', value: groups.length, color: 'var(--color-warning)' },
+    { label: '空间', value: spaces.length, color: 'var(--color-success)' }
   ];
   const total = items.reduce((sum, item) => sum + item.value, 0);
   const dataSize = new Blob([JSON.stringify(appData)]).size;

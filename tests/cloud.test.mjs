@@ -110,3 +110,36 @@ test('verifyOtp sends verification request and stores session directly', async (
   assert.equal(cloud.session.needs_choice, false);
   assert.equal(result.access_token, 'test-token');
 });
+
+test('handleAuthCallback extracts session from URL hash and clears it', async () => {
+  cloud.storeSession(null);
+  let replacedUrl = '';
+  globalThis.window = {
+    location: {
+      hash: '#access_token=hash-token&refresh_token=hash-refresh&expires_in=7200&type=magiclink',
+      pathname: '/newtab.html',
+      search: ''
+    }
+  };
+  globalThis.history = {
+    replaceState: (state, title, url) => { replacedUrl = url; }
+  };
+  const res = cloud.handleAuthCallback();
+  assert.equal(res.session.access_token, 'hash-token');
+  assert.equal(res.type, 'magiclink');
+  assert.equal(cloud.session.access_token, 'hash-token');
+  assert.equal(replacedUrl, '/newtab.html');
+});
+
+test('verifyOtp handles token_hash and fallback type', async () => {
+  cloud.storeSession(null);
+  let calledBody = null;
+  globalThis.fetch = async (url, options) => {
+    calledBody = JSON.parse(options.body);
+    return response(session());
+  };
+  const result = await cloud.verifyOtp({ token_hash: 'pkce_hash_123', type: 'signup' });
+  assert.equal(calledBody.token_hash, 'pkce_hash_123');
+  assert.equal(calledBody.type, 'signup');
+  assert.equal(result.access_token, 'test-token');
+});

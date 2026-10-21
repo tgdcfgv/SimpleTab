@@ -275,6 +275,22 @@ export function initSpaceShortcuts() {
 }
 
 
+export function getContrastForeground(hexColor) {
+  if (!hexColor || typeof hexColor !== 'string') return '#FFFFFF';
+  let hex = hexColor.trim().replace(/^#/, '');
+  if (hex.length === 3) {
+    hex = hex.split('').map(c => c + c).join('');
+  }
+  if (hex.length !== 6) return '#FFFFFF';
+  const r = parseInt(hex.substring(0, 2), 16) / 255;
+  const g = parseInt(hex.substring(2, 4), 16) / 255;
+  const b = parseInt(hex.substring(4, 6), 16) / 255;
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return '#FFFFFF';
+  const toLinear = c => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  const luminance = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+  return luminance > 0.35 ? '#0F172A' : '#FFFFFF';
+}
+
 let wallpaperRender = 0;
 
 export function applySettings() {
@@ -283,7 +299,12 @@ export function applySettings() {
   document.documentElement.dataset.cardMode = appData.settings.cardDisplayMode || 'icon-text';
   document.documentElement.dataset.dockPosition = appData.settings.dockPosition || 'bottom';
   document.documentElement.style.setProperty('--pure-icon-size', (appData.settings.iconSize || 24) + 'px');
-  document.documentElement.style.setProperty('--accent-color', appData.settings.accentColor || '#6366f1');
+  const accent = appData.settings.accentColor || '#6366f1';
+  const accentFg = getContrastForeground(accent);
+  document.documentElement.style.setProperty('--accent-color', accent);
+  document.documentElement.style.setProperty('--accent-fg', accentFg);
+  document.documentElement.style.setProperty('--primary-color', accent);
+  document.documentElement.style.setProperty('--primary-fg', accentFg);
 
   const tabHint = document.getElementById('spaceTabHint');
   const editButton = document.getElementById('spaceEditBtn');

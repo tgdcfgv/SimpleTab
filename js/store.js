@@ -135,7 +135,7 @@ export function ensureStoreLayout() {
   if (document.getElementById('appStoreMenu')) return;
 
   const title = appStoreModal.querySelector('h3');
-  if (title) title.textContent = '应用商店';
+  if (title) title.textContent = '网站库';
 
   const shell = document.createElement('div');
   shell.className = 'store-shell';
@@ -143,7 +143,7 @@ export function ensureStoreLayout() {
   const menu = document.createElement('aside');
   menu.id = 'appStoreMenu';
   menu.className = 'store-menu';
-  menu.setAttribute('aria-label', '应用分类');
+  menu.setAttribute('aria-label', '网站分类');
 
   const main = document.createElement('section');
   main.className = 'store-main';
@@ -383,7 +383,7 @@ export function renderAppStore() {
   if (appData.groups.length === 0) {
     appData.groups.push({
       id: generateId(),
-      name: '应用商店',
+      name: '网站库',
       collapsed: false,
       links: [],
       column: 0,

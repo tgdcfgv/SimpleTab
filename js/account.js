@@ -106,8 +106,8 @@ export function initAccount() {
   document.getElementById('accountMigrate')?.addEventListener('click', () => run(migrateLegacy));
   document.getElementById('accountVerify')?.addEventListener('click', () => run(async () => {
     await preserveLocal();
-    const value = document.getElementById('accountCode').value.trim();
-    const email = document.getElementById('accountEmail').value.trim();
+    const value = document.getElementById('accountCode')?.value?.trim() || '';
+    const email = document.getElementById('accountEmail')?.value?.trim() || '';
     let body;
     if (/^https:\/\//.test(value)) {
       const url = new URL(value);
@@ -171,8 +171,10 @@ async function enterAccount() {
   if (syncManager.saving) await syncManager.saving;
   // Keep the page untouched until the user explicitly chooses a sync direction.
   choiceData = JSON.parse(JSON.stringify(appData));
-  document.getElementById('accountPassword').value = '';
-  document.getElementById('accountCode').value = '';
+  const pwInput = document.getElementById('accountPassword');
+  if (pwInput) pwInput.value = '';
+  const codeInput = document.getElementById('accountCode');
+  if (codeInput) codeInput.value = '';
   message.textContent = '';
   update();
 }
