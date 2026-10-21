@@ -202,6 +202,18 @@ export async function renderAppStoreCategory() {
     state.textContent = '正在读取我的收藏夹…';
     content.appendChild(state);
 
+    if (!globalThis.chrome?.runtime?.id || !globalThis.chrome?.permissions?.request) {
+      state.textContent = '网页版无法直接读取 Edge 收藏夹。可在“设置 → 浏览器扩展”导入书签 HTML 文件，或使用扩展版。';
+      const installLink = document.createElement('a');
+      installLink.className = 'btn primary';
+      installLink.href = 'install.html';
+      installLink.target = '_blank';
+      installLink.rel = 'noopener noreferrer';
+      installLink.textContent = '查看扩展安装方法';
+      state.append(document.createElement('br'), installLink);
+      return;
+    }
+
     const granted = await requestBookmarksPermission();
     if (!granted) {
       state.textContent = '需要允许读取书签，才能显示我的收藏夹。';

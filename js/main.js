@@ -1,3 +1,4 @@
+import './extension.js';
 import { syncManager } from './storage.js';
 import { applySettings, initSpaceShortcuts, render } from './render.js';
 import { initAllCustomSelects } from './modals.js';

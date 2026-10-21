@@ -1,5 +1,5 @@
 import { appData, SEARCH_ENGINES } from './storage.js';
-import { getFaviconUrl } from './utils.js';
+import { getFaviconUrl, escapeHTML } from './utils.js';
 
 
 export const searchInput = document.getElementById('searchInput');
@@ -31,9 +31,9 @@ searchInput.addEventListener('input', (e) => {
 
   if (results.length > 0) {
     searchResults.innerHTML = results.slice(0, 8).map((l, index) => `
-      <div class="search-result-item ${index === 0 ? 'active' : ''}" data-url="${l.url}" title="${l.title}">
-        <img src="${l.customIcon || getFaviconUrl(l.url)}" alt="">
-        <span class="site-title">${l.title}</span>
+      <div class="search-result-item ${index === 0 ? 'active' : ''}" data-url="${escapeHTML(l.url)}" title="${escapeHTML(l.title)}">
+        <img src="${escapeHTML(l.customIcon || getFaviconUrl(l.url))}" alt="">
+        <span class="site-title">${escapeHTML(l.title)}</span>
       </div>
     `).join('');
     searchResults.classList.remove('hidden');
@@ -41,7 +41,7 @@ searchInput.addEventListener('input', (e) => {
     searchResults.innerHTML = `
       <div class="search-result-item" style="cursor:default;">
         <span class="site-title" style="color: var(--text-secondary)">
-          按回车使用 ${appData.settings.searchEngine} 搜索 "${query}"
+          按回车使用 ${escapeHTML(appData.settings.searchEngine)} 搜索 "${escapeHTML(query)}"
         </span>
       </div>`;
     searchResults.classList.remove('hidden');

@@ -1,5 +1,5 @@
 import { appData, SEARCH_ENGINES, setActiveSpace, syncManager } from './storage.js';
-import { getFaviconUrl } from './utils.js';
+import { getFaviconUrl, escapeHTML } from './utils.js';
 import { draggedItem, draggedItemType, handleDragEnd, handleDragLeaveGroup, handleDragOver, handleDragOverGroup, handleDragStart, handleDrop, handleDropOnGroup, handleGroupDragStart, moveGroupTo } from './drag.js';
 import { openGroupModal, showConfirm, updateCustomSelectOptions, updateCustomSelectTrigger } from './modals.js';
 
@@ -94,23 +94,23 @@ export function render() {
         <svg class="fold-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(${group.collapsed ? '-90deg' : '0'});">
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
-        <span class="group-title">${group.name}</span>
+        <span class="group-title">${escapeHTML(group.name)}</span>
         <div class="group-collapsed-icons">
           ${group.links.slice(0, 6).map(link => {
             const iconSrc = link.customIcon || getFaviconUrl(link.url);
             return `
-            <a href="${link.url}" class="collapsed-icon-link" title="${link.title}"${linkTargetAttrs}>
-              <img src="${iconSrc}" alt="" loading="lazy">
+            <a href="${escapeHTML(link.url)}" class="collapsed-icon-link" title="${escapeHTML(link.title)}"${linkTargetAttrs}>
+              <img src="${escapeHTML(iconSrc)}" alt="" loading="lazy">
             </a>
             `;
           }).join('')}
         </div>
       </div>
       <div class="group-actions">
-        <button class="group-action-btn edit-group-btn" title="编辑" data-id="${group.id}">
+        <button class="group-action-btn edit-group-btn" title="编辑" data-id="${escapeHTML(group.id)}">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
         </button>
-        <button class="group-action-btn delete-group-btn" title="删除" data-id="${group.id}">
+        <button class="group-action-btn delete-group-btn" title="删除" data-id="${escapeHTML(group.id)}">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
         </button>
       </div>
@@ -142,7 +142,7 @@ export function render() {
     });
     header.querySelector('.delete-group-btn').addEventListener('click', (e) => {
       e.stopPropagation();
-      showConfirm('删除分组', `确定要删除分组 "${group.name}" 及其包含的所有网站吗？`, () => {
+      showConfirm('删除分组', `确定要删除分组 "${escapeHTML(group.name)}" 及其包含的所有网站吗？`, () => {
         const groupIndex = appData.groups.findIndex(g => g.id === group.id);
         if (groupIndex !== -1) {
           appData.groups.splice(groupIndex, 1);
@@ -181,10 +181,11 @@ export function render() {
         
         const iconSrc = link.customIcon || getFaviconUrl(link.url);
         siteBtn.innerHTML = `
-          <img src="${iconSrc}" alt="" loading="lazy" onerror="this.src='${siteIconFallback}'">
-          <span class="site-title" title="${link.title}">${link.title}</span>
+          <img src="${escapeHTML(iconSrc)}" alt="" loading="lazy">
+          <span class="site-title" title="${escapeHTML(link.title)}">${escapeHTML(link.title)}</span>
         `;
 
+        siteBtn.querySelector('img').addEventListener('error', event => { event.target.src = siteIconFallback; }, { once: true });
         siteBtn.addEventListener('dragstart', handleDragStart);
         siteBtn.addEventListener('dragover', handleDragOver);
         siteBtn.addEventListener('drop', handleDrop);
@@ -276,7 +277,7 @@ export function initSpaceShortcuts() {
 export function applySettings() {
   document.documentElement.dataset.compact = appData.settings.compactMode;
   document.documentElement.dataset.cardMode = appData.settings.cardDisplayMode || 'icon-text';
-  document.documentElement.dataset.dockPosition = appData.settings.dockPosition || 'left';
+  document.documentElement.dataset.dockPosition = appData.settings.dockPosition || 'bottom';
   document.documentElement.style.setProperty('--pure-icon-size', (appData.settings.iconSize || 24) + 'px');
   document.documentElement.style.setProperty('--accent-color', appData.settings.accentColor || '#6366f1');
 

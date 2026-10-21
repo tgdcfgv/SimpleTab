@@ -235,75 +235,16 @@ export function openSiteModal(siteId = null, groupId = null) {
 document.getElementById('addSiteBtn').addEventListener('click', () => openSiteModal());
 document.getElementById('cancelSiteBtn').addEventListener('click', closeAllModals);
 
-document.getElementById('refetchIconBtn').addEventListener('click', async () => {
-  const url = document.getElementById('siteUrl').value.trim();
-  if (!url) {
-    alert("请先输入网址！");
-    return;
-  }
-  
-  const iconInput = document.getElementById('siteIconUrl');
-  const btn = document.getElementById('refetchIconBtn');
-  
-  // Prevent double clicks
-  if (btn.disabled) return;
-  
-  btn.disabled = true;
-  btn.innerText = '爬取中...';
-  
+document.getElementById('refetchIconBtn').addEventListener('click', () => {
+  const value = document.getElementById('siteUrl').value.trim();
   try {
-    let urlStr = url;
-    if (!urlStr.startsWith('http')) urlStr = 'https://' + urlStr;
-    
-    const domain = new URL(urlStr).hostname;
-    const fallbackIcon = `https://api.iowen.cn/favicon/${domain}.png`;
-
-    try {
-      let response;
-      try {
-        // First try direct fetch (works if it's an installed extension with permissions)
-        response = await fetch(urlStr, { credentials: 'omit', cache: 'no-store' });
-      } catch (err) {
-        // If direct fetch fails (e.g. CORS error because user didn't install as extension but runs as webpage)
-        // Try to use a free CORS proxy
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(urlStr)}`;
-        response = await fetch(proxyUrl, { credentials: 'omit', cache: 'no-store' });
-      }
-
-      if (response.ok) {
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        
-        const iconElements = doc.querySelectorAll('link[rel="apple-touch-icon"], link[rel="apple-touch-icon-precomposed"], link[rel~="icon"]');
-        let bestHref = null;
-        
-        if (iconElements.length > 0) {
-          const appleIcon = Array.from(iconElements).find(el => el.getAttribute('rel') && el.getAttribute('rel').includes('apple-touch'));
-          if (appleIcon) {
-            bestHref = appleIcon.getAttribute('href');
-          } else {
-            bestHref = iconElements[iconElements.length - 1].getAttribute('href');
-          }
-        }
-        
-        if (bestHref) {
-          // Some proxies might mess up relative URLs, so we resolve against the original URL
-          iconInput.value = new URL(bestHref, urlStr).href;
-        } else {
-          iconInput.value = new URL('/favicon.ico', urlStr).href;
-        }
-      } else {
-        iconInput.value = fallbackIcon;
-      }
-    } catch (err) {
-      iconInput.value = fallbackIcon;
-    }
-  } catch (e) {
-    alert("网址格式不正确！");
-  } finally {
-    btn.innerText = '一键爬取';
-    btn.disabled = false;
+    const url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
+    if (!['http:', 'https:'].includes(url.protocol) || !value) throw new Error();
+    // Use the browser favicon API in extensions; no page scraping or proxy.
+    document.getElementById('siteIconUrl').value = globalThis.chrome?.runtime?.id
+      ? '' : getFaviconUrl(url.href);
+  } catch {
+    alert('请先输入有效的 HTTP 或 HTTPS 网址。');
   }
 });
 
@@ -552,7 +493,7 @@ export function openSettingsModal() {
     openModeSelect: appData.settings.openLinksInNewTab ? 'new-tab' : 'current-tab',
     cardModeSelect: appData.settings.cardDisplayMode || 'icon-text',
     themeSelect: appData.settings.theme || 'system',
-    dockPositionSelect: appData.settings.dockPosition || 'left'
+    dockPositionSelect: appData.settings.dockPosition || 'bottom'
   };
   Object.entries(settingSelectValues).forEach(([id, value]) => {
     const select = document.getElementById(id);

@@ -170,3 +170,9 @@
   left: 0;
 }
 
+
+/* Links styled as actions must keep the same contrast as buttons. */
+a.btn { text-decoration: none; text-align: center; }
+a.btn.primary { color: #fff; }
+.data-overview-note a { color: var(--accent-color, #6366f1); }
+#bookmarkImportStatus { grid-column: 1 / -1; }

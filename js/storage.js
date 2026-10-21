@@ -72,7 +72,7 @@ export const DEFAULT_DATA = {
     enabledSearchEngines: ["google", "bing"],
     theme: "system",
     accentColor: "#6366f1",
-    dockPosition: "left",
+    dockPosition: "bottom",
     showDockTabHint: true,
     showDockEditButton: true,
     wallpaper: null
@@ -533,7 +533,7 @@ export const syncManager = {
   exportData() {
     const dataStr = JSON.stringify(appData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = `simpletab_backup_${new Date().toISOString().slice(0,10)}.json`;
+    const exportFileDefaultName = `simtab_backup_${new Date().toISOString().slice(0,10)}.json`;
     
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
