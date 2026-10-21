@@ -9,6 +9,7 @@ mkdir -p .pages-output
 cp newtab.html .pages-output/index.html
 cp -R css js icons .pages-output/
 cp privacy.html install.html .pages-output/
+cp icons/favicon.ico .pages-output/favicon.ico
 if [ -d functions ]; then
   cp -R functions .pages-output/
 fi

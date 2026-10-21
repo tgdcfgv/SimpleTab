@@ -456,6 +456,13 @@ ul.styled-list li {
   text-decoration: none;
 }
 
+.toc-link.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+  font-weight: 600;
+}
+
 /* Divider & Footer */
 hr {
   border: 0;

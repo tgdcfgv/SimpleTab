@@ -112,7 +112,7 @@
     });
 
     // 3. Table of Contents Scrollspy (for privacy.html)
-    const tocPills = document.querySelectorAll('.toc-pill');
+    const tocPills = document.querySelectorAll('.toc-link, .toc-pill');
     if (tocPills.length > 0) {
       const sections = Array.from(tocPills).map(pill => {
         const id = pill.getAttribute('href')?.replace('#', '');
