@@ -797,6 +797,117 @@ dialog.modal[open] {
   border-radius: var(--radius-md);
 }
 
+/* 8 位验证码 OTP 输入组件 */
+.auth-otp-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  margin: 6px 0 2px;
+}
+
+.auth-otp-hidden-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 2;
+  cursor: text;
+  caret-color: transparent;
+  color: transparent;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px; /* 防止 iOS Safari 自动聚焦时缩放页面 */
+}
+
+.auth-otp-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.auth-otp-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.auth-otp-slot {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-default);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: var(--weight-semibold);
+  transition: border-color var(--duration-fast) var(--ease-default),
+              box-shadow var(--duration-fast) var(--ease-default),
+              background var(--duration-fast) var(--ease-default);
+}
+
+.auth-otp-slot.is-filled {
+  border-color: var(--border-hover);
+}
+
+.auth-otp-slot.is-active {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+.auth-otp-caret {
+  position: absolute;
+  width: 2px;
+  height: 20px;
+  background: var(--accent-color);
+  border-radius: 1px;
+  animation: auth-otp-caret-blink 1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes auth-otp-caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.auth-otp-separator {
+  width: 8px;
+  height: 2px;
+  background: var(--border-hover);
+  border-radius: 1px;
+  flex-shrink: 0;
+  margin: 0 2px;
+}
+
+.auth-otp-container.has-error .auth-otp-slot {
+  border-color: var(--color-danger);
+}
+
+.auth-otp-container.has-error {
+  animation: auth-otp-shake 0.35s var(--ease-default);
+}
+
+@keyframes auth-otp-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
 .auth-verify-card {
   display: flex;
   flex-direction: column;

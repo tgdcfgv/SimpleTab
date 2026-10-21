@@ -2,201 +2,272 @@
   <img src="icons/icon-128.png" width="96" height="96" alt="SimTab Logo">
 </p>
 
-# SimTab
+<h1 align="center">SimTab · 极简新标签页</h1>
 
-一个简洁、高密度、可自定义的浏览器新标签页扩展。
+<p align="center">
+  <b>简洁、高密度、可自定的新标签页与常用网站导航</b><br>
+  多空间分组 · 智能联想搜索 · 全局快捷收藏 · 本地优先与 Supabase 云端独立同步
+</p>
 
-SimTab 用空间、分组和网站卡片整理常用链接，并提供搜索、拖拽排序、浏览器书签导入、主题设置及云端同步及 JSON 备份等功能。项目基于 Manifest V3 开发，适用于 Chrome、Microsoft Edge 等 Chromium 浏览器。
+<p align="center">
+  <img src="https://img.shields.io/badge/Manifest-V3-blue.svg?style=flat-square" alt="Manifest V3">
+  <img src="https://img.shields.io/badge/Platform-Chrome%20%7C%20Edge%20%7C%20Web-blueviolet.svg?style=flat-square" alt="Platform">
+  <img src="https://img.shields.io/badge/Version-1.0.0-emerald.svg?style=flat-square" alt="Version 1.0.0">
+  <img src="https://img.shields.io/badge/Deploy-Cloudflare%20Pages-orange.svg?style=flat-square" alt="Cloudflare Pages">
+  <img src="https://img.shields.io/badge/Backend-Supabase-green.svg?style=flat-square" alt="Supabase">
+</p>
 
-## 功能特点
+---
 
-- 多空间管理，可为工作、学习和生活创建独立空间
-- 网站分组与自定义每行显示数量
-- 拖拽调整分组及网站顺序
-- 搜索已保存的网站，或使用选定的搜索引擎直接搜索
-- 添加、编辑和删除自定义网站
-- 从热门网站库快速添加常用服务
-- 按需读取浏览器书签并添加到 SimTab
-- 浅色、深色及跟随系统主题
-- 自定义壁纸、强调色和显示效果（上传壁纸仅保存在当前浏览器）
-- 自定义程序坞按钮及显示方式：账户、设置、添加分组、添加网站、网站库、编辑空间、Tab 提示及每个空间按钮均可独立隐藏；程序坞总开关关闭后禁用位置设置，网站库默认隐藏
-- 使用 JSON 文件导入、导出网站、设置和本机壁纸
-- 响应式布局，适配不同尺寸的浏览器窗口
+## 📖 项目简介
 
-## 安装
+**SimTab** 是一款专为 Chromium 内核浏览器打造的极简新标签页扩展，同时可作为静态网页（PWA / Web App）独立部署与访问。
 
-### 从 GitHub Release 安装
+告别杂乱冗余的新闻流、天气推送和营销推广，SimTab 回归新标签页的本质：**快速直达、高效整理、轻快专注**。你可以通过工作区空间、自定义分组和卡片整理常用链接，通过智能联想搜索和全局快捷键随时随地收藏网页，并在需要时通过 Supabase 实现跨设备无缝同步。
 
-1. 打开本仓库右侧的 **Releases** 页面。
-2. 下载最新版本的 `SimTab-*.zip`。
-3. 将 ZIP 文件解压到一个固定目录。
-4. 在 Chrome 中打开 `chrome://extensions/`，或在 Edge 中打开 `edge://extensions/`。
-5. 开启页面右上角的 **开发者模式**。
-6. 点击 **加载已解压的扩展程序**。
-7. 选择刚才解压的目录。
+---
 
-安装完成后，打开一个新标签页即可使用 SimTab。
+## ✨ 核心特性
 
-> 请勿在安装后删除或移动解压目录，否则浏览器可能无法继续加载扩展。
+### 🗂️ 1. 多空间与多分组架构
+- **空间隔离**：为“工作”、“学习”、“生活”或不同项目创建独立空间，点击程序坞或按下 `Tab` 键即可快速切换。
+- **自定义分组**：空间内自由新建分组，可单独调节每个分组一行显示的卡片数量（或设为自动响应式）。
+- **流畅拖拽排序**：支持分组标题与网站卡片的拖拽重排，随心定制专属导航布局。
 
-### 从源码安装
+### 🔍 2. 跨空间智能搜索与 Bing 联想建议
+- **全局快捷筛选**：在顶部搜索框输入关键字，即时查找所有已保存的网站。
+- **Bing 实时搜索建议**：输入时自动获取 Bing 联想推荐，支持输入防抖、请求中止、键盘 `↑` / `↓` 快速选择及 `Tab` 键自动补全。
+- **多引擎一键搜索**：未选择本地快捷方式时，按回车直接使用配置的搜索引擎（Google / Bing）查询互联网。
+
+### ⚡ 3. 随时随地快捷收藏（Quick Capture）
+- **多入口触发**：在任意网页通过快捷键 `Alt + Shift + S`、浏览器工具栏图标或右键菜单“保存当前页面到 SimTab”。
+- **自动解析与去重**：自动抓取当前标签页标题与网址，支持手动选择目标空间和分组，重复添加时自动提示避免冗余。
+- **会话级草稿保护**：基于 `chrome.storage.session` 暂存收藏草稿，网络抖动或误关弹窗后仍可重试，绝不丢失数据。
+
+### 🌐 4. 丰富网站库与全能书签导入
+- **精选网站库**：内置开发、设计、效率、资讯等多分类热门服务，支持勾选批量快速添加。
+- **按需读取浏览器收藏夹**：使用扩展版可一键申请读取 Edge / Chrome 原生书签，按需选择并添加（只读权限，绝不擅自修改或删除浏览器原始收藏夹）。
+- **标准 HTML 书签导入**：网页版与扩展版均支持导入各浏览器导出的书签 HTML 文件，自动生成分组。
+
+### 🎨 5. 原生设计系统与外观定制
+- **macOS 风格设计语言**：全新设计的 System Settings 风格控制面板，操作直观优雅。
+- **色彩模式**：支持浅色模式（Light）、深色模式（Dark）及跟随操作系统自动切换。
+- **WCAG 智能高对比度**：自定义强调色（Accent Color），系统自动基于相对亮度算法计算文本前景色（白字/黑字），确保阅读对比度合规。
+- **本地壁纸存储**：支持上传高清壁纸（基于 IndexedDB Blob 存储，最高 10MB），壁纸仅保留在当前设备本地，隐私安全且不占用云端带宽。
+- **模块化程序坞（Dock）**：支持设置在底部、左侧或右侧显示；账户、设置、添加分组、添加网站、网站库、空间列表等每个按钮均可独立开启或隐藏。
+
+### ☁️ 6. 本地优先与安全云端同步
+- **开箱即用（访客模式）**：无需注册或登录即可直接使用，所有分组与偏好保存在浏览器本地（扩展使用 `chrome.storage.local`，网页使用 `localStorage`）。
+- **邮箱验证码免密登录 (Email OTP)**：输入邮箱接收 6 位验证码即可完成注册与登录，告别传统密码遗忘与泄露风险。
+- **本地与云端严格隔离**：未登录数据与云端数据物理隔离，登录后无缝切换云端视图，退出登录即刻还原本地内容，两端数据绝不会被未经许可自动覆盖。
+- **主动数据复制**：登录后可在账户面板中主动将本地配置合并上传至云端。
+- **并发乐观锁（Revision Lock）**：多标签页或跨设备同时编辑时具备版本校验机制，防止意外冲突覆盖。
+- **全量 JSON 备份与还原**：支持一键导出完整的配置备份（含本地壁纸），支持随时恢复到任意浏览器。
+
+---
+
+## ⌨️ 常用快捷键
+
+| 快捷键 | 功能说明 | 适用场景 |
+| --- | --- | --- |
+| `Alt + Shift + S` | 快速保存当前网页到 SimTab | 浏览任何网页时（浏览器扩展） |
+| `Tab` | 快速循环切换工作区空间 | 新标签页主界面 |
+| `↑` / `↓` | 在搜索联想词或已保存的网站列表中导航 | 聚焦顶部搜索框时 |
+| `Tab` | 采纳当前高亮的搜索联想词到输入框 | 聚焦顶部搜索框时 |
+| `Enter` | 打开高亮网站，或通过搜索引擎搜索网络 | 聚焦顶部搜索框时 |
+| `Esc` | 关闭搜索联想面板 / 关闭当前模态弹窗 | 全局 |
+
+> **提示**：若 `Alt + Shift + S` 快捷键与其他软件冲突，可在浏览器的快捷键管理页（Chrome: `chrome://extensions/shortcuts`，Edge: `edge://extensions/shortcuts`）中自定义修改。
+
+---
+
+## 📦 安装与使用指南
+
+### 方式一：从 GitHub Releases 安装（推荐）
+
+1. 前往仓库右侧的 [Releases](https://github.com/tgdcfgv/SimpleTab/releases) 页面；
+2. 下载最新版本的打包文件 `SimTab-*.zip` 并解压到你电脑上的固定文件夹中；
+3. 打开浏览器的扩展管理页面：
+   - **Chrome**: 地址栏访问 `chrome://extensions/`
+   - **Edge**: 地址栏访问 `edge://extensions/`
+4. 打开页面右上角的 **“开发者模式”**（Developer Mode）；
+5. 点击 **“加载已解压的扩展程序”**（Load unpacked）；
+6. 选择解压出的 SimTab 文件夹即可完成安装。
+
+> ⚠️ **注意**：安装后请勿删除或移动解压后的文件夹，否则浏览器将无法继续加载该扩展。
+
+### 方式二：从源码加载运行
 
 ```bash
+# 1. 克隆本仓库到本地
 git clone https://github.com/tgdcfgv/SimpleTab.git
+
+# 2. 进入浏览器扩展管理页面，开启“开发者模式”，选择克隆的仓库根目录加载
 ```
 
-然后在浏览器扩展管理页面开启开发者模式，并选择仓库根目录进行加载。
+本项目采用纯原生 HTML5、CSS3、ES Modules 构建，**无需 Node.js 安装或繁琐的打包构建流程**，即改即生效。
 
-## 发布为网站（Cloudflare Pages + GitHub）
+### 方式三：部署为在线网站（Cloudflare Pages）
 
-此项目也能作为普通网站使用。Cloudflare Pages 连接 GitHub 后，每次向生产分支推送代码都会自动构建并发布。
+SimTab 可完全作为独立纯静态站点运行，支持通过 Cloudflare Pages 实现与 GitHub 仓库的代码推送自动构建：
 
-1. 将网页源码推送至 GitHub 仓库。
-2. 在 Cloudflare 控制台进入 **Workers & Pages**，创建 **Pages** 项目并选择连接 Git 仓库。
-3. 选择 `tgdcfgv/SimpleTab`，填写以下设置：
+1. 将仓库 Fork 或推送至你自己的 GitHub；
+2. 登录 Cloudflare 控制台，进入 **Workers & Pages** -> **Create application** -> **Pages** -> **Connect to Git**；
+3. 选取本仓库，填写以下构建配置：
 
-| 设置 | 值 |
-| --- | --- |
-| 生产分支 | `main` |
-| 框架预设 | `None` |
-| 构建命令 | `sh scripts/build-pages.sh` |
-| 构建输出目录 | `.pages-output` |
-| 根目录 | 留空（仓库根目录） |
+| 设置项 | 推荐值 | 说明 |
+| :--- | :--- | :--- |
+| **生产分支 (Production branch)** | `main` | 主分支触发自动部署 |
+| **框架预设 (Framework preset)** | `None` | 原生静态站点 |
+| **构建命令 (Build command)** | `sh scripts/build-pages.sh` | 自动输出静态资源并配置重定向 |
+| **构建输出目录 (Build output directory)** | `.pages-output` | 生成的发布文件目录 |
+| **根目录 (Root directory)** | 留空（项目根路径） | |
 
-4. 部署成功后，先通过 Cloudflare 提供的 `*.pages.dev` 地址验证页面。
-5. 在该项目的 **Custom domains → Set up a domain** 中添加自己的域名。已在 Cloudflare 管理的域名按提示确认 DNS；由其他服务商管理的子域名，按提示添加指向项目 `*.pages.dev` 地址的 CNAME。使用根域名时，需将域名的名称服务器接入 Cloudflare。
+4. 部署完成后，可通过 Cloudflare 提供的 `*.pages.dev` 访问，也可以在 **Custom domains** 中绑定你的自定义域名；
+5. 本地预览构建产物：
+   ```bash
+   sh scripts/build-pages.sh
+   python3 -m http.server 8080 --directory .pages-output
+   # 浏览器访问 http://localhost:8080
+   ```
 
-务必先在 Pages 中添加自定义域名，再配置 DNS。以后修改 `newtab.html`、`css/` 或 `js/` 并推送到 `main`，即可触发自动发布。
+---
 
-仓库中的 `scripts/build-pages.sh` 还会生成旧入口跳转和响应头。将该脚本推送到 GitHub 后，可将构建命令改为 `sh scripts/build-pages.sh`。
-
-本地验证网站：
-
-```bash
-sh scripts/build-pages.sh
-python3 -m http.server 8080 --directory .pages-output
-```
-
-打开 `http://localhost:8080`。构建只复制网页资源并将 `newtab.html` 输出为 `index.html`，不会发布扩展 ZIP 或仓库文件。
-
-网页版和扩展版登录同一邮箱账户后，通过 Supabase 读取同一份云端数据。未登录时直接使用浏览器本地内容；登录后显示独立的云端内容，退出后恢复本地内容。需要复制时，可在“我的账户 → 将本地内容复制到云端”中主动操作，本地内容仍会保留。普通网站不能直接读取浏览器书签；此功能需使用扩展版。图标抓取可能受目标网站跨域限制影响。
-
-参考：[Cloudflare 静态网站部署](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/)、[Git 集成](https://developers.cloudflare.com/pages/get-started/git-integration/)、[自定义域名](https://developers.cloudflare.com/pages/configuration/custom-domains/)。
-
-## 日常使用
-
-- 点击程序坞中的“添加分组”或“添加网站”创建内容。
-- 拖动分组标题或网站卡片可以调整顺序。
-- 在搜索框中输入关键词可查找已保存的网站；按回车可使用当前搜索引擎搜索。
-- 在“设置 → 内容与布局 → 程序坞按钮”中开启默认隐藏的“网站库”，即可从预设分类中批量添加常用网站。
-- 在“设置 → 账户与同步”中创建 JSON 备份或恢复已有数据。
-- 浏览器书签权限只会在使用对应功能时申请。
-
-## 数据与隐私
-
-SimTab 无需登录即可使用：未登录的空间、分组、网站及外观设置保存在当前浏览器（扩展使用 chrome.storage.local，网页使用 localStorage）。登录后切换为 Supabase 云端数据库（新加坡）中的独立账户内容，云端内容不会写入本地内容。退出登录恢复原本的本地内容。两份内容不会自动上传、合并或互相覆盖。云端未同步的更改只暂存在页面内存中；数据库使用 RLS 将数据限制为当前账户可访问。
-
-扩展通过浏览器 favicon 接口显示网站图标；网页版通过图标服务获取网站主机名对应的图标。自定义远程图片会请求图片提供方，应用不抓取目标网页正文。详见隐私政策。
-
-导出的 JSON 文件可能包含用户保存的网站地址和自定义配置，请妥善保管。
-
-## 项目结构
+## 📂 项目结构
 
 ```text
-SimTab/
-├── manifest.json       # 扩展清单
-├── newtab.html         # 新标签页界面
-├── css/                # 页面样式
-├── js/                 # 功能模块
-└── dist/               # 本地打包产物
+SimpleTab/
+├── manifest.json              # 浏览器扩展清单文件 (Manifest V3)
+├── newtab.html                # 新标签页核心视图
+├── install.html               # 扩展安装指引页面
+├── privacy.html               # 官方隐私政策条款
+├── css/                       # 样式目录
+│   ├── base.css               # 全局样式变量与基础重置
+│   ├── responsive.css         # 响应式栅格与移动端适配
+│   ├── info.css               # 文档页（安装/隐私）专用样式
+│   └── components/            # 模块化组件样式（Dock、表单、弹窗、设置等）
+├── js/                        # 前端核心业务逻辑（ES Modules）
+│   ├── main.js                # 应用入口与生命周期调度
+│   ├── data.js                # 数据规范化、默认模版与存储管理
+│   ├── cloud.js               # Supabase 交互与云端同步层
+│   ├── auth-modal.js          # 极简邮箱验证码登录与注册模态框
+│   ├── search.js              # 搜索建议、Bing 联想与键盘导航
+│   ├── capture.js             # 快捷收藏弹窗交互
+│   ├── capture-model.js       # 快捷收藏数据校验与去重
+│   ├── background.js          # MV3 Service Worker（后台快捷键与右键菜单）
+│   ├── wallpaper.js           # 基于 IndexedDB 的本地壁纸管理器
+│   ├── catalog.js             # 预设热门网站库目录
+│   └── local-store.js         # 本地跨标签页数据防冲突并发保护
+├── scripts/                   # 自动化运维与构建脚本
+│   ├── build-pages.sh         # Cloudflare Pages 静态产物打包脚本
+│   └── package-extension.py   # 浏览器商店无杂质安装包打包脚本
+├── store-assets/              # 扩展商店上架物料与说明规范
+├── supabase/                  # 后端配置与数据库资产
+│   ├── account-data.sql       # 数据库表结构与 RLS 行级安全策略
+│   ├── EMAIL-OTP.md           # 邮箱验证码与 SMTP (Resend) 配置说明
+│   └── templates/             # 品牌化邮件验证码 HTML 模板
+└── tests/                     # 自动化单元测试与 Playwright 浏览器回归用例
 ```
 
-## 开发
+---
 
-本项目使用原生 HTML、CSS 和 JavaScript，不需要安装依赖或执行构建命令。
+## ⚙️ 后端配置与云同步搭建 (Supabase)
 
-修改代码后，在浏览器的扩展管理页面点击“重新加载”，再刷新新标签页即可查看效果。
+如果你希望自行部署或配置独立的 Supabase 后端，可参考以下简易步骤：
 
-提交正式版本前，请同步提高 `manifest.json` 中的 `version`，并确保 ZIP 文件根目录直接包含 `manifest.json`。
+1. **新建 Supabase 项目**：在 [Supabase](https://supabase.com/) 中创建新项目（默认推荐新加坡节点）；
+2. **初始化数据表与 RLS 权限**：
+   在 Supabase 控制台的 **SQL Editor** 中执行 [`supabase/account-data.sql`](supabase/account-data.sql)；
+   - 创建 `public.account_data` 数据表；
+   - 启用 Row Level Security (RLS) 策略，确保每个用户仅能读写自己的私有数据。
+3. **配置邮箱验证码 (Email OTP)**：
+   - 进入 **Authentication** -> **SMTP Settings**，配置自定义 SMTP（如接入 [Resend](https://resend.com/)，详见 [`supabase/EMAIL-OTP.md`](supabase/EMAIL-OTP.md)）；
+   - 在 **Email Templates** 中，将 **Confirm sign up** 与 **Magic link / OTP** 替换为包含 `{{ .Token }}` 的验证码模板；
+   - 用户登录时将直接收到 6 位数字验证码，无需复杂的确认链接跳转。
+4. **前端配置替换**：
+   在 [`js/cloud.js`](js/cloud.js) 中填入你自己的 Supabase URL 及 Publishable `anon` 密钥。
 
-## 兼容性
+---
 
-- Google Chrome：Manifest V3
-- Microsoft Edge：Chromium / Manifest V3
-- 其他 Chromium 浏览器：可以尝试手动加载，具体兼容性取决于浏览器对扩展 API 的支持
+## 🔒 隐私声明与权限透明度
 
-## 反馈与贡献
+SimTab 严格遵循“最小必要权限”与“隐私优先”原则，不加载任何远程执行代码：
 
-欢迎通过 GitHub Issues 提交问题或功能建议。提交问题时，建议附上：
+| 权限名称 | 用途说明 | 必要性 |
+| :--- | :--- | :--- |
+| `storage` | 用于在本地存储未登录时的分组、网站、排版与外观偏好 | 核心功能，必须 |
+| `favicon` | 通过浏览器原生安全接口拉取网站图标 | 核心展示，必须 |
+| `activeTab` | 仅在用户主动触发收藏快捷键或右键时，临时读取当前页面标题与 URL | 快捷收藏，必须 |
+| `contextMenus`| 在网页右键菜单中提供“保存当前页面到 SimTab”入口 | 快捷收藏，必须 |
+| `bookmarks` | **按需申请**。仅在用户点击“导入我的收藏夹”时向浏览器发起申请，绝不修改或删除原书签 | 可选权限 |
 
-- 浏览器名称及版本
-- SimTab 版本
-- 问题复现步骤
-- 必要的截图或控制台错误信息
+- **无网页爬虫**：后台 Service Worker 绝不会扫描、爬取或读取你的浏览历史和网页正文内容。
+- **壁纸本地留存**：上传的高清自定义壁纸仅以 Blob 形式保存在当前浏览器的 IndexedDB 中，不会随云端同步上传至服务器。
+- 详细条款请参阅 [`privacy.html`](privacy.html)。
 
-## License
+---
 
-本项目暂未添加开源许可证。在许可证确定前，代码版权归项目作者所有。
+## 🧪 开发与测试
 
-## SimTab 1.0.0 上架准备
+### 本地测试与代码规范
 
-新增扩展安装入口、HTML 书签导入、隐私政策和图标；移除所有网站访问权限及网页抓取代理。
+运行 Node.js 原生测试套件（需 Node.js 18+）：
 
-执行 `python3 scripts/package-extension.py` 生成 Edge ZIP。商店介绍和权限说明见 `store-assets/edge-submission.md`。
+```bash
+# 运行核心数据与云同步逻辑单元测试
+node --test tests/*.test.mjs
+```
 
-部署新版时将 Cloudflare 构建命令设为 `sh scripts/build-pages.sh`，输出目录保持 `.pages-output`，以同时发布图标、安装说明和隐私政策。
+### 浏览器端自动化回归测试（Playwright）
 
-## Supabase 账户与同步（1.0.0）
+针对登录弹窗、多标签页并发存储及快捷收藏功能的端到端测试：
 
-- 项目：`zyttspnlrdzjosnitijb`，配置位于 `js/cloud.js`，客户端仅包含 publishable key。
-- 登录方式：邮箱和密码。注册后验证邮箱；也可将邮件中的验证链接粘贴到账户与同步面板完成验证。
-- 公开注册前需在 Supabase Auth 配置自己的 SMTP。默认邮件服务限制收件人和发送频率，详情见 [SMTP 文档](https://supabase.com/docs/guides/auth/auth-smtp)。不要关闭邮箱验证绕过邮件配置。
-- 数据表：`public.account_data`，主键 `user_id` 关联 Auth 用户；RLS 限制用户只可操作自己的记录。
-- 每次保存提交完整账户配置，使用 `revision` 乐观锁。其他设备同时修改时会停止覆盖；先导出未保存的更改，再读取云端版本并重新导入需要的内容。
-- 页面启动、窗口重新获得焦点时读取云端；本机编辑自动上传，底部状态按钮可手动同步或重试。
-- 未登录直接使用本地内容，兼容旧版本地数据；登录和退出切换内容来源。手动复制会替换当前云端内容，但始终保留浏览器本地内容。
-- 部署 SQL 参考 `supabase/account-data.sql`（已通过 Supabase MCP 应用到上述项目）。
-- 本地检查：`node --test tests/*.test.mjs`。
+```bash
+# 1. 在本地启动轻量静态服务器
+python3 -m http.server 8091 --bind 127.0.0.1
 
-登录入口位于程序坞设置按钮左侧，以人像图标显示，直接打开“设置 → 账户与同步”中的云端同步区。每次主动登录成功后选择“用云端内容覆盖当前页面”或“保留当前页面并保存到云端”；未选择前不读取或写入账户配置，刷新后仍需选择。已完成选择的会话刷新后直接使用云端内容。两种选择都保留浏览器本地副本。
+# 2. 运行自动化端到端测试
+node tests/auth-browser.cjs
+node tests/capture-browser.cjs
+node tests/controls-browser.cjs
+node tests/settings-browser.cjs
+```
 
-## 上线前重构：第一阶段
+### 扩展打包
 
-- `js/data.js` 负责默认配置与数据归一化；`js/catalog.js` 独立维护热门网站目录；`js/urls.js` 统一网址校验。
-- JSON 导入、云端恢复和浏览器书签仅接受 HTTP/HTTPS 网站；非法协议被过滤。表单添加网站时也使用相同规则。
-- `js/wallpaper.js` 将上传图片保存为 IndexedDB Blob，限制为 10 MB 的 PNG/JPEG/GIF/WebP/AVIF。上传壁纸属于当前浏览器的外观偏好，不随登录切换，不上传云端；主动导出 JSON 备份时包含壁纸，导入备份会恢复到当前浏览器。旧版内嵌壁纸先写入独立存储，再移除配置中的图片数据；迁移失败保留原始存储并停止保存，修复存储权限后刷新重试。云端旧记录将在下一次成功保存时去除内嵌壁纸。
-- 搜索覆盖所有空间；默认回车使用搜索引擎，方向键显式选择已保存网站，Escape 收起结果。
-- 列数随可用宽度变化，保留分组拖拽；三列时兼容旧版列位置。
-- 浏览器回归：先运行 `python3 -m http.server 8091 --bind 127.0.0.1`，再使用安装了 Playwright 与 Chrome 的环境运行 `node tests/cloud-browser.cjs` 和 `node tests/refactor-browser.cjs`。回归使用临时浏览器和模拟云端接口，不访问真实账户。
+通过官方打包脚本生成符合 Chromium 扩展商店规范的发布包（自动滤除个人数据与非必要文件）：
 
-## 上线前重构：第二阶段
+```bash
+python3 scripts/package-extension.py
+# 输出产物位于 dist/SimTab-1.0.0-edge.zip
+```
 
-浏览网页时点击扩展工具栏图标，或选择页面右键菜单“保存当前页面到 SimTab”，即可打开新标签页中的保存弹窗。默认快捷键为 `Alt+Shift+S`，可在浏览器扩展快捷键管理中修改；若被占用，需手动分配。
+---
 
-- 自动填写名称和网址，选择空间和分组后保存；同一分组已有相同网址时不重复添加。
-- 沿用当前本地／云端状态。尚未完成登录内容选择时，先完成原有选择流程，再显示收藏弹窗。失败后保留草稿与当前页面的未保存内容，重试不会重复添加。
-- 后台仅收集你主动选择页面的标题和网址；不抓取正文。草稿存入 `chrome.storage.session`，30 分钟后失效、后续收藏时清理；保存或取消时清理，失败草稿可保留以便重试，关闭浏览器会清除。
-- 本地保存使用共享锁与原始快照比对。旧标签页会拒绝覆盖新内容；先导出未保存更改，再刷新处理。没有未保存内容时，窗口重新获得焦点会读取最新本地内容。
-- 需要 Chrome/Edge 102 或以上版本。新增 `activeTab` 与 `contextMenus` 权限，保留已有的 Supabase 专用域名权限。
-- `js/background.js` 管理入口和草稿，`js/capture.js` 处理保存弹窗，`js/capture-model.js` 负责校验和去重，`js/local-store.js` 负责多标签页保存保护。
-- 安装 Playwright Chromium 后运行 `node tests/capture-browser.cjs`，可通过 `SIMTAB_CHROMIUM_PATH` 指定支持加载未打包扩展的 Chromium。测试使用临时用户配置、真实 MV3 扩展和模拟云端接口。
+## 📝 版本更新记录 (v1.0.0)
 
-后续阶段：跨空间移动与撤销、触摸拖拽、云端冲突合并与实时更新、Vite/TypeScript 迁移及其余弹窗模块拆分。
+- 🎨 **全新设计系统**：统一 Button、Input、Select、Switch、Menu、Dialog 等控件规范，重做 macOS 风格设置中心，优化高对比度配色逻辑。
+- 🔍 **搜索增强**：集成 Bing 实时联想建议、输入防抖与 Tab 补全能力，支持键盘方向键顺畅定位。
+- ⚡ **快速收藏 (Quick Capture)**：新增工具栏图标、网页右键上下文菜单及全局 `Alt+Shift+S` 快捷键，支持会话级草稿暂存。
+- 📧 **邮箱验证码登录**：重构认证体验，采用 6 位邮件数字验证码替代传统密码登录，无感完成注册与登录。
+- 🔒 **本地与云端架构解耦**：彻底隔离未登录本地数据与云端 Supabase 独立数据，支持多端防冲突乐观锁。
+- 🖼️ **壁纸与性能优化**：重构壁纸系统为 IndexedDB Blob 本地独立存储，降低主配置体积并保护用户隐私。
 
-## 1.0.0 发布记录
+---
 
-新增 Bing 搜索联想建议与自动补全支持（带输入防抖、请求中断、Tab 键补全及键盘快速导航）；优化扩展 host_permissions 与打包规范。
+## 🤝 反馈与参与贡献
 
-## 1.0.0 发布记录
+欢迎提交 Issue 或 Pull Request 来帮助 SimTab 变得更好！
 
-建立全套 Design System（统一 Button、Input、Select、Switch、Menu、Dialog 与共享 Token）；重做 Settings 为 macOS System Settings 风格对齐表单，优先展示 Account 身份与明确的 Sync 状态，独立备份恢复区域并精简 Statistics；重做颜色与深色模式，解耦 Accent，加入 WCAG 相对亮度自动白字/黑字判断并修复按钮对比度；应用商店正式更名为“网站库”。
+在提交 Issue 时，请尽可能提供以下上下文信息：
+1. 浏览器类型及版本（如 Chrome 120 / Edge 120）；
+2. SimTab 的安装形式（扩展版 / 网页版）；
+3. 详细的复现步骤与控制台错误截图（如有）。
 
-## 1.0.0 发布记录
+---
 
-统一图标尺寸、线条粗细和对齐；新增工具栏／右键菜单／快捷键收藏、跨空间搜索与键盘选择；修复响应式列布局；校验导入网址；上传壁纸独立存储；清理商店重复逻辑，并保护本地多标签页保存。
+## 📄 许可证
 
-## 邮箱验证码登录
+Copyright © 2026 SimTab Authors.
 
-账户入口已改为“发送验证码 → 输入邮件中的数字验证码 → 验证并登录”，首次使用自动创建账户。重发间隔为 60 秒，保留本地与云端内容隔离。
-
-SimTab 的自定义 SMTP 已接入 Resend，发信域名 `mail.233032.xyz` 已验证。注册和登录邮件均使用带 SimTab Logo 的 `{{ .Token }}` 验证码模板。配置说明与模板源码见 [邮箱验证码配置](supabase/EMAIL-OTP.md)。
+保留所有权利。当前尚未指定公共开源许可证；未经许可，请勿用于商业闭源再分发。

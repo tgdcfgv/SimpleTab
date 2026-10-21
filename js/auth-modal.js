@@ -94,6 +94,45 @@ export function closeAuthModal(force = false) {
   clearErrors();
 }
 
+export function updateOtpDisplay() {
+  const container = document.getElementById('authOtpContainer');
+  const manualInput = document.getElementById('authManualInput');
+  if (!container || !manualInput) return;
+
+  const slots = container.querySelectorAll('.auth-otp-slot');
+  const val = manualInput.value || '';
+  const isFocused = document.activeElement === manualInput;
+  const selStart = manualInput.selectionStart ?? val.length;
+  const selEnd = manualInput.selectionEnd ?? val.length;
+  const hasSelection = selStart !== selEnd;
+
+  let activeIndex = -1;
+  if (isFocused) {
+    if (hasSelection) {
+      activeIndex = selStart;
+    } else if (val.length < 8) {
+      activeIndex = Math.min(selStart, val.length);
+    } else {
+      activeIndex = Math.min(Math.max(0, selStart > 0 ? selStart - 1 : 0), 7);
+    }
+  }
+
+  slots.forEach((slot, idx) => {
+    const char = val[idx] || '';
+    slot.textContent = char;
+    slot.classList.toggle('is-filled', !!char);
+    const isActive = isFocused && idx === activeIndex;
+    slot.classList.toggle('is-active', isActive);
+
+    if (isFocused && !hasSelection && idx === activeIndex && (!char || selStart === idx)) {
+      const caret = document.createElement('span');
+      caret.className = 'auth-otp-caret';
+      caret.setAttribute('aria-hidden', 'true');
+      slot.appendChild(caret);
+    }
+  });
+}
+
 function switchStep(step) {
   currentStep = step;
   const stepEmail = document.getElementById('authStepEmail');
@@ -121,7 +160,11 @@ function switchStep(step) {
     if (maskedEmail) maskedEmail.textContent = maskEmail(currentEmail);
     if (manualInput) {
       manualInput.value = '';
-      setTimeout(() => manualInput.focus(), 50);
+      updateOtpDisplay();
+      setTimeout(() => {
+        manualInput.focus();
+        updateOtpDisplay();
+      }, 50);
     }
 
     startResendCountdown(60);
@@ -139,6 +182,10 @@ function clearErrors() {
     verifyError.textContent = '';
     verifyError.hidden = true;
   }
+  const container = document.getElementById('authOtpContainer');
+  if (container) {
+    container.classList.remove('has-error');
+  }
 }
 
 function showEmailError(msg) {
@@ -154,6 +201,12 @@ function showVerifyError(msg) {
   if (verifyError) {
     verifyError.textContent = msg;
     verifyError.hidden = false;
+  }
+  const container = document.getElementById('authOtpContainer');
+  if (container) {
+    container.classList.remove('has-error');
+    void container.offsetWidth;
+    container.classList.add('has-error');
   }
 }
 
@@ -253,7 +306,7 @@ async function handleManualVerify(event) {
   const val = manualInput?.value.trim() || '';
 
   if (!/^\d{6,10}$/.test(val)) {
-    showVerifyError('请输入邮件中的 6 至 10 位数字验证码');
+    showVerifyError('请输入邮件中的 8 位数字验证码');
     manualInput?.focus();
     return;
   }
@@ -279,6 +332,96 @@ async function handleManualVerify(event) {
   }
 }
 
+function initOtpInput() {
+  const container = document.getElementById('authOtpContainer');
+  const manualInput = document.getElementById('authManualInput');
+  if (!container || !manualInput) return;
+
+  manualInput.addEventListener('input', () => {
+    const raw = manualInput.value;
+    const digits = raw.replace(/\D/g, '').slice(0, 8);
+    if (raw !== digits) {
+      manualInput.value = digits;
+    }
+    clearErrors();
+    updateOtpDisplay();
+  });
+
+  manualInput.addEventListener('focus', () => {
+    updateOtpDisplay();
+  });
+
+  manualInput.addEventListener('blur', () => {
+    updateOtpDisplay();
+  });
+
+  manualInput.addEventListener('keyup', () => {
+    updateOtpDisplay();
+  });
+
+  document.addEventListener('selectionchange', () => {
+    if (document.activeElement === manualInput) {
+      updateOtpDisplay();
+    }
+  });
+
+  manualInput.addEventListener('keydown', e => {
+    if (e.key >= '0' && e.key <= '9') {
+      const start = manualInput.selectionStart;
+      const end = manualInput.selectionEnd;
+      const val = manualInput.value;
+      if (start === end && start < val.length) {
+        e.preventDefault();
+        manualInput.value = val.slice(0, start) + e.key + val.slice(start + 1);
+        const nextPos = Math.min(start + 1, 8);
+        manualInput.setSelectionRange(nextPos, nextPos);
+        clearErrors();
+        updateOtpDisplay();
+      }
+    }
+  });
+
+  manualInput.addEventListener('paste', e => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+    const digits = text.replace(/\D/g, '').slice(0, 8);
+    if (digits) {
+      manualInput.value = digits;
+      manualInput.setSelectionRange(digits.length, digits.length);
+      clearErrors();
+      updateOtpDisplay();
+    }
+  });
+
+  container.addEventListener('click', e => {
+    const slots = container.querySelectorAll('.auth-otp-slot');
+    const val = manualInput.value || '';
+    let targetIndex = -1;
+
+    for (let i = 0; i < slots.length; i++) {
+      const rect = slots[i].getBoundingClientRect();
+      if (e.clientX >= rect.left && e.clientX <= rect.right) {
+        targetIndex = i;
+        break;
+      }
+    }
+
+    manualInput.focus();
+    if (targetIndex !== -1) {
+      if (targetIndex < val.length) {
+        manualInput.setSelectionRange(targetIndex, targetIndex + 1);
+      } else {
+        manualInput.setSelectionRange(val.length, val.length);
+      }
+    } else {
+      manualInput.setSelectionRange(val.length, val.length);
+    }
+    updateOtpDisplay();
+  });
+
+  updateOtpDisplay();
+}
+
 export function initAuthModal() {
   const authModal = document.getElementById('authModal');
   if (!authModal) return;
@@ -291,7 +434,6 @@ export function initAuthModal() {
 
   const emailForm = document.getElementById('authEmailForm');
   const emailInput = document.getElementById('authEmailInput');
-  const manualInput = document.getElementById('authManualInput');
   const backBtn = document.getElementById('authBackBtn');
   const closeBtn = document.getElementById('closeAuthBtn');
   const resendBtn = document.getElementById('authResendBtn');
@@ -306,9 +448,9 @@ export function initAuthModal() {
 
   // 手动验证表单提交
   document.getElementById('authVerifyForm')?.addEventListener('submit', handleManualVerify);
-  manualInput?.addEventListener('input', () => {
-    clearErrors();
-  });
+
+  // 初始化 8 位 OTP 验证码输入
+  initOtpInput();
 
   // 返回按钮
   backBtn?.addEventListener('click', () => {

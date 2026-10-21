@@ -120,7 +120,33 @@
         </div>
         <form id="authVerifyForm" class="auth-form" novalidate>
           <div class="auth-input-wrapper">
-            <input id="authManualInput" type="text" class="auth-input" aria-label="邮箱验证码" placeholder="输入邮件中的验证码" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6,10}" minlength="6" maxlength="10" required spellcheck="false">
+            <div id="authOtpContainer" class="auth-otp-container" role="group" aria-label="8 位验证码输入">
+              <input id="authManualInput"
+                     type="text"
+                     class="auth-otp-hidden-input"
+                     aria-label="8 位邮箱验证码"
+                     autocomplete="one-time-code"
+                     inputmode="numeric"
+                     pattern="[0-9]*"
+                     maxlength="8"
+                     required
+                     spellcheck="false">
+              <div class="auth-otp-display" aria-hidden="true">
+                <div class="auth-otp-group">
+                  <div class="auth-otp-slot" data-index="0"></div>
+                  <div class="auth-otp-slot" data-index="1"></div>
+                  <div class="auth-otp-slot" data-index="2"></div>
+                  <div class="auth-otp-slot" data-index="3"></div>
+                </div>
+                <div class="auth-otp-separator"></div>
+                <div class="auth-otp-group">
+                  <div class="auth-otp-slot" data-index="4"></div>
+                  <div class="auth-otp-slot" data-index="5"></div>
+                  <div class="auth-otp-slot" data-index="6"></div>
+                  <div class="auth-otp-slot" data-index="7"></div>
+                </div>
+              </div>
+            </div>
             <p id="authVerifyError" class="auth-error-msg" role="alert" aria-live="polite" hidden></p>
           </div>
           <button id="authVerifySubmitBtn" class="btn primary auth-submit-btn" type="submit">验证并登录</button>
