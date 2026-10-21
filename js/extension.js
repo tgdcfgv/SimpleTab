@@ -37,9 +37,11 @@ fileInput?.addEventListener('change', async () => {
     if (links.length > 5000) throw new Error('一次最多导入 5000 条书签，请拆分文件后重试。');
     group = { id: generateId(), name: '导入的收藏夹', collapsed: false, links };
     appData.groups.push(group);
-    await syncManager.saveData();
+    const saved = await syncManager.saveData();
     render();
-    status.textContent = `已导入 ${links.length} 条书签到“导入的收藏夹”。`;
+    status.textContent = saved
+      ? `已导入 ${links.length} 条书签到“导入的收藏夹”，并${syncManager.mode === 'local' ? '保存在此浏览器' : '保存到云端'}。`
+      : `已添加 ${links.length} 条书签，但保存失败。请保持页面打开并重试同步，或导出备份。`;
   } catch (error) {
     if (group) appData.groups.splice(appData.groups.indexOf(group), 1);
     status.textContent = error.message || '导入失败，请重试。';

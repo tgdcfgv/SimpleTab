@@ -1,0 +1,109 @@
+// Public client configuration. Never put a service_role key here.
+export const SUPABASE_URL = 'https://zyttspnlrdzjosnitijb.supabase.co';
+export const SUPABASE_KEY = 'sb_publishable_VYNEnxYwYEWMoQgSH7nKNQ_elImzIYs';
+const SESSION_KEY = 'simtab.auth';
+
+export const cloud = {
+  session: null,
+  async request(path, { method = 'GET', body, token, headers = {} } = {}) {
+    const response = await fetch(`${SUPABASE_URL}${path}`, {
+      method, cache: 'no-store', signal: AbortSignal.timeout(20000),
+      headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}), ...headers },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) })
+    });
+    const text = await response.text();
+    const result = text ? JSON.parse(text) : null;
+    if (!response.ok) {
+      const messages = {
+        invalid_credentials: '邮箱或密码不正确。',
+        email_not_confirmed: '请先完成邮箱验证，再登录。',
+        email_address_not_authorized: '当前发信服务仅允许组织成员邮箱注册，请使用你的 Supabase 组织邮箱。',
+        over_email_send_rate_limit: '验证邮件发送过于频繁，请稍后重试。',
+        weak_password: '密码强度不足，请使用更长、更复杂的密码。'
+      };
+      const error = new Error(messages[result?.error_code || result?.code] || result?.msg || result?.message || result?.error_description || '云端请求失败，请重试。');
+      error.status = response.status;
+      throw error;
+    }
+    return result;
+  },
+  storeSession(session) {
+    this.session = session?.access_token ? {
+      access_token: session.access_token, refresh_token: session.refresh_token,
+      expires_at: session.expires_at || Math.floor(Date.now() / 1000) + session.expires_in,
+      user: session.user
+    } : null;
+    if (this.session) localStorage.setItem(SESSION_KEY, JSON.stringify(this.session));
+    else localStorage.removeItem(SESSION_KEY);
+  },
+  async restore() {
+    try { this.session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
+    catch { this.storeSession(null); }
+    if (!this.session) return null;
+    try {
+      const token = await this.token();
+      this.session.user = await this.request('/auth/v1/user', { token });
+      return this.session.user;
+    } catch (error) {
+      if ([400, 401, 403].includes(error.status)) this.storeSession(null);
+      throw error;
+    }
+  },
+  async token() {
+    const refresh = async () => {
+      // Re-read after taking the lock: another tab may have rotated the token.
+      const saved = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+      if (!saved || saved.user?.id !== this.session?.user?.id) throw new Error('登录已失效，请重新登录。');
+      this.session = saved;
+      if (saved.expires_at > Date.now() / 1000 + 60) return saved.access_token;
+      const session = await this.request('/auth/v1/token?grant_type=refresh_token', {
+        method: 'POST', body: { refresh_token: saved.refresh_token }
+      });
+      this.storeSession(session);
+      return session.access_token;
+    };
+    if (navigator.locks) return navigator.locks.request('simtab-auth-refresh', refresh);
+    if (!this.refreshing) this.refreshing = refresh().finally(() => { this.refreshing = null; });
+    return this.refreshing;
+  },
+  async login(email, password) {
+    const session = await this.request('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password } });
+    this.storeSession(session);
+  },
+  async signup(email, password) {
+    const session = await this.request('/auth/v1/signup', { method: 'POST', body: { email, password } });
+    if (session.access_token) this.storeSession(session);
+    return Boolean(session.access_token);
+  },
+  async logout() {
+    try { await this.request('/auth/v1/logout?scope=local', { method: 'POST', token: await this.token() }); }
+    finally { this.storeSession(null); }
+  },
+  async read() {
+    const token = await this.token();
+    const rows = await this.request(`/rest/v1/account_data?user_id=eq.${this.session.user.id}&select=data,revision`, { token });
+    return rows[0] || null;
+  },
+  async write(data, revision) {
+    const token = await this.token();
+    const user_id = this.session.user.id;
+    let rows;
+    try {
+      rows = await this.request(`/rest/v1/account_data${revision === null ? '' : `?user_id=eq.${user_id}&revision=eq.${revision}`}`, {
+        token, method: revision === null ? 'POST' : 'PATCH',
+        headers: { Prefer: 'return=representation' },
+        body: revision === null ? { user_id, data, revision: 1 } : { data, revision: revision + 1 }
+      });
+    } catch (error) {
+      if (error.status !== 409) throw error;
+      rows = [];
+    }
+    if (!rows.length) {
+      const error = new Error('其他设备已更新数据。请先导出未保存的更改，再点击“读取云端版本”。');
+      error.conflict = true;
+      throw error;
+    }
+    return rows[0].revision;
+  }
+};

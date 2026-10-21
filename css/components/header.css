@@ -77,3 +77,30 @@
 }
 
 
+
+#accountDialog {
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  margin: auto;
+  padding: 28px;
+  background: var(--modal-bg);
+  color: var(--text-color);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  box-shadow: 0 24px 80px #0003;
+}
+#accountDialog::backdrop { background: #0005; backdrop-filter: blur(8px); }
+#accountDialog fieldset { border: 0; padding: 0; margin: 20px 0; min-width: 0; }
+#accountDialog [hidden] { display: none !important; }
+#accountDialog label { display: block; margin: 14px 0 8px; }
+#accountDialog input { box-sizing: border-box; width: 100%; padding: 12px; border: 1px solid var(--card-border); border-radius: 10px; background: var(--bg-color); color: inherit; }
+#accountDialog p { line-height: 1.7; margin: 16px 0; }
+#accountDialog small { display: block; opacity: .75; line-height: 1.7; }
+#accountMessage { overflow-wrap: anywhere; }
+.account-heading, .account-actions { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+.account-heading h2 { font-size: 22px; margin: 0; }
+.account-actions { justify-content: flex-start; flex-wrap: wrap; margin-top: 18px; }
+button.sync-status { border: 0; background: none; font: inherit; cursor: pointer; text-align: left; }
+button:disabled { opacity: .5; cursor: wait; }
+@media (max-width: 600px) { .top-bar { flex-wrap: wrap; gap: 12px; } .search-container { flex-basis: 100%; } }

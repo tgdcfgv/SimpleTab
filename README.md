@@ -2,7 +2,7 @@
 
 一个简洁、高密度、可自定义的浏览器新标签页扩展。
 
-SimTab 用空间、分组和网站卡片整理常用链接，并提供搜索、拖拽排序、浏览器书签导入、主题设置及本地备份等功能。项目基于 Manifest V3 开发，适用于 Chrome、Microsoft Edge 等 Chromium 浏览器。
+SimTab 用空间、分组和网站卡片整理常用链接，并提供搜索、拖拽排序、浏览器书签导入、主题设置及云端同步及 JSON 备份等功能。项目基于 Manifest V3 开发，适用于 Chrome、Microsoft Edge 等 Chromium 浏览器。
 
 ## 功能特点
 
@@ -75,7 +75,7 @@ python3 -m http.server 8080 --directory .pages-output
 
 打开 `http://localhost:8080`。构建只复制网页资源并将 `newtab.html` 输出为 `index.html`，不会发布扩展 ZIP 或仓库文件。
 
-网页版的数据保存在当前浏览器、当前域名的本地存储中，不会随着代码部署同步到其他设备。扩展版、预览域名和自定义域名之间迁移数据时，请使用 JSON 导出和导入。普通网站不能直接读取浏览器书签；此功能需使用扩展版。图标抓取可能受目标网站跨域限制影响。
+网页版和扩展版登录同一邮箱账户后，通过 Supabase 读取同一份云端数据。未登录时直接使用浏览器本地内容；登录后显示独立的云端内容，退出后恢复本地内容。需要复制时，可在“我的账户 → 将本地内容复制到云端”中主动操作，本地内容仍会保留。普通网站不能直接读取浏览器书签；此功能需使用扩展版。图标抓取可能受目标网站跨域限制影响。
 
 参考：[Cloudflare 静态网站部署](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/)、[Git 集成](https://developers.cloudflare.com/pages/get-started/git-integration/)、[自定义域名](https://developers.cloudflare.com/pages/configuration/custom-domains/)。
 
@@ -90,7 +90,7 @@ python3 -m http.server 8080 --directory .pages-output
 
 ## 数据与隐私
 
-SimTab 的空间、分组、网站及外观设置默认保存在浏览器本地存储中，不提供云同步，也不会上传完整配置数据。
+SimTab 无需登录即可使用：未登录的空间、分组、网站及外观设置保存在当前浏览器（扩展使用 chrome.storage.local，网页使用 localStorage）。登录后切换为 Supabase 云端数据库（新加坡）中的独立账户内容，云端内容不会写入本地内容。退出登录恢复原本的本地内容。两份内容不会自动上传、合并或互相覆盖。云端未同步的更改只暂存在页面内存中；数据库使用 RLS 将数据限制为当前账户可访问。
 
 使用“一键爬取”网站图标功能时，扩展会访问用户填写的目标网址；直接访问失败时，可能通过第三方服务获取网页信息或站点图标。请勿在该功能中填写包含密码、令牌或其他敏感参数的网址。
 
@@ -141,3 +141,15 @@ SimTab/
 执行 `python3 scripts/package-extension.py` 生成 Edge ZIP。商店介绍和权限说明见 `store-assets/edge-submission.md`。
 
 部署新版时将 Cloudflare 构建命令设为 `sh scripts/build-pages.sh`，输出目录保持 `.pages-output`，以同时发布图标、安装说明和隐私政策。
+
+## Supabase 账户与同步（2.2.1）
+
+- 项目：`zyttspnlrdzjosnitijb`，配置位于 `js/cloud.js`，客户端仅包含 publishable key。
+- 登录方式：邮箱和密码。注册后验证邮箱；也可将邮件中的验证链接粘贴到账户弹窗完成验证。
+- 公开注册前需在 Supabase Auth 配置自己的 SMTP。默认邮件服务限制收件人和发送频率，详情见 [SMTP 文档](https://supabase.com/docs/guides/auth/auth-smtp)。不要关闭邮箱验证绕过邮件配置。
+- 数据表：`public.account_data`，主键 `user_id` 关联 Auth 用户；RLS 限制用户只可操作自己的记录。
+- 每次保存提交完整账户配置，使用 `revision` 乐观锁。其他设备同时修改时会停止覆盖；先导出未保存的更改，再读取云端版本并重新导入需要的内容。
+- 页面启动、窗口重新获得焦点时读取云端；本机编辑自动上传，底部状态按钮可手动同步或重试。
+- 未登录直接使用本地内容，兼容旧版本地数据；登录和退出切换内容来源。手动复制会替换当前云端内容，但始终保留浏览器本地内容。
+- 部署 SQL 参考 `supabase/account-data.sql`（已通过 Supabase MCP 应用到上述项目）。
+- 本地检查：`node --test tests/cloud.test.mjs`。

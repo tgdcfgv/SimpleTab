@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-  <div class="app-container">
+  <div class="app-container" inert>
     <header class="top-bar">
       <div class="search-container">
         <select id="searchEngineSelect" data-icon-only="true">
@@ -27,6 +27,7 @@
         <input type="text" id="searchInput" placeholder="搜索已保存的网站，或直接回车搜索..." autocomplete="off">
         <div id="searchResults" class="search-results hidden"></div>
       </div>
+      <button type="button" class="btn secondary" id="accountBtn">登录 / 注册</button>
     </header>
 
     <main class="groups-container" id="groupsContainer">
@@ -34,10 +35,10 @@
     </main>
     
     <footer class="bottom-bar">
-      <div class="sync-status" id="syncStatus">
+      <button type="button" class="sync-status" id="syncStatus" title="点击同步云端数据">
         <span class="status-dot"></span>
-        <span class="status-text">本地已保存</span>
-      </div>
+        <span class="status-text">正在读取数据…</span>
+      </button>
     </footer>
 
     <nav class="space-dock" id="spaceDock" aria-label="程序坞">
@@ -315,7 +316,7 @@
         <section class="settings-section" id="settingsExtension">
           <div class="settings-section-heading"><div><h4>SimTab 浏览器扩展</h4><p id="extensionEnvironment">将常用网站放在每一个新标签页。</p></div></div>
           <div class="settings-feature-grid">
-            <article class="settings-feature-card"><div><h5>安装扩展</h5><p>扩展版可替换新标签页，并在你授权后读取收藏夹。安装后请在扩展的新标签页中使用；网页与扩展的数据不会自动同步。</p></div><a class="btn primary" href="install.html" target="_blank" rel="noopener noreferrer">查看安装方法</a></article>
+            <article class="settings-feature-card"><div><h5>安装扩展</h5><p>扩展版可替换新标签页，并在你授权后读取收藏夹。安装后请在扩展的新标签页中使用；网页与扩展登录同一账户即可同步数据。</p></div><a class="btn primary" href="install.html" target="_blank" rel="noopener noreferrer">查看安装方法</a></article>
             <article class="settings-feature-card"><div><h5>导入书签文件</h5><p>在 Edge 收藏夹菜单中导出 HTML 文件，再在这里导入。会添加到当前空间的新分组，不覆盖已有内容。</p></div><label class="btn secondary settings-file-button" for="bookmarkFile">选择书签 HTML<input type="file" id="bookmarkFile" accept=".html,.htm,text/html" hidden></label><p id="bookmarkImportStatus" role="status" aria-live="polite"></p></article>
           </div>
           <p class="data-overview-note"><a href="privacy.html" target="_blank" rel="noopener noreferrer">隐私政策</a> · <a href="https://github.com/tgdcfgv/SimTab/issues" target="_blank" rel="noopener noreferrer">反馈问题</a></p>
@@ -325,11 +326,11 @@
           <div class="settings-section-heading">
             <div>
               <h4>我的数据</h4>
-              <p id="dataOverviewSummary">正在统计本地数据…</p>
+              <p id="dataOverviewSummary">正在统计数据…</p>
             </div>
           </div>
           <div class="data-overview-grid" id="dataOverviewGrid"></div>
-          <p class="data-overview-note">占比按空间、分组和网站项目总数计算，数据仅保存在本地浏览器中。</p>
+          <p class="data-overview-note" id="dataOverviewNote">正在读取当前数据来源…</p>
         </section>
         </div>
       </div>
@@ -401,6 +402,25 @@
     </div>
   </div>
 
+  <dialog id="accountDialog" aria-labelledby="accountTitle">
+    <div class="account-heading"><h2 id="accountTitle">账户与云同步</h2><button type="button" class="btn secondary" id="accountClose" hidden>关闭</button></div>
+    <p id="accountIntro">无需登录即可使用，本地内容保存在此浏览器。登录后切换为云端内容。</p>
+    <form id="accountForm">
+      <fieldset id="accountLoginFields">
+        <label for="accountEmail">邮箱</label><input id="accountEmail" type="email" autocomplete="username" required placeholder="you@example.com">
+        <label for="accountPassword">密码</label><input id="accountPassword" type="password" autocomplete="current-password" required placeholder="注册密码至少 8 位">
+        <div class="account-actions"><button class="btn primary" type="submit" value="login">登录</button><button class="btn secondary" type="submit" value="signup">注册账户</button></div>
+        <div id="accountVerification" hidden><label for="accountCode">邮件验证码或验证链接</label><input id="accountCode" type="text" autocomplete="one-time-code" placeholder="粘贴邮件中的完整验证链接"><button type="button" class="btn secondary" id="accountVerify">验证并登录</button></div>
+      </fieldset>
+    </form>
+    <div id="accountDetails" hidden>
+      <strong id="accountEmailLabel"></strong>
+      <div class="account-actions"><button type="button" class="btn primary" id="accountSync">立即同步 / 重试</button><button type="button" class="btn secondary" id="accountLogout">退出并使用本地内容</button></div>
+      <div class="account-actions"><button type="button" class="btn secondary" id="accountMigrate">将本地内容复制到云端</button><button type="button" class="btn secondary" id="accountExport">导出当前数据</button><button type="button" class="btn secondary" id="accountReload" hidden>读取云端版本</button></div>
+    </div>
+    <p id="accountMessage" role="status" aria-live="polite"></p>
+    <small>未登录内容保存在此浏览器；登录后显示独立的云端内容。云端离线修改仅暂存于当前页面，请确认“云端已保存”后再关闭。<a href="privacy.html" target="_blank" rel="noopener noreferrer">隐私政策</a></small>
+  </dialog>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

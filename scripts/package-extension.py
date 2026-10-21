@@ -9,7 +9,7 @@ for folder in ('css', 'js', 'icons'):
     paths.extend(p for p in (root / folder).rglob('*') if p.is_file() and not p.name.startswith('.'))
 for icon in manifest['icons'].values():
     assert (root / icon).is_file(), icon
-assert not manifest.get('host_permissions'), 'Unexpected host permissions'
+assert manifest.get('host_permissions') == ['https://zyttspnlrdzjosnitijb.supabase.co/*'], 'Unexpected host permissions'
 output = root / 'dist' / f"SimTab-{manifest['version']}-edge.zip"
 output.parent.mkdir(exist_ok=True)
 with ZipFile(output, 'w', ZIP_DEFLATED) as archive:

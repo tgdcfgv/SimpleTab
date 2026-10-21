@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "SimTab - 极简新标签页",
-  "version": "2.1.0",
-  "description": "用空间、分组和拖拽整理常用网站；按需导入收藏夹，自定义主题并在本地保存。",
+  "version": "2.2.1",
+  "description": "无需登录即可整理网站并在浏览器本地保存；登录账户后切换到独立的云端内容，跨设备同步。",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
@@ -18,5 +18,8 @@
     "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
-  }
+  },
+  "host_permissions": [
+    "https://zyttspnlrdzjosnitijb.supabase.co/*"
+  ]
 }

@@ -1,4 +1,5 @@
 import { render, applySettings } from './render.js';
+import { cloud } from './cloud.js';
 
 export const SEARCH_ENGINES = [
   { id: "google", name: "Google", homeUrl: "https://www.google.com", searchUrl: "https://www.google.com/search?q=" },
@@ -456,78 +457,156 @@ export const linkStore = [
 // Sync Manager Module
 
 export const syncManager = {
-  status: 'saved', // 'saved', 'unsynced', 'syncing', 'error'
-  
+  status: 'local',
+  mode: 'local',
+  generation: 0,
+  revision: null,
+  ready: false,
+  pending: null,
+  saving: null,
+  conflict: false,
+  error: '',
+
   updateStatusUI() {
     const el = document.getElementById('syncStatus');
-    const dot = el.querySelector('.status-dot');
-    const text = el.querySelector('.status-text');
-    
-    if (this.status === 'saved') {
-      dot.className = 'status-dot';
-      text.textContent = '本地已保存';
-    } else if (this.status === 'unsynced') {
-      dot.className = 'status-dot unsynced';
-      text.textContent = '有未同步更改';
-    } else if (this.status === 'syncing') {
-      dot.className = 'status-dot unsynced'; 
-      text.textContent = '同步中...';
-    } else {
-      dot.className = 'status-dot unsynced';
-      text.textContent = '同步失败';
+    if (!el) return;
+    const labels = { local: '本地已保存', saved: '云端已保存', unsynced: '有未保存更改', syncing: '云端同步中…',
+      signedout: '请登录以使用云端数据', error: this.conflict ? '存在同步冲突 · 点击处理' : (this.mode === 'local' ? '本地保存失败 · 点击重试' : '同步失败 · 点击重试') };
+    el.querySelector('.status-dot').className = ['saved', 'local'].includes(this.status) ? 'status-dot' : 'status-dot unsynced';
+    el.querySelector('.status-text').textContent = labels[this.status];
+    el.title = this.error || (this.mode === 'local' ? '数据保存在此浏览器，登录后切换到云端内容' : '点击同步云端数据');
+    document.dispatchEvent(new Event('simtab-sync'));
+  },
+
+  async readLocal() {
+    return globalThis.chrome?.storage?.local
+      ? (await chrome.storage.local.get('appData')).appData
+      : JSON.parse(localStorage.getItem('appData') || 'null');
+  },
+
+  async loadLocal() {
+    this.generation++;
+    this.ready = false;
+    this.mode = 'local';
+    this.pending = null;
+    this.revision = null;
+    this.conflict = false;
+    this.error = '';
+    try {
+      appData = normalizeAppData(await this.readLocal());
+      this.status = 'local';
+    } catch (error) {
+      appData = normalizeAppData(null);
+      this.error = '读取本地数据失败，请检查浏览器存储设置。原数据未被清理。';
+      this.status = 'error';
     }
+    this.ready = true;
+    this.updateStatusUI();
   },
 
   async loadData() {
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-      const data = await chrome.storage.local.get(['appData']);
-      if (data.appData) {
-        appData = normalizeAppData(data.appData);
-      } else {
-        appData = normalizeAppData(JSON.parse(JSON.stringify(DEFAULT_DATA)));
-        this.saveData(true);
-      }
-    } else {
-      // Fallback for local dev without extension environment
-      const data = localStorage.getItem('appData');
-      if (data) {
-        appData = normalizeAppData(JSON.parse(data));
-      } else {
-        appData = normalizeAppData(JSON.parse(JSON.stringify(DEFAULT_DATA)));
-        this.saveData(true);
-      }
-    }
+    this.ready = false;
+    appData = normalizeAppData(null);
+    try {
+      if (!await cloud.restore()) return await this.loadLocal();
+      await this.loadCloud();
+    } catch (error) {
+      if (!cloud.session) return await this.loadLocal();
+      this.mode = 'cloud';
+      this.error = error.message;
+      this.status = 'error';
+    } finally { this.updateStatusUI(); }
+  },
+
+  async loadCloud() {
+    const generation = ++this.generation;
+    this.mode = 'cloud';
+    this.ready = false;
+    this.status = 'syncing';
+    this.updateStatusUI();
+    const row = await cloud.read();
+    if (generation !== this.generation) return;
+    const data = normalizeAppData(row ? row.data : JSON.parse(JSON.stringify(DEFAULT_DATA)));
+    this.revision = row?.revision ?? null;
+    // Only initialize after a successful read confirmed the account is empty.
+    if (!row) this.revision = await cloud.write(data, null);
+    if (generation !== this.generation) return;
+    appData = data;
+    this.pending = null;
+    this.conflict = false;
+    this.error = '';
+    this.ready = true;
     this.status = 'saved';
     this.updateStatusUI();
   },
 
-  async saveData(isInit = false) {
+  async saveData() {
+    if (!this.ready || (this.mode === 'cloud' && !cloud.session)) return false;
     syncActiveGroupsToSpace();
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-      await chrome.storage.local.set({ appData });
-    } else {
-      localStorage.setItem('appData', JSON.stringify(appData));
-    }
-    
-    if (!isInit) {
-      this.status = 'unsynced';
-      this.updateStatusUI();
-      // Simulate sync delay
-      setTimeout(() => {
-        this.status = 'saved';
-        this.updateStatusUI();
-      }, 800);
-    }
+    this.pending = JSON.parse(JSON.stringify(appData));
+    if (this.conflict) return false;
+    if (this.saving) return this.saving;
+    this.saving = Promise.resolve().then(() => this.flush());
+    try { return await this.saving; }
+    finally { this.saving = null; }
+  },
+
+  async flush() {
+    const generation = this.generation;
+    const mode = this.mode;
+    this.status = mode === 'local' ? 'unsynced' : 'syncing';
+    this.updateStatusUI();
+    try {
+      while (this.pending) {
+        const snapshot = this.pending;
+        if (mode === 'local') {
+          if (globalThis.chrome?.storage?.local) await chrome.storage.local.set({ appData: snapshot });
+          else await Promise.resolve().then(() => localStorage.setItem('appData', JSON.stringify(snapshot)));
+        } else {
+          const revision = await cloud.write(snapshot, this.revision);
+          if (generation !== this.generation) return false;
+          this.revision = revision;
+        }
+        if (generation !== this.generation) return false;
+        if (this.pending === snapshot) this.pending = null;
+      }
+      this.status = mode === 'local' ? 'local' : 'saved';
+      this.error = '';
+      return true;
+    } catch (error) {
+      if (generation !== this.generation) return false;
+      this.conflict = Boolean(error.conflict);
+      this.error = error.message;
+      this.status = 'error';
+      return false;
+    } finally { this.updateStatusUI(); }
   },
 
   async syncNow() {
-    // TODO: Implement actual cloud sync (e.g., chrome.storage.sync, Supabase, etc.)
-    this.status = 'syncing';
-    this.updateStatusUI();
-    setTimeout(() => {
+    if (!this.ready) return false;
+    if (this.pending || this.saving) return this.saveData();
+    if (this.mode === 'local') return true;
+    try {
+      const generation = this.generation;
+      const revision = this.revision;
+      const row = await cloud.read();
+      // A local edit may have happened while the read was in flight.
+      if (generation !== this.generation || this.pending || this.saving || this.revision !== revision) return true;
+      if (!row) throw new Error('云端记录已移除，请退出后重新登录。');
+      appData = normalizeAppData(row.data);
+      this.revision = row.revision;
       this.status = 'saved';
+      this.error = '';
       this.updateStatusUI();
-    }, 1000);
+      applySettings();
+      render();
+      return true;
+    } catch (error) {
+      this.error = error.message;
+      this.status = 'error';
+      this.updateStatusUI();
+      return false;
+    }
   },
 
   exportData() {
@@ -542,6 +621,7 @@ export const syncManager = {
   },
 
   importData(file) {
+    if (!this.ready) return;
     const reader = new FileReader();
     reader.onload = (e) => {
       try {

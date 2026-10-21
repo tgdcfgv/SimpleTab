@@ -432,7 +432,7 @@ function renderDataOverview() {
   const total = items.reduce((sum, item) => sum + item.value, 0);
   const dataSize = new Blob([JSON.stringify(appData)]).size;
 
-  summary.textContent = `共 ${total} 项记录 · 本地数据 ${formatDataSize(dataSize)}`;
+  summary.textContent = `共 ${total} 项记录 · ${syncManager.mode === 'local' ? '本地数据' : '云端数据'} ${formatDataSize(dataSize)}`;
   grid.innerHTML = '';
 
   items.forEach(item => {
