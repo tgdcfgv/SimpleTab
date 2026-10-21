@@ -142,7 +142,7 @@ SimTab/
 
 部署新版时将 Cloudflare 构建命令设为 `sh scripts/build-pages.sh`，输出目录保持 `.pages-output`，以同时发布图标、安装说明和隐私政策。
 
-## Supabase 账户与同步（2.2.1）
+## Supabase 账户与同步（2.2.2）
 
 - 项目：`zyttspnlrdzjosnitijb`，配置位于 `js/cloud.js`，客户端仅包含 publishable key。
 - 登录方式：邮箱和密码。注册后验证邮箱；也可将邮件中的验证链接粘贴到账户弹窗完成验证。
@@ -153,3 +153,5 @@ SimTab/
 - 未登录直接使用本地内容，兼容旧版本地数据；登录和退出切换内容来源。手动复制会替换当前云端内容，但始终保留浏览器本地内容。
 - 部署 SQL 参考 `supabase/account-data.sql`（已通过 Supabase MCP 应用到上述项目）。
 - 本地检查：`node --test tests/cloud.test.mjs`。
+
+登录入口位于程序坞设置按钮左侧，以人像图标显示。每次主动登录成功后选择“用云端内容覆盖当前页面”或“保留当前页面并保存到云端”；未选择前不读取或写入账户配置，刷新后仍需选择。已完成选择的会话刷新后直接使用云端内容。两种选择都保留浏览器本地副本。

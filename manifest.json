@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SimTab - 极简新标签页",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "无需登录即可整理网站并在浏览器本地保存；登录账户后切换到独立的云端内容，跨设备同步。",
   "chrome_url_overrides": {
     "newtab": "newtab.html"

@@ -273,7 +273,7 @@
   border: none;
   border-radius: 50%;
   color: var(--text-secondary);
-  background: var(--settings-card);
+  background: var(--settings-card, var(--item-hover-bg));
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -548,7 +548,7 @@
 }
 
 #settingsModal .custom-select-options-global {
-  background: var(--settings-card);
+  background: var(--settings-card, var(--item-hover-bg));
   box-shadow: 0 16px 35px rgba(0, 0, 0, 0.22);
 }
 
@@ -963,3 +963,37 @@ textarea:focus {
   display: none !important;
 }
 
+
+/* Native account dialogs share the application's modal and button styles. */
+dialog.modal {
+  margin: auto;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  color: var(--text-color);
+}
+dialog.modal::backdrop { background: rgba(0, 0, 0, .4); backdrop-filter: blur(8px); }
+.modal-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.modal-heading h3 { margin: 0; }
+.account-modal [hidden] { display: none !important; }
+.account-modal fieldset { border: 0; padding: 0; margin: 24px 0 0; min-width: 0; }
+.account-modal p { color: var(--text-secondary); font-size: 13px; line-height: 1.65; }
+.account-modal small { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+.account-modal > small { display: block; margin-top: 20px; }
+.account-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+#accountDetails { padding-top: 20px; }
+#accountEmailLabel { font-size: 14px; overflow-wrap: anywhere; }
+#accountMessage { margin-top: 16px; overflow-wrap: anywhere; }
+#accountMessage:empty { display: none; }
+#accountChoice { margin-top: 24px; }
+#accountChoice h4 { font-size: 15px; margin-bottom: 8px; }
+.sync-choice-list { display: grid; gap: 12px; margin-top: 20px; }
+.btn.sync-choice { display: flex; justify-content: flex-start; align-items: flex-start; gap: 14px; padding: 16px; text-align: left; border: 1px solid var(--card-border); background: transparent; }
+.btn.sync-choice:hover { border-color: var(--primary-color); background: var(--item-hover-bg); }
+.sync-choice svg { flex: 0 0 auto; color: var(--primary-color); margin-top: 2px; }
+.sync-choice strong, .sync-choice small { display: block; }
+.sync-choice strong { font-weight: 600; font-size: 14px; line-height: 1.5; margin-bottom: 5px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; line-height: 1.5; }
+.btn:disabled { opacity: .5; cursor: wait; transform: none; }
+.btn:focus-visible, .settings-close-btn:focus-visible, .dock-action-btn:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 3px; }
+#accountBtn[data-signed-in="true"] { color: var(--primary-color); }
+#accountBtn[data-signed-in="true"]::after { content: ''; position: absolute; right: 5px; bottom: 5px; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }

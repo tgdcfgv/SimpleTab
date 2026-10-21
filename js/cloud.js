@@ -32,7 +32,8 @@ export const cloud = {
     this.session = session?.access_token ? {
       access_token: session.access_token, refresh_token: session.refresh_token,
       expires_at: session.expires_at || Math.floor(Date.now() / 1000) + session.expires_in,
-      user: session.user
+      user: session.user,
+      needs_choice: session.needs_choice ?? (this.session?.user?.id === session.user?.id && this.session?.needs_choice) ?? false
     } : null;
     if (this.session) localStorage.setItem(SESSION_KEY, JSON.stringify(this.session));
     else localStorage.removeItem(SESSION_KEY);
@@ -69,11 +70,11 @@ export const cloud = {
   },
   async login(email, password) {
     const session = await this.request('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password } });
-    this.storeSession(session);
+    this.storeSession({ ...session, needs_choice: true });
   },
   async signup(email, password) {
     const session = await this.request('/auth/v1/signup', { method: 'POST', body: { email, password } });
-    if (session.access_token) this.storeSession(session);
+    if (session.access_token) this.storeSession({ ...session, needs_choice: true });
     return Boolean(session.access_token);
   },
   async logout() {

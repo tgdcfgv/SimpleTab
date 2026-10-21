@@ -263,3 +263,15 @@
   background: var(--primary-color);
 }
 
+
+/* Keep every action reachable on narrow bottom docks. */
+@media (max-width: 560px) {
+  [data-dock-position="bottom"] .space-dock { padding: 6px; gap: 6px; }
+  [data-dock-position="bottom"] .dock-actions,
+  [data-dock-position="bottom"] .space-switcher,
+  [data-dock-position="bottom"] .space-dock-list { gap: 4px; }
+  [data-dock-position="bottom"] .dock-action-btn,
+  [data-dock-position="bottom"] .space-dock-btn,
+  [data-dock-position="bottom"] .space-edit-btn { width: 32px; height: 32px; flex: 0 0 32px; }
+  [data-dock-position="bottom"] .space-tab-hint { display: none; }
+}

@@ -27,7 +27,6 @@
         <input type="text" id="searchInput" placeholder="搜索已保存的网站，或直接回车搜索..." autocomplete="off">
         <div id="searchResults" class="search-results hidden"></div>
       </div>
-      <button type="button" class="btn secondary" id="accountBtn">登录 / 注册</button>
     </header>
 
     <main class="groups-container" id="groupsContainer">
@@ -43,6 +42,9 @@
 
     <nav class="space-dock" id="spaceDock" aria-label="程序坞">
       <div class="dock-actions" aria-label="快捷操作">
+        <button type="button" id="accountBtn" class="dock-action-btn" title="登录 / 注册" aria-label="登录 / 注册">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg>
+        </button>
         <button id="settingsBtn" class="dock-action-btn" title="设置" aria-label="设置">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </button>
@@ -402,17 +404,26 @@
     </div>
   </div>
 
-  <dialog id="accountDialog" aria-labelledby="accountTitle">
-    <div class="account-heading"><h2 id="accountTitle">账户与云同步</h2><button type="button" class="btn secondary" id="accountClose" hidden>关闭</button></div>
+  <dialog id="accountDialog" class="modal account-modal" aria-labelledby="accountTitle">
+    <div class="modal-heading"><h3 id="accountTitle">账户与云同步</h3><button type="button" class="settings-close-btn" id="accountClose" title="关闭" aria-label="关闭" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button></div>
     <p id="accountIntro">无需登录即可使用，本地内容保存在此浏览器。登录后切换为云端内容。</p>
     <form id="accountForm">
       <fieldset id="accountLoginFields">
-        <label for="accountEmail">邮箱</label><input id="accountEmail" type="email" autocomplete="username" required placeholder="you@example.com">
-        <label for="accountPassword">密码</label><input id="accountPassword" type="password" autocomplete="current-password" required placeholder="注册密码至少 8 位">
+        <div class="form-group"><label for="accountEmail">邮箱</label><input id="accountEmail" type="email" autocomplete="username" required placeholder="you@example.com"></div>
+        <div class="form-group"><label for="accountPassword">密码</label><input id="accountPassword" type="password" autocomplete="current-password" required placeholder="注册密码至少 8 位"></div>
         <div class="account-actions"><button class="btn primary" type="submit" value="login">登录</button><button class="btn secondary" type="submit" value="signup">注册账户</button></div>
         <div id="accountVerification" hidden><label for="accountCode">邮件验证码或验证链接</label><input id="accountCode" type="text" autocomplete="one-time-code" placeholder="粘贴邮件中的完整验证链接"><button type="button" class="btn secondary" id="accountVerify">验证并登录</button></div>
       </fieldset>
     </form>
+    <section id="accountChoice" hidden aria-labelledby="accountChoiceTitle">
+      <h4 id="accountChoiceTitle">登录成功，选择要使用的内容</h4>
+      <p class="data-desc">请选择同步方向，确认后才会切换内容。本地副本会继续保留。</p>
+      <div class="sync-choice-list">
+        <button type="button" class="btn secondary sync-choice" id="accountUseCloud"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 18a5 5 0 1 1 1-9.9 6 6 0 0 1 11.5 2A4 4 0 0 1 18 18"></path><path d="M12 12v9m-3-3 3 3 3-3"></path></svg><span><strong>用云端内容覆盖当前页面</strong><small>显示账户中已保存的网站和设置。</small></span></button>
+        <button type="button" class="btn secondary sync-choice" id="accountKeepPage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2"></rect><path d="M8 21h8m-4-4v4m0-8V7m-3 3 3-3 3 3"></path></svg><span><strong>保留当前页面并保存到云端</strong><small>用当前页面的网站和设置替换账户的云端内容。</small></span></button>
+      </div>
+      <div class="modal-actions"><button type="button" class="btn secondary" id="accountChoiceCancel">取消并继续本地使用</button></div>
+    </section>
     <div id="accountDetails" hidden>
       <strong id="accountEmailLabel"></strong>
       <div class="account-actions"><button type="button" class="btn primary" id="accountSync">立即同步 / 重试</button><button type="button" class="btn secondary" id="accountLogout">退出并使用本地内容</button></div>
@@ -420,6 +431,10 @@
     </div>
     <p id="accountMessage" role="status" aria-live="polite"></p>
     <small>未登录内容保存在此浏览器；登录后显示独立的云端内容。云端离线修改仅暂存于当前页面，请确认“云端已保存”后再关闭。<a href="privacy.html" target="_blank" rel="noopener noreferrer">隐私政策</a></small>
+  </dialog>
+  <dialog id="accountConfirmDialog" class="modal account-modal" aria-labelledby="accountConfirmTitle">
+    <h3 id="accountConfirmTitle">确认操作</h3><p id="accountConfirmMessage" class="data-desc"></p>
+    <div class="modal-actions"><button type="button" class="btn secondary" id="accountConfirmCancel">取消</button><button type="button" class="btn primary" id="accountConfirmOk">确认</button></div>
   </dialog>
   <script type="module" src="js/main.js"></script>
 </body>

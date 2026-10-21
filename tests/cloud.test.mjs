@@ -65,3 +65,16 @@ test('sign out removes credentials even when remote logout fails', async () => {
   assert.equal(cloud.session, null);
   assert.equal(values.has('simtab.auth'), false);
 });
+
+
+test('new login requires a direction choice and token refresh preserves it', async () => {
+  cloud.storeSession(null);
+  globalThis.fetch = async () => response(session());
+  await cloud.login('test@example.test', 'password');
+  assert.equal(cloud.session.needs_choice, true);
+  cloud.storeSession({ ...cloud.session, expires_at: 1 });
+  await cloud.token();
+  assert.equal(cloud.session.needs_choice, true);
+  cloud.storeSession({ ...cloud.session, needs_choice: false });
+  assert.equal(JSON.parse(values.get('simtab.auth')).needs_choice, false);
+});

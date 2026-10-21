@@ -509,16 +509,17 @@ export const syncManager = {
     appData = normalizeAppData(null);
     try {
       if (!await cloud.restore()) return await this.loadLocal();
+      if (cloud.session.needs_choice) return await this.loadLocal();
       await this.loadCloud();
     } catch (error) {
-      if (!cloud.session) return await this.loadLocal();
+      if (!cloud.session || cloud.session.needs_choice) return await this.loadLocal();
       this.mode = 'cloud';
       this.error = error.message;
       this.status = 'error';
     } finally { this.updateStatusUI(); }
   },
 
-  async loadCloud() {
+  async loadCloud(currentData = null) {
     const generation = ++this.generation;
     this.mode = 'cloud';
     this.ready = false;
@@ -526,10 +527,10 @@ export const syncManager = {
     this.updateStatusUI();
     const row = await cloud.read();
     if (generation !== this.generation) return;
-    const data = normalizeAppData(row ? row.data : JSON.parse(JSON.stringify(DEFAULT_DATA)));
+    const data = normalizeAppData(currentData ? JSON.parse(JSON.stringify(currentData)) : (row ? row.data : JSON.parse(JSON.stringify(DEFAULT_DATA))));
     this.revision = row?.revision ?? null;
     // Only initialize after a successful read confirmed the account is empty.
-    if (!row) this.revision = await cloud.write(data, null);
+    if (currentData || !row) this.revision = await cloud.write(data, this.revision);
     if (generation !== this.generation) return;
     appData = data;
     this.pending = null;
