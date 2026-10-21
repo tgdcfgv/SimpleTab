@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeAppData } from '../js/data.js';
 import { safeWebUrl, safeImageUrl } from '../js/urls.js';
-import { findLinks, nextSelection } from '../js/search-model.js';
+import { findLinks, nextSelection, parseSuggestions } from '../js/search-model.js';
 import { portableSnapshot } from '../js/wallpaper.js';
 
 const group = links => ({ id: 'g', name: 'Group', links });
@@ -62,3 +62,11 @@ test('portable snapshots never include an embedded wallpaper and do not mutate t
   assert.equal(portableSnapshot(data).settings.wallpaper, null);
   assert.match(data.settings.wallpaper, /^data:/);
 });
+
+test('parseSuggestions extracts valid list from OpenSearch JSON format', () => {
+  assert.deepEqual(parseSuggestions(['bing', ['bing map', 'bing image', 'bing ai']]), ['bing map', 'bing image', 'bing ai']);
+  assert.deepEqual(parseSuggestions(null), []);
+  assert.deepEqual(parseSuggestions(['bing', []]), []);
+  assert.deepEqual(parseSuggestions(['bing', ['a', '', null, 'b']], 1), ['a']);
+});
+

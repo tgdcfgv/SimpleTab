@@ -179,6 +179,10 @@ SimTab/
 
 后续阶段：跨空间移动与撤销、触摸拖拽、云端冲突合并与实时更新、Vite/TypeScript 迁移及其余弹窗模块拆分。
 
+## 2.4.1 发布记录
+
+新增 Bing 搜索联想建议与自动补全支持（带输入防抖、请求中断、Tab 键补全及键盘快速导航）；优化扩展 host_permissions 与打包规范。
+
 ## 2.4.0 发布记录
 
 建立全套 Design System（统一 Button、Input、Select、Switch、Menu、Dialog 与共享 Token）；重做 Settings 为 macOS System Settings 风格对齐表单，优先展示 Account 身份与明确的 Sync 状态，独立备份恢复区域并精简 Statistics；重做颜色与深色模式，解耦 Accent，加入 WCAG 相对亮度自动白字/黑字判断并修复按钮对比度；应用商店正式更名为“网站库”。

@@ -9,7 +9,10 @@ for folder in ('css', 'js', 'icons'):
     paths.extend(p for p in (root / folder).rglob('*') if p.is_file() and not p.name.startswith('.'))
 for icon in manifest['icons'].values():
     assert (root / icon).is_file(), icon
-assert manifest.get('host_permissions') == ['https://zyttspnlrdzjosnitijb.supabase.co/*'], 'Unexpected host permissions'
+assert manifest.get('host_permissions') == [
+    'https://zyttspnlrdzjosnitijb.supabase.co/*',
+    'https://api.bing.com/*'
+], 'Unexpected host permissions'
 assert set(manifest['permissions']) == {'storage', 'favicon', 'activeTab', 'contextMenus'}, 'Unexpected permissions'
 assert manifest['background']['type'] == 'module'
 assert (root / manifest['background']['service_worker']).is_file(), 'Missing service worker'

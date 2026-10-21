@@ -1,12 +1,17 @@
 import { appData, SEARCH_ENGINES } from './storage.js';
 import { getFaviconUrl } from './utils.js';
 import { safeWebUrl } from './urls.js';
-import { findLinks, nextSelection } from './search-model.js';
+import { icon } from './icons.js';
+import { findLinks, nextSelection, fetchBingSuggestions } from './search-model.js';
 
 export const searchInput = document.getElementById('searchInput');
 export const searchResults = document.getElementById('searchResults');
 let results = [];
 let selected = -1;
+let debounceTimer = null;
+let currentController = null;
+let activeQueryId = 0;
+
 searchInput.setAttribute('role', 'combobox');
 searchInput.setAttribute('aria-autocomplete', 'list');
 searchInput.setAttribute('aria-controls', searchResults.id);
@@ -22,52 +27,147 @@ function openUrl(value) {
 
 function hideResults() {
   selected = -1;
+  results = [];
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
+    debounceTimer = null;
+  }
+  if (currentController) {
+    currentController.abort();
+    currentController = null;
+  }
   searchResults.classList.add('hidden');
   searchInput.setAttribute('aria-expanded', 'false');
   searchInput.removeAttribute('aria-activedescendant');
 }
 
 function updateSelection() {
-  searchResults.querySelectorAll('[role="option"]').forEach((item, index) => {
-    item.classList.toggle('active', index === selected);
-    item.setAttribute('aria-selected', String(index === selected));
-    if (index === selected) item.scrollIntoView({ block: 'nearest' });
+  const options = searchResults.querySelectorAll('[role="option"]');
+  options.forEach((item, index) => {
+    const isActive = index === selected;
+    item.classList.toggle('active', isActive);
+    item.setAttribute('aria-selected', String(isActive));
+    if (isActive) item.scrollIntoView({ block: 'nearest' });
   });
   if (selected < 0) searchInput.removeAttribute('aria-activedescendant');
   else searchInput.setAttribute('aria-activedescendant', `search-result-${selected}`);
 }
 
+function renderDropdown(links, suggestions, query) {
+  if (!appData) return;
+  const engine = SEARCH_ENGINES.find(item => item.id === appData.settings.searchEngine) || SEARCH_ENGINES[0];
+
+  results = [
+    ...links.map(link => ({ type: 'link', ...link })),
+    ...suggestions.map(text => ({
+      type: 'suggestion',
+      text,
+      url: engine.searchUrl + encodeURIComponent(text)
+    }))
+  ];
+
+  searchResults.replaceChildren();
+  if (!query) return hideResults();
+
+  let index = 0;
+
+  if (links.length > 0) {
+    if (suggestions.length > 0) {
+      const header = document.createElement('div');
+      header.className = 'search-section-header';
+      header.textContent = '已保存的网站';
+      searchResults.append(header);
+    }
+    links.forEach(link => {
+      const itemIndex = index++;
+      const item = document.createElement('div');
+      item.className = 'search-result-item';
+      item.id = `search-result-${itemIndex}`;
+      item.dataset.index = itemIndex;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', 'false');
+      item.title = `${link.spaceName} / ${link.groupName} · ${link.url}`;
+
+      const image = document.createElement('img');
+      image.src = link.customIcon || getFaviconUrl(link.url);
+      image.alt = '';
+
+      const title = document.createElement('span');
+      title.className = 'site-title';
+      title.textContent = `${link.title} · ${link.spaceName} / ${link.groupName}`;
+
+      item.append(image, title);
+      searchResults.append(item);
+    });
+  }
+
+  if (suggestions.length > 0) {
+    if (links.length > 0) {
+      const header = document.createElement('div');
+      header.className = 'search-section-header';
+      header.textContent = 'Bing 搜索建议';
+      searchResults.append(header);
+    }
+    suggestions.forEach(text => {
+      const itemIndex = index++;
+      const item = document.createElement('div');
+      item.className = 'search-result-item search-suggestion-item';
+      item.id = `search-result-${itemIndex}`;
+      item.dataset.index = itemIndex;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', 'false');
+
+      const iconWrap = document.createElement('span');
+      iconWrap.className = 'search-suggest-icon-wrap';
+      iconWrap.innerHTML = icon('search', 16);
+
+      const title = document.createElement('span');
+      title.className = 'site-title search-suggest-title';
+      title.textContent = text;
+
+      const action = document.createElement('span');
+      action.className = 'search-suggest-action';
+      action.textContent = '搜索 ↗';
+
+      item.append(iconWrap, title, action);
+      searchResults.append(item);
+    });
+  }
+
+  const hint = document.createElement('div');
+  hint.className = 'search-result-item search-result-hint';
+  hint.textContent = `按回车使用 ${engine.name} 搜索；↑↓ 选择${suggestions.length ? '；Tab 补全' : ''}`;
+  searchResults.append(hint);
+
+  searchResults.classList.remove('hidden');
+  searchInput.setAttribute('aria-expanded', 'true');
+  updateSelection();
+}
+
 function showResults() {
   if (!appData) return;
   const query = searchInput.value.trim();
+  if (!query) {
+    hideResults();
+    return;
+  }
+
   selected = -1;
-  results = findLinks(appData, query);
-  searchResults.replaceChildren();
-  if (!query) return hideResults();
-  results.forEach((link, index) => {
-    const item = document.createElement('div');
-    item.className = 'search-result-item';
-    item.id = `search-result-${index}`;
-    item.dataset.index = index;
-    item.setAttribute('role', 'option');
-    item.setAttribute('aria-selected', 'false');
-    item.title = `${link.spaceName} / ${link.groupName} · ${link.url}`;
-    const image = document.createElement('img');
-    image.src = link.customIcon || getFaviconUrl(link.url);
-    image.alt = '';
-    const title = document.createElement('span');
-    title.className = 'site-title';
-    title.textContent = `${link.title} · ${link.spaceName} / ${link.groupName}`;
-    item.append(image, title);
-    searchResults.append(item);
-  });
-  const hint = document.createElement('div');
-  hint.className = 'search-result-item search-result-hint';
-  const engine = SEARCH_ENGINES.find(item => item.id === appData.settings.searchEngine) || SEARCH_ENGINES[0];
-  hint.textContent = `按回车使用 ${engine.name} 搜索；↑↓ 选择已保存的网站`;
-  searchResults.append(hint);
-  searchResults.classList.remove('hidden');
-  searchInput.setAttribute('aria-expanded', 'true');
+  const links = findLinks(appData, query, 5);
+  renderDropdown(links, [], query);
+
+  if (debounceTimer) clearTimeout(debounceTimer);
+  if (currentController) currentController.abort();
+
+  const queryId = ++activeQueryId;
+  debounceTimer = setTimeout(async () => {
+    currentController = new AbortController();
+    const suggestions = await fetchBingSuggestions(query, currentController.signal, 6);
+    if (queryId === activeQueryId && searchInput.value.trim() === query) {
+      const filtered = suggestions.filter(s => s.trim().toLowerCase() !== query.toLowerCase());
+      renderDropdown(links, filtered.length ? filtered : suggestions, query);
+    }
+  }, 160);
 }
 
 searchInput.addEventListener('input', showResults);
@@ -75,6 +175,16 @@ searchInput.addEventListener('focus', showResults);
 searchInput.addEventListener('keydown', e => {
   if (e.isComposing || e.keyCode === 229 || !appData) return;
   if (e.key === 'Escape') { hideResults(); return; }
+
+  if (e.key === 'Tab') {
+    if (selected >= 0 && results[selected]?.type === 'suggestion') {
+      e.preventDefault();
+      searchInput.value = results[selected].text;
+      showResults();
+      return;
+    }
+  }
+
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
     e.preventDefault();
     if (searchResults.classList.contains('hidden')) showResults();
@@ -85,7 +195,7 @@ searchInput.addEventListener('keydown', e => {
     const query = searchInput.value.trim();
     if (!query) return;
     const engine = SEARCH_ENGINES.find(item => item.id === appData.settings.searchEngine) || SEARCH_ENGINES[0];
-    openUrl(selected >= 0 && !searchResults.classList.contains('hidden')
+    openUrl(selected >= 0 && !searchResults.classList.contains('hidden') && results[selected]
       ? results[selected].url : engine.searchUrl + encodeURIComponent(query));
     hideResults();
   }
@@ -94,9 +204,25 @@ searchInput.addEventListener('keydown', e => {
 document.addEventListener('click', e => {
   if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) hideResults();
 });
+
 searchResults.addEventListener('click', e => {
   const item = e.target.closest('[data-index]');
-  if (item) { openUrl(results[Number(item.dataset.index)].url); hideResults(); }
+  if (item && results[Number(item.dataset.index)]) {
+    openUrl(results[Number(item.dataset.index)].url);
+    hideResults();
+    return;
+  }
+  const hint = e.target.closest('.search-result-hint');
+  if (hint) {
+    const query = searchInput.value.trim();
+    if (query) {
+      const engine = SEARCH_ENGINES.find(item => item.id === appData.settings.searchEngine) || SEARCH_ENGINES[0];
+      openUrl(engine.searchUrl + encodeURIComponent(query));
+      hideResults();
+    }
+  }
 });
+
 // Clear stale URLs when switching accounts, importing or removing saved content.
 document.addEventListener('simtab-render', hideResults);
+

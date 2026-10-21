@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "minimum_chrome_version": "102",
   "name": "SimTab - 极简新标签页",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "无需登录即可整理网站并在浏览器本地保存；登录账户后切换到独立的云端内容，跨设备同步。",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
@@ -35,6 +35,7 @@
     "128": "icons/icon-128.png"
   },
   "host_permissions": [
-    "https://zyttspnlrdzjosnitijb.supabase.co/*"
+    "https://zyttspnlrdzjosnitijb.supabase.co/*",
+    "https://api.bing.com/*"
   ]
 }

@@ -2,7 +2,7 @@ import { safeWebUrl, safeImageUrl } from './urls.js';
 
 export const SEARCH_ENGINES = [
   { id: "google", name: "Google", homeUrl: "https://www.google.com", searchUrl: "https://www.google.com/search?q=" },
-  { id: "bing", name: "Bing", homeUrl: "https://www.bing.com", searchUrl: "https://www.bing.com/search?q=" },
+  { id: "bing", name: "Bing", homeUrl: "https://www.bing.com", searchUrl: "https://www.bing.com/search?q=", suggestUrl: "https://api.bing.com/osjson.aspx?query=" },
   { id: "baidu", name: "百度", homeUrl: "https://www.baidu.com", searchUrl: "https://www.baidu.com/s?wd=" },
   { id: "duckduckgo", name: "DuckDuckGo", homeUrl: "https://duckduckgo.com", searchUrl: "https://duckduckgo.com/?q=" },
   { id: "so360", name: "360 搜索", homeUrl: "https://www.so.com", searchUrl: "https://www.so.com/s?q=" },
