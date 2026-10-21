@@ -1,4 +1,4 @@
-import { saveWallpaper, clearWallpaper } from './wallpaper.js';
+import { saveWallpaper, clearWallpaper, getWallpaperUrl } from './wallpaper.js';
 import { safeWebUrl, safeImageUrl } from './urls.js';
 import { icon } from './icons.js';
 import { appData, createTemporaryGroup, SEARCH_ENGINES, setActiveSpace, syncManager } from './storage.js';
@@ -41,6 +41,7 @@ document.getElementById('okConfirmBtn').addEventListener('click', () => {
 
 export function closeAllModals(notify = true) {
   if (!settingsModal.classList.contains('hidden') && settingsModal.dataset.locked === 'true') return;
+  document.querySelectorAll('.custom-select-container.open').forEach(container => setSelectOpen(container, false));
   const settingsWereOpen = !settingsModal.classList.contains('hidden');
   modalOverlay.classList.add('hidden');
   siteModal.classList.add('hidden');
@@ -429,73 +430,68 @@ function renderSearchEngineSettings() {
   });
 }
 
-function formatDataSize(bytes) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+function updateDockSettings() {
+  const enabled = appData.settings.dockEnabled !== false;
+  document.getElementById('dockEnabledToggle').checked = enabled;
+  const select = document.getElementById('dockPositionSelect');
+  select.disabled = !enabled;
+  document.getElementById('dockPositionSetting').classList.toggle('setting-disabled', !enabled);
+  const trigger = select.nextElementSibling?.querySelector('.custom-select-trigger-global');
+  if (trigger) trigger.disabled = !enabled;
+  if (trigger) setSelectOpen(select.nextElementSibling, false);
+  document.querySelectorAll('[data-dock-setting]').forEach(input => {
+    input.checked = appData.settings[input.dataset.dockSetting] !== false;
+  });
+  document.getElementById('dockStoreToggle').checked = appData.settings.showDockStoreButton === true;
+  const container = document.getElementById('dockSpaceSettings');
+  container.replaceChildren(...appData.spaces.map(space => {
+    const row = document.createElement('div');
+    row.className = 'setting-item';
+    const label = document.createElement('label');
+    label.textContent = space.name;
+    label.htmlFor = `dock-space-${space.id}`;
+    const copy = document.createElement('div');
+    copy.className = 'setting-copy';
+    copy.append(label);
+    const control = document.createElement('div');
+    control.className = 'setting-control';
+    const toggle = document.createElement('div');
+    toggle.className = 'toggle-switch';
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.id = label.htmlFor;
+    input.className = 'toggle-input';
+    input.checked = !(appData.settings.hiddenDockSpaces || []).includes(space.id);
+    const switchLabel = document.createElement('label');
+    switchLabel.className = 'toggle-label';
+    switchLabel.htmlFor = input.id;
+    input.addEventListener('change', () => {
+      const hidden = new Set(appData.settings.hiddenDockSpaces || []);
+      if (input.checked) hidden.delete(space.id); else hidden.add(space.id);
+      appData.settings.hiddenDockSpaces = [...hidden];
+      syncManager.saveData(); applySettings();
+    });
+    toggle.append(input, switchLabel); control.append(toggle); row.append(copy, control);
+    return row;
+  }));
 }
 
-export function renderDataOverview() {
-  const grid = document.getElementById('dataOverviewGrid');
-  const summary = document.getElementById('dataOverviewSummary');
-  if (!grid || !summary || !appData) return;
-
-  const spaces = Array.isArray(appData.spaces) ? appData.spaces : [];
-  const groups = spaces.length > 0
-    ? spaces.flatMap(space => Array.isArray(space.groups) ? space.groups : [])
-    : (Array.isArray(appData.groups) ? appData.groups : []);
-  const links = groups.flatMap(group => Array.isArray(group.links) ? group.links : []);
-  const items = [
-    { label: '网站', value: links.length, color: 'var(--primary-color)' },
-    { label: '分组', value: groups.length, color: 'var(--color-warning)' },
-    { label: '空间', value: spaces.length, color: 'var(--color-success)' }
-  ];
-  const total = items.reduce((sum, item) => sum + item.value, 0);
-  const dataSize = new Blob([JSON.stringify(appData)]).size;
-
-  summary.textContent = `共 ${total} 项记录 · ${syncManager.mode === 'local' ? '本地存储' : 'Supabase 云端'} ${formatDataSize(dataSize)}`;
-  grid.innerHTML = '';
-
-  items.forEach(item => {
-    const percent = total > 0 ? Math.round((item.value / total) * 100) : 0;
-    const card = document.createElement('article');
-    card.className = 'data-overview-card';
-    card.style.setProperty('--data-accent', item.color);
-    card.style.setProperty('--data-ratio', `${percent}%`);
-
-    const header = document.createElement('div');
-    header.className = 'data-overview-card-header';
-
-    const label = document.createElement('div');
-    label.className = 'data-overview-label';
-    const dot = document.createElement('span');
-    dot.className = 'data-overview-dot';
-    const labelText = document.createElement('span');
-    labelText.textContent = item.label;
-    label.appendChild(dot);
-    label.appendChild(labelText);
-
-    const percentage = document.createElement('span');
-    percentage.className = 'data-overview-percent';
-    percentage.textContent = `${percent}%`;
-    header.appendChild(label);
-    header.appendChild(percentage);
-
-    const value = document.createElement('strong');
-    value.className = 'data-overview-value';
-    value.textContent = item.value;
-
-    const track = document.createElement('div');
-    track.className = 'data-overview-track';
-    const fill = document.createElement('div');
-    fill.className = 'data-overview-fill';
-    track.appendChild(fill);
-
-    card.appendChild(header);
-    card.appendChild(value);
-    card.appendChild(track);
-    grid.appendChild(card);
-  });
+let wallpaperPreviewRequest = 0;
+async function updateWallpaperPreview() {
+  const request = ++wallpaperPreviewRequest;
+  try {
+    const url = await getWallpaperUrl();
+    if (request !== wallpaperPreviewRequest) return;
+    const button = document.getElementById('wallpaperChooseBtn');
+    const image = document.getElementById('wallpaperThumbnail');
+    if (url) image.src = url; else image.removeAttribute('src');
+    image.hidden = !url;
+    button.querySelector('.wallpaper-empty').hidden = Boolean(url);
+    button.querySelector('.wallpaper-replace').hidden = !url;
+    button.classList.toggle('has-wallpaper', Boolean(url));
+    button.setAttribute('aria-label', url ? '重新上传壁纸图片' : '选择壁纸图片');
+    document.getElementById('clearWallpaperBtn').hidden = !url;
+  } catch (error) { showToast(`无法读取壁纸：${error.message}`); }
 }
 
 // Settings Modal
@@ -503,10 +499,9 @@ export function openSettingsModal(panelId) {
   const wasHidden = settingsModal.classList.contains('hidden');
   if (typeof panelId === 'string') selectSettingsPanel(panelId);
   document.getElementById('compactModeToggle').checked = appData.settings.compactMode;
-  document.getElementById('dockTabHintToggle').checked = appData.settings.showDockTabHint !== false;
-  document.getElementById('dockEditButtonToggle').checked = appData.settings.showDockEditButton !== false;
+  updateDockSettings();
+  updateWallpaperPreview();
   renderSearchEngineSettings();
-  renderDataOverview();
 
   const accentColorInput = document.getElementById('accentColorInput');
   const accentColor = appData.settings.accentColor || '#6366f1';
@@ -542,7 +537,7 @@ settingsModal.addEventListener('keydown', event => {
     event.preventDefault();
     if (settingsModal.dataset.locked !== 'true') {
       closeAllModals();
-      document.getElementById('settingsBtn').focus();
+      document.getElementById(document.getElementById('settingsBtn').hidden || document.getElementById('spaceDock').hidden ? 'settingsFallbackBtn' : 'settingsBtn').focus();
     }
   }
   if (event.key !== 'Tab') return;
@@ -558,6 +553,7 @@ settingsModal.addEventListener('keydown', event => {
 });
 
 document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+document.getElementById('settingsFallbackBtn').addEventListener('click', openSettingsModal);
 
 function selectSettingsPanel(panelId) {
   const nextPanel = document.getElementById(panelId);
@@ -572,24 +568,21 @@ function selectSettingsPanel(panelId) {
     panel.classList.toggle('active', panel.id === panelId);
   });
   if (changed) settingsModal.querySelector('.settings-content').scrollTop = 0;
-  if (panelId === 'settingsData') renderDataOverview();
 }
 
 document.querySelectorAll('.settings-nav-btn').forEach(button => {
   button.addEventListener('click', () => selectSettingsPanel(button.dataset.settingsPanel));
 });
-document.addEventListener('simtab-sync', renderDataOverview);
 
-document.getElementById('dockTabHintToggle').addEventListener('change', (e) => {
-  appData.settings.showDockTabHint = e.target.checked;
-  syncManager.saveData();
-  applySettings();
+document.getElementById('dockEnabledToggle').addEventListener('change', event => {
+  appData.settings.dockEnabled = event.target.checked;
+  updateDockSettings(); syncManager.saveData(); applySettings();
 });
-
-document.getElementById('dockEditButtonToggle').addEventListener('change', (e) => {
-  appData.settings.showDockEditButton = e.target.checked;
-  syncManager.saveData();
-  applySettings();
+document.querySelectorAll('[data-dock-setting]').forEach(input => {
+  input.addEventListener('change', () => {
+    appData.settings[input.dataset.dockSetting] = input.checked;
+    syncManager.saveData(); applySettings();
+  });
 });
 
 document.getElementById('applyAccentColorBtn').addEventListener('click', () => {
@@ -611,31 +604,41 @@ document.getElementById('searchEngineSelect').addEventListener('change', (e) => 
   syncManager.saveData();
 });
 
+document.getElementById('wallpaperChooseBtn').addEventListener('click', () => document.getElementById('wallpaperUpload').click());
 document.getElementById('wallpaperUpload').addEventListener('change', async (e) => {
   const input = e.target;
   const file = input.files[0];
   input.disabled = true;
+  document.getElementById('wallpaperChooseBtn').disabled = true;
+  document.getElementById('clearWallpaperBtn').disabled = true;
   try {
     if (!file) return;
     await saveWallpaper(file);
     appData.settings.wallpaper = null;
-    await syncManager.saveData();
     applySettings();
+    await updateWallpaperPreview();
   } catch (error) {
-    alert(`壁纸保存失败：${error.message}`);
-  } finally { input.value = ''; input.disabled = false; }
+    showToast(`壁纸保存失败：${error.message}`);
+  } finally {
+    input.value = ''; input.disabled = false;
+    document.getElementById('wallpaperChooseBtn').disabled = false;
+    document.getElementById('clearWallpaperBtn').disabled = false;
+  }
 });
 
 document.getElementById('clearWallpaperBtn').addEventListener('click', async () => {
   try {
     await clearWallpaper();
     appData.settings.wallpaper = null;
-    await syncManager.saveData();
     applySettings();
-  } catch (error) { alert(`移除壁纸失败：${error.message}`); }
+    await updateWallpaperPreview();
+  } catch (error) { showToast(`移除壁纸失败：${error.message}`); }
 });
 
-document.getElementById('exportBtnNew').addEventListener('click', () => syncManager.exportData());
+document.getElementById('exportBtnNew').addEventListener('click', async () => {
+  try { await syncManager.exportData(); }
+  catch (error) { showToast(`导出失败：${error.message}`); }
+});
 document.getElementById('importFileNew').addEventListener('change', (e) => {
   if (e.target.files.length > 0) {
     syncManager.importData(e.target.files[0]);
@@ -665,6 +668,7 @@ function syncSpaceDraftOrder(container) {
 }
 
 function animateSpaceEditorShift(container, previousRects) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   container.querySelectorAll('.space-editor-item:not(.dragging)').forEach(item => {
     const previous = previousRects.get(item.dataset.id);
     if (!previous) return;
@@ -691,7 +695,7 @@ function renderSpaceEditor() {
   if (!container) return;
 
   container.innerHTML = '';
-  spaceEditorDraft.forEach(space => {
+  spaceEditorDraft.forEach((space, spaceIndex) => {
     const item = document.createElement('div');
     item.className = 'space-editor-item';
     item.dataset.id = space.id;
@@ -699,7 +703,8 @@ function renderSpaceEditor() {
       <button type="button" class="space-icon-btn space-drag-handle" title="按住拖动排序" aria-label="按住拖动排序" draggable="true">
         ${icon('menu', 17)}
       </button>
-      <input type="text" value="${escapeAttr(space.name)}" aria-label="空间名称">
+      <div class="space-editor-symbol" aria-hidden="true">${icon(spaceIndex === 0 ? 'house' : spaceIndex === 1 ? 'briefcase-business' : 'star', 22)}</div>
+      <div class="space-editor-identity"><input type="text" maxlength="32" value="${escapeAttr(space.name)}" aria-label="空间名称"><span class="space-editor-meta">${space.groups.length} 个分组 · ${space.groups.reduce((count, group) => count + group.links.length, 0)} 个网站${space.id === appData.activeSpaceId ? ' · 当前空间' : ''}</span></div>
       <button type="button" class="space-icon-btn danger delete-space" title="删除空间" aria-label="删除空间" ${spaceEditorDraft.length <= 1 ? 'disabled' : ''}>
         ${icon('x', 16)}
       </button>
@@ -711,6 +716,16 @@ function renderSpaceEditor() {
     });
 
     const dragHandle = item.querySelector('.space-drag-handle');
+    dragHandle.addEventListener('keydown', event => {
+      if (!['ArrowUp', 'ArrowDown'].includes(event.key)) return;
+      event.preventDefault();
+      const source = spaceEditorDraft.findIndex(item => item.id === space.id);
+      const target = source + (event.key === 'ArrowUp' ? -1 : 1);
+      if (target < 0 || target >= spaceEditorDraft.length) return;
+      [spaceEditorDraft[source], spaceEditorDraft[target]] = [spaceEditorDraft[target], spaceEditorDraft[source]];
+      renderSpaceEditor();
+      container.children[target].querySelector('.space-drag-handle').focus();
+    });
     dragHandle.addEventListener('dragstart', (e) => {
       draggedSpaceId = space.id;
       draggedSpaceElement = item;
@@ -774,6 +789,7 @@ function openSpaceModal() {
   }));
   renderSpaceEditor();
   showModal(spaceModal);
+  spaceModal.focus();
 }
 
 document.getElementById('spaceEditBtn')?.addEventListener('click', openSpaceModal);
@@ -785,6 +801,23 @@ document.getElementById('addSpaceBtn')?.addEventListener('click', () => {
     groups: [createTemporaryGroup(spaceEditorDraft.length)]
   });
   renderSpaceEditor();
+  document.querySelector('.space-editor-item:last-child input').focus();
+  document.querySelector('.space-editor-item:last-child input').select();
+});
+
+spaceModal.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    event.preventDefault(); closeAllModals();
+    document.getElementById('spaceEditBtn').focus();
+  }
+  if (event.key !== 'Tab') return;
+  const controls = [...spaceModal.querySelectorAll('button:not(:disabled), input')];
+  const first = controls[0], last = controls.at(-1);
+  if (event.shiftKey && (document.activeElement === first || document.activeElement === spaceModal)) {
+    event.preventDefault(); last.focus();
+  } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === spaceModal)) {
+    event.preventDefault(); first.focus();
+  }
 });
 
 document.getElementById('cancelSpaceBtn')?.addEventListener('click', closeAllModals);
@@ -864,6 +897,17 @@ function sizeSettingSelectFromOptions(select, container) {
   container.style.width = `${Math.max(112, preferredWidth)}px`;
 }
 
+function setSelectOpen(container, open) {
+  const options = container.querySelector('.custom-select-options-global');
+  container.classList.toggle('open', open);
+  options.classList.toggle('hidden', !open);
+  options.inert = !open;
+  container.querySelector('.custom-select-trigger-global').setAttribute('aria-expanded', String(open));
+  if (container.previousElementSibling?.id === 'searchEngineSelect') {
+    document.querySelector('.search-container')?.classList.toggle('engine-select-open', open);
+  }
+}
+
 export function updateCustomSelectOptions(select) {
   if (select.dataset.native === 'true') return;
   let container = select.nextElementSibling;
@@ -871,31 +915,39 @@ export function updateCustomSelectOptions(select) {
     container = document.createElement('div');
     container.className = 'custom-select-container';
     
-    const trigger = document.createElement('div');
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.disabled = select.disabled;
+    trigger.setAttribute('aria-label', select.getAttribute('aria-label') || document.querySelector(`label[for="${select.id}"]`)?.textContent || '选择搜索引擎');
     trigger.className = 'custom-select-trigger-global';
+    trigger.setAttribute('aria-expanded', 'false');
     trigger.innerHTML = `<div class="selected-content"></div>${icon('chevron-down', 14)}`;
     
     const optionsContainer = document.createElement('div');
     optionsContainer.className = 'custom-select-options-global hidden';
+    optionsContainer.inert = true;
+    const optionsContent = document.createElement('div');
+    optionsContent.className = 'custom-select-options-content';
+    optionsContainer.appendChild(optionsContent);
 
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
-      document.querySelectorAll('.custom-select-options-global').forEach(el => {
-        if (el !== optionsContainer) {
-          el.classList.add('hidden');
-          el.closest('.custom-select-container')?.classList.remove('open');
-        }
+      if (select.disabled) return;
+      const open = !container.classList.contains('open');
+      document.querySelectorAll('.custom-select-container.open').forEach(other => {
+        if (other !== container) setSelectOpen(other, false);
       });
-      optionsContainer.classList.toggle('hidden');
-      container.classList.toggle('open', !optionsContainer.classList.contains('hidden'));
-      if (select.id === 'searchEngineSelect') {
-        document.querySelector('.search-container')?.classList.toggle(
-          'engine-select-open',
-          !optionsContainer.classList.contains('hidden')
-        );
-      }
+      setSelectOpen(container, open);
     });
 
+    container.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && container.classList.contains('open')) {
+        event.preventDefault();
+        event.stopPropagation();
+        setSelectOpen(container, false);
+        trigger.focus();
+      }
+    });
     container.appendChild(trigger);
     container.appendChild(optionsContainer);
     select.style.display = 'none';
@@ -905,10 +957,12 @@ export function updateCustomSelectOptions(select) {
   }
 
   const optionsContainer = container.querySelector('.custom-select-options-global');
-  optionsContainer.innerHTML = '';
+  const optionsContent = optionsContainer.querySelector('.custom-select-options-content');
+  optionsContent.replaceChildren();
   
   Array.from(select.options).forEach((option, index) => {
-    const optDiv = document.createElement('div');
+    const optDiv = document.createElement('button');
+    optDiv.type = 'button';
     optDiv.className = `custom-option-global ${index === select.selectedIndex ? 'active' : ''}`;
     
     const iconMarkup = getCustomSelectIconMarkup(option);
@@ -922,14 +976,14 @@ export function updateCustomSelectOptions(select) {
       e.stopPropagation();
       select.selectedIndex = index;
       select.dispatchEvent(new Event('change'));
-      optionsContainer.classList.add('hidden');
-      container.classList.remove('open');
+      setSelectOpen(container, false);
+      container.querySelector('.custom-select-trigger-global').focus();
       if (select.id === 'searchEngineSelect') {
         document.querySelector('.search-container')?.classList.remove('engine-select-open');
         document.getElementById('searchInput').focus();
       }
     });
-    optionsContainer.appendChild(optDiv);
+    optionsContent.appendChild(optDiv);
   });
   
   updateCustomSelectTrigger(select);
@@ -968,9 +1022,7 @@ export function initAllCustomSelects() {
   
   if (!window.customSelectListenerAdded) {
     document.addEventListener('click', () => {
-      document.querySelectorAll('.custom-select-options-global').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.custom-select-container.open').forEach(el => el.classList.remove('open'));
-      document.querySelector('.search-container')?.classList.remove('engine-select-open');
+      document.querySelectorAll('.custom-select-container.open').forEach(container => setSelectOpen(container, false));
     });
     window.customSelectListenerAdded = true;
   }

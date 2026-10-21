@@ -40,6 +40,9 @@
   /* ============================================================
      DESIGN SYSTEM: MOTION
      ============================================================ */
+  --expand-duration: 340ms;
+  --expand-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --expand-fade-duration: 200ms;
   --duration-fast: 120ms;
   --duration-normal: 200ms;
   --duration-slow: 300ms;

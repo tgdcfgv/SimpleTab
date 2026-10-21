@@ -1,0 +1,179 @@
+/* Shared control treatment for the home page, dialogs, menus and settings. */
+:root {
+  --control-bg: var(--bg-subtle);
+  --control-hover-bg: var(--item-hover-bg);
+  --control-hover-border: var(--border-hover);
+}
+
+.btn.secondary,
+.btn.quiet,
+.custom-select-trigger-global,
+#settingsModal .custom-select-trigger-global {
+  background: var(--control-bg);
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  font-family: inherit;
+}
+.btn:hover:not(:disabled),
+.custom-select-trigger-global:hover:not(:disabled),
+#settingsModal .custom-select-trigger-global:hover:not(:disabled) {
+  border-color: var(--control-hover-border);
+  box-shadow: none;
+  transform: none;
+}
+.btn.secondary:hover:not(:disabled),
+.btn.quiet:hover:not(:disabled),
+.custom-select-trigger-global:hover:not(:disabled),
+#settingsModal .custom-select-trigger-global:hover:not(:disabled) {
+  background: var(--control-hover-bg);
+}
+
+/* Inputs share the quiet border; typed fields retain their keyboard indicator. */
+input[type="text"]:not(#groupLinksPerRow),
+input[type="email"], input[type="url"], input[type="password"],
+input[type="number"], input[type="color"], textarea, select,
+.number-stepper, .card-display-control, .profile-avatar-picker {
+  border-color: transparent;
+}
+input[type="text"]:not(#groupLinksPerRow):hover:not(:disabled),
+input[type="email"]:hover:not(:disabled), input[type="url"]:hover:not(:disabled),
+input[type="password"]:hover:not(:disabled), input[type="number"]:hover:not(:disabled),
+input[type="color"]:hover:not(:disabled), textarea:hover:not(:disabled),
+select:hover:not(:disabled), .number-stepper:hover, .card-display-control:hover,
+.profile-avatar-picker:hover {
+  border-color: var(--control-hover-border);
+}
+input[type="text"]:not(#searchInput):not(#groupLinksPerRow):focus-visible,
+input[type="email"]:focus-visible, input[type="url"]:focus-visible,
+input[type="password"]:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Opening or focusing a dropdown does not add a ring or a colored border. */
+.custom-select-container.open .custom-select-trigger-global,
+.custom-select-trigger-global:focus,
+.custom-select-trigger-global:focus-visible,
+#settingsModal .custom-select-trigger-global:focus,
+#settingsModal .custom-select-trigger-global:focus-visible,
+select:focus, select:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+.custom-select-container.open .custom-select-trigger-global:hover:not(:disabled),
+.custom-select-trigger-global:focus:hover:not(:disabled),
+#settingsModal .custom-select-trigger-global:focus:hover:not(:disabled),
+select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
+.custom-select-trigger-global { width: 100%; gap: 12px; text-align: left; }
+.custom-select-trigger-global:disabled { opacity: .45; cursor: not-allowed; }
+.custom-select-options-global, .context-menu { border-color: transparent; }
+.custom-option-global, .context-menu-item {
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.custom-option-global:hover, .context-menu-item:hover {
+  background: var(--control-hover-bg);
+  border-color: var(--control-hover-border);
+}
+.custom-option-global:focus, .custom-option-global:focus-visible { outline: none; box-shadow: none; }
+.custom-option-global:focus-visible { background: var(--control-hover-bg); }
+
+.dock-action-btn, .space-edit-btn, .space-dock-btn, .space-tab-hint,
+.settings-close-btn, .auth-close-btn, .auth-nav-btn, .group-action-btn,
+.space-icon-btn, .card-display-option, .group-select-btn, .sync-status {
+  border: 1px solid transparent;
+}
+.dock-action-btn:hover:not(:disabled), .space-edit-btn:hover:not(:disabled),
+.space-dock-btn:hover:not(:disabled), .settings-close-btn:hover:not(:disabled),
+.auth-close-btn:hover:not(:disabled), .auth-nav-btn:hover:not(:disabled),
+.group-action-btn:hover:not(:disabled), .space-icon-btn:hover:not(:disabled),
+.card-display-option:hover:not(:disabled), .group-select-btn:hover:not(:disabled),
+.sync-status:hover:not(:disabled) { border-color: var(--control-hover-border); }
+.space-tab-hint { background: var(--control-bg); box-shadow: none; }
+.tab-keycap { border-color: transparent; background: transparent; }
+.group-select-btn.active { border-color: transparent; }
+
+/* Setting labels and symbols always use the same selected color. */
+.settings-nav-btn.active, .settings-nav-btn.active span, .settings-nav-btn.active svg { color: var(--accent-color); }
+.settings-help { font-size: 12px; line-height: 1.6; color: var(--text-secondary); margin: -4px 2px 16px; }
+.setting-disabled .setting-copy { opacity: .45; }
+.card-display-control { padding: 3px; }
+.card-display-setting { min-height: 66px; }
+#iconSizeSetting { min-height: 66px; }
+#iconSizeSetting .setting-slider { width: min(220px, 100%); gap: 12px; }
+#iconSizeValue { min-width: 34px; text-align: right; }
+
+/* Browser-only wallpaper control becomes the preview after an upload. */
+.wallpaper-controls { align-items: center; }
+.wallpaper-upload { position: relative; overflow: hidden; min-width: 112px; }
+.wallpaper-upload.has-wallpaper { width: 132px; height: 78px; padding: 0; }
+#wallpaperThumbnail { width: 100%; height: 100%; object-fit: cover; }
+.wallpaper-replace { position: absolute; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / 45%); color: white; opacity: 0; transition: opacity var(--transition-fast); }
+.wallpaper-upload:hover .wallpaper-replace, .wallpaper-upload:focus-visible .wallpaper-replace { opacity: 1; }
+.wallpaper-setting .setting-copy { max-width: 260px; }
+.bottom-bar { display: flex; align-items: center; gap: 8px; }
+#settingsFallbackBtn { pointer-events: auto; }
+
+/* Space editor: a compact list with clear identity and editable names. */
+#spaceModal { max-width: 480px; padding: 28px; max-height: calc(100dvh - 40px); overflow-y: auto; }
+.space-modal-heading { margin-bottom: 24px; }
+.space-modal-symbol { display: grid; place-items: center; width: 44px; height: 44px; background: var(--accent-subtle); color: var(--accent-color); border-radius: 14px; margin-bottom: 16px; font-size: 28px; }
+.space-modal-heading h3 { font-size: 22px; letter-spacing: -.5px; margin: 0 0 8px; }
+.space-modal-heading p { line-height: 1.6; font-size: 13px; }
+.space-editor-list { background: transparent; border: 0; border-radius: 0; gap: 8px; max-height: min(46vh, 380px); padding: 3px; margin: -3px -3px 12px; }
+.space-editor-item { grid-template-columns: 24px 40px minmax(0, 1fr) 30px; gap: 10px; min-height: 76px; padding: 10px; background: var(--bg-subtle); border: 1px solid transparent; border-radius: 14px; }
+.space-editor-item:hover { border-color: var(--control-hover-border); }
+.space-editor-item:last-child { border-bottom: 1px solid transparent; }
+.space-editor-item:last-child:hover { border-bottom-color: var(--control-hover-border); }
+.space-editor-symbol { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--bg-surface-elevated); color: var(--accent-color); }
+.space-editor-identity { min-width: 0; }
+.space-editor-item input { background: transparent; font-weight: 500; padding: 0 6px; height: 30px; border-radius: 6px; }
+.space-editor-meta { display: block; margin: 2px 6px 0; color: var(--text-secondary); font-size: 11px; line-height: 1.4; }
+.space-drag-handle { cursor: grab; width: 24px; color: var(--text-tertiary); }
+.space-editor-item.dragging { opacity: .45; }
+.space-editor-item .delete-space:hover { color: var(--color-danger); }
+.space-add-btn { width: 100%; min-height: 42px; }
+.space-editor-hint { margin: 12px 0 22px; font-size: 11px; line-height: 1.6; color: var(--text-secondary); }
+#spaceModal .modal-actions { margin-top: 0; padding-top: 0; border-top: 0; }
+@media (max-width: 620px) {
+  .card-display-setting { flex-direction: row; align-items: center; }
+  .card-display-setting .setting-control { justify-content: flex-end; }
+  .card-display-option { padding: 4px 8px; }
+  .wallpaper-setting { flex-direction: column; align-items: stretch; }
+  .wallpaper-setting .setting-control { justify-content: flex-start; }
+  .wallpaper-setting .setting-copy { max-width: none; }
+  #spaceModal { padding: 22px 18px; }
+  .space-editor-item { gap: 6px; padding: 8px; }
+}
+@media (hover: none) { .wallpaper-replace { inset: auto 0 0; min-height: 26px; opacity: 1; font-size: 11px; } }
+
+.search-container, .search-results { border-color: transparent; }
+.search-container:hover { border-color: var(--control-hover-border); }
+#searchInput:hover { border-color: transparent; }
+.search-result-item, .store-link-item { border: 1px solid transparent; }
+.search-result-item:hover, .store-link-item:hover { border-color: var(--control-hover-border); }
+.store-link-item:has(input:checked) { border-color: transparent; background: var(--accent-subtle); box-shadow: none; }
+.store-link-item:has(input:checked):hover { border-color: var(--control-hover-border); }
+.store-circle-check { border-color: transparent; background: var(--bg-muted); }
+
+.settings-nav-btn, .store-menu-btn, .store-menu-btn.active { border: 1px solid transparent; }
+.settings-nav-btn:hover:not(:disabled), .store-menu-btn:hover { border-color: var(--control-hover-border); }
+.auth-text-btn, .inline-input-action button { min-height: 32px; padding: 0 10px; border: 1px solid transparent; border-radius: var(--radius-md); background: var(--control-bg); color: var(--text-primary); }
+.auth-text-btn:hover:not(:disabled), .inline-input-action button:hover { border-color: var(--control-hover-border); background: var(--control-hover-bg); }
+#spaceModal { width: min(480px, calc(100vw - 32px)); }
+#spaceModal .space-editor-item input[type="text"]:not(#searchInput):not(#groupLinksPerRow) { background: transparent; }
+@media (max-width: 768px) {
+  .bottom-bar { display: none; }
+  .bottom-bar:has(#settingsFallbackBtn:not([hidden])) { display: flex; bottom: 12px; right: 12px; }
+  .bottom-bar:has(#settingsFallbackBtn:not([hidden])) .sync-status { display: none; }
+}
+
+.setting-slider { display: flex; align-items: center; gap: 10px; }
+#iconSizeSlider { width: 140px; max-width: 100%; accent-color: var(--accent-color); }
+#iconSizeValue { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }

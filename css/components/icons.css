@@ -27,14 +27,12 @@ svg.lucide > * {
 
 .group-action-btn {
   --ui-icon-size: 16px;
-  --ui-icon-stroke: 1.5;
 }
 
 .fold-icon,
 .custom-select-trigger-global > svg,
 .space-tab-hint {
   --ui-icon-size: 14px;
-  --ui-icon-stroke: 1.5;
 }
 
 .settings-nav-btn,
@@ -47,12 +45,10 @@ svg.lucide > * {
 .stepper-btn,
 .context-menu-item {
   --ui-icon-size: 16px;
-  --ui-icon-stroke: 1.5;
 }
 
 .store-circle-check {
   --ui-icon-size: 12px;
-  --ui-icon-stroke: 1.8;
 }
 
 .sync-choice {
@@ -80,3 +76,31 @@ svg.lucide > * {
   width: 18px;
   height: 18px;
 }
+
+/* Keep option glyphs, closing controls and settings navigation on one baseline. */
+.settings-nav-btn > svg.lucide,
+.settings-close-btn > svg.lucide,
+.space-icon-btn > svg.lucide,
+svg.lucide.select-option-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.custom-select-trigger-global > svg.lucide {
+  width: 14px;
+  height: 14px;
+}
+
+.context-menu-item > svg.lucide,
+.stepper-btn > svg.lucide {
+  width: 16px;
+  height: 16px;
+}
+
+.profile-avatar-edit > svg.lucide { width: 14px; height: 14px; }
+.welcome-mark { display: grid; place-items: center; }
+.welcome-mark > svg.lucide { width: 40px; height: 40px; }
+
+/* Info-page status colors follow their semantic container or existing marker. */
+.feature-item svg.lucide { margin-top: 2px; }
+.callout-box svg.lucide { flex-shrink: 0; }

@@ -1,5 +1,78 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>安装浏览器扩展 · SimTab</title><link rel="icon" type="image/svg+xml" href="icons/simtab.svg"><link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png"><link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png"><link rel="stylesheet" href="css/info.css"></head><body><main><header><img src="icons/icon-128.png" alt="SimTab"><div><small>SIMTAB</small><h1>安装浏览器扩展</h1></div></header><p>SimTab 扩展将常用网站放在每一个新标签页，并支持经你授权后读取 Edge 收藏夹。</p>
-<h2>商店安装</h2><p>Edge 商店版本尚未上架。通过审核后，这里会提供官方商店安装链接。</p>
-<h2>从源码手动安装</h2><p><a class="button" href="https://github.com/tgdcfgv/SimpleTab/archive/refs/heads/main.zip">下载 GitHub 源码 ZIP</a></p><ol><li>解压下载的 ZIP，保留文件夹。</li><li>在 Edge 地址栏输入 <code>edge://extensions</code>，开启“开发人员模式”。</li><li>选择“加载解压缩的扩展”，选中包含 <code>manifest.json</code> 的文件夹。</li><li>打开新标签页；如 Edge 询问是否保留新标签页更改，按你的偏好确认。</li><li>在“热门网站 → 我的收藏夹”中点击允许读取收藏夹。</li></ol>
-<h2>网页版与扩展版</h2><p>安装扩展不会让普通网页直接获得读取收藏夹的权限。请在扩展的新标签页中使用直接读取功能。网页版可在“设置 → 账户与数据”选择 Edge 导出的书签 HTML 文件。</p><p>网页和扩展登录同一账户即可通过云端同步。未登录时直接使用此浏览器本地内容，退出登录会恢复本地内容；本地内容可在“账户与数据”中主动复制到云端，并保留本地副本；也可以导出 JSON，再在目标账户导入。JSON 恢复会覆盖账户已有数据。</p><hr><p><a href="newtab.html">打开 SimTab</a> · <a href="privacy.html">隐私政策</a> · <a href="https://github.com/tgdcfgv/SimpleTab/issues" target="_blank" rel="noopener noreferrer">反馈与支持</a></p></main></body></html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>安装浏览器扩展 · SimTab</title>
+  <link rel="icon" type="image/svg+xml" href="icons/simtab.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
+  <link rel="stylesheet" href="css/info.css">
+  <script src="js/info.js" defer></script>
+</head>
+<body>
+  <!-- 顶部轻量栏 -->
+  <div class="site-top-bar">
+    <div class="top-bar-inner">
+      <a href="newtab.html" class="brand-link">
+        <img src="icons/simtab.svg" alt="SimTab">
+        <span>SimTab</span>
+      </a>
+      <div class="top-bar-actions">
+        <a href="newtab.html" class="top-link">打开 SimTab</a>
+        <a href="privacy.html" class="top-link">隐私政策</a>
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" title="切换主题" aria-label="切换主题">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 正文卡片 -->
+  <main>
+    <header class="doc-header">
+      <img src="icons/simtab.svg" alt="SimTab" class="logo-img">
+      <div class="doc-header-text">
+        <small>SIMTAB</small>
+        <h1>安装浏览器扩展</h1>
+      </div>
+    </header>
+
+    <p class="doc-lead">SimTab 扩展将常用网站放在每一个新标签页，并支持经你授权后读取 Edge 收藏夹。</p>
+
+    <h2>商店安装</h2>
+    <div class="info-callout">
+      <p>Edge 商店版本尚未上架。通过审核后，这里会提供官方商店安装链接。</p>
+    </div>
+
+    <h2>从源码手动安装</h2>
+    <p>
+      <a class="button" href="https://github.com/tgdcfgv/SimpleTab/archive/refs/heads/main.zip">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        下载 GitHub 源码 ZIP
+      </a>
+    </p>
+
+    <ol class="steps-list">
+      <li>解压下载的 ZIP，保留文件夹。</li>
+      <li>在 Edge 地址栏输入 <span class="code-pill"><code>edge://extensions</code><button type="button" class="btn-copy" data-copy="edge://extensions" aria-label="复制扩展地址">复制</button></span>，开启“开发人员模式”。</li>
+      <li>选择“加载解压缩的扩展”，选中包含 <code>manifest.json</code> 的文件夹。</li>
+      <li>打开新标签页；如 Edge 询问是否保留新标签页更改，按你的偏好确认。</li>
+      <li>在“热门网站 → 我的收藏夹”中点击允许读取收藏夹。</li>
+    </ol>
+
+    <h2>网页版与扩展版</h2>
+    <p>安装扩展不会让普通网页直接获得读取收藏夹的权限。请在扩展的新标签页中使用直接读取功能。网页版可在“设置 → 账户与数据”选择 Edge 导出的书签 HTML 文件。</p>
+    <p>网页和扩展登录同一账户即可通过云端同步。未登录时直接使用此浏览器本地内容，退出登录会恢复本地内容；本地内容可在“账户与数据”中主动复制到云端，并保留本地副本；也可以导出 JSON，再在目标账户导入。JSON 恢复会覆盖账户已有数据。</p>
+
+    <hr>
+    <p class="doc-footer">
+      <a href="newtab.html">打开 SimTab</a> · 
+      <a href="privacy.html">隐私政策</a> · 
+      <a href="https://github.com/tgdcfgv/SimpleTab" target="_blank" rel="noopener noreferrer">GitHub 源码</a> · 
+      <a href="https://github.com/tgdcfgv/SimpleTab/issues" target="_blank" rel="noopener noreferrer">反馈与支持</a>
+    </p>
+  </main>
+</body>
+</html>

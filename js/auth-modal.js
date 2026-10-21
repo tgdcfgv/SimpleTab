@@ -1,4 +1,5 @@
 import { cloud } from './cloud.js';
+import { needsProfile, openOnboarding } from './onboarding.js';
 import { syncManager } from './storage.js';
 import { applySettings, render } from './render.js';
 
@@ -220,7 +221,9 @@ async function onLoginSuccess(session) {
   isSubmitting = false;
   closeAuthModal(true);
 
-  if (isNewUser) {
+  if (needsProfile()) {
+    openOnboarding();
+  } else if (isNewUser) {
     showToast('账户已创建，Sim Tab 同步已开启');
   } else {
     showToast('登录成功');

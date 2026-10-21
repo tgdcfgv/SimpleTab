@@ -228,7 +228,7 @@ dialog.modal[open] {
 
 .settings-nav-btn.active {
   background: var(--accent-subtle);
-  color: var(--text-primary);
+  color: var(--accent-color);
   font-weight: var(--weight-semibold);
 }
 
@@ -239,7 +239,7 @@ dialog.modal[open] {
 
 .settings-nav-btn svg {
   flex-shrink: 0;
-  color: var(--settings-muted);
+  color: inherit;
 }
 
 .settings-nav-btn.active svg {
@@ -439,38 +439,6 @@ dialog.modal[open] {
   outline-offset: 1px;
 }
 
-.icon-size-inline {
-  padding: 8px 6px 4px;
-  border-top: 1px solid var(--border-subtle);
-  margin-top: 4px;
-}
-
-.icon-size-inline label {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 11px;
-  color: var(--text-secondary);
-}
-
-.setting-slider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#iconSizeSlider {
-  width: 140px;
-  accent-color: var(--accent-color);
-}
-
-#iconSizeValue {
-  width: 36px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
 /* ------------------------------------------------------------
    3. ACCOUNT & SYNC PANEL (REDESIGNED)
    ------------------------------------------------------------ */
@@ -594,94 +562,6 @@ dialog.modal[open] {
 
 .bookmark-import-status:empty {
   display: none;
-}
-
-/* ------------------------------------------------------------
-   5. COMPACT STATISTICS STRIP
-   ------------------------------------------------------------ */
-.data-stats-group {
-  padding: 0;
-}
-
-.data-overview-strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 10px 12px;
-}
-
-.data-overview-card {
-  --data-accent: var(--primary-color);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 8px 10px;
-  background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  min-height: 52px;
-  box-sizing: border-box;
-}
-
-.data-overview-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.data-overview-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: var(--weight-medium);
-  color: var(--text-secondary);
-}
-
-.data-overview-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--data-accent);
-  flex-shrink: 0;
-}
-
-.data-overview-percent {
-  font-size: 10px;
-  color: var(--text-tertiary);
-  font-variant-numeric: tabular-nums;
-}
-
-.data-overview-value {
-  font-size: 16px;
-  font-weight: var(--weight-bold);
-  color: var(--text-primary);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  margin-bottom: 6px;
-}
-
-.data-overview-track {
-  height: 3px;
-  border-radius: var(--radius-full);
-  background: var(--border-subtle);
-  overflow: hidden;
-}
-
-.data-overview-fill {
-  width: var(--data-ratio, 0%);
-  height: 100%;
-  border-radius: inherit;
-  background: var(--data-accent);
-  transition: width var(--transition-normal);
-}
-
-.data-overview-footnote {
-  padding: 0 14px 10px;
-  font-size: 11px;
-  color: var(--text-secondary);
 }
 
 /* ------------------------------------------------------------
@@ -1094,27 +974,6 @@ dialog.modal[open] {
   display: none !important;
 }
 
-/* A short left-to-right reveal follows the reading order. */
-@keyframes settings-reveal {
-  from { opacity: 0; transform: translateX(-16px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  #settingsModal:not(.hidden) .settings-sidebar {
-    animation: settings-reveal 280ms var(--ease-default) both;
-  }
-
-  .settings-section.active > * {
-    animation: settings-reveal 320ms var(--ease-default) backwards;
-  }
-
-  .settings-section.active > :nth-child(2) { animation-delay: 30ms; }
-  .settings-section.active > :nth-child(3) { animation-delay: 55ms; }
-  .settings-section.active > :nth-child(4) { animation-delay: 80ms; }
-  .settings-section.active > :nth-child(n + 5) { animation-delay: 105ms; }
-}
-
 #settingsModal .custom-select-trigger-global {
   background: var(--bg-subtle);
   border-color: transparent;
@@ -1126,9 +985,7 @@ dialog.modal[open] {
   border-color: var(--border-hover);
 }
 
-#settingsModal .custom-select-trigger-global:focus-visible {
-  border-color: var(--accent-color);
-}
+
 
 /* Responsive Rules for Settings Modal */
 @media (max-width: 620px) {
@@ -1162,7 +1019,6 @@ dialog.modal[open] {
 
   .settings-content { padding: 24px 16px; }
   .settings-section-heading h4 { font-size: 22px; }
-  .data-overview-strip { grid-template-columns: 1fr; }
   .setting-item { padding: 14px; gap: 12px; }
   .setting-item:has(.setting-button-group),
   .card-display-setting {
@@ -1185,3 +1041,37 @@ dialog.modal[open] {
     transition: none !important;
   }
 }
+
+/* A calm welcome, followed by the account's personal details. */
+dialog.onboarding-modal {
+  width: min(420px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 36px 30px 30px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface-elevated);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-modal);
+  overflow-y: auto;
+}
+.onboarding-modal::backdrop { background: rgba(0, 0, 0, .38); backdrop-filter: blur(8px); }
+.onboarding-step { text-align: center; }
+.onboarding-step[hidden], .profile-emoji-grid[hidden], .dock-avatar[hidden] { display: none; }
+.welcome-mark { display: grid; place-items: center; width: 76px; height: 76px; margin: 0 auto 24px; border-radius: 24px; background: var(--bg-subtle); font-size: 42px; }
+.onboarding-eyebrow { margin: 0 0 10px; color: var(--text-secondary); font-size: 11px; letter-spacing: .2em; }
+.onboarding-modal h3 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -.03em; }
+.onboarding-description { margin: 12px 0 24px; color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
+.onboarding-confirm { width: 100%; min-height: 44px; margin-top: 24px; }
+.profile-avatar-picker { position: relative; display: block; width: 80px; height: 80px; margin: 0 auto; border: 1px solid var(--border-default); border-radius: 26px; background: var(--bg-subtle); cursor: pointer; font-size: 44px; }
+.profile-avatar-edit { position: absolute; right: -5px; bottom: -5px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--text-primary); color: var(--bg-surface-elevated); font-size: 18px; }
+.profile-avatar-hint { margin: 12px 0 22px; color: var(--text-secondary); font-size: 12px; }
+.profile-emoji-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; max-height: 200px; overflow-y: auto; margin-bottom: 20px; padding: 6px; border: 1px solid var(--border-default); border-radius: var(--radius-md); }
+.profile-emoji-grid button { min-width: 0; min-height: 44px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; font-size: 26px; }
+.profile-emoji-grid button:hover, .profile-emoji-grid button[aria-pressed="true"] { background: var(--bg-subtle); }
+.profile-nickname-label { display: block; margin-bottom: 8px; text-align: left; font-size: 13px; font-weight: 500; }
+#profileNickname { width: 100%; min-height: 44px; }
+#profileError { text-align: left; }
+.dock-avatar { font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif; font-size: 25px; line-height: 1; }
+#accountAvatar { font-size: 26px; }
+@media (prefers-reduced-transparency: reduce) { .onboarding-modal::backdrop { backdrop-filter: none; background: rgba(0, 0, 0, .6); } }

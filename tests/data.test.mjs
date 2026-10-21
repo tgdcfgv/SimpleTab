@@ -24,7 +24,7 @@ test('legacy data and malformed records retain usable groups and defaults', () =
   assert.equal(data.groups[0].links[0].title, 'example.org');
   assert.equal(data.spaces.length, 3);
   assert(data.groups.some(g => g.name === '临时收藏'));
-  assert.equal(data.settings.searchEngine, 'google');
+  assert.equal(data.settings.searchEngine, 'bing');
   assert.throws(() => normalizeAppData('invalid'), TypeError);
   assert(normalizeAppData({ spaces: [null], settings: {} }).spaces.length);
 });
@@ -70,3 +70,19 @@ test('parseSuggestions extracts valid list from OpenSearch JSON format', () => {
   assert.deepEqual(parseSuggestions(['bing', ['a', '', null, 'b']], 1), ['a']);
 });
 
+
+test('Dock defaults hide the store and migrate legacy hidden position without losing position settings', () => {
+  const defaults = normalizeAppData(null).settings;
+  assert.equal(defaults.showDockStoreButton, false);
+  assert.equal(defaults.dockEnabled, true);
+  const hidden = normalizeAppData({ settings: { dockPosition: 'hidden' } }).settings;
+  assert.equal(hidden.dockEnabled, false);
+  assert.equal(hidden.dockPosition, 'bottom');
+  const custom = normalizeAppData({ settings: { dockEnabled: false, dockPosition: 'right', hiddenDockSpaces: ['space-work'] } }).settings;
+  assert.equal(custom.dockPosition, 'right');
+  assert.deepEqual(custom.hiddenDockSpaces, ['space-work']);
+});
+
+test('cloud snapshots exclude legacy remote wallpaper URLs as well as embedded images', () => {
+  assert.equal(portableSnapshot({ settings: { wallpaper: 'https://example.test/photo.png' } }).settings.wallpaper, null);
+});

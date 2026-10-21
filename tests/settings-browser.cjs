@@ -14,18 +14,20 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.click('#settingsBtn');
     assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['常规', '外观', '内容与布局', '账户与同步', '关于']);
     assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
-    assert.equal(await page.locator('#settingsGeneral .settings-group').first().evaluate(el => getComputedStyle(el).animationName), 'settings-reveal');
+    assert.equal(await page.locator('#settingsGeneral .settings-group').first().evaluate(el => getComputedStyle(el).animationName), 'none');
     for (const [panel, controls] of Object.entries({
-      settingsGeneral: ['openModeSelect', 'dockTabHintToggle', 'searchEngineSettings'],
+      settingsGeneral: ['openModeSelect', 'searchEngineSettings'],
       settingsAppearance: ['themeSelect', 'wallpaperUpload', 'accentColorInput'],
-      settingsContent: ['cardDisplayLabel', 'iconSizeSlider', 'compactModeToggle', 'dockPositionSelect', 'dockEditButtonToggle'],
-      settingsData: ['accountPanel', 'dataOverviewGrid', 'bookmarkFile', 'exportBtnNew', 'importFileNew']
+      settingsContent: ['cardDisplayLabel', 'iconSizeSlider', 'compactModeToggle', 'dockPositionSelect', 'dockEditButtonToggle', 'dockTabHintToggle'],
+      settingsData: ['accountPanel', 'bookmarkFile', 'exportBtnNew', 'importFileNew']
     })) {
       for (const id of controls) assert.equal(await page.locator(`#${id}`).evaluate(el => el.closest('.settings-section').id), panel);
     }
     await page.click('[data-settings-panel="settingsContent"]');
     assert.equal(await page.locator('#iconSizeSetting').isVisible(), false);
+    const displayRowHeight = await page.locator('.card-display-setting').evaluate(el => el.offsetHeight);
     await page.click('button[data-card-mode="icon-only"]');
+    assert.equal(await page.locator('.card-display-setting').evaluate(el => el.offsetHeight), displayRowHeight);
     await page.locator('#iconSizeSlider').fill('48');
     assert.equal(await page.locator('html').getAttribute('data-card-mode'), 'icon-only');
     assert.equal(await page.locator('html').evaluate(el => el.style.getPropertyValue('--pure-icon-size')), '48px');
@@ -43,7 +45,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     assert.equal(await page.locator('#iconSizeSlider').inputValue(), '48');
     await page.screenshot({ path: '/tmp/simtab-settings-appearance.png', animations: 'disabled' });
     await page.click('[data-settings-panel="settingsData"]');
-    assert(await page.locator('#dataOverviewSummary').innerText().then(text => text.includes('本地存储')));
+    assert.equal(await page.locator('#dataOverviewGrid').count(), 0);
     assert.equal(await page.locator('#openAuthModalBtn').isVisible(), true);
     const oldGroups = await page.evaluate(async () => (await import('./js/storage.js')).appData.groups.length);
     await page.setInputFiles('#bookmarkFile', { name: 'bookmarks.html', mimeType: 'text/html', buffer: Buffer.from('<a href="https://example.com/new-bookmark">新书签</a>') });

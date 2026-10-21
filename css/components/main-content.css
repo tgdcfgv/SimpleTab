@@ -179,9 +179,9 @@
   transform: translateY(0);
   will-change: grid-template-rows, opacity, transform;
   transition:
-    grid-template-rows 0.34s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.2s ease,
-    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    grid-template-rows var(--expand-duration) var(--expand-ease),
+    opacity var(--expand-fade-duration) ease,
+    transform var(--expand-duration) var(--expand-ease);
 }
 
 .sites-grid-wrapper.collapsed {
@@ -210,7 +210,7 @@
 
 .fold-icon {
   flex: 0 0 auto;
-  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform var(--expand-duration) var(--expand-ease);
 }
 
 .empty-group-state {

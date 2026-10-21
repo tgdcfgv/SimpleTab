@@ -69,6 +69,20 @@ export async function migrateWallpaper(data) {
 export function portableSnapshot(data) {
   const snapshot = JSON.parse(JSON.stringify(data));
   // Defense in depth: embedded images never enter localStorage or the cloud payload.
-  if (snapshot.settings?.wallpaper?.startsWith('data:')) snapshot.settings.wallpaper = null;
+  if (snapshot.settings) snapshot.settings.wallpaper = null;
   return snapshot;
+}
+
+// Only explicit backup exports embed the browser's wallpaper. Cloud snapshots never do.
+export function exportWallpaper() {
+  return serialize(async () => {
+    const blob = await withStore('readonly', store => store.get(KEY));
+    if (!blob) return null;
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+  });
 }

@@ -2,7 +2,7 @@ import { render, applySettings } from './render.js';
 import { cloud } from './cloud.js';
 
 import { DEFAULT_DATA, normalizeAppData } from './data.js';
-import { migrateWallpaper, portableSnapshot } from './wallpaper.js';
+import { migrateWallpaper, portableSnapshot, exportWallpaper } from './wallpaper.js';
 import { fingerprint, writeLocalSnapshot } from './local-store.js';
 export { SEARCH_ENGINES, DEFAULT_DATA, TEMPORARY_GROUP_NAME, createTemporaryGroup, ensureTemporaryGroup, createDefaultSpaces, normalizeAppData } from './data.js';
 
@@ -253,15 +253,15 @@ export const syncManager = {
     }
   },
 
-  exportData() {
-    const dataStr = JSON.stringify(portableSnapshot(appData), null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = `simtab_backup_${new Date().toISOString().slice(0,10)}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
+  async exportData() {
+    const snapshot = portableSnapshot(appData);
+    snapshot.settings.wallpaper = await exportWallpaper();
+    const url = URL.createObjectURL(new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `simtab_backup_${new Date().toISOString().slice(0,10)}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 
   importData(file) {

@@ -22,16 +22,24 @@ export const linkStore = [
       { name: "腾讯元宝", url: "https://yuanbao.tencent.com" },
       { name: "智谱清言", url: "https://chatglm.cn" },
       { name: "海螺 AI", url: "https://hailuoai.com" },
+      { name: "Cursor", url: "https://www.cursor.com" },
+      { name: "Bolt.new", url: "https://bolt.new" },
+      { name: "v0 by Vercel", url: "https://v0.dev" },
+      { name: "Manus", url: "https://manus.im" },
+      { name: "Coze 扣子", url: "https://www.coze.cn" },
+      { name: "Poe", url: "https://poe.com" },
       { name: "LMSYS Arena", url: "https://lmarena.ai" },
       { name: "Hugging Face", url: "https://huggingface.co" },
       { name: "Google AI Studio", url: "https://aistudio.google.com" },
       { name: "Artificial Analysis", url: "https://www.artificial-analysis.com" },
       { name: "Mistral", url: "https://chat.mistral.ai" },
       { name: "Midjourney", url: "https://www.midjourney.com" },
-      { name: "v0 by Vercel", url: "https://v0.dev" },
+      { name: "Kling AI 可灵", url: "https://klingai.com" },
+      { name: "Runway", url: "https://runwayml.com" },
+      { name: "Luma Dream Machine", url: "https://lumalabs.ai" },
+      { name: "ElevenLabs", url: "https://elevenlabs.io" },
       { name: "Suno", url: "https://suno.com" },
-      { name: "Udio", url: "https://www.udio.com" },
-      { name: "Manus", url: "https://manus.im" }
+      { name: "Udio", url: "https://www.udio.com" }
     ]
   },
   {
@@ -42,6 +50,8 @@ export const linkStore = [
       { name: "飞书", url: "https://www.feishu.cn" },
       { name: "钉钉", url: "https://www.dingtalk.com" },
       { name: "企业微信", url: "https://work.weixin.qq.com" },
+      { name: "Slack", url: "https://slack.com" },
+      { name: "Linear", url: "https://linear.app" },
       { name: "腾讯文档", url: "https://docs.qq.com" },
       { name: "语雀", url: "https://www.yuque.com" },
       { name: "石墨文档", url: "https://shimo.im" },
@@ -50,6 +60,10 @@ export const linkStore = [
       { name: "Todoist", url: "https://todoist.com" },
       { name: "ProcessOn", url: "https://www.processon.com" },
       { name: "Miro", url: "https://miro.com" },
+      { name: "Excalidraw", url: "https://excalidraw.com" },
+      { name: "DeepL 翻译", url: "https://www.deepl.com" },
+      { name: "iLovePDF", url: "https://www.ilovepdf.com" },
+      { name: "Google 日历", url: "https://calendar.google.com" },
       { name: "Gmail", url: "https://mail.google.com" },
       { name: "Outlook", url: "https://outlook.live.com" },
       { name: "163 网易邮箱", url: "https://mail.163.com" },
@@ -63,17 +77,24 @@ export const linkStore = [
       { name: "GitHub", url: "https://github.com" },
       { name: "GitLab", url: "https://gitlab.com" },
       { name: "Gitee 码云", url: "https://gitee.com" },
+      { name: "Docker Hub", url: "https://hub.docker.com" },
+      { name: "Postman", url: "https://www.postman.com" },
       { name: "MDN Web Docs", url: "https://developer.mozilla.org" },
       { name: "Stack Overflow", url: "https://stackoverflow.com" },
       { name: "V2EX", url: "https://www.v2ex.com" },
+      { name: "Linux.do", url: "https://linux.do" },
       { name: "掘金", url: "https://juejin.cn" },
       { name: "npm", url: "https://www.npmjs.com" },
       { name: "LeetCode 力扣", url: "https://leetcode.cn" },
+      { name: "Can I use", url: "https://caniuse.com" },
       { name: "CodePen", url: "https://codepen.io" },
       { name: "Replit", url: "https://replit.com" },
+      { name: "Speedtest", url: "https://www.speedtest.net" },
       { name: "Vercel", url: "https://vercel.com" },
-      { name: "Cloudflare", url: "https://www.cloudflare.com" },
       { name: "Supabase", url: "https://supabase.com" },
+      { name: "Cloudflare", url: "https://www.cloudflare.com" },
+      { name: "Railway", url: "https://railway.app" },
+      { name: "Neon", url: "https://neon.tech" },
       { name: "AWS", url: "https://aws.amazon.com" },
       { name: "Google Cloud", url: "https://cloud.google.com" },
       { name: "Azure", url: "https://azure.microsoft.com" },
@@ -86,12 +107,15 @@ export const linkStore = [
     links: [
       { name: "Figma", url: "https://www.figma.com" },
       { name: "Framer", url: "https://www.framer.com" },
+      { name: "Mobbin", url: "https://mobbin.com" },
       { name: "Canva", url: "https://www.canva.com" },
       { name: "稿定设计", url: "https://www.gaoding.com" },
       { name: "Adobe Express", url: "https://www.adobe.com/express" },
+      { name: "Eagle", url: "https://cn.eagle.cool" },
       { name: "Dribbble", url: "https://dribbble.com" },
       { name: "Behance", url: "https://www.behance.net" },
       { name: "Pinterest", url: "https://www.pinterest.com" },
+      { name: "Awwwards", url: "https://www.awwwards.com" },
       { name: "花瓣网", url: "https://huaban.com" },
       { name: "站酷", url: "https://www.zcool.com.cn" }
     ]
@@ -105,9 +129,13 @@ export const linkStore = [
       { name: "Pixabay", url: "https://pixabay.com" },
       { name: "Freepik", url: "https://www.freepik.com" },
       { name: "Mixkit", url: "https://mixkit.co" },
+      { name: "TinyPNG", url: "https://tinypng.com" },
       { name: "Iconfont", url: "https://www.iconfont.cn" },
+      { name: "Lucide Icons", url: "https://lucide.dev" },
       { name: "Font Awesome", url: "https://fontawesome.com" },
       { name: "Google Fonts", url: "https://fonts.google.com" },
+      { name: "Coolors", url: "https://coolors.co" },
+      { name: "SVGL", url: "https://svgl.app" },
       { name: "LottieFiles", url: "https://lottiefiles.com" },
       { name: "Remove.bg", url: "https://www.remove.bg" }
     ]
@@ -122,10 +150,13 @@ export const linkStore = [
       { name: "微博", url: "https://weibo.com" },
       { name: "豆瓣", url: "https://www.douban.com" },
       { name: "即刻", url: "https://web.okjike.com" },
+      { name: "Product Hunt", url: "https://www.producthunt.com" },
       { name: "X", url: "https://x.com" },
       { name: "Reddit", url: "https://www.reddit.com" },
       { name: "Threads", url: "https://www.threads.net" },
+      { name: "Instagram", url: "https://www.instagram.com" },
       { name: "YouTube", url: "https://www.youtube.com" },
+      { name: "Telegram Web", url: "https://web.telegram.org" },
       { name: "Discord", url: "https://discord.com" },
       { name: "Medium", url: "https://medium.com" }
     ]
@@ -141,9 +172,13 @@ export const linkStore = [
       { name: "YouTube Music", url: "https://music.youtube.com" },
       { name: "SoundCloud", url: "https://soundcloud.com" },
       { name: "Bandcamp", url: "https://bandcamp.com" },
+      { name: "Steam", url: "https://store.steampowered.com" },
+      { name: "Twitch", url: "https://www.twitch.tv" },
       { name: "Netflix", url: "https://www.netflix.com" },
       { name: "豆瓣电影", url: "https://movie.douban.com" },
       { name: "IMDb", url: "https://www.imdb.com" },
+      { name: "爱奇艺", url: "https://www.iqiyi.com" },
+      { name: "腾讯视频", url: "https://v.qq.com" },
       { name: "Pitchfork", url: "https://pitchfork.com" },
       { name: "Rolling Stone", url: "https://www.rollingstone.com" },
       { name: "NME", url: "https://www.nme.com" },
@@ -158,11 +193,13 @@ export const linkStore = [
       { name: "36氪", url: "https://36kr.com" },
       { name: "IT之家", url: "https://www.ithome.com" },
       { name: "Hacker News", url: "https://news.ycombinator.com" },
+      { name: "TechCrunch", url: "https://techcrunch.com" },
       { name: "The Verge", url: "https://www.theverge.com" },
       { name: "Wired", url: "https://www.wired.com" },
       { name: "财新网", url: "https://www.caixin.com" },
       { name: "华尔街日报", url: "https://www.wsj.com" },
       { name: "Bloomberg", url: "https://www.bloomberg.com" },
+      { name: "雪球", url: "https://xueqiu.com" },
       { name: "澎湃新闻", url: "https://www.thepaper.cn" },
       { name: "Reuters", url: "https://www.reuters.com" },
       { name: "BBC", url: "https://www.bbc.com" },
@@ -177,15 +214,19 @@ export const linkStore = [
     links: [
       { name: "Google Scholar", url: "https://scholar.google.com" },
       { name: "arXiv", url: "https://arxiv.org" },
+      { name: "Connected Papers", url: "https://www.connectedpapers.com" },
       { name: "Semantic Scholar", url: "https://www.semanticscholar.org" },
       { name: "PubMed", url: "https://pubmed.ncbi.nlm.nih.gov" },
       { name: "CNKI 中国知网", url: "https://www.cnki.net" },
       { name: "万方数据", url: "https://www.wanfangdata.com.cn" },
       { name: "维普网", url: "https://www.cqvip.com" },
       { name: "Zotero", url: "https://www.zotero.org" },
+      { name: "Wolfram Alpha", url: "https://www.wolframalpha.com" },
       { name: "维基百科", url: "https://zh.wikipedia.org" },
+      { name: "Kaggle", url: "https://www.kaggle.com" },
       { name: "Coursera", url: "https://www.coursera.org" },
       { name: "edX", url: "https://www.edx.org" },
+      { name: "中国大学 MOOC", url: "https://www.icourse163.org" },
       { name: "Z-Library", url: "https://zlibrary.se" },
       { name: "MagazineLib", url: "https://magazinelib.com" }
     ]
@@ -199,10 +240,12 @@ export const linkStore = [
       { name: "夸克网盘", url: "https://pan.quark.cn" },
       { name: "坚果云", url: "https://www.jianguoyun.com" },
       { name: "123云盘", url: "https://www.123pan.com" },
+      { name: "文叔叔", url: "https://www.wenshushu.cn" },
       { name: "Google Drive", url: "https://drive.google.com" },
       { name: "OneDrive", url: "https://onedrive.live.com" },
       { name: "iCloud", url: "https://www.icloud.com" },
-      { name: "Dropbox", url: "https://www.dropbox.com" }
+      { name: "Dropbox", url: "https://www.dropbox.com" },
+      { name: "Proton Drive", url: "https://proton.me/drive" }
     ]
   },
   {
@@ -216,9 +259,11 @@ export const linkStore = [
       { name: "亚马逊", url: "https://www.amazon.com" },
       { name: "什么值得买", url: "https://www.smzdm.com" },
       { name: "闲鱼", url: "https://2.taobao.com" },
+      { name: "大众点评", url: "https://www.dianping.com" },
       { name: "美团", url: "https://www.meituan.com" },
       { name: "饿了么", url: "https://www.ele.me" },
-      { name: "盒马", url: "https://www.freshippo.com" }
+      { name: "盒马", url: "https://www.freshippo.com" },
+      { name: "得物", url: "https://www.dewu.com" }
     ]
   },
   {
@@ -235,7 +280,9 @@ export const linkStore = [
       { name: "飞猪", url: "https://www.fliggy.com" },
       { name: "Trip.com", url: "https://www.trip.com" },
       { name: "Booking", url: "https://www.booking.com" },
-      { name: "Airbnb", url: "https://www.airbnb.com" }
+      { name: "Airbnb", url: "https://www.airbnb.com" },
+      { name: "Flightradar24", url: "https://www.flightradar24.com" },
+      { name: "航旅纵横", url: "https://www.umetrip.com" }
     ]
   }
 ];

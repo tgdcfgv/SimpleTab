@@ -1,12 +1,12 @@
 import { safeWebUrl, safeImageUrl } from './urls.js';
 
 export const SEARCH_ENGINES = [
-  { id: "google", name: "Google", homeUrl: "https://www.google.com", searchUrl: "https://www.google.com/search?q=" },
   { id: "bing", name: "Bing", homeUrl: "https://www.bing.com", searchUrl: "https://www.bing.com/search?q=", suggestUrl: "https://api.bing.com/osjson.aspx?query=" },
   { id: "baidu", name: "百度", homeUrl: "https://www.baidu.com", searchUrl: "https://www.baidu.com/s?wd=" },
-  { id: "duckduckgo", name: "DuckDuckGo", homeUrl: "https://duckduckgo.com", searchUrl: "https://duckduckgo.com/?q=" },
   { id: "so360", name: "360 搜索", homeUrl: "https://www.so.com", searchUrl: "https://www.so.com/s?q=" },
   { id: "sogou", name: "搜狗", homeUrl: "https://www.sogou.com", searchUrl: "https://www.sogou.com/web?query=" },
+  { id: "google", name: "Google", homeUrl: "https://www.google.com", searchUrl: "https://www.google.com/search?q=" },
+  { id: "duckduckgo", name: "DuckDuckGo", homeUrl: "https://duckduckgo.com", searchUrl: "https://duckduckgo.com/?q=" },
   { id: "yahoo", name: "Yahoo", homeUrl: "https://search.yahoo.com", searchUrl: "https://search.yahoo.com/search?p=" },
   { id: "yandex", name: "Yandex", homeUrl: "https://yandex.com", searchUrl: "https://yandex.com/search/?text=" }
 ];
@@ -18,10 +18,10 @@ export const DEFAULT_DATA = {
       name: "常用",
       collapsed: false,
       links: [
-        { id: "l1", title: "Gmail", url: "https://mail.google.com" },
-        { id: "l2", title: "YouTube", url: "https://youtube.com" },
+        { id: "l1", title: "哔哩哔哩", url: "https://www.bilibili.com" },
+        { id: "l2", title: "知乎", url: "https://www.zhihu.com" },
         { id: "l3", title: "GitHub", url: "https://github.com" },
-        { id: "l4", title: "Bilibili", url: "https://bilibili.com" }
+        { id: "l4", title: "QQ 邮箱", url: "https://mail.qq.com" }
       ]
     },
     {
@@ -29,21 +29,22 @@ export const DEFAULT_DATA = {
       name: "AI 工具",
       collapsed: false,
       links: [
-        { id: "l5", title: "ChatGPT", url: "https://chatgpt.com" },
-        { id: "l6", title: "Claude", url: "https://claude.ai" },
-        { id: "l7", title: "Gemini", url: "https://gemini.google.com" },
-        { id: "l8", title: "DeepSeek", url: "https://chat.deepseek.com", customIcon: "https://fe-static.deepseek.com/chat/favicon.svg" },
-        { id: "l9", title: "Kimi", url: "https://kimi.moonshot.cn" }
+        { id: "l5", title: "DeepSeek", url: "https://chat.deepseek.com", customIcon: "https://fe-static.deepseek.com/chat/favicon.svg" },
+        { id: "l6", title: "Kimi", url: "https://kimi.moonshot.cn" },
+        { id: "l7", title: "豆包", url: "https://www.doubao.com" },
+        { id: "l8", title: "通义千问", url: "https://tongyi.aliyun.com" },
+        { id: "l9", title: "腾讯元宝", url: "https://yuanbao.tencent.com" }
       ]
     },
     {
       id: "g3",
-      name: "学习",
+      name: "学习与参考",
       collapsed: false,
       links: [
-        { id: "l10", title: "Google Scholar", url: "https://scholar.google.com" },
-        { id: "l11", title: "Wikipedia", url: "https://wikipedia.org" },
-        { id: "l12", title: "Cambridge Dictionary", url: "https://dictionary.cambridge.org" }
+        { id: "l10", title: "中国知网", url: "https://www.cnki.net" },
+        { id: "l11", title: "中国大学 MOOC", url: "https://www.icourse163.org" },
+        { id: "l12", title: "有道词典", url: "https://dict.youdao.com" },
+        { id: "l13", title: "Cambridge 词典", url: "https://dictionary.cambridge.org" }
       ]
     },
     {
@@ -51,9 +52,10 @@ export const DEFAULT_DATA = {
       name: "设计工具",
       collapsed: false,
       links: [
-        { id: "l13", title: "Figma", url: "https://figma.com" },
-        { id: "l14", title: "Canva", url: "https://canva.com" },
-        { id: "l15", title: "Iconfont", url: "https://iconfont.cn" }
+        { id: "l14", title: "即时设计", url: "https://js.design" },
+        { id: "l15", title: "Canva 可画", url: "https://www.canva.cn" },
+        { id: "l16", title: "Iconfont", url: "https://iconfont.cn" },
+        { id: "l17", title: "Figma", url: "https://figma.com" }
       ]
     },
     {
@@ -68,11 +70,18 @@ export const DEFAULT_DATA = {
     cardDisplayMode: "icon-text",
     iconSize: 24,
     openLinksInNewTab: false,
-    searchEngine: "google",
-    enabledSearchEngines: ["google", "bing"],
+    searchEngine: "bing",
+    enabledSearchEngines: ["bing", "baidu"],
     theme: "system",
     accentColor: "#6366f1",
     dockPosition: "bottom",
+    dockEnabled: true,
+    showDockAccountButton: true,
+    showDockSettingsButton: true,
+    showDockAddGroupButton: true,
+    showDockAddSiteButton: true,
+    showDockStoreButton: false,
+    hiddenDockSpaces: [],
     showDockTabHint: true,
     showDockEditButton: true,
     wallpaper: null
@@ -135,13 +144,20 @@ export function normalizeAppData(data) {
     ...DEFAULT_DATA.settings,
     ...(normalized.settings || {})
   };
+  if (normalized.settings.dockPosition === 'hidden') {
+    normalized.settings.dockEnabled = false;
+    normalized.settings.dockPosition = 'bottom';
+  }
+  if (!['left', 'right', 'bottom'].includes(normalized.settings.dockPosition)) normalized.settings.dockPosition = 'bottom';
+  normalized.settings.hiddenDockSpaces = Array.isArray(normalized.settings.hiddenDockSpaces)
+    ? normalized.settings.hiddenDockSpaces.filter(id => typeof id === 'string') : [];
   normalized.settings.wallpaper = safeImageUrl(normalized.settings.wallpaper);
   const validEngineIds = new Set(SEARCH_ENGINES.map(engine => engine.id));
   normalized.settings.enabledSearchEngines = Array.isArray(normalized.settings.enabledSearchEngines)
     ? normalized.settings.enabledSearchEngines.filter(id => validEngineIds.has(id))
-    : ["google", "bing"];
+    : ["bing", "baidu"];
   if (normalized.settings.enabledSearchEngines.length === 0) {
-    normalized.settings.enabledSearchEngines = ["google", "bing"];
+    normalized.settings.enabledSearchEngines = ["bing", "baidu"];
   }
   if (!normalized.settings.enabledSearchEngines.includes(normalized.settings.searchEngine)) {
     normalized.settings.searchEngine = normalized.settings.enabledSearchEngines[0];

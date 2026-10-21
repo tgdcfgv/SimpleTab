@@ -236,6 +236,7 @@ export function renderSpaceDock() {
   appData.spaces.forEach((space, index) => {
     const btn = document.createElement('button');
     btn.type = 'button';
+    btn.dataset.spaceId = space.id;
     btn.className = `space-dock-btn ${space.id === appData.activeSpaceId ? 'active' : ''}`;
     btn.innerHTML = getSpaceDockIcon(space, index);
     btn.title = space.name;
@@ -248,6 +249,7 @@ export function renderSpaceDock() {
     });
     dockList.appendChild(btn);
   });
+  updateDockVisibility();
 }
 
 export function switchToNextSpace() {
@@ -293,11 +295,30 @@ export function getContrastForeground(hexColor) {
 
 let wallpaperRender = 0;
 
+export function updateDockVisibility() {
+  if (!appData) return;
+  const settings = appData.settings;
+  const buttons = { accountBtn: 'showDockAccountButton', settingsBtn: 'showDockSettingsButton', addGroupBtn: 'showDockAddGroupButton', addSiteBtn: 'showDockAddSiteButton', appStoreBtn: 'showDockStoreButton', spaceEditBtn: 'showDockEditButton', spaceTabHint: 'showDockTabHint' };
+  for (const [id, key] of Object.entries(buttons)) {
+    document.getElementById(id).hidden = key === 'showDockStoreButton' ? settings[key] !== true : settings[key] === false;
+  }
+  const hiddenSpaces = settings.hiddenDockSpaces || [];
+  document.querySelectorAll('.space-dock-btn').forEach(button => { button.hidden = hiddenSpaces.includes(button.dataset.spaceId); });
+  const actions = document.querySelector('.dock-actions');
+  const spaces = document.querySelector('.space-switcher');
+  actions.hidden = !actions.querySelector('button:not([hidden])');
+  spaces.hidden = !spaces.querySelector('button:not([hidden])');
+  document.querySelector('.dock-divider').hidden = actions.hidden || spaces.hidden;
+  document.getElementById('spaceDock').hidden = settings.dockEnabled === false || (actions.hidden && spaces.hidden);
+  document.getElementById('settingsFallbackBtn').hidden = settings.dockEnabled !== false && settings.showDockSettingsButton !== false;
+}
+
 export function applySettings() {
   const wallpaperRequest = ++wallpaperRender;
   document.documentElement.dataset.compact = appData.settings.compactMode;
   document.documentElement.dataset.cardMode = appData.settings.cardDisplayMode || 'icon-text';
-  document.documentElement.dataset.dockPosition = appData.settings.dockPosition || 'bottom';
+  document.documentElement.dataset.dockPosition = appData.settings.dockEnabled === false ? 'hidden' : (appData.settings.dockPosition || 'bottom');
+  updateDockVisibility();
   document.documentElement.style.setProperty('--pure-icon-size', (appData.settings.iconSize || 24) + 'px');
   const accent = appData.settings.accentColor || '#6366f1';
   const accentFg = getContrastForeground(accent);
@@ -319,7 +340,7 @@ export function applySettings() {
 
   const engineSelect = document.getElementById('searchEngineSelect');
   if (engineSelect) {
-    const enabledIds = appData.settings.enabledSearchEngines || ['google', 'bing'];
+    const enabledIds = appData.settings.enabledSearchEngines || ['bing', 'baidu'];
     const enabledEngines = SEARCH_ENGINES.filter(engine => enabledIds.includes(engine.id));
     engineSelect.innerHTML = '';
     enabledEngines.forEach(engine => {
@@ -330,7 +351,7 @@ export function applySettings() {
       engineSelect.appendChild(option);
     });
     if (!enabledIds.includes(appData.settings.searchEngine)) {
-      appData.settings.searchEngine = enabledEngines[0]?.id || 'google';
+      appData.settings.searchEngine = enabledEngines[0]?.id || 'bing';
     }
     engineSelect.value = appData.settings.searchEngine;
     if (window.customSelectListenerAdded) {

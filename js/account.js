@@ -1,5 +1,6 @@
-import { openSettingsModal, renderDataOverview, settingsModal, openAuthModal, showToast } from './modals.js';
+import { openSettingsModal, settingsModal, openAuthModal, showToast } from './modals.js';
 import { initAuthModal } from './auth-modal.js';
+import { initOnboarding } from './onboarding.js';
 import { cloud } from './cloud.js';
 import { appData, normalizeAppData, setAppData, syncManager } from './storage.js';
 import { applySettings, render } from './render.js';
@@ -21,9 +22,30 @@ function update() {
   accountButton.title = loggedIn ? '账户与同步' : '登录或创建账户';
   accountButton.setAttribute('aria-label', accountButton.title);
   accountButton.dataset.signedIn = String(loggedIn);
+  const profile = cloud.session?.user?.user_metadata;
+  const avatar = loggedIn && typeof profile?.avatar_emoji === 'string' ? profile.avatar_emoji : '';
+  let dockAvatar = accountButton.querySelector('.dock-avatar');
+  if (!dockAvatar) {
+    dockAvatar = document.createElement('span');
+    dockAvatar.className = 'dock-avatar';
+    dockAvatar.setAttribute('aria-hidden', 'true');
+    accountButton.appendChild(dockAvatar);
+  }
+  dockAvatar.textContent = avatar;
+  dockAvatar.hidden = !avatar;
+  accountButton.querySelector('svg').style.display = avatar ? 'none' : '';
+  const accountAvatar = document.getElementById('accountAvatar');
+  accountAvatar.textContent = avatar || '😊';
+  const secondaryEmail = document.getElementById('accountEmailSecondary');
+  secondaryEmail.textContent = cloud.session?.user?.email || '';
+  secondaryEmail.hidden = !profile?.nickname;
+  if (profile?.nickname) {
+    accountButton.title = `${profile.nickname} · 账户与同步`;
+    accountButton.setAttribute('aria-label', accountButton.title);
+  }
   document.getElementById('accountTitle').textContent = choosing ? '选择同步内容' : '账户与同步';
   if (choice) choice.hidden = !choosing;
-  document.getElementById('accountEmailLabel').textContent = cloud.session?.user?.email || '';
+  document.getElementById('accountEmailLabel').textContent = profile?.nickname || cloud.session?.user?.email || '';
   if (loggedOutCard) loggedOutCard.hidden = loggedIn || choosing;
   if (loginFields) loginFields.hidden = loggedIn || choosing;
   if (accountDetails) accountDetails.hidden = !loggedIn || choosing;
@@ -60,15 +82,12 @@ function update() {
   const reloadBtn = document.getElementById('accountReload');
   if (reloadBtn) reloadBtn.hidden = !syncManager.conflict;
   document.querySelector('.app-container').inert = !syncManager.ready;
-  document.getElementById('dataOverviewNote').textContent = syncManager.mode === 'local'
-    ? '占比按空间、分组和网站项目总数计算，当前内容保存在此浏览器中。'
-    : '占比按空间、分组和网站项目总数计算，当前内容保存在 Supabase 云端数据库中。';
-  renderDataOverview();
-  if (locked && (settingsModal.classList.contains('hidden') || !document.getElementById('settingsData').classList.contains('active'))) openSettingsModal('settingsData');
+  if (locked && syncManager.status !== 'syncing' && !document.getElementById('onboardingDialog').open && document.getElementById('authModal').classList.contains('hidden') && (settingsModal.classList.contains('hidden') || !document.getElementById('settingsData').classList.contains('active'))) openSettingsModal('settingsData');
 }
 
 export function initAccount() {
   initAuthModal();
+  initOnboarding();
   document.getElementById('accountBtn').addEventListener('click', () => {
     if (!cloud.session) {
       openAuthModal();

@@ -1,9 +1,382 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>隐私政策 · SimTab</title><link rel="icon" type="image/svg+xml" href="icons/simtab.svg"><link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png"><link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png"><link rel="stylesheet" href="css/info.css"></head><body><main><header><img src="icons/icon-128.png" alt="SimTab"><div><small>SIMTAB</small><h1>隐私政策</h1></div></header><p>适用于 SimTab 2.4.1 的 Microsoft Edge 扩展及网页版。更新日期：2026 年 10 月 21 日。</p>
-<h2>账户与云端数据</h2><p>SimTab 使用 Supabase 提供邮箱注册、登录及云端数据库，项目位于新加坡。邮箱、密码由 Supabase Auth 处理；应用不会保存明文密码。登录后，空间、分组、网站标题与地址、排序、主题、自定义图标地址及旧版远程壁纸地址会上传并保存在当前账户的云端记录中。数据库按账户隔离访问。Supabase 会处理服务所需的网络信息和日志。</p><p>无需登录即可使用。未登录的内容保存在当前浏览器：扩展使用 chrome.storage.local，网页使用 localStorage。主动登录后可选择使用云端内容覆盖当前页面，或将当前页面保存到云端。确认选择前不读取或写入账户配置；本地副本始终保留，退出后恢复本地内容；登录凭证保存在 localStorage 以维持登录。云端内容不写入浏览器本地内容，未同步更改仅保留在当前页面。两份内容不会自动上传、合并或覆盖。主动将本地内容复制到云端时会替换当前账户内容，并保留本地副本。</p>
-<h2>自定义壁纸</h2><p>上传的壁纸独立保存在当前浏览器的 IndexedDB，不上传云端，也不包含在 JSON 导出中。旧版备份中的内嵌壁纸会先保存到本机，再从配置中移除；其他设备需自行选择图片。清除浏览器数据或卸载扩展可能删除本机壁纸。</p>
-<h2>快捷收藏</h2><p>仅在你点击扩展工具栏图标、使用快捷键或选择页面右键菜单后，扩展才读取当前页面标题和网址。草稿暂存于浏览器会话存储，确认空间和分组后按当前本地或云端状态保存；取消不会添加网站。草稿在 30 分钟后失效，后续收藏时清理；保存或取消时清理，失败时可保留以便重试，关闭浏览器会清除。扩展不读取页面正文、浏览历史或其他未主动选择的标签页。</p><h2>收藏夹与导入文件</h2><p>只有在你打开扩展中的“我的收藏夹”并同意书签权限后，SimTab 才会通过 Edge 的书签接口读取书签标题、网址和文件夹路径，用于展示和选择添加。SimTab 不创建、修改或删除浏览器原有书签。你可以在扩展管理中撤销权限。网页版不能直接读取收藏夹。你主动选择的 HTML 书签文件和 JSON 备份在本地读取和解析，导入后的内容在未登录时保存在浏览器，登录后保存到当前账户云端。导出文件可能包含你的私人网址，请自行保管。</p>
-<h2>联网请求与第三方</h2><ul><li>扩展的默认图标使用浏览器提供的 favicon 接口；浏览器可能按自身规则获取或缓存图标。网页版默认通过 a.favicon.im 获取网站图标，该服务可能收到所请求网站的主机名、网络地址和常规请求信息。</li><li>预设或你自定义的远程图标会向图片提供方发出请求。旧备份若含有第三方图标地址，导入后也会请求这些地址。第三方可能按其政策记录访问日志。</li><li>搜索时，你输入的搜索词会传给你选择的搜索引擎，输入时会向 Bing 建议接口获取联想词。打开网站会直接访问该网站，其数据处理适用对方的隐私政策。</li><li>网页版由 Cloudflare 托管。访问页面时 Cloudflare 会处理提供网络服务所需的 IP 地址、请求信息和安全日志。GitHub 提供源码、下载及问题反馈服务。</li></ul><p>2.1.0 不再抓取目标网页正文，不使用 AllOrigins 代理，也不会因获取默认图标而把完整网址转发给此类网页代理。扩展不加载或执行远程脚本。</p>
-<h2>权限用途</h2><ul><li>storage：保存和读取未登录时的本地网站及设置，也可读取本地内容供你主动复制到云端；会话存储暂存你主动发起的收藏草稿。</li><li>Supabase 项目访问权限：仅访问本应用的 Supabase 域名，用于登录及云端数据读写。</li><li>activeTab：在你主动点击工具栏图标或使用快捷键后，临时读取当前页面标题和网址以便收藏。</li><li>contextMenus：提供“保存当前页面到 SimTab”页面右键菜单。</li><li>favicon：在扩展界面显示网站图标。</li><li>bookmarks（可选）：在你主动授权后读取收藏夹供选择导入。</li></ul>
-<h2>删除与控制</h2><p>你可删除应用中的网站或分组、移除自定义壁纸，未登录时修改保存在浏览器，登录后修改同步到云端。网页、扩展和其他设备登录同一账户后可读取同一份数据。退出登录清除本机登录状态，并恢复本地内容。清除浏览器数据或卸载扩展可能删除本地内容，但不会删除云端记录。需删除账户及全部云端记录时，请通过下方项目反馈渠道联系维护者，勿公开密码或私人网址。已下载到磁盘的备份需单独删除。</p>
-<h2>联系与更新</h2><p>项目由 GitHub 账户 tgdcfgv 维护。隐私问题可通过 <a href="https://github.com/tgdcfgv/SimpleTab/issues">项目反馈页面</a>联系；请勿在公开问题中上传私人收藏夹或凭据。功能或数据处理方式发生变化时，我们会同步更新本政策。</p><hr><p><a href="newtab.html">打开 SimTab</a> · <a href="privacy.html">隐私政策</a> · <a href="https://github.com/tgdcfgv/SimpleTab/issues" target="_blank" rel="noopener noreferrer">反馈与支持</a></p></main></body></html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>隐私政策 · SimTab</title>
+  <link rel="icon" type="image/svg+xml" href="icons/simtab.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
+  <link rel="stylesheet" href="css/info.css">
+  <link rel="stylesheet" href="css/components/icons.css">
+  <script src="js/info.js" defer></script>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <header class="site-nav">
+    <div class="nav-container">
+      <a href="newtab.html" class="nav-brand">
+        <img src="icons/icon-32.png" alt="SimTab">
+        <span class="brand-title">SimTab</span>
+        <span class="brand-badge">隐私政策</span>
+      </a>
+      <nav class="nav-actions" aria-label="快捷导航">
+        <a href="install.html" class="nav-link">扩展安装指南</a>
+        <a href="https://github.com/tgdcfgv/SimpleTab/issues" class="nav-link" target="_blank" rel="noopener noreferrer">反馈与支持</a>
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" title="切换主题" aria-label="切换主题">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon" aria-hidden="true" style="--ui-icon-size: 18px"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></svg>
+        </button>
+        <a href="newtab.html" class="btn-open-tab">
+          打开 SimTab
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right" aria-hidden="true" style="--ui-icon-size: 14px"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 主体内容 -->
+  <main class="content-container">
+    <!-- Hero 头部 -->
+    <header class="page-hero">
+      <div class="hero-icon-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check" aria-hidden="true" style="--ui-icon-size: 40px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></svg>
+      </div>
+      <div class="hero-meta">
+        <span class="badge badge-primary">官方声明</span>
+        <span class="badge badge-success">版本 v1.0.0</span>
+        <span class="badge badge-warning">更新于 2026 年 10 月 21 日</span>
+      </div>
+      <h1 class="hero-title">SimTab 隐私政策</h1>
+      <p class="hero-desc">适用于 SimTab 1.0.0 的 Microsoft Edge 扩展及网页版。我们始终坚守「本地优先、极简授权、数据完全归用户所有」的安全承诺，保障你的数字资产与隐私空间。</p>
+    </header>
+
+    <!-- 4 大核心隐私承诺柱 -->
+    <section class="pillars-grid" aria-label="核心隐私原则">
+      <div class="pillar-card">
+        <div class="pillar-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-database" aria-hidden="true" style="--ui-icon-size: 20px"><ellipse cx="12" cy="5" rx="9" ry="3" /> <path d="M3 5V19A9 3 0 0 0 21 19V5" /> <path d="M3 12A9 3 0 0 0 21 12" /></svg>
+        </div>
+        <h3 class="pillar-title">本地优先存储</h3>
+        <p class="pillar-desc">无需注册或登录即可完整使用。未登录时数据安全存放于浏览器本地，不向任何云端上传。</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock" aria-hidden="true" style="--ui-icon-size: 20px"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+        </div>
+        <h3 class="pillar-title">密码强加密</h3>
+        <p class="pillar-desc">由专业云端基础设施 Supabase Auth 加密处理邮箱和密码，应用绝不存储任何明文密码。</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off" aria-hidden="true" style="--ui-icon-size: 20px"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /> <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /> <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /> <path d="m2 2 20 20" /></svg>
+        </div>
+        <h3 class="pillar-title">零侵入与追踪</h3>
+        <p class="pillar-desc">不抓取网页正文，不搜集浏览历史，无任何第三方分析追踪 SDK，代码全部开源。</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round" aria-hidden="true" style="--ui-icon-size: 20px"><circle cx="12" cy="8" r="5" /> <path d="M20 21a8 8 0 0 0-16 0" /></svg>
+        </div>
+        <h3 class="pillar-title">权限按需授权</h3>
+        <p class="pillar-desc">Edge 收藏夹只在主动点击时按需请求读取，不修改原有书签，且随时可在浏览器管理中关闭。</p>
+      </div>
+    </section>
+
+    <!-- 目录快速跳转 -->
+    <nav class="toc-bar" aria-label="政策章节导航">
+      <span class="toc-label">目录导航</span>
+      <a href="#account-data" class="toc-pill">1. 账户与云端</a>
+      <a href="#wallpaper" class="toc-pill">2. 自定义壁纸</a>
+      <a href="#capture" class="toc-pill">3. 快捷收藏</a>
+      <a href="#bookmarks" class="toc-pill">4. 收藏夹与导入</a>
+      <a href="#network" class="toc-pill">5. 联网与第三方</a>
+      <a href="#permissions" class="toc-pill">6. 扩展权限清单</a>
+      <a href="#control" class="toc-pill">7. 删除与控制</a>
+      <a href="#contact" class="toc-pill">8. 联系与更新</a>
+    </nav>
+
+    <!-- 1. 账户与云端数据 -->
+    <section id="account-data" class="section-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-download" aria-hidden="true" style="--ui-icon-size: 20px"><path d="M12 13v8l-4-4" /> <path d="m12 21 4-4" /> <path d="M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284" /></svg>
+          </div>
+          <div>
+            <h2 class="card-title">1. 账户与云端数据</h2>
+            <p class="card-subtitle">Supabase 认证、数据存储范围与本地隔离保障</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="clause-block">
+        <h4>云端基础设施与密码安全</h4>
+        <p>SimTab 使用 Supabase 提供邮箱注册、登录及云端数据库，数据中心位于新加坡。邮箱、密码由 Supabase Auth 负责处理；应用自身绝不接触或保存你的明文密码。在登录状态下，你的空间、分组、网站标题与地址、排序、主题、自定义图标地址及旧版远程壁纸地址会上传并保存在当前账户的云端记录中。数据库按账户采用行级安全策略（Row-Level Security）实现严格的隔离访问。Supabase 会处理服务运行所需的网络信息和基础运行日志。</p>
+      </div>
+
+      <div class="clause-block">
+        <h4>未登录使用与双份数据隔离机制</h4>
+        <p>SimTab <strong>无需登录即可使用</strong>。未登录时的所有内容均直接保存在当前浏览器：扩展版使用 <code>chrome.storage.local</code>，网页版使用 <code>localStorage</code>。</p>
+        <p>主动登录后，你可以根据需要选择使用云端内容覆盖当前页面，或将当前页面保存到云端。在确认选择前，应用不会读取或写入账户配置；本地副本始终完整保留，一旦退出登录将自动恢复你的本地内容。登录凭证保存在 <code>localStorage</code> 中以维持会话。</p>
+        <p>云端内容绝不会自动静默写入浏览器本地存储，未同步更改仅临时保留在当前活跃页面。本地与云端两份内容绝不会自动上传、合并或覆盖。主动将本地内容复制到云端时会替换当前账户内容，并完整保留本地副本。</p>
+      </div>
+    </section>
+
+    <!-- 2. 自定义壁纸 -->
+    <section id="wallpaper" class="section-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image" aria-hidden="true" style="--ui-icon-size: 20px"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /> <circle cx="9" cy="9" r="2" /> <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
+          </div>
+          <div>
+            <h2 class="card-title">2. 自定义壁纸</h2>
+            <p class="card-subtitle">本地 IndexedDB 存储与跨端处理说明</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="clause-block">
+        <p>你上传的自定义壁纸图片均独立保存在当前浏览器的本地数据库（IndexedDB）中，<strong>绝不上传至任何云端服务器</strong>，也不包含在导出的 JSON 备份文件中。这样既能保证高分辨率壁纸的瞬时秒开加载，又能最大限度保护个人图片隐私并节约网络带宽。</p>
+        <p>旧版备份中若包含内嵌壁纸，在导入时会先完整保存到本机，随后从配置记录中移除；在其他设备上使用时需自行重新选择图片。请注意：若在浏览器中执行“清除所有网站数据”或卸载扩展，可能会删除本机保存的壁纸文件。</p>
+      </div>
+    </section>
+
+    <!-- 3. 快捷收藏 -->
+    <section id="capture" class="section-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark" aria-hidden="true" style="--ui-icon-size: 20px"><path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z" /></svg>
+          </div>
+          <div>
+            <h2 class="card-title">3. 快捷收藏功能</h2>
+            <p class="card-subtitle">触发时机、会话暂存草稿与生命周期管理</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="clause-block">
+        <p><strong>仅在你主动操作时触发：</strong>只有在你主动点击扩展工具栏图标、按下全局快捷键（默认 <code>Alt+Shift+S</code>）或在网页上右键点击“保存当前页面到 SimTab”时，扩展才会临时读取当前标签页的页面标题和网址。</p>
+        <p>读取到的草稿会暂存在浏览器会话存储（Session Storage）中，待你在弹窗中确认指定空间和分组后，再按当前本地或云端状态正式保存；如果点击取消，则不会添加任何网站记录。草稿在 30 分钟后自动失效，并在后续发起收藏时自动清理；保存或取消时也会立即清理；如果保存失败，则允许临时保留以便你重试；关闭浏览器标签页或退出浏览器会自动彻底清除。</p>
+        <div class="callout-box callout-info">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield" aria-hidden="true" style="--ui-icon-size: 18px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /></svg>
+          <span><strong>明确声明：</strong>扩展绝不读取任何页面正文内容、绝不窥探浏览历史、绝不扫描其他未被主动选择的后台标签页。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 收藏夹与导入文件 -->
+    <section id="bookmarks" class="section-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder" aria-hidden="true" style="--ui-icon-size: 20px"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></svg>
+          </div>
+          <div>
+            <h2 class="card-title">4. 收藏夹与导入文件</h2>
+            <p class="card-subtitle">Edge 原生书签权限范围与备份导入隐私规范</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="clause-block">
+        <h4>Edge 原生书签只读权限</h4>
+        <p>只有在你主动打开扩展中的“我的收藏夹”并明确同意授权书签权限后，SimTab 才会通过 Edge 的书签接口读取书签标题、网址和文件夹目录路径，仅用于在界面中展示并供你挑选需要添加到新标签页的网站。<strong>SimTab 绝不创建、修改、覆盖或删除浏览器原有的任何书签。</strong>你可以在 Edge 扩展管理页面中随时撤销此权限。纯网页版无法直接调用浏览器书签接口。</p>
+      </div>
+
+      <div class="clause-block">
+        <h4>文件导入与备份处理</h4>
+        <p>你主动选择上传的 HTML 书签文件和 JSON 备份文件完全在<strong>浏览器本地</strong>进行读取和解析。导入完成后的内容，在未登录状态下保存在浏览器本地，登录后同步到当前账户的云端。导出的备份文件可能包含你的私人网站收藏，请妥善保管并避免公开上传。</p>
+      </div>
+    </section>
+
+    <!-- 5. 联网请求与第三方 -->
+    <section id="network" class="section-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe" aria-hidden="true" style="--ui-icon-size: 20px"><circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /></svg>
+          </div>
+          <div>
+            <h2 class="card-title">5. 联网请求与第三方服务明细</h2>
+            <p class="card-subtitle">所有可能产生外部网络交互的场景与数据流向清单</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="service-list">
+        <div class="service-item">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image" aria-hidden="true" style="--ui-icon-size: 18px"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /> <circle cx="9" cy="9" r="2" /> <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
+          </div>
+          <div class="service-info">
+            <div class="service-name">网站图标获取 (Favicon)</div>
+            <div class="service-desc">
+              扩展版默认使用 Chromium 浏览器内置的 <code>chrome-extension://.../_favicon/</code> 原生接口，浏览器按自身安全规则获取或缓存图标。网页版受浏览器安全沙箱限制，默认通过 <code>a.favicon.im</code> 获取图标，该服务仅会收到所请求网站的主机名（域名）、网络地址和常规 HTTP 请求信息。
+            </div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search" aria-hidden="true" style="--ui-icon-size: 18px"><path d="m21 21-4.34-4.34" /> <circle cx="11" cy="11" r="8" /></svg>
+          </div>
+          <div class="service-info">
+            <div class="service-name">搜索联想词与搜索引擎</div>
+            <div class="service-desc">
+              在搜索框中键入内容时，应用会向 Bing 搜索建议接口获取实时联想词；回车提交搜索时，你输入的搜索关键词会直接传递给你选定的搜索引擎（如 Google 或 Bing）。点击打开网站卡片将直接访问目标网站，其数据处理适用该网站自身的隐私政策。
+            </div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-server" aria-hidden="true" style="--ui-icon-size: 18px"><rect width="20" height="8" x="2" y="2" rx="2" ry="2" /> <rect width="20" height="8" x="2" y="14" rx="2" ry="2" /> <line x1="6" x2="6.01" y1="6" y2="6" /> <line x1="6" x2="6.01" y1="18" y2="18" /></svg>
+          </div>
+          <div class="service-info">
+            <div class="service-name">云端托管与分发服务</div>
+            <div class="service-desc">
+              网页版由 Cloudflare 全球网络进行静态托管与加速，访问页面时 Cloudflare 会处理提供网络服务所需的 IP 地址、请求信息和安全防御日志。GitHub 提供开源代码托管、扩展压缩包下载及 Issues 问题反馈服务。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-box callout-info" style="margin-top: 16px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield" aria-hidden="true" style="--ui-icon-size: 18px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /></svg>
+        <span>自 1.0.0 版本起，SimTab 不再抓取任何目标网页正文，不再使用 AllOrigins 等第三方 CORS 代理，绝不会因获取默认图标而把完整网址转发给此类网页代理服务。扩展坚决不加载或执行任何远程脚本代码。</span>
+      </div>
+    </section>
+
+    <!-- 6. 权限用途清单 -->
+    <section id="permissions" class="section-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check" aria-hidden="true" style="--ui-icon-size: 20px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></svg>
+          </div>
+          <div>
+            <h2 class="card-title">6. 扩展权限用途清单</h2>
+            <p class="card-subtitle">每一项浏览器权限均有明确的单一用途，绝不过度申请</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="permissions-grid">
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-code">storage</span>
+            <span class="badge badge-primary">核心权限</span>
+          </div>
+          <p>保存和读取未登录时的本地网站分组及设置，并在你主动请求时读取本地内容复制到云端；在会话存储（Session）中临时暂存你主动发起的快捷收藏草稿。</p>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-code">Supabase 项目域名</span>
+            <span class="badge badge-primary">网络权限</span>
+          </div>
+          <p>仅限访问本应用的专属 Supabase API 域名，用于用户自愿登录账号认证以及云端数据记录的安全读写，绝不连通其他未知云端域。</p>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-code">activeTab</span>
+            <span class="badge badge-primary">快捷操作</span>
+          </div>
+          <p>仅在你主动点击工具栏图标或按下快捷键（<code>Alt+Shift+S</code>）后，临时读取当前前台标签页的标题与网址以完成快捷收藏。</p>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-code">contextMenus</span>
+            <span class="badge badge-primary">快捷菜单</span>
+          </div>
+          <p>在网页右键菜单中提供“保存当前页面到 SimTab”快捷入口，便于你随时将心仪网站一键存入标签页。</p>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-code">favicon</span>
+            <span class="badge badge-primary">界面展示</span>
+          </div>
+          <p>通过浏览器原生 Favicon 接口在扩展的新标签页和网站挑选界面中展示对应站点的官方图标。</p>
+        </div>
+
+        <div class="permission-card">
+          <div class="permission-header">
+            <span class="permission-code">bookmarks</span>
+            <span class="badge badge-success">可选按需授权</span>
+          </div>
+          <p>在你主动打开“我的收藏夹”并确认授权后调用 Edge 书签接口，以只读方式展示你的书签供你挑选导入，可随时在浏览器扩展管理中撤销。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. 删除与控制 -->
+    <section id="control" class="section-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash" aria-hidden="true" style="--ui-icon-size: 20px"><path d="M10 11v6" /> <path d="M14 11v6" /> <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /> <path d="M3 6h18" /> <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+          </div>
+          <div>
+            <h2 class="card-title">7. 删除与数据控制权利</h2>
+            <p class="card-subtitle">完全自主掌控你的数据生命周期</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="clause-block">
+        <p>你拥有对所有保存数据的完全控制权：随时可以修改或删除任何网站、分组或空间，也可以直接移除自定义壁纸。未登录时的所有修改立即保存在本地浏览器；登录状态下的修改实时同步至云端。</p>
+        <p>网页端、扩展端及其他设备登录同一账户后可访问同一套数据。退出登录将立即清除本机登录凭据，并完整恢复此设备的原有本地内容。请注意：在浏览器中清除缓存或直接卸载扩展可能会删除本地内容，但绝不会删除已同步在云端的账户记录。</p>
+        <p>如需彻底注销账户并永久删除全部云端记录，请通过下方项目反馈渠道联系维护者（请勿在公开问题中透露密码或私人网址）。已主动导出或下载到磁盘的 JSON 备份文件需由你自行手动删除。</p>
+      </div>
+    </section>
+
+    <!-- 8. 联系与更新 -->
+    <section id="contact" class="section-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square" aria-hidden="true" style="--ui-icon-size: 20px"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" /></svg>
+          </div>
+          <div>
+            <h2 class="card-title">8. 维护者联系与政策更新</h2>
+            <p class="card-subtitle">透明的反馈通道与版本迭代承诺</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="clause-block">
+        <p>SimTab 项目由 GitHub 账户 <strong>tgdcfgv</strong> 开源维护。关于隐私政策的任何疑问、建议或账户注销申请，均可通过 <a href="https://github.com/tgdcfgv/SimpleTab/issues" target="_blank" rel="noopener noreferrer">GitHub 项目反馈页面</a> 进行联系。为保护你的信息安全，请勿在公开 Issues 中上传或透露私人收藏夹或敏感凭据。</p>
+        <p>当应用功能升级或数据处理方式发生重要调整时，我们会同步更新本政策，并在本页面顶部明确标注最新的更新日期与适用版本号。</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 统一页脚 -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <img src="icons/icon-32.png" alt="SimTab">
+          <span>SimTab · 极简新标签页</span>
+        </div>
+        <p class="footer-copy">适用于 Microsoft Edge 及 Chromium 内核浏览器 · 开源透明 · 隐私优先</p>
+      </div>
+      <nav class="footer-links" aria-label="页脚链接">
+        <a href="newtab.html" class="footer-link">打开 SimTab</a>
+        <a href="install.html" class="footer-link">扩展安装指南</a>
+        <a href="https://github.com/tgdcfgv/SimpleTab" class="footer-link" target="_blank" rel="noopener noreferrer">GitHub 源码</a>
+        <a href="https://github.com/tgdcfgv/SimpleTab/issues" class="footer-link" target="_blank" rel="noopener noreferrer">反馈与支持</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

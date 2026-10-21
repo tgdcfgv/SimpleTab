@@ -7,7 +7,7 @@ import { fingerprint, writeLocalSnapshot } from '../js/local-store.js';
 const listeners = {};
 const event = name => ({ addListener: handler => { listeners[name] = handler; } });
 globalThis.chrome = {
-  runtime: { onInstalled: event('installed') },
+  runtime: { onInstalled: event('installed'), onMessage: event('message') },
   action: { onClicked: event('action') },
   contextMenus: { onClicked: event('menu') }
 };

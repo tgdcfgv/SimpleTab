@@ -159,6 +159,16 @@ export const cloud = {
     if (!this.refreshing) this.refreshing = refresh().finally(() => { this.refreshing = null; });
     return this.refreshing;
   },
+  async updateProfile(nickname, avatar) {
+    const token = await this.token();
+    const userId = this.session.user.id;
+    const user = await this.request('/auth/v1/user', {
+      method: 'PUT', token, body: { data: { nickname, avatar_emoji: avatar, profile_completed: true } }
+    });
+    if (this.session?.user?.id !== userId) throw new Error('账户已更改，请刷新后重试。');
+    this.storeSession({ ...this.session, user });
+    document.dispatchEvent(new Event('simtab-sync'));
+  },
   async sendOtp(email) {
     const location = typeof window === 'undefined' ? null : window.location;
     // Extension origins can be "null"; use href to retain chrome-extension://.
