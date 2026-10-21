@@ -17,7 +17,7 @@ export async function initCapture() {
   const message = document.getElementById('captureMessage');
   const cancel = document.getElementById('captureCancel');
   const submit = document.getElementById('captureSave');
-  const accountDialog = document.getElementById('accountDialog');
+  const settings = document.getElementById('settingsModal');
   let draft;
   let loaded = false;
   let busy = false;
@@ -54,7 +54,7 @@ export async function initCapture() {
   }
 
   function show() {
-    if (!loaded || completed || accountDialog.open || !syncManager.ready || (cloud.session?.needs_choice)) return;
+    if (!loaded || completed || !settings.classList.contains('hidden') || !syncManager.ready || (cloud.session?.needs_choice)) return;
     if (!opened) {
       opened = true;
       if (!validDraft(draft)) {
@@ -79,7 +79,7 @@ export async function initCapture() {
 
   spaceSelect.addEventListener('change', () => groups());
   document.addEventListener('simtab-sync', show);
-  accountDialog.addEventListener('close', show);
+  document.addEventListener('simtab-settings-close', show);
   dialog.addEventListener('cancel', event => {
     event.preventDefault();
     if (!busy) cancel.click();

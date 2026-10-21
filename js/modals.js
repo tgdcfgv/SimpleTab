@@ -36,7 +36,9 @@ document.getElementById('okConfirmBtn').addEventListener('click', () => {
   closeAllModals();
 });
 
-export function closeAllModals() {
+export function closeAllModals(notify = true) {
+  if (!settingsModal.classList.contains('hidden') && settingsModal.dataset.locked === 'true') return;
+  const settingsWereOpen = !settingsModal.classList.contains('hidden');
   modalOverlay.classList.add('hidden');
   siteModal.classList.add('hidden');
   groupModal.classList.add('hidden');
@@ -44,6 +46,7 @@ export function closeAllModals() {
   if (spaceModal) spaceModal.classList.add('hidden');
   if (appStoreModal) appStoreModal.classList.add('hidden');
   if (confirmModal) confirmModal.classList.add('hidden');
+  if (settingsWereOpen && notify) document.dispatchEvent(new Event('simtab-settings-close'));
 }
 
 // Group Modal
@@ -330,12 +333,21 @@ document.getElementById('themeSelect').addEventListener('change', (e) => {
   applySettings();
 });
 
-document.getElementById('cardModeSelect').addEventListener('change', (e) => {
-  appData.settings.cardDisplayMode = e.target.value;
-  document.getElementById('iconSizeSetting').style.display =
-    appData.settings.cardDisplayMode === 'icon-only' ? 'grid' : 'none';
-  syncManager.saveData();
-  applySettings();
+function updateCardDisplayControl() {
+  const mode = appData.settings.cardDisplayMode || 'icon-text';
+  document.querySelectorAll('button[data-card-mode]').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.cardMode === mode));
+  });
+  document.getElementById('iconSizeSetting').hidden = mode !== 'icon-only';
+}
+
+document.querySelectorAll('button[data-card-mode]').forEach(button => {
+  button.addEventListener('click', () => {
+    appData.settings.cardDisplayMode = button.dataset.cardMode;
+    updateCardDisplayControl();
+    syncManager.saveData();
+    applySettings();
+  });
 });
 
 document.getElementById('openModeSelect').addEventListener('change', (e) => {
@@ -418,7 +430,7 @@ function formatDataSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function renderDataOverview() {
+export function renderDataOverview() {
   const grid = document.getElementById('dataOverviewGrid');
   const summary = document.getElementById('dataOverviewSummary');
   if (!grid || !summary || !appData) return;
@@ -436,7 +448,7 @@ function renderDataOverview() {
   const total = items.reduce((sum, item) => sum + item.value, 0);
   const dataSize = new Blob([JSON.stringify(appData)]).size;
 
-  summary.textContent = `共 ${total} 项记录 · ${syncManager.mode === 'local' ? '本地数据' : '云端数据'} ${formatDataSize(dataSize)}`;
+  summary.textContent = `共 ${total} 项记录 · ${syncManager.mode === 'local' ? '本地存储' : 'Supabase 云端'} ${formatDataSize(dataSize)}`;
   grid.innerHTML = '';
 
   items.forEach(item => {
@@ -482,7 +494,9 @@ function renderDataOverview() {
 }
 
 // Settings Modal
-export function openSettingsModal() {
+export function openSettingsModal(panelId) {
+  const wasHidden = settingsModal.classList.contains('hidden');
+  if (typeof panelId === 'string') selectSettingsPanel(panelId);
   document.getElementById('compactModeToggle').checked = appData.settings.compactMode;
   document.getElementById('dockTabHintToggle').checked = appData.settings.showDockTabHint !== false;
   document.getElementById('dockEditButtonToggle').checked = appData.settings.showDockEditButton !== false;
@@ -495,7 +509,6 @@ export function openSettingsModal() {
 
   const settingSelectValues = {
     openModeSelect: appData.settings.openLinksInNewTab ? 'new-tab' : 'current-tab',
-    cardModeSelect: appData.settings.cardDisplayMode || 'icon-text',
     themeSelect: appData.settings.theme || 'system',
     dockPositionSelect: appData.settings.dockPosition || 'bottom'
   };
@@ -505,39 +518,58 @@ export function openSettingsModal() {
     updateCustomSelectTrigger(select);
   });
   
-  const iconSizeSetting = document.getElementById('iconSizeSetting');
-  if (appData.settings.cardDisplayMode === 'icon-only') {
-    iconSizeSetting.style.display = 'grid';
-  } else {
-    iconSizeSetting.style.display = 'none';
-  }
-  
+  updateCardDisplayControl();
+
   const iconSizeSlider = document.getElementById('iconSizeSlider');
   if (iconSizeSlider) {
     iconSizeSlider.value = appData.settings.iconSize || 24;
     document.getElementById('iconSizeValue').textContent = (appData.settings.iconSize || 24) + 'px';
   }
   
-  closeAllModals();
+  closeAllModals(false);
   modalOverlay.classList.remove('hidden');
   settingsModal.classList.remove('hidden');
+  if (wasHidden) settingsModal.focus();
 }
+
+settingsModal.addEventListener('keydown', event => {
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    if (settingsModal.dataset.locked !== 'true') {
+      closeAllModals();
+      document.getElementById('settingsBtn').focus();
+    }
+  }
+  if (event.key !== 'Tab') return;
+  const controls = [...settingsModal.querySelectorAll('button, input, select, a, summary, [tabindex="0"]')]
+    .filter(element => !element.disabled && element.getClientRects().length && getComputedStyle(element).visibility !== 'hidden');
+  const first = controls[0], last = controls.at(-1);
+  if (!first) return;
+  if (event.shiftKey && (document.activeElement === first || document.activeElement === settingsModal)) {
+    event.preventDefault(); last.focus();
+  } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === settingsModal)) {
+    event.preventDefault(); first.focus();
+  }
+});
 
 document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
 
-document.querySelectorAll('.settings-nav-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    document.querySelectorAll('.settings-nav-btn').forEach(item => {
-      item.classList.toggle('active', item === button);
-    });
-    document.querySelectorAll('.settings-section').forEach(panel => {
-      panel.classList.toggle('active', panel.id === button.dataset.settingsPanel);
-    });
-    if (button.dataset.settingsPanel === 'settingsMyData') {
-      renderDataOverview();
-    }
+function selectSettingsPanel(panelId) {
+  document.querySelectorAll('.settings-nav-btn').forEach(button => {
+    const active = button.dataset.settingsPanel === panelId;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-current', active ? 'page' : 'false');
   });
+  document.querySelectorAll('.settings-section').forEach(panel => {
+    panel.classList.toggle('active', panel.id === panelId);
+  });
+  if (panelId === 'settingsData') renderDataOverview();
+}
+
+document.querySelectorAll('.settings-nav-btn').forEach(button => {
+  button.addEventListener('click', () => selectSettingsPanel(button.dataset.settingsPanel));
 });
+document.addEventListener('simtab-sync', renderDataOverview);
 
 document.getElementById('dockTabHintToggle').addEventListener('change', (e) => {
   appData.settings.showDockTabHint = e.target.checked;
@@ -557,14 +589,13 @@ document.getElementById('applyAccentColorBtn').addEventListener('click', () => {
   applySettings();
 });
 
-document.getElementById('closeSettingsBtn').addEventListener('click', () => {
-  appData.settings.compactMode = document.getElementById('compactModeToggle').checked;
-  
+document.getElementById('compactModeToggle').addEventListener('change', event => {
+  appData.settings.compactMode = event.target.checked;
   syncManager.saveData();
   applySettings();
-  render();
-  closeAllModals();
 });
+
+document.getElementById('closeSettingsBtn').addEventListener('click', closeAllModals);
 
 document.getElementById('searchEngineSelect').addEventListener('change', (e) => {
   appData.settings.searchEngine = e.target.value;

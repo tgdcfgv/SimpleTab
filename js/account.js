@@ -1,13 +1,13 @@
+import { openSettingsModal, renderDataOverview, settingsModal } from './modals.js';
 import { cloud } from './cloud.js';
 import { appData, normalizeAppData, setAppData, syncManager } from './storage.js';
 import { applySettings, render } from './render.js';
 
-const dialog = document.getElementById('accountDialog');
+const panel = document.getElementById('accountPanel');
 const form = document.getElementById('accountForm');
 const message = document.getElementById('accountMessage');
 const loginFields = document.getElementById('accountLoginFields');
 const accountDetails = document.getElementById('accountDetails');
-const close = document.getElementById('accountClose');
 let busy = false;
 let choiceData = null;
 const choice = document.getElementById('accountChoice');
@@ -16,15 +16,26 @@ function update() {
   const loggedIn = Boolean(cloud.session);
   const choosing = loggedIn && Boolean(cloud.session.needs_choice);
   const accountButton = document.getElementById('accountBtn');
-  accountButton.title = loggedIn ? '我的账户' : '登录 / 注册';
+  accountButton.title = '账户与数据';
   accountButton.setAttribute('aria-label', accountButton.title);
   accountButton.dataset.signedIn = String(loggedIn);
-  document.getElementById('accountTitle').textContent = choosing ? '选择同步内容' : '账户与云同步';
+  document.getElementById('accountTitle').textContent = choosing ? '选择同步内容' : '云端同步';
   choice.hidden = !choosing;
   document.getElementById('accountEmailLabel').textContent = cloud.session?.user?.email || '';
   loginFields.hidden = loggedIn;
   accountDetails.hidden = !loggedIn || choosing;
-  close.hidden = !syncManager.ready || choosing;
+  const locked = !syncManager.ready || choosing;
+  settingsModal.dataset.locked = String(locked || busy);
+  document.getElementById('closeSettingsBtn').disabled = locked || busy;
+  document.querySelectorAll('.settings-nav-btn').forEach(button => {
+    button.disabled = locked && button.dataset.settingsPanel !== 'settingsData';
+  });
+  document.getElementById('importFileNew').disabled = locked;
+  document.getElementById('bookmarkFile').disabled = locked;
+  const status = document.getElementById('accountSyncStatus');
+  const source = document.getElementById('syncStatus');
+  status.querySelector('.status-dot').className = source.querySelector('.status-dot').className;
+  status.querySelector('.status-text').textContent = source.querySelector('.status-text').textContent;
   document.getElementById('accountIntro').textContent = choosing ? '已登录。请选择使用云端内容，或将当前页面保存到云端。' : syncManager.mode === 'local'
     ? '当前使用浏览器本地内容。登录后显示账户的云端内容，本地内容会继续保留。'
     : '当前使用账户的云端内容。退出登录后恢复此浏览器的本地内容。';
@@ -33,27 +44,25 @@ function update() {
   document.querySelector('.app-container').inert = !syncManager.ready;
   document.getElementById('dataOverviewNote').textContent = syncManager.mode === 'local'
     ? '占比按空间、分组和网站项目总数计算，当前内容保存在此浏览器中。'
-    : '占比按空间、分组和网站项目总数计算，当前内容保存在账户的云端数据库中。';
-  if ((!syncManager.ready || choosing) && !dialog.open) dialog.showModal();
+    : '占比按空间、分组和网站项目总数计算，当前内容保存在 Supabase 云端数据库中。';
+  renderDataOverview();
+  if (locked && (settingsModal.classList.contains('hidden') || !document.getElementById('settingsData').classList.contains('active'))) openSettingsModal('settingsData');
 }
 
 export function initAccount() {
-  document.getElementById('accountBtn').addEventListener('click', () => { update(); dialog.showModal(); });
-  close.addEventListener('click', () => dialog.close());
-  dialog.addEventListener('cancel', event => { if (!syncManager.ready || busy || cloud.session?.needs_choice) event.preventDefault(); });
+  document.getElementById('accountBtn').addEventListener('click', () => { update(); openSettingsModal('settingsData'); });
   document.addEventListener('simtab-sync', update);
   document.getElementById('accountUseCloud').addEventListener('click', () => run(() => finishChoice(false)));
   document.getElementById('accountKeepPage').addEventListener('click', () => run(() => finishChoice(true)));
   document.getElementById('accountChoiceCancel').addEventListener('click', () => run(leaveAccount));
   document.getElementById('syncStatus').addEventListener('click', () => {
-    if (syncManager.conflict) { update(); dialog.showModal(); }
+    if (syncManager.conflict) { update(); openSettingsModal('settingsData'); }
     else run(() => syncManager.syncNow());
   });
   document.getElementById('accountSync').addEventListener('click', () => run(async () => {
     if (!syncManager.ready) { await syncManager.loadCloud(); applySettings(); render(); }
     else await syncManager.syncNow();
   }));
-  document.getElementById('accountExport').addEventListener('click', () => syncManager.exportData());
   document.getElementById('accountReload').addEventListener('click', () => run(async () => {
     if (!await askConfirm('读取云端版本', '将放弃当前页面未保存的更改。请先导出需要保留的数据。')) return;
     await syncManager.loadCloud(); applySettings(); render();
@@ -115,7 +124,7 @@ export function initAccount() {
     }
   });
   window.addEventListener('online', () => { if (syncManager.ready && !syncManager.conflict) syncManager.syncNow(); });
-  window.addEventListener('focus', () => { if (syncManager.ready && !dialog.open && !syncManager.conflict) syncManager.syncNow(); });
+  window.addEventListener('focus', () => { if (syncManager.ready && settingsModal.classList.contains('hidden') && !syncManager.conflict) syncManager.syncNow(); });
   update();
 }
 
@@ -140,7 +149,7 @@ async function finishChoice(keepPage) {
   await syncManager.loadCloud(keepPage ? snapshot : null);
   cloud.storeSession({ ...cloud.session, needs_choice: false });
   choiceData = null;
-  applySettings(); render(); update(); dialog.close();
+  applySettings(); render(); update(); openSettingsModal('settingsData');
 }
 
 async function leaveAccount() {
@@ -150,7 +159,7 @@ async function leaveAccount() {
   try { await cloud.logout(); }
   finally {
     choiceData = null;
-    await syncManager.loadLocal(); applySettings(); render(); update(); dialog.close();
+    await syncManager.loadLocal(); applySettings(); render(); update(); openSettingsModal('settingsData');
   }
 }
 
@@ -170,7 +179,9 @@ function askConfirm(title, text) {
 async function run(action) {
   if (busy) return;
   busy = true;
-  const buttons = [...dialog.querySelectorAll('button')];
+  settingsModal.dataset.locked = 'true';
+  document.getElementById('closeSettingsBtn').disabled = true;
+  const buttons = [...panel.querySelectorAll('button')];
   buttons.forEach(button => { button.disabled = true; });
   message.textContent = '处理中…';
   try { await action(); }

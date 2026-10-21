@@ -117,6 +117,8 @@ const path = require('node:path');
     assert.equal(await page.locator('#captureDialog').evaluate(el => el.open), false);
     assert.equal(cloudWrites, 0);
     await page.click('#accountUseCloud');
+    await page.waitForSelector('#accountDetails:not([hidden])');
+    await page.click('#closeSettingsBtn');
     await page.waitForSelector('#captureDialog[open]');
     assert.match(await page.locator('#captureDestination').innerText(), /云端账户 capture@example.test/);
     await page.selectOption('#captureSpace', 'space-favorites');

@@ -1009,3 +1009,64 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .4); backdrop-filter: blur(8p
   font: inherit;
 }
 #captureMessage { overflow-wrap: anywhere; }
+
+/* Consolidated settings groups and inline account controls. */
+.settings-subheading {
+  margin: 24px 0 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--card-border);
+  color: var(--text-color);
+  font-size: 13px;
+  font-weight: 650;
+}
+.settings-section-heading + .settings-subheading { margin-top: 16px; padding-top: 0; border-top: 0; }
+.setting-copy #cardDisplayLabel { color: var(--text-color); font-size: 13px; font-weight: 600; }
+.card-display-control { min-width: 0; border: 1px solid var(--card-border); border-radius: 12px; padding: 5px; background: var(--settings-card); }
+.card-display-segments { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.card-display-option { min-height: 36px; padding: 6px 8px; border: 0; border-radius: 8px; font: inherit; font-size: 12px; color: var(--text-secondary); background: transparent; cursor: pointer; }
+.card-display-option[aria-pressed="true"] { background: var(--item-hover-bg); color: var(--primary-color); font-weight: 600; }
+.card-display-option:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 1px; }
+.icon-size-inline { padding: 12px 8px 8px; border-top: 1px solid var(--card-border); margin-top: 5px; }
+.icon-size-inline label { display: block; margin-bottom: 10px; color: var(--text-secondary); font-size: 12px; }
+.icon-size-inline .setting-slider { width: 100%; min-width: 0; }
+#settingsModal [hidden] { display: none !important; }
+.account-panel { padding: 16px; border: 1px solid var(--card-border); border-radius: 12px; background: var(--settings-card); }
+.account-panel fieldset { border: 0; padding: 0; margin: 16px 0 0; min-width: 0; }
+.account-panel p { color: var(--text-secondary); font-size: 12px; line-height: 1.65; }
+.account-panel small { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+.account-panel > small { display: block; margin-top: 16px; }
+.account-panel .account-actions { gap: 8px; margin-top: 12px; }
+.account-panel .btn { font-size: 12px; }
+.account-panel #accountDetails { padding-top: 12px; }
+.account-identity { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.account-sync-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+#accountVerification { margin-top: 16px; }
+#accountVerification .btn { margin-top: 8px; }
+.settings-about { margin-top: 24px; padding: 16px 4px 4px; border-top: 1px solid var(--card-border); color: var(--text-secondary); font-size: 12px; line-height: 1.7; }
+.settings-about summary { cursor: pointer; }
+.settings-about summary span { float: right; }
+.settings-about p { margin: 10px 0; }
+.settings-about a, .account-panel a { color: var(--primary-color); }
+#settingsModal { outline: none; }
+#settingsModal .settings-nav-btn:disabled { opacity: .5; cursor: default; }
+.settings-file-button:has(input:disabled) { opacity: .5; cursor: wait; }
+.bookmark-import-card > div { grid-column: 1 / 3; }
+#bookmarkImportStatus { grid-column: 1 / -1; max-width: none; }
+#bookmarkImportStatus:empty { display: none; }
+@media (max-width: 620px) {
+  .card-display-control { width: 100%; box-sizing: border-box; }
+  .account-panel { padding: 12px; }
+  .bookmark-import-card > div { grid-column: 1 / -1; }
+  .settings-about { padding-bottom: 12px; }
+}
+@media (min-width: 621px) {
+  .setting-item { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
+}
+.setting-item .setting-button-group,
+.setting-item .accent-color-control { width: 100%; min-width: 0; }
+@media (max-width: 620px) {
+  .settings-sidebar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .settings-nav-btn { min-width: 0; justify-content: center; gap: 5px; padding: 8px 3px; font-size: 12px; white-space: nowrap; }
+  .settings-nav-btn svg { width: 14px; height: 14px; }
+}
+#iconSizeSlider { accent-color: var(--primary-color); }

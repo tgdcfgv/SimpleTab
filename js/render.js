@@ -262,7 +262,7 @@ export function switchToNextSpace() {
 export function initSpaceShortcuts() {
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Tab' || e.ctrlKey || e.metaKey || e.altKey) return;
-    if (!syncManager.ready || document.getElementById('accountDialog')?.open) return;
+    if (!syncManager.ready) return;
 
     const modalOverlay = document.getElementById('modalOverlay');
     const isModalOpen = modalOverlay && !modalOverlay.classList.contains('hidden');
