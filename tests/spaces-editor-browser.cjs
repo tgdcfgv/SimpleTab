@@ -21,14 +21,13 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
  await page.click(`[data-select-nav="${workGroupIndex}"]`);assert.match(await page.locator('#bulkCurrentGroup').innerText(),/工作/);
  await page.check('#bulkSelectAll');await page.click('#bulkDelete');assert.equal(await page.locator('[data-fold-space="1"]').count(),0);
  await page.click('#bulkUndo');assert.equal(await page.locator('[data-fold-space="1"] .bulk-group-count').innerText(),'2');
- assert.deepEqual(await snapshot(),original);await page.click('#bulkClose');assert.deepEqual(await snapshot(),original);
+ assert.deepEqual(await snapshot(),original);await page.click('#bulkClose');await page.click('#bulkDiscard');assert.deepEqual(await snapshot(),original);
  // Persisting a move updates both spaces without changing the active homepage.
  await page.click('#spaceEditBtn');await page.click('[data-fold-space="1"]');await page.click('[data-select-nav="0"]');
  await page.locator('[data-key]').first().check();
  assert.equal(await page.locator('#bulkMoveTarget').isEnabled(),true);
  await page.selectOption('#bulkMoveTarget',String(workGroupIndex));
- assert.equal(await page.locator('#bulkMove').isEnabled(),true);
- await page.click('#bulkMove');
+ assert.equal(await page.locator('#bulkMove').count(),0);
  await page.click(`[data-select-nav="${workGroupIndex}"]`);await page.locator('.bulk-title-input').first().fill('编辑工作网站');
  await page.screenshot({path:'/tmp/simtab-spaces-editor.png',animations:'disabled'});
  await page.click('#bulkSave');await page.waitForFunction(()=>!document.querySelector('#bulkEditorDialog').open);

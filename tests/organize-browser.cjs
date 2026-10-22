@@ -33,7 +33,7 @@ const assert = require('node:assert/strict');
   await page.waitForFunction(()=>document.querySelector('#bulkEditStatus').textContent.includes('folders.html'));
   assert.match(await page.locator('#bulkCurrentGroup').innerText(),/书签栏 \/ 设计/);
   assert.equal(await page.locator('.bulk-title-input').count(),1);assert.deepEqual(await groups(),beforeImport);
-  await page.click('#bulkClose');assert.deepEqual(await groups(),beforeImport);
+  await page.click('#bulkClose');await page.click('#bulkDiscard');assert.deepEqual(await groups(),beforeImport);
   await page.click('#settingsBtn');await page.click('[data-settings-panel="settingsData"]');assert.match(await page.locator('#guideImportStatus').innerText(),/已取消导入/);
   assert.deepEqual(errors,[]);
   console.log('PASS: browser guides, import preview/save/cancel, folder preservation, layout settings persistence, responsive columns and native-dialog keyboard focus.');

@@ -226,7 +226,6 @@ dialog.modal[open] {
   box-sizing: border-box;
 }
 .setting-item:last-child { border: 0; }
-#settingsModal :is(.setting-item, .search-engine-option):hover { background: var(--settings-row-hover); }
 .setting-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .setting-copy label, .setting-copy .setting-label, .setting-copy #cardDisplayLabel, #settingsModal .setting-copy > span { color: var(--text-primary); font-size: 13px; font-weight: 500; line-height: 1.5; }
 .setting-copy label { cursor: pointer; }
@@ -1209,11 +1208,10 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 #bulkUndo { border: 0; border-radius: 4px; padding: 5px 8px; background: var(--bg-subtle); color: var(--accent-color); font: 12px var(--font-family); cursor: pointer; }
 .bulk-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; font-size: 12px; }
 .bulk-move-control { display: inline-flex; align-items: stretch; border-radius: 6px; background: var(--bg-subtle); }
-#bulkEditorDialog #bulkMove { display: grid; place-items: center; width: 32px; min-width: 32px; padding: 6px; border: 0; border-left: 1px solid var(--border-default); border-radius: 0 6px 6px 0; background: transparent; color: var(--accent-color); }
 #bulkMoveTarget { width: 145px; min-width: 0; height: 32px; padding: 5px 8px; border: 0; border-radius: 6px 0 0 6px; color: var(--text-primary); background: transparent; font: 12px var(--font-family); }
 #bulkEditorDialog #bulkDelete { color: var(--color-danger); }
 #bulkEditorDialog .bulk-actions button:disabled { opacity: 1; color: var(--text-secondary); background: var(--bg-subtle); cursor: not-allowed; }
-#bulkEditorDialog #bulkDelete:disabled, #bulkEditorDialog #bulkMove:disabled, #bulkMoveTarget:disabled { color: var(--text-secondary); opacity: .45; cursor: not-allowed; }
+#bulkEditorDialog #bulkDelete:disabled, #bulkMoveTarget:disabled { color: var(--text-secondary); opacity: .45; cursor: not-allowed; }
 #bulkSave { flex-shrink: 0; margin-left: auto; }
 .bulk-empty { text-align: center; padding: 32px 16px; color: var(--text-secondary); font-size: 13px; line-height: 1.7; }
 .bulk-nav-item.drop-target, .bulk-site-list.drop-target { background: var(--accent-subtle); outline: 2px solid var(--accent-color); outline-offset: -2px; }
@@ -1314,3 +1312,64 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
   .bulk-detail-controls > label { font-size: 11px; }
   #bulkMoveTarget { width: 104px; }
 }
+
+/* Batch editing: keep navigation, selection, and destructive actions distinct. */
+.bulk-editor::backdrop, .bulk-discard-dialog::backdrop { background: rgb(0 0 0 / 65%); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.bulk-heading-actions, .bulk-footer-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.bulk-search-field { position: relative; display: flex; align-items: center; width: 100%; min-width: 0; }
+.bulk-search-field > svg { position: absolute; left: 11px; color: var(--text-secondary); pointer-events: none; }
+#bulkEditorDialog #bulkSearch { width: 100%; padding-left: 35px; padding-right: 36px; }
+#bulkSearch::-webkit-search-cancel-button { display: none; }
+#bulkClearSearch { position: absolute; right: 5px; font-size: 20px; }
+#bulkSelectionCount.has-selection { color: var(--accent-color); font-weight: 600; }
+#bulkMoveTarget { border-radius: 6px; }
+.bulk-site-row > .bulk-drag-handle { opacity: .25; }
+.bulk-site-row:is(:hover, :focus-within) > .bulk-drag-handle { opacity: 1; }
+#bulkEditorDialog #bulkSiteList input.bulk-field { border-color: color-mix(in srgb, var(--border-default) 45%, transparent) !important; background: color-mix(in srgb, var(--text-primary) 3%, transparent); transition: border-color 150ms ease, background 150ms ease; }
+#bulkEditorDialog #bulkSiteList input.bulk-field:focus { border-color: var(--accent-color) !important; }
+#bulkEditorDialog #bulkSiteList input.bulk-field[aria-invalid="true"] { border-color: var(--color-danger) !important; }
+.bulk-nav-item { cursor: pointer; }
+.bulk-nav-actions { position: absolute; right: 2px; display: flex; gap: 1px; border-radius: 5px; background: var(--bg-surface-elevated); }
+.bulk-nav-actions, .bulk-site-delete { opacity: 0; pointer-events: none; transition: opacity 150ms ease; }
+.bulk-nav-item:is(:hover, :focus-within) .bulk-nav-actions, .bulk-site-row:is(:hover, :focus-within) .bulk-site-delete { opacity: 1; pointer-events: auto; }
+.bulk-nav-actions .bulk-icon-button { width: 24px; height: 28px; }
+.bulk-site-delete { flex: 0 0 28px; height: 28px; }
+.bulk-row-delete { color: var(--color-danger); }
+.bulk-icon-button:hover, .bulk-close:hover { background: var(--bg-subtle); color: var(--text-primary); }
+.bulk-row-delete:hover { color: var(--color-danger); background: color-mix(in srgb, var(--color-danger) 12%, transparent); }
+#bulkEditorDialog :is(button, select, input[type="checkbox"]):focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+#bulkEditorDialog #bulkShowEmptySpaces { appearance: none; -webkit-appearance: none; position: relative; width: 28px; height: 17px; flex: 0 0 28px; border: 1px solid var(--border-default); border-radius: 99px; background: var(--bg-surface-elevated); cursor: pointer; transition: background 150ms ease; }
+#bulkShowEmptySpaces::before { content: ''; position: absolute; width: 11px; height: 11px; top: 2px; left: 2px; border-radius: 50%; background: var(--text-secondary); transition: transform 150ms ease; }
+#bulkEditorDialog #bulkShowEmptySpaces:checked { background: var(--accent-color); border-color: var(--accent-color); }
+#bulkShowEmptySpaces:checked::before { transform: translateX(11px); background: #fff; }
+#bulkDirtyHint { color: var(--accent-color); font-size: 12px; line-height: 1.5; }
+.bulk-feedback:has(#bulkDirtyHint:not([hidden])) #bulkEditStatus:not(:empty) { flex-basis: 100%; }
+#bulkSave:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.bulk-discard-dialog { max-width: min(400px, calc(100vw - 32px)); }
+.bulk-discard-dialog p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+#bulkDiscard { color: var(--color-danger); }
+@media (hover: none), (pointer: coarse) {
+  .bulk-nav-actions { position: static; }
+  .bulk-nav-actions, .bulk-site-delete { opacity: 1; pointer-events: auto; }
+}
+@media (max-width: 640px) {
+  .bulk-heading { align-items: flex-start; gap: 8px; }
+  .bulk-heading-actions { gap: 4px; }
+  .bulk-heading h3 { font-size: 16px; }
+  .bulk-heading p { font-size: 11px; }
+  .bulk-footer-actions { margin-left: auto; }
+  .bulk-site-copy { grid-template-columns: minmax(65px, .8fr) minmax(80px, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #bulkEditorDialog input, #bulkEditorDialog button, .bulk-nav-actions { transition: none !important; }
+}
+
+.bulk-nav-item:is(:hover, :focus-within) > .bulk-group-count { visibility: hidden; }
+.bulk-nav-item:has(.bulk-group-name-input:not([hidden])) .bulk-nav-actions { display: none; }
+
+/* Creation sits with the list actions; the space visibility switch stays below navigation. */
+.bulk-sidebar-controls { padding: 6px; flex-shrink: 0; }
+.bulk-actions .bulk-new-controls { padding: 0; flex-direction: row; }
+#bulkEditorDialog #bulkAddGroup { display: grid; place-items: center; width: 32px; min-width: 32px; height: 32px; padding: 6px; }
+.bulk-actions .bulk-create-menu { top: calc(100% + 6px); bottom: auto; left: auto; right: 0; width: 150px; }
+@media (max-width: 640px) { .bulk-sidebar-controls { display: flex; align-items: center; padding: 3px 6px; } }

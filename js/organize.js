@@ -40,13 +40,14 @@ const createForm = document.getElementById('bulkCreateForm');
 const createMenu = document.getElementById('bulkCreateMenu');
 const createParent = document.getElementById('bulkCreateParent');
 const showEmptySpaces = document.getElementById('bulkShowEmptySpaces');
-let createKind = 'group';
+let createKind = 'group', moveAfterCreate = false;
 let createLocations = new Map();
 // Object identity survives sorting, group switching and moving sites. IDs from
 // imported files need not be unique for editor selections to remain correct.
 let draftSpaces = [], draft = [], selected = new Set(), activeGroup = null;
 let linkKeys = new WeakMap(), linksByKey = new Map(), nextKey = 0;
 let original = '', spaceId = '', dirty = false, drag = null, saving = false;
+let saveFailed = false;
 let hasImportedDraft = false, deletedItems = null, editorColumnCount = 1;
 function ownerSpace(group) { return draftSpaces.find(space => space.groups.includes(group)); }
 function rebuildDraft() { draft = draftSpaces.flatMap(space => space.groups); }
@@ -73,17 +74,32 @@ function updateSelection() {
   selectAll.checked = visible.length > 0 && count === visible.length;
   selectAll.indeterminate = count > 0 && count < visible.length;
   selectAll.disabled = !visible.length;
-  const parents = [selectedSpaces.size ? `${selectedSpaces.size} 个空间` : '', selectedGroups.size ? `${selectedGroups.size} 个分组` : ''].filter(Boolean);
-  document.getElementById('bulkSelectionCount').textContent = `已选 ${parents.length ? parents.join('、') + '、' : ''}${selected.size} 个网站 · 匹配 ${visible.length} 个`;
+  // A parent reflects all its children, independently of the current search/view.
+  const syncParent = (input, links, explicit) => {
+    const count = links.filter(link => selected.has(link)).length;
+    input.checked = links.length ? count === links.length : explicit;
+    input.indeterminate = count > 0 && count < links.length;
+  };
+  // Explicit container selection is retained for deleting empty containers, but
+  // must be cleared as soon as a child is deselected or moved out of the selection.
+  selectedGroups.forEach(group => { if (group.links.some(link => !selected.has(link))) selectedGroups.delete(group); });
+  selectedSpaces.forEach(space => { if (space.groups.some(group => group.links.some(link => !selected.has(link)))) selectedSpaces.delete(space); });
+  groupList.querySelectorAll('[data-select-group]').forEach(input => { const group = draft[Number(input.dataset.selectGroup)]; if (group) syncParent(input, group.links, selectedGroups.has(group)); });
+  groupList.querySelectorAll('[data-select-space]').forEach(input => { const space = draftSpaces[Number(input.dataset.selectSpace)]; if (space) syncParent(input, space.groups.flatMap(group => group.links), selectedSpaces.has(space)); });
+  const searching = !!search.value.trim(), counter = document.getElementById('bulkSelectionCount');
+  counter.textContent = `已选 ${selected.size} 个网站${searching ? ` · 匹配 ${visible.length} 个` : ''}`;
+  counter.classList.toggle('has-selection', selected.size > 0);
+  document.getElementById('bulkSelectAllLabel').textContent = searching ? '全选当前筛选结果' : '全选当前视图';
+  document.getElementById('bulkClearSearch').hidden = !search.value;
+  document.getElementById('bulkDirtyHint').hidden = !dirty;
   target.disabled = saving || !selected.size;
-  document.getElementById('bulkMove').disabled = saving || !selected.size || target.value === '';
   document.getElementById('bulkDelete').disabled = saving || !(selected.size || selectedGroups.size || selectedSpaces.size);
   saveButton.disabled = saving || !dirty;
   document.getElementById('bulkCurrentGroup').textContent = search.value.trim()
     ? `搜索结果 (${visible.length})` : activeGroup ? `${ownerSpace(activeGroup)?.name || ''} / ${activeGroup.name || '未命名分组'} (${activeGroup.links.length})` : `全部网站 (${visible.length})`;
   document.getElementById('bulkFoldTools').hidden = !!activeGroup && !search.value.trim();
 }
-function changed(message = '更改将在保存后生效') { dirty = true; status.textContent = message; updateSelection(); }
+function changed(message = '') { dirty = saveFailed || JSON.stringify(draftSpaces) !== original; status.textContent = message; updateSelection(); }
 function updateGroupOptions() {
   const previous = target.value;
   target.innerHTML = '<option value="">移动到分组…</option>' + draftSpaces.map(space => `<optgroup label="${escapeHTML(space.name)}">${space.groups.map(group => `<option value="${draft.indexOf(group)}">${escapeHTML(group.name || '未命名分组')}</option>`).join('')}</optgroup>`).join('') + '<option value="new">+ 新建分组...</option>';
@@ -98,7 +114,7 @@ function renderNavigation() {
     <button type="button" class="bulk-drag-handle" draggable="true" data-drag-group="${index}" aria-label="拖动分组排序，或按 Alt 加上下方向键" title="拖动分组排序">${icon('menu', 13)}</button>
     <input type="checkbox" data-select-group="${index}" aria-label="选择分组${escapeHTML(group.name)}及其网站" ${selectedGroups.has(group) ? 'checked' : ''}><button type="button" class="bulk-group-select" data-select-nav="${index}" aria-current="${group === activeGroup ? 'page' : 'false'}" title="${escapeHTML(group.name)}（双击或按 F2 改名）"><span class="bulk-nav-name">${escapeHTML(group.name || '未命名分组')}</span></button>
     <input type="text" class="bulk-field bulk-group-name-input" data-edit-group="${index}" value="${escapeHTML(group.name)}" aria-label="分组名称" maxlength="100" spellcheck="false" hidden>
-    <span class="bulk-group-count">${group.links.length}</span>
+    <span class="bulk-group-count">${group.links.length}</span><span class="bulk-nav-actions"><button type="button" class="bulk-icon-button" data-rename-group="${index}" title="重命名分组" aria-label="重命名分组">${icon('pencil-line', 13)}</button><button type="button" class="bulk-icon-button bulk-row-delete" data-delete-group="${index}" title="删除分组及其网站" aria-label="删除分组及其网站">${icon('trash', 13)}</button></span>
   </div>`;
   const columnNames = ['第一列', '第二列', '第三列', '第四列', '第五列', '第六列'];
   groupList.innerHTML = draftSpaces.flatMap((space, spaceIndex) => {
@@ -112,6 +128,7 @@ function renderNavigation() {
     }).join('');
     return [`<section class="bulk-space-section" data-space-index="${spaceIndex}"><div class="bulk-space-header"><input type="checkbox" data-select-space="${spaceIndex}" aria-label="选择空间${name}及其内容" ${selectedSpaces.has(space) ? 'checked' : ''}><button type="button" class="bulk-space-toggle" data-fold-space="${spaceIndex}" aria-expanded="${expanded}" aria-controls="bulkSpaceGroups${spaceIndex}">${icon('chevron-down', 14)}<span>${name}</span><span class="bulk-group-count">${space.groups.reduce((sum, group) => sum + group.links.length, 0)}</span></button></div><div class="bulk-space-columns" id="bulkSpaceGroups${spaceIndex}" ${expanded ? '' : 'hidden'}>${columns}</div></section>`];
   }).join('');
+  updateSelection();
 }
 const titleWidth = title => Math.min(28, Math.max(10, [...title].reduce((n, c) => n + (c.charCodeAt(0) > 255 ? 2 : 1), 0) + 2));
 function siteRow({ link, key }) {
@@ -121,7 +138,7 @@ function siteRow({ link, key }) {
     <input type="checkbox" data-key="${key}" aria-label="选择${escapeHTML(link.title)}" ${selected.has(link) ? 'checked' : ''}>
     <img class="bulk-favicon" data-icon-key="${key}" alt="" width="18" height="18">
     <div class="bulk-site-copy"><input type="text" class="bulk-field bulk-title-input" data-edit-key="${key}" data-field="title" value="${escapeHTML(link.title)}" aria-label="网站名称" maxlength="200" spellcheck="false" style="--title-ch:${titleWidth(link.title)}">
-    <input type="text" inputmode="url" class="bulk-field bulk-url-input" data-edit-key="${key}" data-field="url" value="${escapeHTML(link.url)}" aria-label="网站网址" aria-invalid="${invalid}" spellcheck="false" autocomplete="off"></div>
+    <input type="text" inputmode="url" class="bulk-field bulk-url-input" data-edit-key="${key}" data-field="url" value="${escapeHTML(link.url)}" aria-label="网站网址" aria-invalid="${invalid}" spellcheck="false" autocomplete="off"></div><button type="button" class="bulk-icon-button bulk-row-delete bulk-site-delete" data-delete-site="${key}" title="删除网站" aria-label="删除${escapeHTML(link.title)}">${icon('trash', 14)}</button>
   </li>`;
 }
 function renderList() {
@@ -150,22 +167,27 @@ function openEditor() {
   const expandedSpace = draftSpaces.find(space => space.id === spaceId && hasBookmarks(space)) || draftSpaces.find(hasBookmarks);
   draftSpaces.forEach(space => { if (space !== expandedSpace) collapsedSpaces.add(space); });
   selected.clear(); collapsedGroups.clear(); linksByKey.clear(); linkKeys = new WeakMap(); nextKey = 0;
-  activeGroup = null; dirty = false; drag = null; deletedItems = null; undoButton.hidden = true; hasImportedDraft = false;
+  activeGroup = null; dirty = false; saveFailed = false; drag = null; deletedItems = null; undoButton.hidden = true; hasImportedDraft = false;
   selectedGroups.clear(); selectedSpaces.clear(); newSpaces.clear(); showEmptySpaces.checked = false; createForm.hidden = true; closeCreateMenu();
   search.value = ''; target.value = ''; updateGroupOptions();
   document.getElementById('bulkSpaceName').textContent = `全部空间 · 直接编辑名称与网址，拖动手柄整理`;
-  status.textContent = '更改将在保存后生效'; refresh(); dialog.showModal(); search.focus();
+  status.textContent = ''; refresh(); dialog.showModal(); search.focus();
 }
 for (const id of ['openBulkEditor', 'contextBulkEditor', 'spaceEditBtn']) document.getElementById(id).addEventListener('click', openEditor);
 allButton.addEventListener('click', () => activate(null));
 groupList.addEventListener('click', event => {
+  const rename = event.target.closest('[data-rename-group]');
+  if (rename) { renameGroup(rename.closest('[data-nav-group]')); return; }
+  const remove = event.target.closest('[data-delete-group]');
+  if (remove) { deleteObjects(new Set(), new Set([draft[Number(remove.dataset.deleteGroup)]]), new Set()); return; }
   const toggle = event.target.closest('[data-fold-space]');
   if (toggle) {
     const space = draftSpaces[Number(toggle.dataset.foldSpace)], expanded = collapsedSpaces.has(space);
     if (expanded) collapsedSpaces.delete(space); else collapsedSpaces.add(space);
     toggle.setAttribute('aria-expanded', String(expanded)); document.getElementById(toggle.getAttribute('aria-controls')).hidden = !expanded; return;
   }
-  const button = event.target.closest('[data-select-nav]');
+  if (event.target.closest('input, .bulk-drag-handle')) return;
+  const button = event.target.closest('[data-nav-group]')?.querySelector('[data-select-nav]');
   if (!button) return;
   // Keep the clicked navigation element alive so a second click can start rename.
   activeGroup = draft[Number(button.dataset.selectNav)]; search.value = '';
@@ -198,14 +220,14 @@ groupList.addEventListener('focusout', event => {
   const group = draft[Number(input.dataset.editGroup)]; group.name = group.name.trim() || '未命名分组'; input.value = group.name;
   const button = input.closest('[data-nav-group]').querySelector('[data-select-nav]'); button.hidden = false;
   button.querySelector('.bulk-nav-name').textContent = group.name; button.title = `${group.name}（双击或按 F2 改名）`; input.hidden = true;
-  updateGroupOptions(); updateSelection();
+  updateGroupOptions(); changed();
 });
 function parentSpace() {
   return selectedSpaces.size === 1 ? [...selectedSpaces][0] : selectedGroups.size === 1 ? ownerSpace([...selectedGroups][0]) : ownerSpace(activeGroup) || draftSpaces.find(space => space.id === spaceId) || draftSpaces[0];
 }
 function closeCreateMenu() { createMenu.hidden = true; document.getElementById('bulkAddGroup').setAttribute('aria-expanded', 'false'); }
-function openCreate(kind) {
-  createKind = kind; closeCreateMenu(); createForm.hidden = false;
+function openCreate(kind, moveSelection = false) {
+  moveAfterCreate = moveSelection; createKind = kind; closeCreateMenu(); createForm.hidden = false;
   const title = { space: '新建空间', group: '新建分组', site: '新建网站' }[kind];
   document.getElementById('bulkCreateTitle').textContent = title;
   document.getElementById('bulkCreateNameLabel').textContent = kind === 'site' ? '网站名称' : '名称';
@@ -237,7 +259,9 @@ createMenu.addEventListener('click', event => { const button = event.target.clos
 dialog.addEventListener('click', event => { if (!event.target.closest('.bulk-new-controls')) closeCreateMenu(); });
 dialog.addEventListener('keydown', event => {
   if (event.key !== 'Escape' || createForm.hidden && createMenu.hidden) return;
-  event.preventDefault(); event.stopPropagation(); createForm.hidden = true; closeCreateMenu(); document.getElementById('bulkAddGroup').focus();
+  event.preventDefault(); event.stopPropagation();
+  if (dirty) { requestClose(); return; }
+  createForm.hidden = true; closeCreateMenu(); document.getElementById('bulkAddGroup').focus();
 });
 document.getElementById('bulkCreateCancel').addEventListener('click', () => { createForm.hidden = true; document.getElementById('bulkAddGroup').focus(); });
 document.getElementById('bulkCreateName').addEventListener('input', event => event.target.setCustomValidity(''));
@@ -263,18 +287,36 @@ createForm.addEventListener('submit', event => {
   }
   if (space) { newSpaces.add(space); collapsedSpaces.delete(space); }
   rebuildDraft(); search.value = ''; createForm.hidden = true; updateGroupOptions();
-  if (group) target.value = String(draft.indexOf(group));
+  target.value = '';
   changed(`已${{space:'新建空间',group:'新建分组',site:'新建网站'}[createKind]}“${name}”，保存后生效`); refresh();
+  if (moveAfterCreate && group && selected.size) moveLinks(selected, group);
+  moveAfterCreate = false;
   if (space) groupList.querySelector(`[data-space-index="${draftSpaces.indexOf(space)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 });
 showEmptySpaces.addEventListener('change', renderNavigation);
 groupList.addEventListener('change', event => {
   const input = event.target;
-  if (input.dataset.selectSpace !== undefined) { const space = draftSpaces[Number(input.dataset.selectSpace)]; if (input.checked) selectedSpaces.add(space); else selectedSpaces.delete(space); }
-  if (input.dataset.selectGroup !== undefined) { const group = draft[Number(input.dataset.selectGroup)]; if (input.checked) selectedGroups.add(group); else selectedGroups.delete(group); }
+  let groups = [];
+  if (input.dataset.selectSpace !== undefined) {
+    const space = draftSpaces[Number(input.dataset.selectSpace)];
+    if (input.checked) selectedSpaces.add(space); else selectedSpaces.delete(space);
+    groups = space.groups;
+  }
+  if (input.dataset.selectGroup !== undefined) groups = [draft[Number(input.dataset.selectGroup)]];
+  groups.forEach(group => {
+    if (input.checked) selectedGroups.add(group); else selectedGroups.delete(group);
+    group.links.forEach(link => input.checked ? selected.add(link) : selected.delete(link));
+  });
+  list.querySelectorAll('[data-key]').forEach(checkbox => { checkbox.checked = selected.has(linksByKey.get(checkbox.dataset.key)); });
   updateSelection();
 });
-target.addEventListener('change', () => { if (target.value === 'new') { target.value = ''; openCreate('group'); } else updateSelection(); });
+target.addEventListener('change', () => {
+  if (target.value === 'new') { target.value = ''; openCreate('group', true); return; }
+  const destination = target.value === '' ? null : draft[Number(target.value)];
+  if (destination && selected.size) moveLinks(selected, destination);
+  target.value = ''; updateSelection();
+});
+document.getElementById('bulkClearSearch').addEventListener('click', () => { search.value = ''; collapsedGroups.clear(); renderList(); search.focus(); });
 search.addEventListener('input', () => { collapsedGroups.clear(); renderList(); });
 list.addEventListener('input', event => {
   const input = event.target, link = linksByKey.get(input.dataset.editKey);
@@ -290,7 +332,7 @@ list.addEventListener('focusout', event => {
   const input = event.target;
   if (input.dataset.field !== 'url') return;
   const link = linksByKey.get(input.dataset.editKey), url = safeWebUrl(input.value, { allowBare: true });
-  if (url && link) { link.url = url; input.value = url; const image = list.querySelector(`[data-icon-key="${input.dataset.editKey}"]`); if (image) loadSiteIcon(image, link); }
+  if (url && link) { link.url = url; input.value = url; const image = list.querySelector(`[data-icon-key="${input.dataset.editKey}"]`); if (image) loadSiteIcon(image, link); changed(); }
 });
 list.addEventListener('change', event => {
   const input = event.target, link = linksByKey.get(input.dataset.key);
@@ -302,6 +344,8 @@ selectAll.addEventListener('change', () => {
   list.querySelectorAll('[data-key]').forEach(input => { input.checked = selected.has(linksByKey.get(input.dataset.key)); }); updateSelection();
 });
 list.addEventListener('click', event => {
+  const remove = event.target.closest('[data-delete-site]');
+  if (remove) { deleteObjects(new Set([linksByKey.get(remove.dataset.deleteSite)]), new Set(), new Set()); return; }
   const button = event.target.closest('[data-fold-group]'); if (!button) return;
   const group = draft[Number(button.dataset.foldGroup)], expanded = collapsedGroups.has(group);
   if (expanded) collapsedGroups.delete(group); else collapsedGroups.add(group);
@@ -319,11 +363,11 @@ function moveLinks(links, destination) {
   if (count) { collapsedGroups.delete(destination); changed(`已移动 ${count} 个网站到“${destination.name}”，保存后生效`); }
   refresh(); return count;
 }
-document.getElementById('bulkMove').addEventListener('click', () => {
-  const destination = target.value === '' ? null : draft[Number(target.value)];
-  if (destination && selected.size) moveLinks(selected, destination);
-});
-document.getElementById('bulkDelete').addEventListener('click', () => {
+document.getElementById('bulkDelete').addEventListener('click', () => deleteObjects(new Set(selected), new Set(selectedGroups), new Set(selectedSpaces)));
+function clearRemovedSelections(links, groups, spaces) {
+  links.forEach(link => selected.delete(link)); groups.forEach(group => selectedGroups.delete(group)); spaces.forEach(space => selectedSpaces.delete(space));
+}
+function deleteObjects(selected, selectedGroups, selectedSpaces) {
   if (!selected.size && !selectedGroups.size && !selectedSpaces.size) return;
   if (selectedSpaces.size >= draftSpaces.length) { status.textContent = '至少保留一个空间，请先取消选择一个空间'; return; }
   const removed = { spaces: [], groups: [], links: [], activeGroup };
@@ -345,11 +389,11 @@ document.getElementById('bulkDelete').addEventListener('click', () => {
     }); });
   });
   if (!removed.spaces.length && !removedGroups.size && !removedLinks.size) return;
-  deletedItems = removed; selected.clear(); selectedGroups.clear(); selectedSpaces.clear();
+  deletedItems = removed; clearRemovedSelections(removedLinks, removedGroups, new Set(removed.spaces.map(item => item.space)));
   rebuildDraft(); if (activeGroup && !draft.includes(activeGroup)) activeGroup = null;
   const summary = [removed.spaces.length && `${removed.spaces.length} 个空间`, removedGroups.size && `${removedGroups.size} 个分组`, removedLinks.size && `${removedLinks.size} 个网站`].filter(Boolean).join('、');
   undoButton.hidden = false; updateGroupOptions(); target.value = ''; changed(`已删除 ${summary}`); refresh();
-});
+}
 undoButton.addEventListener('click', () => {
   if (!deletedItems) return;
   const removed = deletedItems;
@@ -438,8 +482,20 @@ dialog.addEventListener('keydown', event => {
     reorderSites(new Set([link]), group, reference, direction > 0); list.querySelector(`[data-drag-site="${keyFor(link)}"]`)?.focus();
   }
 });
-document.getElementById('bulkClose').addEventListener('click', () => { if (!saving) dialog.close(); });
-dialog.addEventListener('cancel', event => { if (saving) event.preventDefault(); });
+const discardDialog = document.getElementById('bulkDiscardDialog');
+function requestClose() {
+  if (saving) return;
+  if (dirty) { if (!discardDialog.open) discardDialog.showModal(); }
+  else dialog.close();
+}
+for (const id of ['bulkClose', 'bulkCancel']) document.getElementById(id).addEventListener('click', requestClose);
+dialog.addEventListener('cancel', event => { event.preventDefault(); requestClose(); });
+const outsideDialog = event => { const rect = dialog.getBoundingClientRect(); return event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom); };
+let backdropPressed = false;
+dialog.addEventListener('pointerdown', event => { backdropPressed = outsideDialog(event); });
+dialog.addEventListener('click', event => { if (backdropPressed && outsideDialog(event)) requestClose(); backdropPressed = false; });
+document.getElementById('bulkKeepEditing').addEventListener('click', () => discardDialog.close());
+document.getElementById('bulkDiscard').addEventListener('click', () => { discardDialog.close(); dialog.close(); });
 saveButton.addEventListener('click', async () => {
   if (!dirty || saving) return;
   for (const group of draft) for (const link of group.links) {
@@ -462,9 +518,9 @@ saveButton.addEventListener('click', async () => {
     const saved = await syncManager.saveData();
     status.textContent = saved ? '更改已保存' : '更改已应用，但保存失败，请返回设置重试同步或导出备份。';
     if (hasImportedDraft) importStatus.textContent = saved ? '收藏夹已导入并保存，可在主页查看。' : status.textContent;
-    hasImportedDraft = false; dirty = !saved; if (saved) dialog.close();
+    hasImportedDraft = false; saveFailed = !saved; dirty = !saved; if (saved) dialog.close();
   } catch (error) {
-    dirty = true; status.textContent = `保存失败：${error.message || '请重试'}`;
+    saveFailed = true; dirty = true; status.textContent = `保存失败：${error.message || '请重试'}`;
   } finally {
     saving = false; controls.forEach((control, index) => { control.disabled = previouslyDisabled[index]; }); saveButton.textContent = '保存更改'; updateSelection();
   }
