@@ -1,14 +1,14 @@
-# SimTab 1.0.1 · Edge 商店提交资料
+# SimTab 1.0.2 · Edge 商店提交资料
 
 状态：安装包及文案已准备；尚未提交审核。注册、审核及上线状态以 Partner Center 为准。
 
 ## 基本信息
 
 - 名称：SimTab - 极简新标签页
-- 版本：1.0.1
+- 版本：1.0.2
 - 主要语言：简体中文（zh-CN）
 - 建议分类：生产力（Productivity）
-- 安装包：dist/SimTab-1.0.1-edge.zip
+- 安装包：dist/SimTab-1.0.2-edge.zip
 - 商店图标：store-assets/logo-300.png（300 × 300 PNG）
 - 支持页面：https://github.com/tgdcfgv/SimpleTab/issues
 - 隐私政策：privacy.html（提交前必须发布为公开 HTTPS 页面并验证可访问）

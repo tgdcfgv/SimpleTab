@@ -40,11 +40,11 @@
       </div>
     </header>
 
-    <p class="doc-lead">SimTab 扩展将常用网站放在每一个新标签页，并支持经你授权后读取 Edge 收藏夹。</p>
+    <p class="doc-lead">SimTab 1.0.2 适用于 Chrome、Microsoft Edge 及其他支持 Manifest V3 的 Chromium 浏览器，将常用网站放在每一个新标签页，并支持经你授权后读取浏览器书签。</p>
 
     <h2>商店安装</h2>
     <div class="info-callout">
-      <p>Edge 商店版本尚未上架。通过审核后，这里会提供官方商店安装链接。</p>
+      <p>当前可从 GitHub 下载并手动安装。浏览器扩展商店版本通过审核后，这里会提供相应的官方安装链接。</p>
     </div>
 
     <h2>从源码手动安装</h2>
@@ -57,15 +57,15 @@
 
     <ol class="steps-list">
       <li>解压下载的 ZIP，保留文件夹。</li>
-      <li>在 Edge 地址栏输入 <span class="code-pill"><code>edge://extensions</code><button type="button" class="btn-copy" data-copy="edge://extensions" aria-label="复制扩展地址">复制</button></span>，开启“开发人员模式”。</li>
+      <li>根据浏览器打开扩展管理页面：Chrome 输入 <span class="code-pill"><code>chrome://extensions</code><button type="button" class="btn-copy" data-copy="chrome://extensions" aria-label="复制 Chrome 扩展地址">复制</button></span>；Edge 输入 <span class="code-pill"><code>edge://extensions</code><button type="button" class="btn-copy" data-copy="edge://extensions" aria-label="复制 Edge 扩展地址">复制</button></span>。开启“开发者模式”或“开发人员模式”。其他 Chromium 浏览器可从菜单进入扩展管理页面。</li>
       <li>选择“加载解压缩的扩展”，选中包含 <code>manifest.json</code> 的文件夹。</li>
-      <li>打开新标签页；如 Edge 询问是否保留新标签页更改，按你的偏好确认。</li>
-      <li>在“热门网站 → 我的收藏夹”中点击允许读取收藏夹。</li>
+      <li>打开新标签页；如浏览器询问是否保留新标签页更改，按你的偏好确认。</li>
+      <li>在网站库的“我的收藏夹”中按需授权读取书签；也可在设置中导入书签文件。</li>
     </ol>
 
     <h2>网页版与扩展版</h2>
-    <p>安装扩展不会让普通网页直接获得读取收藏夹的权限。请在扩展的新标签页中使用直接读取功能。网页版可在“设置 → 账户与数据”选择 Edge 导出的书签 HTML 文件。</p>
-    <p>网页和扩展登录同一账户即可通过云端同步。未登录时直接使用此浏览器本地内容，退出登录会恢复本地内容；本地内容可在“账户与数据”中主动复制到云端，并保留本地副本；也可以导出 JSON，再在目标账户导入。JSON 恢复会覆盖账户已有数据。</p>
+    <p>安装扩展不会让普通网页直接获得读取收藏夹的权限。请在扩展的新标签页中使用直接读取功能。网页版可在“设置 → 账户与同步”选择浏览器导出的书签 HTML 文件。</p>
+    <p>网页和扩展登录同一账户即可通过云端同步。未登录时直接使用此浏览器本地内容，退出登录会恢复本地内容；本地内容可在“账户与同步”中主动复制到云端，并保留本地副本；也可以导出 JSON，再在目标账户导入。JSON 恢复会覆盖账户已有数据。</p>
 
     <hr>
     <p class="doc-footer">

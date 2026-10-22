@@ -46,10 +46,6 @@
   transition: box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
-.group-card:hover {
-  box-shadow: var(--card-shadow-hover);
-}
-
 .group-header {
   display: flex;
   align-items: center;
@@ -66,14 +62,6 @@
 
 .group-card.is-collapsed .group-header {
   margin-bottom: 0;
-}
-
-.group-header:hover {
-  background-color: rgba(0, 0, 0, 0.03);
-}
-
-[data-theme="dark"] .group-header:hover {
-  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .group-title-container {
@@ -127,7 +115,6 @@
 
 .collapsed-icon-link:hover {
   background-color: rgba(0, 0, 0, 0.05);
-  transform: scale(1.1);
 }
 
 [data-theme="dark"] .collapsed-icon-link:hover {

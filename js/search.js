@@ -1,5 +1,5 @@
 import { appData, SEARCH_ENGINES } from './storage.js';
-import { getFaviconUrl } from './utils.js';
+import { loadSiteIcon } from './site-icons.js';
 import { safeWebUrl } from './urls.js';
 import { icon } from './icons.js';
 import { findLinks, nextSelection, fetchBingSuggestions } from './search-model.js';
@@ -89,7 +89,7 @@ function renderDropdown(links, suggestions, query) {
       item.title = `${link.spaceName} / ${link.groupName} · ${link.url}`;
 
       const image = document.createElement('img');
-      image.src = link.customIcon || getFaviconUrl(link.url);
+      loadSiteIcon(image, link);
       image.alt = '';
 
       const title = document.createElement('span');

@@ -58,7 +58,6 @@
 .btn.primary:hover:not(:disabled) {
   background: var(--primary-hover);
   color: var(--primary-fg, #FFFFFF) !important;
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px color-mix(in srgb, var(--primary-color) 25%, transparent);
 }
 
@@ -97,7 +96,6 @@
 .btn.danger:hover:not(:disabled) {
   background: var(--color-danger-hover);
   color: var(--color-danger-fg, #FFFFFF) !important;
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px color-mix(in srgb, var(--color-danger) 25%, transparent);
 }
 

@@ -146,6 +146,12 @@ dialog.modal[open] {
 }
 
 .settings-save-hint {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-subtle);
+  white-space: nowrap;
   margin-left: auto;
   margin-right: 18px;
   font-size: 12px;
@@ -516,7 +522,6 @@ dialog.modal[open] {
 }
 
 .account-avatar-placeholder.signed-in:hover {
-  transform: scale(1.04);
   border-color: var(--accent-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }

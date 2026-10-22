@@ -1,7 +1,8 @@
 import { getWallpaperUrl } from './wallpaper.js';
-import { icon, siteIconFallback } from './icons.js';
+import { icon } from './icons.js';
+import { letterBadge, loadSiteIcon } from './site-icons.js';
 import { appData, SEARCH_ENGINES, setActiveSpace, syncManager } from './storage.js';
-import { getFaviconUrl, escapeHTML } from './utils.js';
+import { escapeHTML } from './utils.js';
 import { draggedItem, draggedItemType, handleDragEnd, handleDragLeaveGroup, handleDragOver, handleDragOverGroup, handleDragStart, handleDrop, handleDropOnGroup, handleGroupDragStart, moveGroupTo } from './drag.js';
 import { openGroupModal, showConfirm, updateCustomSelectOptions, updateCustomSelectTrigger } from './modals.js';
 
@@ -100,7 +101,7 @@ export function render() {
         <span class="group-title">${escapeHTML(group.name)}</span>
         <div class="group-collapsed-icons">
           ${group.links.slice(0, 6).map(link => {
-            const iconSrc = link.customIcon || getFaviconUrl(link.url);
+            const iconSrc = letterBadge(link.url, link.title);
             return `
             <a href="${escapeHTML(link.url)}" class="collapsed-icon-link" title="${escapeHTML(link.title)}"${linkTargetAttrs}>
               <img src="${escapeHTML(iconSrc)}" alt="" loading="lazy">
@@ -118,6 +119,10 @@ export function render() {
         </button>
       </div>
     `;
+
+    header.querySelectorAll('.collapsed-icon-link img').forEach((image, index) => {
+      loadSiteIcon(image, group.links[index]);
+    });
 
     // Toggle collapse
     header.querySelector('.group-title-container').addEventListener('click', (e) => {
@@ -182,13 +187,13 @@ export function render() {
         siteBtn.draggable = true;
         siteBtn.dataset.id = link.id;
         
-        const iconSrc = link.customIcon || getFaviconUrl(link.url);
+        const iconSrc = letterBadge(link.url, link.title);
         siteBtn.innerHTML = `
           <img src="${escapeHTML(iconSrc)}" alt="" loading="lazy">
           <span class="site-title" title="${escapeHTML(link.title)}">${escapeHTML(link.title)}</span>
         `;
 
-        siteBtn.querySelector('img').addEventListener('error', event => { event.target.src = siteIconFallback; }, { once: true });
+        loadSiteIcon(siteBtn.querySelector('img'), link);
         siteBtn.addEventListener('dragstart', handleDragStart);
         siteBtn.addEventListener('dragover', handleDragOver);
         siteBtn.addEventListener('drop', handleDrop);

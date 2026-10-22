@@ -1,7 +1,8 @@
 import { icon as lucideIcon } from './icons.js';
 import { appData, syncManager } from './storage.js';
 import { linkStore } from './catalog.js';
-import { generateId, getFaviconUrl } from './utils.js';
+import { generateId } from './utils.js';
+import { loadSiteIcon } from './site-icons.js';
 import { render } from './render.js';
 import { closeAllModals, modalOverlay, openGroupModal } from './modals.js';
 
@@ -284,7 +285,7 @@ export async function renderAppStoreCategory() {
     });
 
     const icon = document.createElement('img');
-    icon.src = getFaviconUrl(link.url);
+    loadSiteIcon(icon, link);
     icon.alt = '';
     icon.className = 'store-icon';
 

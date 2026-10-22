@@ -12,7 +12,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Manifest-V3-blue.svg?style=flat-square" alt="Manifest V3">
   <img src="https://img.shields.io/badge/Platform-Chrome%20%7C%20Edge%20%7C%20Web-blueviolet.svg?style=flat-square" alt="Platform">
-  <img src="https://img.shields.io/badge/Version-1.0.1-emerald.svg?style=flat-square" alt="Version 1.0.1">
+  <img src="https://img.shields.io/badge/Version-1.0.2-emerald.svg?style=flat-square" alt="Version 1.0.2">
   <img src="https://img.shields.io/badge/Deploy-Cloudflare%20Pages-orange.svg?style=flat-square" alt="Cloudflare Pages">
   <img src="https://img.shields.io/badge/Backend-Supabase-green.svg?style=flat-square" alt="Supabase">
 </p>
@@ -239,12 +239,19 @@ node tests/settings-browser.cjs
 
 ```bash
 python3 scripts/package-extension.py
-# 输出产物位于 dist/SimTab-1.0.1-edge.zip
+# 输出产物位于 dist/SimTab-1.0.2-edge.zip
 ```
 
 ---
 
 ## 📝 版本更新记录
+
+### v1.0.2
+
+- 移除按钮上浮，优化分组、空间和搜索栏交互，统一关闭按钮显示。
+- 设置分区使用灰色悬停背景，其他控件悬停边框跟随强调色，“更改即时生效”采用胶囊显示。
+- 网站图标加载失败或超时时使用本地生成的彩色字母／汉字徽标，覆盖网页列表、折叠分组、搜索和网站库。
+- 更新隐私与安装说明，统一版本号并补充 Chrome、Edge 及其他 Chromium 浏览器说明。
 
 ### v1.0.1
 

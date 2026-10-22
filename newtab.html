@@ -91,7 +91,7 @@
         <button type="button" class="auth-nav-btn" id="authBackBtn" aria-label="返回上一步" title="返回上一步" hidden>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" aria-hidden="true"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
         </button>
-        <button type="button" class="auth-close-btn" id="closeAuthBtn" aria-label="关闭" title="关闭">
+        <button type="button" class="auth-close-btn modal-close-btn" id="closeAuthBtn" aria-label="关闭" title="关闭">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
         </button>
       </div>
@@ -234,7 +234,7 @@
           <h3 id="settingsTitle">设置</h3>
         </div>
         <span class="settings-save-hint">更改即时生效</span>
-        <button type="button" class="settings-close-btn" id="closeSettingsBtn" aria-label="关闭设置" title="关闭">
+        <button type="button" class="settings-close-btn modal-close-btn" id="closeSettingsBtn" aria-label="关闭设置" title="关闭">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
         </button>
       </div>
@@ -253,7 +253,7 @@
             <span>内容与布局</span>
           </button>
           <button type="button" class="settings-nav-btn" data-settings-panel="settingsData">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="M18 17V9" /> <path d="M13 17V5" /> <path d="M8 17v-3" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-round" aria-hidden="true"><path d="M17.925 20.056a6 6 0 0 0-11.851.001"/><circle cx="12" cy="11" r="4"/><circle cx="12" cy="12" r="10"/></svg>
             <span>账户与同步</span>
           </button>
           <button type="button" class="settings-nav-btn" data-settings-panel="settingsAbout">
@@ -500,7 +500,7 @@
               <img src="icons/icon-48.png" width="48" height="48" alt="SimTab">
               <div>
                 <h5>SimTab</h5>
-                <span id="appVersion">v1.0.1</span>
+                <span id="appVersion">v1.0.2</span>
               </div>
             </div>
             <p id="extensionEnvironment">将常用网站放在每一个新标签页。</p>
@@ -586,7 +586,7 @@
   </div>
 
   <dialog id="onboardingDialog" class="modal onboarding-modal" aria-labelledby="onboardingTitle">
-    <button type="button" class="onboarding-close-btn" id="profileCloseBtn" aria-label="关闭" title="关闭" hidden>
+    <button type="button" class="onboarding-close-btn modal-close-btn" id="profileCloseBtn" aria-label="关闭" title="关闭" hidden>
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
     </button>
     <section id="welcomeStep" class="onboarding-step">

@@ -5,9 +5,9 @@
   --control-hover-border: transparent;
 }
 
-/* Settings retain their existing hover borders. */
+/* Settings control borders follow the chosen accent. */
 #settingsModal {
-  --control-hover-border: var(--border-hover);
+  --control-hover-border: var(--accent-color);
 }
 
 .btn.secondary,
@@ -163,6 +163,10 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 
 .settings-nav-btn, .store-menu-btn, .store-menu-btn.active { border: 1px solid transparent; }
 .settings-nav-btn:hover:not(:disabled), .store-menu-btn:hover { border-color: var(--control-hover-border); }
+#settingsModal .settings-nav-btn:hover:not(:disabled) {
+  background: var(--control-hover-bg);
+  border-color: transparent;
+}
 .auth-text-btn, .inline-input-action button { min-height: 32px; padding: 0 10px; border: 1px solid transparent; border-radius: var(--radius-md); background: var(--control-bg); color: var(--text-primary); }
 .auth-text-btn:hover:not(:disabled), .inline-input-action button:hover { border-color: var(--control-hover-border); background: var(--control-hover-bg); }
 #spaceModal { width: min(480px, calc(100vw - 32px)); }
@@ -183,11 +187,11 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 :is(
   button, a, select,
   [role="button"], [role="option"],
-  .group-card, .group-header, .search-result-item,
+  .search-result-item,
   .custom-select-trigger-global, .custom-option-global, .context-menu-item,
   .store-link-item, .space-editor-item, .profile-avatar-picker,
   .number-stepper, .card-display-control
-):not(#settingsModal, #settingsModal *):not(:disabled):hover {
+):not(#settingsModal, #settingsModal *):not(.space-dock-btn.active, .modal-close-btn, .search-container .custom-select-trigger-global):not(:disabled):hover {
   background: var(--control-hover-bg) !important;
   border-color: transparent;
   box-shadow: none;
@@ -195,7 +199,7 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 }
 
 /* Filled buttons need readable text when their hover background turns gray. */
-:is(.btn.primary, .btn.danger, .group-select-btn.active, .space-dock-btn.active):not(#settingsModal, #settingsModal *):not(:disabled):hover {
+:is(.btn.primary, .btn.danger, .group-select-btn.active):not(#settingsModal, #settingsModal *):not(:disabled):hover {
   color: var(--text-primary) !important;
 }
 
@@ -216,12 +220,63 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
   background: var(--text-input-fill) !important;
 }
 
-.search-container:has(#searchInput:focus),
 .number-stepper:has(input:focus) {
   background: var(--bg-muted) !important;
   border-color: transparent !important;
   outline: none;
   box-shadow: none;
+}
+
+/* Search input and engine switching share the header's focus-within state. */
+#searchInput:focus {
+  background: transparent !important;
+}
+.search-container .custom-select-trigger-global {
+  background: transparent !important;
+  border: none;
+  border-color: transparent !important;
+  box-shadow: none;
+  outline: none;
+}
+
+/* All icon close buttons share their shape, glyph and interaction states. */
+.modal-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  box-shadow: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.modal-close-btn:hover:not(:disabled) {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  box-shadow: none;
+  transform: none;
+}
+.modal-close-btn:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+.modal-close-btn > svg.lucide {
+  width: 18px;
+  height: 18px;
+  stroke-width: var(--ui-icon-stroke);
+}
+.modal-close-btn[hidden] { display: none; }
+
+/* Buttons stay in place across every dialog, including account settings. */
+:is(button, [role="button"], a.btn):hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .auth-otp-slot.is-active {
