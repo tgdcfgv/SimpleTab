@@ -445,6 +445,14 @@
                   <button type="button" class="btn secondary btn-sm" id="accountReload" hidden>放弃本地并重新拉取</button>
                 </div>
               </div>
+              <div class="setting-item">
+                <div class="setting-copy"><span>修改密码</span><small>通过邮箱验证后设置新密码，仍可使用验证码登录</small></div>
+                <div class="setting-control"><button type="button" class="btn secondary btn-sm" id="accountChangePassword">修改密码</button></div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-copy"><span>注销账户</span><small>永久删除账户及云端数据，此操作无法撤销</small></div>
+                <div class="setting-control"><button type="button" class="btn secondary btn-sm account-delete-action" id="accountDelete">注销账户</button></div>
+              </div>
             </div>
 
             <p id="accountMessage" role="status" aria-live="polite" class="account-message"></p>
@@ -665,6 +673,22 @@
   <dialog id="accountConfirmDialog" class="modal account-modal" aria-labelledby="accountConfirmTitle">
     <h3 id="accountConfirmTitle">确认操作</h3><p id="accountConfirmMessage" class="data-desc"></p>
     <div class="modal-actions"><button type="button" class="btn secondary" id="accountConfirmCancel">取消</button><button type="button" class="btn primary" id="accountConfirmOk">确认</button></div>
+  </dialog>
+  <dialog id="accountSecurityDialog" class="modal account-security-modal" aria-labelledby="accountSecurityTitle" aria-describedby="accountSecurityDescription">
+    <h3 id="accountSecurityTitle">修改密码</h3>
+    <p id="accountSecurityDescription" class="data-desc"></p>
+    <form id="accountSecurityForm">
+      <fieldset id="accountSecurityFields">
+        <div class="form-group"><label for="securityEmail">验证邮箱</label><input id="securityEmail" type="email" autocomplete="username" readonly></div>
+        <div class="form-group"><label for="securityCode">邮箱验证码</label><div class="security-code-row"><input id="securityCode" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" minlength="6" maxlength="10" required placeholder="输入邮件中的验证码"><button type="button" class="btn secondary btn-sm" id="securitySendCode">获取验证码</button></div></div>
+        <div id="securityPasswordFields">
+          <div class="form-group"><label for="securityPassword">新密码</label><input id="securityPassword" type="password" autocomplete="new-password" minlength="8" required aria-describedby="securityPasswordHint"><small id="securityPasswordHint">至少 8 位，建议组合使用字母、数字和符号。</small></div>
+          <div class="form-group"><label for="securityPasswordConfirm">确认新密码</label><input id="securityPasswordConfirm" type="password" autocomplete="new-password" minlength="8" required></div>
+        </div>
+      </fieldset>
+      <p id="accountSecurityMessage" class="account-message" role="status" aria-live="polite"></p>
+      <div class="modal-actions"><button type="button" class="btn secondary" id="securityCancel">取消</button><button type="submit" class="btn primary" id="securitySubmit">保存新密码</button></div>
+    </form>
   </dialog>
   <div id="simtabToast" class="simtab-toast" role="status" aria-live="polite" hidden></div>
   <script type="module" src="js/main.js"></script>

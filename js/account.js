@@ -2,6 +2,7 @@ import { openSettingsModal, settingsModal, openAuthModal, showToast } from './mo
 import { initAuthModal } from './auth-modal.js';
 import { initOnboarding, openProfileEditor } from './onboarding.js';
 import { cloud } from './cloud.js';
+import { initAccountSecurity } from './account-security.js';
 import { appData, normalizeAppData, setAppData, syncManager } from './storage.js';
 import { applySettings, render } from './render.js';
 
@@ -96,6 +97,7 @@ function update() {
 }
 
 export function initAccount() {
+  initAccountSecurity();
   initAuthModal();
   initOnboarding();
   document.getElementById('accountBtn').addEventListener('click', () => {

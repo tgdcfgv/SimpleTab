@@ -38,3 +38,15 @@ API key 不应写入前端文件、Git 仓库或聊天。
 `node --test tests/cloud.test.mjs tests/data.test.mjs`
 
 使用本地网页服务器启动源码后，运行 `node tests/auth-browser.cjs`。浏览器回归使用模拟接口，不发送真实邮件。
+
+## 账户安全操作
+
+设置 → 账户新增「修改密码」与「注销账户」。两个流程均通过 `/auth/v1/otp` 发送验证码（`create_user: false`），不创建新用户；获取验证码有 60 秒重发间隔。修改密码先验证邮箱并保留新会话，再调用 `/auth/v1/user` 更新密码；未设置过密码的验证码账户也支持设置密码。密码至少 8 位，仍受项目的密码强度设置约束。
+
+注销使用 `supabase/functions/delete-account/index.ts`。服务端先验证登录身份，再验证该账户邮箱验证码，撤销所有会话后调用 Auth 管理接口永久删除当前用户。`account_data.user_id` 的 `ON DELETE CASCADE` 会清理该账户的云端内容。前端不传入目标用户 ID，不持有管理密钥；仅注销成功后清除登录信息、恢复浏览器原有本地内容。失败时显示错误，不宣告成功。
+
+Edge Function 使用 Supabase 默认注入的 `SUPABASE_URL`、`SUPABASE_ANON_KEY`、`SUPABASE_SERVICE_ROLE_KEY`，不要将服务密钥复制到客户端。部署 `delete-account` 后才能使用注销接口。
+
+2026-10-22 已部署 `delete-account`（JWT 校验开启）；已确认未登录请求返回 401。未使用真实账户执行注销，删除流程通过本地模拟接口回归验证。
+
+账户安全回归：`node --test tests/account-security.test.mjs` 与 `node tests/account-security-browser.cjs`，均使用模拟接口，不发送邮件、不删除真实账户。

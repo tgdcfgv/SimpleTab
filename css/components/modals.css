@@ -2,6 +2,22 @@
    DESIGN SYSTEM: MODALS & DIALOGS
    ============================================================ */
 
+#settingsModal .btn.account-delete-action { color: var(--color-danger-text); }
+#accountSecurityDialog { width: calc(100% - 32px); max-width: 460px; max-height: calc(100dvh - 32px); margin: auto; overflow-y: auto; }
+#accountSecurityDialog::backdrop { background: rgb(0 0 0 / 38%); }
+.account-security-modal fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.account-security-modal .data-desc { line-height: 1.7; margin-bottom: 20px; }
+.account-security-modal .security-code-row { display: flex; align-items: center; gap: 8px; }
+.account-security-modal .security-code-row input { flex: 1; min-width: 0; width: 0; }
+.account-security-modal .security-code-row .btn { flex-shrink: 0; }
+.account-security-modal small { display: block; color: var(--text-secondary); font-size: 12px; line-height: 1.6; margin-top: 6px; }
+.account-security-modal .account-message { padding: 0; color: var(--text-secondary); }
+.account-security-modal .account-message[data-state="error"] { color: var(--color-danger-text); }
+.account-security-modal .modal-actions { flex-wrap: wrap; }
+@media (max-width: 540px) {
+  #accountSecurityDialog { padding: 20px; }
+}
+
 /* ------------------------------------------------------------
    1. MODAL BASE & OVERLAY
    ------------------------------------------------------------ */
