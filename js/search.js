@@ -72,12 +72,6 @@ function renderDropdown(links, suggestions, query) {
   let index = 0;
 
   if (links.length > 0) {
-    if (suggestions.length > 0) {
-      const header = document.createElement('div');
-      header.className = 'search-section-header';
-      header.textContent = '已保存的网站';
-      searchResults.append(header);
-    }
     links.forEach(link => {
       const itemIndex = index++;
       const item = document.createElement('div');
@@ -102,12 +96,6 @@ function renderDropdown(links, suggestions, query) {
   }
 
   if (suggestions.length > 0) {
-    if (links.length > 0) {
-      const header = document.createElement('div');
-      header.className = 'search-section-header';
-      header.textContent = 'Bing 搜索建议';
-      searchResults.append(header);
-    }
     suggestions.forEach(text => {
       const itemIndex = index++;
       const item = document.createElement('div');

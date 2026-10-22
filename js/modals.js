@@ -59,20 +59,15 @@ export function closeAllModals(notify = true) {
 export let currentLinksPerRow = 'auto';
 export let groupModalReturnContext = null;
 export function updateLinksPerRowUI() {
-  document.getElementById('groupLinksPerRow').value = currentLinksPerRow === 'auto' ? '自动' : currentLinksPerRow + '个';
+  document.querySelectorAll('.group-count-option').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.count === String(currentLinksPerRow)));
+  });
 }
 
-document.getElementById('decreaseLinksPerRow').addEventListener('click', () => {
-  if (currentLinksPerRow === 'auto') currentLinksPerRow = 6;
-  else if (currentLinksPerRow === 1) currentLinksPerRow = 'auto';
-  else currentLinksPerRow--;
-  updateLinksPerRowUI();
-});
-
-document.getElementById('increaseLinksPerRow').addEventListener('click', () => {
-  if (currentLinksPerRow === 'auto') currentLinksPerRow = 1;
-  else if (currentLinksPerRow === 6) currentLinksPerRow = 'auto';
-  else currentLinksPerRow++;
+document.getElementById('groupLinksPerRowOptions').addEventListener('click', event => {
+  const button = event.target.closest('.group-count-option');
+  if (!button || button.disabled) return;
+  currentLinksPerRow = button.dataset.count === 'auto' ? 'auto' : Number(button.dataset.count);
   updateLinksPerRowUI();
 });
 
@@ -82,24 +77,16 @@ export function openGroupModal(groupId = null, returnContext = null) {
   groupModalReturnContext = groupId ? null : returnContext;
   
   const isIconOnly = appData.settings.cardDisplayMode === 'icon-only';
-  const stepperBtns = document.querySelectorAll('.stepper-btn');
-  const stepperContainer = document.querySelector('.number-stepper');
-  
-  if (isIconOnly) {
-    stepperBtns.forEach(btn => btn.disabled = true);
-    stepperContainer.title = "纯图标状态下无法更改列数";
-    stepperContainer.style.opacity = '0.5';
-  } else {
-    stepperBtns.forEach(btn => btn.disabled = false);
-    stepperContainer.title = "";
-    stepperContainer.style.opacity = '1';
-  }
+  const options = document.getElementById('groupLinksPerRowOptions');
+  options.querySelectorAll('button').forEach(button => { button.disabled = isIconOnly; });
+  options.title = isIconOnly ? '纯图标状态下无法更改列数' : '';
+  options.classList.toggle('is-disabled', isIconOnly);
 
   if (groupId) {
     const group = appData.groups.find(g => g.id === groupId);
     document.getElementById('groupId').value = group.id;
     document.getElementById('groupName').value = group.name;
-    currentLinksPerRow = group.linksPerRow || 'auto';
+    currentLinksPerRow = [2, 3, 4, 5, 6].includes(Number(group.linksPerRow)) ? Number(group.linksPerRow) : 'auto';
     document.getElementById('groupModalTitle').textContent = '编辑分组';
   } else {
     document.getElementById('groupId').value = '';

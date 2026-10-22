@@ -13,7 +13,9 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.goto(APP_URL);
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
-    assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['常规', '外观', '内容与布局', '账户与同步', '关于']);
+    assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['账户与同步', '常规', '外观', '内容与布局', '关于']);
+    assert.equal(await page.locator('#settingsData').isVisible(), true);
+    await page.click('[data-settings-panel="settingsGeneral"]');
     assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
     assert.equal(await page.locator('#settingsGeneral .settings-group').first().evaluate(el => getComputedStyle(el).animationName), 'none');
     for (const [panel, controls] of Object.entries({

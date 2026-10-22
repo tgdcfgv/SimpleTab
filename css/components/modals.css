@@ -1296,7 +1296,7 @@ dialog.onboarding-modal {
   height: var(--ui-icon-size);
   flex: 0 0 auto;
   font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  font-size: var(--ui-icon-size);
+  font-size: calc(var(--ui-icon-size) - 2px);
   line-height: 1;
 }
 #accountAvatar { font-size: 26px; }

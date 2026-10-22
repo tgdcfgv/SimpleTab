@@ -273,6 +273,31 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 }
 .modal-close-btn[hidden] { display: none; }
 
+#groupModal { width: min(440px, calc(100vw - 32px)); }
+#groupModal .group-count-field { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.group-count-options { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.group-count-option {
+  min-width: 0;
+  min-height: 34px;
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.group-count-option[aria-pressed="true"] {
+  background: var(--accent-subtle);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  font-weight: var(--weight-semibold);
+}
+.group-count-option:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.group-count-options.is-disabled { opacity: .5; }
+.group-count-option:disabled { cursor: not-allowed; }
+
 /* Buttons stay in place across every dialog, including account settings. */
 :is(button, [role="button"], a.btn):hover {
   transform: none !important;

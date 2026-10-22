@@ -290,7 +290,7 @@
 
 [data-card-mode="icon-only"] .search-result-item[data-url] {
   padding: 8px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   justify-content: center;
   width: auto;
   aspect-ratio: 1 / 1;
