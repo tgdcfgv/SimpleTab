@@ -75,6 +75,7 @@ function updateSelection() {
   selectAll.disabled = !visible.length;
   const parents = [selectedSpaces.size ? `${selectedSpaces.size} 个空间` : '', selectedGroups.size ? `${selectedGroups.size} 个分组` : ''].filter(Boolean);
   document.getElementById('bulkSelectionCount').textContent = `已选 ${parents.length ? parents.join('、') + '、' : ''}${selected.size} 个网站 · 匹配 ${visible.length} 个`;
+  target.disabled = saving || !selected.size;
   document.getElementById('bulkMove').disabled = saving || !selected.size || target.value === '';
   document.getElementById('bulkDelete').disabled = saving || !(selected.size || selectedGroups.size || selectedSpaces.size);
   saveButton.disabled = saving || !dirty;
@@ -85,7 +86,7 @@ function updateSelection() {
 function changed(message = '更改将在保存后生效') { dirty = true; status.textContent = message; updateSelection(); }
 function updateGroupOptions() {
   const previous = target.value;
-  target.innerHTML = '<option value="">选择目标分组</option>' + draftSpaces.map(space => `<optgroup label="${escapeHTML(space.name)}">${space.groups.map(group => `<option value="${draft.indexOf(group)}">${escapeHTML(group.name || '未命名分组')}</option>`).join('')}</optgroup>`).join('') + '<option value="new">+ 新建分组...</option>';
+  target.innerHTML = '<option value="">移动到分组…</option>' + draftSpaces.map(space => `<optgroup label="${escapeHTML(space.name)}">${space.groups.map(group => `<option value="${draft.indexOf(group)}">${escapeHTML(group.name || '未命名分组')}</option>`).join('')}</optgroup>`).join('') + '<option value="new">+ 新建分组...</option>';
   target.value = previous === 'new' ? '' : previous;
 }
 function renderNavigation() {

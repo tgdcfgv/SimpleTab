@@ -24,7 +24,11 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
  assert.deepEqual(await snapshot(),original);await page.click('#bulkClose');assert.deepEqual(await snapshot(),original);
  // Persisting a move updates both spaces without changing the active homepage.
  await page.click('#spaceEditBtn');await page.click('[data-fold-space="1"]');await page.click('[data-select-nav="0"]');
- await page.locator('[data-drag-site]').first().dragTo(page.locator(`[data-nav-group="${workGroupIndex}"]`));
+ await page.locator('[data-key]').first().check();
+ assert.equal(await page.locator('#bulkMoveTarget').isEnabled(),true);
+ await page.selectOption('#bulkMoveTarget',String(workGroupIndex));
+ assert.equal(await page.locator('#bulkMove').isEnabled(),true);
+ await page.click('#bulkMove');
  await page.click(`[data-select-nav="${workGroupIndex}"]`);await page.locator('.bulk-title-input').first().fill('编辑工作网站');
  await page.screenshot({path:'/tmp/simtab-spaces-editor.png',animations:'disabled'});
  await page.click('#bulkSave');await page.waitForFunction(()=>!document.querySelector('#bulkEditorDialog').open);

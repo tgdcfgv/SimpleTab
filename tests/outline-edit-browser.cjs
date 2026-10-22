@@ -17,6 +17,19 @@ const assert=require('node:assert/strict');
   assert.equal(await page.locator('#bulkGroupList [data-nav-group]').count(),original.length);
   assert.equal(await page.locator('.bulk-sidebar').evaluate(el=>el.offsetWidth),210);
   assert.equal(await page.locator('.bulk-group-select svg').count(),0);
+  assert.equal(await page.locator('#bulkMoveTarget').isDisabled(),true);
+  assert.equal(await page.locator('#bulkDelete').isDisabled(),true);
+  assert.equal(await page.locator('.bulk-footer #bulkMoveTarget, .bulk-footer #bulkDelete').count(),0);
+  assert.equal(await page.locator('.bulk-detail-controls #bulkMove, .bulk-detail-controls #bulkDelete').count(),2);
+  for(const selector of ['.bulk-master-detail','.bulk-sidebar','.bulk-detail','.bulk-detail-group'])
+   assert.equal(await page.locator(selector).first().evaluate(el=>getComputedStyle(el).borderTopWidth),'0px');
+  const urls=await page.locator('.bulk-url-input').evaluateAll(inputs=>inputs.map(el=>el.getBoundingClientRect().x));
+  assert(urls.length>1 && urls.every(x=>Math.abs(x-urls[0])<1),'URLs align across all groups');
+  await page.locator('#bulkSearch').hover();
+  await page.waitForFunction(()=>[...document.querySelectorAll('.bulk-drag-handle')].every(el=>getComputedStyle(el).opacity==='0'));
+  await page.locator('.bulk-site-row').first().hover();
+  await page.waitForFunction(()=>getComputedStyle(document.querySelector('[data-drag-site]')).opacity==='1');
+  await page.locator('#bulkSearch').hover();
   const homeColumns=await page.locator('#groupsContainer > .group-col').count();
   assert.equal(await page.locator('.bulk-nav-column').count(),homeColumns);
   assert.equal(await page.locator('.bulk-column-label').first().innerText(),'第一列');
@@ -88,7 +101,10 @@ const assert=require('node:assert/strict');
   for(const theme of ['light','dark']){
    await page.emulateMedia({colorScheme:theme});await page.waitForFunction(t=>document.documentElement.dataset.theme===t,theme);
    await page.waitForTimeout(150);await page.screenshot({path:`/tmp/simtab-master-${theme}.png`,animations:'disabled'});
-   for(const id of ['bulkDelete','bulkMove']) assert.equal(await page.locator(`#${id}`).evaluate(el=>getComputedStyle(el).opacity),'1');
+   for(const id of ['bulkDelete','bulkMove']) {
+    const control=page.locator(`#${id}`);
+    assert.equal(await control.evaluate(el=>getComputedStyle(el).opacity),await control.isDisabled()?'0.45':'1');
+   }
   }
   await page.emulateMedia({colorScheme:'light'});await page.waitForFunction(()=>document.documentElement.dataset.theme==='light');
   for(const width of [390,640,768]){
