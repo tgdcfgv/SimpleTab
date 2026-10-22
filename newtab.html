@@ -227,18 +227,15 @@
 
     <!-- 设置弹窗 -->
     <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" tabindex="-1">
-      <div class="settings-header">
-        <div class="settings-header-identity">
-          <img src="icons/simtab.svg" width="26" height="26" alt="">
-          <h3 id="settingsTitle">设置</h3>
-        </div>
-        <span class="settings-save-hint">更改即时生效</span>
         <button type="button" class="settings-close-btn modal-close-btn" id="closeSettingsBtn" aria-label="关闭设置" title="关闭">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
         </button>
-      </div>
       <div class="settings-body">
         <nav class="settings-sidebar" aria-label="设置分类">
+          <div class="settings-brand">
+            <img src="icons/simtab.svg" width="28" height="28" alt="">
+            <h3 id="settingsTitle">设置</h3>
+          </div>
           <button type="button" class="settings-nav-btn active" aria-current="page" data-settings-panel="settingsGeneral">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sliders-horizontal" aria-hidden="true"><path d="M10 5H3" /> <path d="M12 19H3" /> <path d="M14 3v4" /> <path d="M16 17v4" /> <path d="M21 12h-9" /> <path d="M21 19h-5" /> <path d="M21 5h-7" /> <path d="M8 10v4" /> <path d="M8 12H3" /></svg>
             <span>常规</span>

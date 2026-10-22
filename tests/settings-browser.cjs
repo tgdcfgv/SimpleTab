@@ -13,6 +13,12 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.goto(APP_URL);
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
+    assert.equal(await page.locator('.settings-header, .settings-save-hint').count(),0);
+    assert.equal(await page.locator('.settings-sidebar #settingsTitle').innerText(),'设置');
+    const body=await page.locator('.settings-body').boundingBox(), sidebar=await page.locator('.settings-sidebar').boundingBox();
+    assert(Math.abs(body.y-sidebar.y)<1 && Math.abs(body.height-sidebar.height)<1,'Sidebar fills the settings height');
+    assert.equal(await page.locator('.settings-content').evaluate(el=>getComputedStyle(el).borderTopWidth),'0px');
+    assert.equal(await page.locator('.settings-group').first().evaluate(el=>getComputedStyle(el).borderTopWidth),'0px');
     assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['常规', '外观', '布局', '账户', '数据', '关于']);
     assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
     await page.click('[data-settings-panel="settingsGeneral"]');

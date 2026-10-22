@@ -5,9 +5,11 @@
   --control-hover-border: transparent;
 }
 
-/* Settings control borders follow the chosen accent. */
+/* Settings controls share the same elevated neutral surfaces. */
 #settingsModal {
-  --control-hover-border: var(--accent-color);
+  --control-bg: var(--settings-control);
+  --control-hover-bg: var(--settings-row-hover);
+  --control-hover-border: transparent;
 }
 
 .btn.secondary,
@@ -55,8 +57,6 @@ select:hover:not(:disabled), .number-stepper:hover, .card-display-control:hover,
 .custom-select-container.open .custom-select-trigger-global,
 .custom-select-trigger-global:focus,
 .custom-select-trigger-global:focus-visible,
-#settingsModal .custom-select-trigger-global:focus,
-#settingsModal .custom-select-trigger-global:focus-visible,
 select:focus, select:focus-visible {
   outline: none;
   box-shadow: none;
