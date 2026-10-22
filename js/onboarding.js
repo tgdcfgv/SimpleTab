@@ -1,9 +1,19 @@
 import { cloud } from './cloud.js';
 import { openSettingsModal, showToast } from './modals.js';
 
-const emojis = ['😊', '😎', '🥳', '🤓', '🤗', '😺', '🐱', '🐶', '🐼', '🦊', '🐻', '🐨', '🐯', '🐰', '🐸', '🐧', '🦉', '🦋', '🐳', '🐙', '🌱', '🌻', '🍀', '🌵', '🌈', '☀️', '🌙', '⭐', '🍊', '🍑', '🥑', '🍉', '☕', '🎨', '🎮', '🎧', '🚀', '🛸', '💎', '🔥'];
+const emojiPattern = /^(?:\p{Regional_Indicator}{2}|[#*0-9]\uFE0F?\u20E3|\p{Extended_Pictographic}\uFE0F?\p{Emoji_Modifier}?(?:[\u{E0020}-\u{E007E}]+\u{E007F})?(?:\u200D\p{Extended_Pictographic}\uFE0F?\p{Emoji_Modifier}?)*)$/u;
+const emojiSegments = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 const dialog = document.getElementById('onboardingDialog');
-let selectedAvatar = emojis[0];
+
+function firstEmoji(value) {
+  return Array.from(emojiSegments.segment(value), part => part.segment)
+    .find(segment => emojiPattern.test(segment)) || '';
+}
+
+function setAvatar(profile) {
+  document.getElementById('profileAvatarInput').value = firstEmoji(profile?.avatar_emoji || '') || '😊';
+}
+
 let saving = false;
 
 export function needsProfile() {
@@ -24,8 +34,7 @@ export function openOnboarding() {
   if (closeBtn) closeBtn.hidden = true;
   dialog.dataset.voluntaryEdit = 'false';
   const profile = cloud.session.user.user_metadata;
-  selectedAvatar = emojis.includes(profile?.avatar_emoji) ? profile.avatar_emoji : emojis[0];
-  document.getElementById('profileAvatarPreview').textContent = selectedAvatar;
+  setAvatar(profile);
   document.getElementById('profileNickname').value = profile?.nickname || '';
   document.getElementById('profileError').hidden = true;
   dialog.showModal();
@@ -44,14 +53,9 @@ export function openProfileEditor() {
   if (closeBtn) closeBtn.hidden = false;
   dialog.dataset.voluntaryEdit = 'true';
   const profile = cloud.session?.user?.user_metadata;
-  selectedAvatar = emojis.includes(profile?.avatar_emoji) ? profile.avatar_emoji : emojis[0];
-  document.getElementById('profileAvatarPreview').textContent = selectedAvatar;
+  setAvatar(profile);
   document.getElementById('profileNickname').value = profile?.nickname || '';
   document.getElementById('profileError').hidden = true;
-  const grid = document.getElementById('profileEmojiGrid');
-  if (grid) grid.hidden = true;
-  const picker = document.getElementById('profileAvatarBtn');
-  if (picker) picker.setAttribute('aria-expanded', 'false');
   dialog.showModal();
   document.getElementById('profileNickname').focus();
 }
@@ -82,28 +86,16 @@ export function initOnboarding() {
     dialog.setAttribute('aria-labelledby', 'profileTitle');
     document.getElementById('profileNickname').focus();
   });
-  const grid = document.getElementById('profileEmojiGrid');
-  const picker = document.getElementById('profileAvatarBtn');
-  picker.addEventListener('click', () => {
-    grid.hidden = !grid.hidden;
-    picker.setAttribute('aria-expanded', String(!grid.hidden));
-    grid.replaceChildren(...emojis.map(emoji => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.textContent = emoji;
-      button.setAttribute('aria-label', `使用 ${emoji} 作为头像`);
-      button.setAttribute('aria-pressed', String(emoji === selectedAvatar));
-      button.addEventListener('click', () => {
-        selectedAvatar = emoji;
-        document.getElementById('profileAvatarPreview').textContent = emoji;
-        grid.hidden = true;
-        picker.setAttribute('aria-expanded', 'false');
-        picker.focus();
-      });
-      return button;
-    }));
-    if (!grid.hidden) grid.querySelector('[aria-pressed="true"]').focus();
+  const avatarInput = document.getElementById('profileAvatarInput');
+  const normalizeAvatar = () => {
+    avatarInput.value = firstEmoji(avatarInput.value);
+    document.getElementById('profileError').hidden = true;
+  };
+  avatarInput.addEventListener('focus', () => avatarInput.select());
+  avatarInput.addEventListener('input', event => {
+    if (!event.isComposing) normalizeAvatar();
   });
+  avatarInput.addEventListener('compositionend', normalizeAvatar);
   document.getElementById('profileNickname').addEventListener('input', () => {
     document.getElementById('profileError').hidden = true;
   });
@@ -120,13 +112,18 @@ export function initOnboarding() {
       nickname.focus();
       return;
     }
+    const avatar = avatarInput.value;
+    if (!emojiPattern.test(avatar)) {
+      error.textContent = '请输入一个 Emoji 作为头像';
+      error.hidden = false;
+      avatarInput.focus();
+      return;
+    }
     saving = true;
-    button.disabled = picker.disabled = nickname.disabled = true;
-    grid.hidden = true;
-    picker.setAttribute('aria-expanded', 'false');
+    button.disabled = avatarInput.disabled = nickname.disabled = true;
     button.textContent = '正在保存…';
     try {
-      await cloud.updateProfile(nickname.value.trim(), selectedAvatar);
+      await cloud.updateProfile(nickname.value.trim(), avatar);
       const isVoluntary = dialog.dataset.voluntaryEdit === 'true';
       dialog.close();
       dialog.dataset.voluntaryEdit = 'false';
@@ -144,7 +141,7 @@ export function initOnboarding() {
       error.hidden = false;
     } finally {
       saving = false;
-      button.disabled = picker.disabled = nickname.disabled = false;
+      button.disabled = avatarInput.disabled = nickname.disabled = false;
       button.textContent = '确定';
     }
   });

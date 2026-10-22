@@ -599,9 +599,8 @@
       <h3 id="profileTitle">让这里更像你</h3>
       <p class="onboarding-description">选一个头像，再告诉我们怎么称呼你。</p>
       <form id="profileForm">
-        <button type="button" id="profileAvatarBtn" class="profile-avatar-picker" aria-label="选择 Emoji 头像" aria-expanded="false" aria-controls="profileEmojiGrid"><span id="profileAvatarPreview" aria-hidden="true">😊</span><span class="profile-avatar-edit" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14" /> <path d="M12 5v14" /></svg></span></button>
-        <p class="profile-avatar-hint">点击选择 Emoji 头像</p>
-        <div id="profileEmojiGrid" class="profile-emoji-grid" role="group" aria-label="Emoji 头像" hidden></div>
+        <input id="profileAvatarInput" class="profile-avatar-input" type="text" value="😊" aria-label="Emoji 头像" aria-describedby="profileAvatarHint" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+        <p id="profileAvatarHint" class="profile-avatar-hint">输入或粘贴一个 Emoji 作为头像</p>
         <label for="profileNickname" class="profile-nickname-label">昵称</label>
         <input id="profileNickname" class="auth-input" type="text" placeholder="你的昵称" autocomplete="nickname" maxlength="24" required aria-describedby="profileError">
         <p id="profileError" class="auth-error-msg" role="alert" hidden></p>

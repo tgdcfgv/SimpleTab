@@ -39,7 +39,7 @@
 input[type="text"]:not(#groupLinksPerRow),
 input[type="email"], input[type="url"], input[type="password"],
 input[type="number"], input[type="color"], textarea, select,
-.number-stepper, .card-display-control, .profile-avatar-picker {
+.number-stepper, .card-display-control, .profile-avatar-input {
   border-color: transparent;
 }
 input[type="text"]:not(#groupLinksPerRow):hover:not(:disabled),
@@ -47,7 +47,7 @@ input[type="email"]:hover:not(:disabled), input[type="url"]:hover:not(:disabled)
 input[type="password"]:hover:not(:disabled), input[type="number"]:hover:not(:disabled),
 input[type="color"]:hover:not(:disabled), textarea:hover:not(:disabled),
 select:hover:not(:disabled), .number-stepper:hover, .card-display-control:hover,
-.profile-avatar-picker:hover {
+.profile-avatar-input:hover {
   border-color: var(--control-hover-border);
 }
 
@@ -189,7 +189,7 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
   [role="button"], [role="option"],
   .search-result-item,
   .custom-select-trigger-global, .custom-option-global, .context-menu-item,
-  .store-link-item, .space-editor-item, .profile-avatar-picker,
+  .store-link-item, .space-editor-item, .profile-avatar-input,
   .number-stepper, .card-display-control
 ):not(#settingsModal, #settingsModal *):not(.space-dock-btn.active, .modal-close-btn, .search-container .custom-select-trigger-global):not(:disabled):hover {
   background: var(--control-hover-bg) !important;

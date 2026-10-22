@@ -82,15 +82,21 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.fill('#profileNickname', '   ');
     await page.click('#profileConfirmBtn');
     assert.match(await page.locator('#profileError').innerText(), /请输入昵称/);
-    await page.click('#profileAvatarBtn');
-    await page.getByRole('button', { name: '使用 🦊 作为头像', exact: true }).click();
+    for (const emoji of ['🧑🏽‍💻', '🇨🇳', '1️⃣', '👨‍👩‍👧‍👦']) {
+      await page.fill('#profileAvatarInput', emoji);
+      assert.equal(await page.locator('#profileAvatarInput').inputValue(), emoji);
+    }
+    await page.fill('#profileAvatarInput', 'abc你好123');
+    assert.equal(await page.locator('#profileAvatarInput').inputValue(), '');
+    await page.fill('#profileAvatarInput', 'hello🦊🐱');
+    assert.equal(await page.locator('#profileAvatarInput').inputValue(), '🦊');
     await page.fill('#profileNickname', '小狐狸');
     for (const width of [390, 768, 1280]) {
       await page.setViewportSize({ width, height: 720 });
-      await page.click('#profileAvatarBtn');
+      await page.click('#profileAvatarInput');
       assert.equal(await page.locator('#onboardingDialog').evaluate(el => el.scrollWidth > el.clientWidth + 1), false);
       await page.screenshot({ path: `/tmp/simtab-profile-${width}.png` });
-      await page.click('#profileAvatarBtn');
+      await page.click('#profileAvatarInput');
     }
     await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
     await page.screenshot({ path: '/tmp/simtab-profile-dark.png' });
