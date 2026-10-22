@@ -497,6 +497,7 @@ export function openSettingsModal(panelId) {
   const settingSelectValues = {
     openModeSelect: appData.settings.openLinksInNewTab ? 'new-tab' : 'current-tab',
     themeSelect: appData.settings.theme || 'system',
+    groupColumnsSelect: String(appData.settings.groupColumns || 'auto'),
     dockPositionSelect: appData.settings.dockPosition || 'bottom'
   };
   Object.entries(settingSelectValues).forEach(([id, value]) => {
@@ -1116,4 +1117,7 @@ document.getElementById('contextDeleteSite').addEventListener('click', () => {
   }
 });
 
-
+document.getElementById('groupColumnsSelect').addEventListener('change', event => {
+  appData.settings.groupColumns = event.target.value === 'auto' ? 'auto' : Number(event.target.value);
+  syncManager.saveData(); render();
+});

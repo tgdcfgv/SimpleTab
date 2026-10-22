@@ -1,5 +1,3 @@
-import { appData, syncManager } from './storage.js';
-import { render } from './render.js';
 import { generateId } from './utils.js';
 
 const environment = document.getElementById('extensionEnvironment');
@@ -23,27 +21,47 @@ export function parseBookmarkHTML(html) {
   return links;
 }
 
+// Preserve browser folders as group paths in the two-level editor.
+export function parseBookmarkGroups(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const groups = new Map();
+  const seen = new Set();
+  for (const anchor of doc.querySelectorAll('a[href]')) {
+    try {
+      const url = new URL(anchor.getAttribute('href'));
+      if (!['https:', 'http:'].includes(url.protocol) || seen.has(url.href)) continue;
+      seen.add(url.href);
+      const names = [];
+      let folder = anchor.closest('dl');
+      while (folder) {
+        const heading = folder.previousElementSibling?.tagName === 'H3' ? folder.previousElementSibling
+          : folder.parentElement?.tagName === 'DT' ? folder.parentElement.querySelector(':scope > h3') : null;
+        if (heading?.textContent.trim()) names.unshift(heading.textContent.trim());
+        folder = folder.parentElement?.closest('dl');
+      }
+      const name = names.join(' / ') || '导入的收藏夹';
+      if (!groups.has(name)) groups.set(name, { id: generateId(), name, collapsed: false, links: [] });
+      groups.get(name).links.push({ id: generateId(), title: anchor.textContent.trim() || url.hostname, url: url.href });
+    } catch { /* Skip invalid URLs and bookmarklets. */ }
+  }
+  return [...groups.values()];
+}
+
 const fileInput = document.getElementById('bookmarkFile');
 fileInput?.addEventListener('change', async () => {
   const file = fileInput.files[0];
   const status = document.getElementById('bookmarkImportStatus');
   if (!file) return;
   fileInput.disabled = true;
-  let group;
   try {
     if (file.size > 5 * 1024 * 1024) throw new Error('请选择小于 5 MB 的书签 HTML 文件。');
-    const links = parseBookmarkHTML(await file.text());
-    if (!links.length) throw new Error('文件中没有可导入的 HTTP/HTTPS 书签。');
-    if (links.length > 5000) throw new Error('一次最多导入 5000 条书签，请拆分文件后重试。');
-    group = { id: generateId(), name: '导入的收藏夹', collapsed: false, links };
-    appData.groups.push(group);
-    const saved = await syncManager.saveData();
-    render();
-    status.textContent = saved
-      ? `已导入 ${links.length} 条书签到“导入的收藏夹”，并${syncManager.mode === 'local' ? '保存在此浏览器' : '保存到云端'}。`
-      : `已添加 ${links.length} 条书签，但保存失败。请保持页面打开并重试同步，或导出备份。`;
+    const groups = parseBookmarkGroups(await file.text());
+    const count = groups.reduce((total, group) => total + group.links.length, 0);
+    if (!count) throw new Error('文件中没有可导入的 HTTP/HTTPS 书签。');
+    if (count > 5000) throw new Error('一次最多导入 5000 条书签，请拆分文件后重试。');
+    status.textContent = `已读取 ${count} 条书签，请在大纲中预览并保存。`;
+    document.dispatchEvent(new CustomEvent('simtab-bookmark-preview', { detail: { groups, count, filename: file.name } }));
   } catch (error) {
-    if (group) appData.groups.splice(appData.groups.indexOf(group), 1);
     status.textContent = error.message || '导入失败，请重试。';
   } finally {
     fileInput.disabled = false;

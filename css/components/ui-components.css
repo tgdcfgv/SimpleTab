@@ -65,3 +65,10 @@
     box-shadow: 0 0 0 0 transparent;
   }
 }
+
+/* Native drag snapshots cannot reliably composite backdrop filters. */
+.group-card.group-drag-surface {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: var(--bg-surface-elevated);
+}

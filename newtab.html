@@ -257,7 +257,7 @@
           </button>
           <button type="button" class="settings-nav-btn" data-settings-panel="settingsAbout">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info" aria-hidden="true"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></svg>
-            <span>关于</span>
+            <span>关于与帮助</span>
           </button>
         </nav>
         <div class="settings-content">
@@ -327,6 +327,11 @@
 
         <section class="settings-section" id="settingsContent">
           <div class="settings-section-heading"><div><h4>内容与布局</h4><p>调整卡片与程序坞，找到舒适的浏览节奏。</p></div></div>
+          <h5 class="settings-subheading">分组布局与整理</h5>
+          <div class="settings-group">
+            <div class="setting-item"><div class="setting-copy"><label for="groupColumnsSelect">分组列数</label><small>自适应随窗口调整；固定列数在窄屏下自动减少</small></div><div class="setting-control"><select id="groupColumnsSelect"><option value="auto">自适应</option><option value="1">1 列</option><option value="2">2 列</option><option value="3">3 列</option><option value="4">4 列</option><option value="5">5 列</option><option value="6">6 列</option></select></div></div>
+            <div class="setting-item"><div class="setting-copy"><span>批量编辑网站</span><small>搜索、多选、移动或删除当前空间的网站</small></div><div class="setting-control"><button type="button" class="btn secondary btn-sm" id="openBulkEditor">批量编辑</button></div></div>
+          </div>
           <h5 class="settings-subheading">网站卡片</h5>
           <div class="settings-group">
             <div class="setting-item card-display-setting">
@@ -479,7 +484,7 @@
             <div class="setting-item">
               <div class="setting-copy">
                 <span class="setting-label">导入浏览器书签</span>
-                <small>从 Edge / Chrome 导出的 HTML 书签，添加为新分组</small>
+                <small>导入 Edge / Chrome / Safari 书签，在大纲中预览后保存</small>
               </div>
               <div class="setting-control">
                 <label class="btn secondary btn-sm settings-file-button" for="bookmarkFile">选择书签 HTML
@@ -493,7 +498,19 @@
         </section>
 
         <section class="settings-section" id="settingsAbout">
-          <div class="settings-section-heading"><div><h4>关于</h4><p>一个简洁、专注于常用网站的新标签页。</p></div></div>
+          <div class="settings-section-heading"><div><h4>关于与帮助</h4><p>迁移收藏夹，整理网站，快速开始使用。</p></div></div>
+          <h5 class="settings-subheading">一键迁移收藏夹</h5>
+          <div class="settings-group migration-guide">
+            <p>先从电脑浏览器导出收藏夹，再选择 HTML 文件，在大纲中预览后导入当前空间。</p>
+            <div class="guide-browser-options" role="group" aria-label="选择浏览器教程"><button type="button" class="btn secondary" data-guide="edge" aria-pressed="true">Edge</button><button type="button" class="btn secondary" data-guide="chrome" aria-pressed="false">Chrome</button><button type="button" class="btn secondary" data-guide="safari" aria-pressed="false">Safari</button></div>
+            <div id="migrationGuide"></div>
+            <button type="button" class="btn primary" id="guideImportBtn">选择书签 HTML 并预览</button>
+            <p class="settings-help">导入前可在大纲中预览、移动或删除网站；保存后按原收藏夹目录新增分组，现有网站会保留。相同文件内的重复网址会自动合并；一次最多 5000 条、5 MB。</p>
+            <p id="guideImportStatus" role="status" aria-live="polite"></p>
+          </div>
+          <h5 class="settings-subheading">使用帮助</h5>
+          <div class="settings-group migration-guide"><p>拖动分组可调整排列；拖动网站可跨分组移动。需要一次整理多个网站时，打开批量编辑。</p><button type="button" class="btn secondary" id="helpBulkEditor">打开批量编辑</button></div>
+          <h5 class="settings-subheading">关于 SimTab</h5>
           <div class="settings-group settings-about">
             <div class="settings-about-identity">
               <img src="icons/icon-48.png" width="48" height="48" alt="SimTab">
@@ -569,6 +586,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-plus" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" /> <path d="M8 12h8" /> <path d="M12 8v8" /></svg>
       添加分组
     </div>
+    <button type="button" class="context-menu-item" id="contextBulkEditor">批量编辑网站</button>
     <div class="context-menu-item" id="contextSettings">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings" aria-hidden="true"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /> <circle cx="12" cy="12" r="3" /></svg>
       设置
@@ -607,6 +625,15 @@
         <button type="submit" id="profileConfirmBtn" class="btn primary onboarding-confirm">确定</button>
       </form>
     </section>
+  </dialog>
+
+  <dialog id="bulkEditorDialog" class="modal bulk-editor" aria-labelledby="bulkEditorTitle">
+    <div class="bulk-heading"><div><h3 id="bulkEditorTitle">批量编辑网站</h3><p id="bulkSpaceName"></p></div><div class="bulk-heading-actions"><button type="button" class="btn secondary" id="bulkImportBookmarks">导入收藏夹</button><button type="button" class="btn secondary" id="bulkClose">取消</button></div></div>
+    <div class="bulk-filters"><input type="search" id="bulkSearch" placeholder="搜索网站名称或网址" aria-label="搜索网站"><select id="bulkGroupFilter" data-native="true" aria-label="筛选分组"></select></div>
+    <div class="bulk-toolbar"><label><input type="checkbox" id="bulkSelectAll"> 全选筛选结果</label><div class="bulk-outline-tools"><button type="button" id="bulkExpandAll">全部展开</button><button type="button" id="bulkCollapseAll">全部折叠</button><span id="bulkSelectionCount" role="status" aria-live="polite"></span></div></div>
+    <div id="bulkSiteList" class="bulk-site-list"></div>
+    <div class="bulk-actions"><label for="bulkMoveTarget">移动到</label><select id="bulkMoveTarget" data-native="true"></select><button type="button" class="btn secondary" id="bulkMove">移动所选</button><button type="button" class="btn secondary bulk-delete" id="bulkDelete">删除所选</button></div>
+    <div class="bulk-footer"><span id="bulkEditStatus" role="status" aria-live="polite">更改将在保存后生效</span><button type="button" class="btn primary" id="bulkSave">保存更改</button></div>
   </dialog>
 
   <dialog id="captureDialog" class="modal account-modal capture-modal" aria-labelledby="captureHeading">

@@ -22,6 +22,9 @@ export function render() {
     container.style.display = 'grid';
   }
 
+  const requested = appData.settings.groupColumns;
+  const available = Math.max(1, Math.floor((container.clientWidth + 24) / 344));
+  container.style.gridTemplateColumns = requested === 'auto' ? '' : `repeat(${Math.min(Number(requested) || 1, available)}, minmax(0, 1fr))`;
   const columnCount = getColumnCount(container);
   renderedColumnCount = columnCount;
   const cols = Array.from({ length: columnCount }, () => document.createElement('div'));
@@ -272,7 +275,7 @@ export function initSpaceShortcuts() {
     if (!syncManager.ready) return;
 
     const modalOverlay = document.getElementById('modalOverlay');
-    const isModalOpen = modalOverlay && !modalOverlay.classList.contains('hidden');
+    const isModalOpen = (modalOverlay && !modalOverlay.classList.contains('hidden')) || document.querySelector('dialog[open]');
     const isEditable = e.target.closest('input, textarea, select, [contenteditable="true"]');
     if (isModalOpen || isEditable) return;
 
@@ -400,5 +403,9 @@ function getColumnCount(container) {
 }
 const groupContainer = document.getElementById('groupsContainer');
 new ResizeObserver(() => {
-  if (appData && !draggedItem && getColumnCount(groupContainer) !== renderedColumnCount) render();
+  if (!appData || draggedItem) return;
+  const requested = appData.settings.groupColumns;
+  const expected = requested === 'auto' ? getColumnCount(groupContainer)
+    : Math.min(Number(requested) || 1, Math.max(1, Math.floor((groupContainer.clientWidth + 24) / 344)));
+  if (expected !== renderedColumnCount) render();
 }).observe(groupContainer);

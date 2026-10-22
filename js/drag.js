@@ -99,7 +99,11 @@ export function handleGroupDragStart(e) {
   draggedItem = e.currentTarget;
   draggedItemType = 'group';
   e.dataTransfer.effectAllowed = 'move';
-  setTimeout(() => draggedItem?.classList.add('dragging-group'), 0);
+  e.dataTransfer.setData('text/plain', draggedItem.dataset.id || '');
+  draggedItem.classList.add('group-drag-surface');
+  e.dataTransfer.setDragImage(draggedItem, e.clientX - draggedItem.getBoundingClientRect().left, e.clientY - draggedItem.getBoundingClientRect().top);
+  const card = draggedItem;
+  setTimeout(() => { if (draggedItem === card) card.classList.add('dragging-group'); }, 0);
 }
 
 export function moveGroupTo(sourceId, colIndex, targetId = null, position = 'after') {
@@ -115,9 +119,9 @@ export function moveGroupTo(sourceId, colIndex, targetId = null, position = 'aft
   if (sourceIndex === -1) return;
   const sourceGroup = appData.groups[sourceIndex];
   sourceGroup.column = colIndex;
-  
+
   appData.groups.splice(sourceIndex, 1);
-  
+
   if (targetId) {
     let targetIndex = appData.groups.findIndex(g => g.id === targetId);
     if (position === 'after') targetIndex++;
@@ -149,7 +153,7 @@ export function handleDrop(e) {
 
 export function handleDragEnd(e) {
   if (draggedItem) {
-    draggedItem.classList.remove('dragging', 'dragging-group');
+    draggedItem.classList.remove('dragging', 'dragging-group', 'group-drag-surface');
   }
   document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
   document.querySelectorAll('.drag-over-top').forEach(el => el.classList.remove('drag-over-top'));

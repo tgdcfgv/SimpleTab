@@ -66,6 +66,7 @@ export const DEFAULT_DATA = {
     }
   ],
   settings: {
+    groupColumns: "auto",
     compactMode: false,
     cardDisplayMode: "icon-text",
     iconSize: 24,
@@ -144,6 +145,7 @@ export function normalizeAppData(data) {
     ...DEFAULT_DATA.settings,
     ...(normalized.settings || {})
   };
+  if (![1, 2, 3, 4, 5, 6].includes(normalized.settings.groupColumns)) normalized.settings.groupColumns = 'auto';
   if (normalized.settings.dockPosition === 'hidden') {
     normalized.settings.dockEnabled = false;
     normalized.settings.dockPosition = 'bottom';

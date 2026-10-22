@@ -1,3 +1,4 @@
+import './organize.js';
 import './extension.js';
 import { initCapture } from './capture.js';
 import { initAccount } from './account.js';

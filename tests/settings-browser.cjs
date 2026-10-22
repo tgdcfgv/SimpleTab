@@ -13,7 +13,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.goto(APP_URL);
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
-    assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['账户与同步', '常规', '外观', '内容与布局', '关于']);
+    assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['账户与同步', '常规', '外观', '内容与布局', '关于与帮助']);
     assert.equal(await page.locator('#settingsData').isVisible(), true);
     await page.click('[data-settings-panel="settingsGeneral"]');
     assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
@@ -52,7 +52,10 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     assert.equal(await page.locator('#openAuthModalBtn').isVisible(), true);
     const oldGroups = await page.evaluate(async () => (await import('./js/storage.js')).appData.groups.length);
     await page.setInputFiles('#bookmarkFile', { name: 'bookmarks.html', mimeType: 'text/html', buffer: Buffer.from('<a href="https://example.com/new-bookmark">新书签</a>') });
-    await page.waitForFunction(() => document.querySelector('#bookmarkImportStatus').textContent.includes('已导入 1'));
+    await page.waitForFunction(() => document.querySelector('#bulkEditorDialog').open);
+    assert.equal(await page.evaluate(async () => (await import('./js/storage.js')).appData.groups.length), oldGroups);
+    await page.click('#bulkSave');
+    await page.waitForFunction(() => document.querySelector('#bookmarkImportStatus').textContent.includes('已导入并保存'));
     assert.equal(await page.evaluate(async () => (await import('./js/storage.js')).appData.groups.length), oldGroups + 1);
     const downloadReady = page.waitForEvent('download');
     await page.click('#exportBtnNew');
