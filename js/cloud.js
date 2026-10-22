@@ -56,10 +56,7 @@ export const cloud = {
         otp_expired: '验证码或验证链接已过期，请重新获取',
         invalid_grant: '验证码或验证链接无效，请重新输入或获取新邮件',
         bad_jwt: '验证码或验证链接无效，请重新输入',
-        weak_password: '密码强度不足，请使用更长、更复杂的密码',
-        same_password: '新密码不能与原密码相同',
-        reauthentication_needed: '请重新获取邮箱验证码后重试',
-        reauthentication_not_valid: '验证已失效，请重新获取邮箱验证码'
+        weak_password: '密码强度不足，请使用更长、更复杂的密码'
       };
       const error = new Error(messages[result?.error_code || result?.code] || result?.msg || result?.message || result?.error_description || '云端请求失败，请重试。');
       error.status = response.status;
@@ -177,32 +174,6 @@ export const cloud = {
     return this.request('/auth/v1/otp', {
       method: 'POST', body: { email: this.session.user.email, create_user: false }
     });
-  },
-  async changePassword(password, code) {
-    if (password.length < 8) throw new Error('新密码至少需要 8 位。');
-    await this.token();
-    const userId = this.session.user.id;
-    const verified = await this.request('/auth/v1/verify', {
-      method: 'POST', body: { email: this.session.user.email, token: code, type: 'email' }
-    });
-    if (verified?.user?.id !== userId || !verified.access_token || !verified.refresh_token || this.session?.user?.id !== userId) {
-      throw new Error('账户验证失败，请重新登录后重试。');
-    }
-    // Keep the freshly verified session even if password validation is rejected.
-    this.storeSession({ ...verified, needs_choice: this.session.needs_choice });
-    let user;
-    try {
-      user = await this.request('/auth/v1/user', {
-        method: 'PUT', token: verified.access_token, body: { password }
-      });
-    } catch (error) {
-      // OTPs are single-use even when the subsequent password update fails.
-      error.message += '。此验证码已使用，请重新获取验证码后重试。';
-      error.codeUsed = true;
-      throw error;
-    }
-    if (this.session?.user?.id !== userId) throw new Error('账户已更改，请刷新后重试。');
-    this.storeSession({ ...this.session, user });
   },
   async deleteAccount(code) {
     const userId = this.session?.user?.id;

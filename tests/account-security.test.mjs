@@ -66,21 +66,6 @@ test('failed deletion returns an error rather than success', async () => {
 const values = new Map();
 globalThis.localStorage = { getItem: key => values.get(key), setItem: (key, value) => values.set(key, value), removeItem: key => values.delete(key) };
 const session = { user, access_token: 'old', refresh_token: 'refresh', expires_at: Date.now() / 1000 + 3600 };
-test('password update requires OTP for the same account and persists verified credentials', async () => {
-  cloud.storeSession(session);
-  globalThis.fetch = async (url, options) => {
-    if (url.endsWith('/verify')) return json({ ...session, access_token: 'fresh' });
-    assert.equal(options.headers.Authorization, 'Bearer fresh');
-    assert.deepEqual(JSON.parse(options.body), { password: 'new-password' });
-    return json(user);
-  };
-  await cloud.changePassword('new-password', '12345678');
-  assert.equal(cloud.session.access_token, 'fresh');
-  globalThis.fetch = async () => json({ ...session, user: { id: 'other' } });
-  await assert.rejects(cloud.changePassword('new-password', '12345678'), /验证失败/);
-  assert.equal(cloud.session.user.id, user.id);
-});
-
 test('failed remote deletion retains local session; success clears credentials', async () => {
   cloud.storeSession(session);
   globalThis.fetch = async () => json({ message: 'failed' }, 503);
