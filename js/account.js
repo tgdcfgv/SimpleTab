@@ -1,6 +1,6 @@
 import { openSettingsModal, settingsModal, openAuthModal, showToast } from './modals.js';
 import { initAuthModal } from './auth-modal.js';
-import { initOnboarding } from './onboarding.js';
+import { initOnboarding, openProfileEditor } from './onboarding.js';
 import { cloud } from './cloud.js';
 import { appData, normalizeAppData, setAppData, syncManager } from './storage.js';
 import { applySettings, render } from './render.js';
@@ -35,7 +35,11 @@ function update() {
   dockAvatar.hidden = !avatar;
   accountButton.querySelector('svg').style.display = avatar ? 'none' : '';
   const accountAvatar = document.getElementById('accountAvatar');
-  accountAvatar.textContent = avatar || '😊';
+  if (accountAvatar) {
+    const emojiEl = accountAvatar.querySelector('.account-avatar-emoji');
+    if (emojiEl) emojiEl.textContent = avatar || '😊';
+    else accountAvatar.textContent = avatar || '😊';
+  }
   const secondaryEmail = document.getElementById('accountEmailSecondary');
   secondaryEmail.textContent = cloud.session?.user?.email || '';
   secondaryEmail.hidden = !profile?.nickname;
@@ -43,7 +47,13 @@ function update() {
     accountButton.title = `${profile.nickname} · 账户与同步`;
     accountButton.setAttribute('aria-label', accountButton.title);
   }
-  document.getElementById('accountTitle').textContent = choosing ? '选择同步内容' : '账户与同步';
+  document.getElementById('accountTitle').textContent = choosing ? '选择同步内容' : '云端账户';
+  const disclaimerText = document.getElementById('accountDisclaimerText');
+  if (disclaimerText) {
+    disclaimerText.textContent = loggedIn
+      ? '当前使用账户云端内容；退出登录后恢复此浏览器的本地内容。'
+      : '未登录数据保存在此浏览器；登录后显示云端内容。';
+  }
   if (choice) choice.hidden = !choosing;
   document.getElementById('accountEmailLabel').textContent = profile?.nickname || cloud.session?.user?.email || '';
   if (loggedOutCard) loggedOutCard.hidden = loggedIn || choosing;
@@ -98,6 +108,11 @@ export function initAccount() {
   });
   document.getElementById('openAuthModalBtn')?.addEventListener('click', () => {
     openAuthModal();
+  });
+  document.getElementById('accountAvatar')?.addEventListener('click', () => {
+    if (cloud.session) {
+      openProfileEditor();
+    }
   });
   document.addEventListener('simtab-sync', update);
   document.getElementById('accountUseCloud')?.addEventListener('click', () => run(() => finishChoice(false)));

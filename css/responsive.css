@@ -85,7 +85,7 @@
 
 .context-menu-item.danger:hover,
 #contextDeleteSite:hover {
-  background: var(--color-danger-subtle) !important;
+  background: var(--control-hover-bg) !important;
   color: var(--color-danger-text) !important;
 }
 

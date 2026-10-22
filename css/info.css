@@ -104,6 +104,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 72px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -266,6 +267,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 8px;
+  scroll-margin-top: 72px;
 }
 
 a {

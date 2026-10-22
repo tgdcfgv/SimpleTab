@@ -169,7 +169,8 @@ input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="number"]:focus,
 textarea:focus {
-  border-color: var(--accent-color);
+  border-color: transparent;
+  background: var(--bg-muted);
   box-shadow: none;
   outline: none;
 }

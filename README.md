@@ -12,7 +12,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Manifest-V3-blue.svg?style=flat-square" alt="Manifest V3">
   <img src="https://img.shields.io/badge/Platform-Chrome%20%7C%20Edge%20%7C%20Web-blueviolet.svg?style=flat-square" alt="Platform">
-  <img src="https://img.shields.io/badge/Version-1.0.0-emerald.svg?style=flat-square" alt="Version 1.0.0">
+  <img src="https://img.shields.io/badge/Version-1.0.1-emerald.svg?style=flat-square" alt="Version 1.0.1">
   <img src="https://img.shields.io/badge/Deploy-Cloudflare%20Pages-orange.svg?style=flat-square" alt="Cloudflare Pages">
   <img src="https://img.shields.io/badge/Backend-Supabase-green.svg?style=flat-square" alt="Supabase">
 </p>
@@ -239,12 +239,21 @@ node tests/settings-browser.cjs
 
 ```bash
 python3 scripts/package-extension.py
-# 输出产物位于 dist/SimTab-1.0.0-edge.zip
+# 输出产物位于 dist/SimTab-1.0.1-edge.zip
 ```
 
 ---
 
-## 📝 版本更新记录 (v1.0.0)
+## 📝 版本更新记录
+
+### v1.0.1
+
+- 统一设置界面之外的悬停效果，使用灰色背景并移除悬停边框、阴影和缩放。
+- 文本输入框激活后仅加深背景，移除聚焦边框、光圈与阴影。
+- Emoji 头像与程序坞图标统一尺寸并居中对齐。
+- 优化设置布局、账户资料编辑和相关提示文案。
+
+### v1.0.0
 
 - 🎨 **全新设计系统**：统一 Button、Input、Select、Switch、Menu、Dialog 等控件规范，重做 macOS 风格设置中心，优化高对比度配色逻辑。
 - 🔍 **搜索增强**：集成 Bing 实时联想建议、输入防抖与 Tab 补全能力，支持键盘方向键顺畅定位。

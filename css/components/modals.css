@@ -111,7 +111,7 @@ dialog.modal[open] {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-radius: 24px;
+  border-radius: 20px;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-modal);
@@ -128,8 +128,8 @@ dialog.modal[open] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 68px;
-  padding: 0 22px 0 26px;
+  height: 54px;
+  padding: 0 20px 0 22px;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-surface-elevated);
   flex-shrink: 0;
@@ -195,8 +195,8 @@ dialog.modal[open] {
 .settings-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 22px 12px;
+  gap: 4px;
+  padding: 16px 10px;
   background: var(--bg-surface-elevated);
   border-right: 1px solid var(--border-subtle);
   overflow-y: auto;
@@ -207,8 +207,8 @@ dialog.modal[open] {
   align-items: center;
   gap: 10px;
   width: 100%;
-  min-height: 44px;
-  padding: 8px 12px;
+  min-height: 38px;
+  padding: 6px 12px;
   border: none;
   border-radius: var(--radius-md);
   color: var(--text-secondary);
@@ -253,7 +253,7 @@ dialog.modal[open] {
 
 /* Settings Content */
 .settings-content {
-  padding: 30px 32px;
+  padding: 20px 24px;
   overflow-y: auto;
   min-height: 0;
   background: var(--settings-pane);
@@ -269,21 +269,21 @@ dialog.modal[open] {
 }
 
 .settings-section-heading {
-  margin-bottom: 26px;
+  margin-bottom: 16px;
 }
 
 .settings-section-heading h4 {
-  font-size: 24px;
-  letter-spacing: -0.6px;
+  font-size: 20px;
+  letter-spacing: -0.4px;
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 
 .settings-section-heading p {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--settings-muted);
-  line-height: 1.6;
+  line-height: 1.5;
   margin: 0;
 }
 
@@ -291,20 +291,20 @@ dialog.modal[open] {
   font-size: 12px;
   font-weight: var(--weight-semibold);
   color: var(--settings-muted);
-  margin: 24px 2px 10px;
+  margin: 16px 2px 8px;
 }
 
 .settings-section-heading + .settings-subheading {
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 /* Quiet surfaces keep related preferences together. */
 .settings-group {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgb(0 0 0 / 2%);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 2%);
 }
 
 /* Aligned Form Row */
@@ -312,9 +312,9 @@ dialog.modal[open] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  min-height: 66px;
-  padding: 16px 18px;
+  gap: 14px;
+  min-height: 48px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--border-subtle);
   background: transparent;
   box-sizing: border-box;
@@ -376,8 +376,8 @@ dialog.modal[open] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 58px;
-  padding: 12px 18px;
+  min-height: 44px;
+  padding: 8px 16px;
   box-sizing: border-box;
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -444,31 +444,48 @@ dialog.modal[open] {
    ------------------------------------------------------------ */
 .account-panel {
   padding: 0;
+  overflow: hidden;
 }
 
 #settingsModal .account-disclaimer {
-  padding: 12px 18px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
   color: var(--settings-muted);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
-#settingsModal .account-disclaimer small { font-size: 12px; }
-#settingsModal .account-disclaimer a { color: var(--text-primary); }
+#settingsModal .account-disclaimer small {
+  font-size: 11.5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+}
 
+#settingsModal .account-disclaimer a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+#settingsModal .account-disclaimer a:hover {
+  text-decoration: underline;
+}
 
 .account-profile-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
 .account-profile-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
 }
 
@@ -476,17 +493,75 @@ dialog.modal[open] {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: var(--bg-subtle);
   color: var(--text-secondary);
   flex-shrink: 0;
+  border: 1px solid var(--border-default);
 }
 
 .account-avatar-placeholder.signed-in {
+  position: relative;
   background: var(--accent-subtle);
   color: var(--accent-color);
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  font-size: 24px;
+  line-height: 1;
+  border: 1px solid var(--border-default);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.account-avatar-placeholder.signed-in:hover {
+  transform: scale(1.04);
+  border-color: var(--accent-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.account-avatar-placeholder.signed-in:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.account-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.52);
+  color: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+}
+
+.account-avatar-placeholder.signed-in:hover .account-avatar-overlay,
+.account-avatar-placeholder.signed-in:focus-visible .account-avatar-overlay {
+  opacity: 1;
+}
+
+.account-avatar-overlay svg {
+  width: 15px;
+  height: 15px;
+}
+
+.account-profile-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.account-profile-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .account-profile-name {
@@ -499,23 +574,23 @@ dialog.modal[open] {
 .account-profile-desc {
   font-size: 12px;
   color: var(--text-secondary);
-  margin-top: 2px;
 }
 
 .account-sync-badge-wrap {
-  margin-top: 3px;
+  display: inline-flex;
 }
 
 .account-sync-status {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 8px;
+  gap: 5px;
+  padding: 2px 7px;
   border-radius: var(--radius-full);
   font-size: 11px;
   font-weight: var(--weight-medium);
   background: var(--color-success-subtle);
   color: var(--color-success-text);
+  line-height: 1.2;
 }
 
 .account-profile-actions {
@@ -526,7 +601,7 @@ dialog.modal[open] {
 }
 
 .account-message {
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: 12px;
   color: var(--color-danger);
   line-height: 1.4;
@@ -538,7 +613,7 @@ dialog.modal[open] {
 }
 
 .account-footer-notice {
-  padding: 10px 14px 12px;
+  padding: 10px 16px 12px;
   border-top: 1px solid var(--border-subtle);
   font-size: 11px;
   color: var(--text-secondary);
@@ -784,7 +859,7 @@ dialog.modal[open] {
 .auth-modal .auth-input:-webkit-autofill:hover,
 .auth-modal .auth-input:-webkit-autofill:focus,
 .auth-modal .auth-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--text-input-fill, var(--input-bg)) inset !important;
   -webkit-text-fill-color: var(--text-primary) !important;
   transition: background-color 5000s ease-in-out 0s;
 }
@@ -1155,16 +1230,41 @@ dialog.modal[open] {
 
 /* A calm welcome, followed by the account's personal details. */
 dialog.onboarding-modal {
+  position: relative;
   width: min(420px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
   margin: auto;
-  padding: 36px 30px 30px;
+  padding: 32px 28px 28px;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
   background: var(--bg-surface-elevated);
   color: var(--text-primary);
   box-shadow: var(--shadow-modal);
   overflow-y: auto;
+}
+.onboarding-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  z-index: 2;
+}
+.onboarding-close-btn:hover {
+  background: var(--border-default);
+  color: var(--text-primary);
+}
+.onboarding-close-btn[hidden] {
+  display: none;
 }
 .onboarding-modal::backdrop { background: rgba(0, 0, 0, .38); backdrop-filter: blur(8px); }
 .onboarding-step { text-align: center; }
@@ -1183,6 +1283,17 @@ dialog.onboarding-modal {
 .profile-nickname-label { display: block; margin-bottom: 8px; text-align: left; font-size: 13px; font-weight: 500; }
 #profileNickname { width: 100%; min-height: 44px; }
 #profileError { text-align: left; }
-.dock-avatar { font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif; font-size: 25px; line-height: 1; }
+.dock-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ui-icon-size);
+  height: var(--ui-icon-size);
+  flex: 0 0 auto;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-size: var(--ui-icon-size);
+  line-height: 1;
+}
 #accountAvatar { font-size: 26px; }
+.account-avatar-emoji { display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
 @media (prefers-reduced-transparency: reduce) { .onboarding-modal::backdrop { backdrop-filter: none; background: rgba(0, 0, 0, .6); } }

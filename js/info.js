@@ -127,7 +127,6 @@
               tocPills.forEach(pill => {
                 if (pill.getAttribute('href') === `#${activeId}`) {
                   pill.classList.add('active');
-                  pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
                 } else {
                   pill.classList.remove('active');
                 }

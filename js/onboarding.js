@@ -1,4 +1,5 @@
 import { cloud } from './cloud.js';
+import { openSettingsModal, showToast } from './modals.js';
 
 const emojis = ['😊', '😎', '🥳', '🤓', '🤗', '😺', '🐱', '🐶', '🐼', '🦊', '🐻', '🐨', '🐯', '🐰', '🐸', '🐧', '🦉', '🦋', '🐳', '🐙', '🌱', '🌻', '🍀', '🌵', '🌈', '☀️', '🌙', '⭐', '🍊', '🍑', '🥑', '🍉', '☕', '🎨', '🎮', '🎧', '🚀', '🛸', '💎', '🔥'];
 const dialog = document.getElementById('onboardingDialog');
@@ -18,6 +19,10 @@ export function openOnboarding() {
   document.getElementById('welcomeStep').hidden = false;
   document.getElementById('profileStep').hidden = true;
   dialog.setAttribute('aria-labelledby', 'onboardingTitle');
+  document.getElementById('profileTitle').textContent = '让这里更像你';
+  const closeBtn = document.getElementById('profileCloseBtn');
+  if (closeBtn) closeBtn.hidden = true;
+  dialog.dataset.voluntaryEdit = 'false';
   const profile = cloud.session.user.user_metadata;
   selectedAvatar = emojis.includes(profile?.avatar_emoji) ? profile.avatar_emoji : emojis[0];
   document.getElementById('profileAvatarPreview').textContent = selectedAvatar;
@@ -27,8 +32,50 @@ export function openOnboarding() {
   document.getElementById('welcomeConfirmBtn').focus();
 }
 
+export function openProfileEditor() {
+  if (!cloud.session || dialog.open) return;
+  document.getElementById('settingsModal').classList.add('hidden');
+  document.getElementById('modalOverlay').classList.add('hidden');
+  document.getElementById('welcomeStep').hidden = true;
+  document.getElementById('profileStep').hidden = false;
+  dialog.setAttribute('aria-labelledby', 'profileTitle');
+  document.getElementById('profileTitle').textContent = '编辑个人资料';
+  const closeBtn = document.getElementById('profileCloseBtn');
+  if (closeBtn) closeBtn.hidden = false;
+  dialog.dataset.voluntaryEdit = 'true';
+  const profile = cloud.session?.user?.user_metadata;
+  selectedAvatar = emojis.includes(profile?.avatar_emoji) ? profile.avatar_emoji : emojis[0];
+  document.getElementById('profileAvatarPreview').textContent = selectedAvatar;
+  document.getElementById('profileNickname').value = profile?.nickname || '';
+  document.getElementById('profileError').hidden = true;
+  const grid = document.getElementById('profileEmojiGrid');
+  if (grid) grid.hidden = true;
+  const picker = document.getElementById('profileAvatarBtn');
+  if (picker) picker.setAttribute('aria-expanded', 'false');
+  dialog.showModal();
+  document.getElementById('profileNickname').focus();
+}
+
+function closeProfileEditor() {
+  dialog.close();
+  dialog.dataset.voluntaryEdit = 'false';
+  const closeBtn = document.getElementById('profileCloseBtn');
+  if (closeBtn) closeBtn.hidden = true;
+  openSettingsModal('settingsData');
+}
+
 export function initOnboarding() {
-  dialog.addEventListener('cancel', event => event.preventDefault());
+  dialog.addEventListener('cancel', event => {
+    if (dialog.dataset.voluntaryEdit === 'true') {
+      event.preventDefault();
+      closeProfileEditor();
+    } else {
+      event.preventDefault();
+    }
+  });
+  document.getElementById('profileCloseBtn')?.addEventListener('click', () => {
+    closeProfileEditor();
+  });
   document.getElementById('welcomeConfirmBtn').addEventListener('click', () => {
     document.getElementById('welcomeStep').hidden = true;
     document.getElementById('profileStep').hidden = false;
@@ -80,9 +127,18 @@ export function initOnboarding() {
     button.textContent = '正在保存…';
     try {
       await cloud.updateProfile(nickname.value.trim(), selectedAvatar);
+      const isVoluntary = dialog.dataset.voluntaryEdit === 'true';
       dialog.close();
+      dialog.dataset.voluntaryEdit = 'false';
+      const closeBtn = document.getElementById('profileCloseBtn');
+      if (closeBtn) closeBtn.hidden = true;
       document.dispatchEvent(new Event('simtab-sync'));
-      document.getElementById('accountBtn').focus();
+      if (isVoluntary) {
+        openSettingsModal('settingsData');
+        showToast('个人资料已更新');
+      } else {
+        document.getElementById('accountBtn').focus();
+      }
     } catch (err) {
       error.textContent = err.message || '保存失败，请重试';
       error.hidden = false;

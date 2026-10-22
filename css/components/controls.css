@@ -2,6 +2,11 @@
 :root {
   --control-bg: var(--bg-subtle);
   --control-hover-bg: var(--item-hover-bg);
+  --control-hover-border: transparent;
+}
+
+/* Settings retain their existing hover borders. */
+#settingsModal {
   --control-hover-border: var(--border-hover);
 }
 
@@ -44,12 +49,6 @@ input[type="color"]:hover:not(:disabled), textarea:hover:not(:disabled),
 select:hover:not(:disabled), .number-stepper:hover, .card-display-control:hover,
 .profile-avatar-picker:hover {
   border-color: var(--control-hover-border);
-}
-input[type="text"]:not(#searchInput):not(#groupLinksPerRow):focus-visible,
-input[type="email"]:focus-visible, input[type="url"]:focus-visible,
-input[type="password"]:focus-visible, textarea:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
 }
 
 /* Opening or focusing a dropdown does not add a ring or a colored border. */
@@ -104,8 +103,8 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 .settings-help { font-size: 12px; line-height: 1.6; color: var(--text-secondary); margin: -4px 2px 16px; }
 .setting-disabled .setting-copy { opacity: .45; }
 .card-display-control { padding: 3px; }
-.card-display-setting { min-height: 66px; }
-#iconSizeSetting { min-height: 66px; }
+.card-display-setting { min-height: 52px; }
+#iconSizeSetting { min-height: 52px; }
 #iconSizeSetting .setting-slider { width: min(220px, 100%); gap: 12px; }
 #iconSizeValue { min-width: 34px; text-align: right; }
 
@@ -116,7 +115,7 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 #wallpaperThumbnail { width: 100%; height: 100%; object-fit: cover; }
 .wallpaper-replace { position: absolute; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / 45%); color: white; opacity: 0; transition: opacity var(--transition-fast); }
 .wallpaper-upload:hover .wallpaper-replace, .wallpaper-upload:focus-visible .wallpaper-replace { opacity: 1; }
-.wallpaper-setting .setting-copy { max-width: 260px; }
+.wallpaper-setting .setting-copy { max-width: none; flex: 1; }
 .bottom-bar { display: flex; align-items: center; gap: 8px; }
 #settingsFallbackBtn { pointer-events: auto; }
 
@@ -177,3 +176,56 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 .setting-slider { display: flex; align-items: center; gap: 10px; }
 #iconSizeSlider { width: 140px; max-width: 100%; accent-color: var(--accent-color); }
 #iconSizeValue { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+/* One flat, theme-aware gray hover treatment outside the settings dialog.
+   Keep transparent borders in place to avoid moving controls on hover.
+   Settings descendants remain independent. */
+:is(
+  button, a, select,
+  [role="button"], [role="option"],
+  .group-card, .group-header, .search-result-item,
+  .custom-select-trigger-global, .custom-option-global, .context-menu-item,
+  .store-link-item, .space-editor-item, .profile-avatar-picker,
+  .number-stepper, .card-display-control
+):not(#settingsModal, #settingsModal *):not(:disabled):hover {
+  background: var(--control-hover-bg) !important;
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Filled buttons need readable text when their hover background turns gray. */
+:is(.btn.primary, .btn.danger, .group-select-btn.active, .space-dock-btn.active):not(#settingsModal, #settingsModal *):not(:disabled):hover {
+  color: var(--text-primary) !important;
+}
+
+/* Text fields, including settings, activate through a deeper background only.
+   Important declarations also cover compact editors and autofill treatments. */
+:is(input:not([type]), input[type="text"], input[type="search"],
+    input[type="email"], input[type="url"], input[type="password"],
+    input[type="tel"], input[type="number"], textarea) {
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+:is(input:not([type]), input[type="text"], input[type="search"],
+    input[type="email"], input[type="url"], input[type="password"],
+    input[type="tel"], input[type="number"], textarea):focus {
+  --text-input-fill: var(--bg-muted);
+  background: var(--text-input-fill) !important;
+}
+
+.search-container:has(#searchInput:focus),
+.number-stepper:has(input:focus) {
+  background: var(--bg-muted) !important;
+  border-color: transparent !important;
+  outline: none;
+  box-shadow: none;
+}
+
+.auth-otp-slot.is-active {
+  background: var(--bg-muted);
+  border-color: transparent;
+  box-shadow: none;
+}
