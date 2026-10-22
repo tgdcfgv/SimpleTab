@@ -1447,3 +1447,26 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
   .bulk-space-toggle { width: auto; max-width: 150px; flex-shrink: 0; }
   .bulk-space-columns { display: flex; align-items: center; padding-left: 3px; }
 }
+
+/* Object-level actions share the draft editor's create and delete controls. */
+.bulk-space-header { display: flex; align-items: center; gap: 5px; padding-left: 5px; }
+.bulk-space-header .bulk-space-toggle { flex: 1; width: 0; min-width: 0; }
+.bulk-new-controls { position: relative; flex-shrink: 0; border-top: 1px solid var(--border-default); padding: 5px; }
+.bulk-new-controls .bulk-add-group { width: 100%; border: 0; border-radius: 5px; padding: 7px; }
+.bulk-empty-spaces-toggle { display: flex; align-items: center; gap: 5px; min-height: 28px; padding: 3px 7px; color: var(--text-secondary); font-size: 11px; }
+.bulk-create-menu { position: absolute; z-index: 20; left: 5px; right: 5px; bottom: calc(100% - 4px); display: grid; padding: 5px; border: 1px solid var(--border-default); border-radius: 8px; background: var(--bg-surface-elevated); box-shadow: var(--shadow-modal); }
+.bulk-create-menu button { min-height: 34px; border: 0; border-radius: 5px; background: transparent; color: var(--text-primary); padding: 7px 10px; font: 13px var(--font-family); text-align: left; cursor: pointer; }
+.bulk-create-form { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; padding: 10px; border: 1px solid var(--border-default); border-radius: 8px; background: var(--bg-subtle); }
+.bulk-create-form strong { align-self: center; font-size: 13px; }
+.bulk-create-form label { display: grid; gap: 4px; flex: 1 1 140px; min-width: 0; font-size: 11px; color: var(--text-secondary); }
+#bulkEditorDialog #bulkCreateForm input[type="text"], #bulkEditorDialog #bulkCreateForm select { min-width: 0; height: 32px; padding: 5px 8px; border-radius: 5px; color: var(--text-primary); background: var(--bg-surface-elevated); font: 13px var(--font-family); }
+.bulk-create-actions { display: flex; gap: 5px; }
+@media (max-width: 640px) {
+  .bulk-new-controls { border-top: 0; border-left: 1px solid var(--border-default); flex: 0 0 76px; padding: 3px; }
+  .bulk-new-controls .bulk-add-group { max-width: none; min-height: 30px; }
+  .bulk-empty-spaces-toggle { padding: 3px; font-size: 10px; line-height: 1.3; }
+  .bulk-create-menu { left: auto; right: 0; top: 100%; bottom: auto; width: 150px; }
+  .bulk-space-header { flex-shrink: 0; padding-left: 2px; }
+  .bulk-space-header .bulk-space-toggle { width: auto; }
+  .bulk-create-form strong { flex-basis: 100%; }
+}

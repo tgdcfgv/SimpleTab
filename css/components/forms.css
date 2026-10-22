@@ -386,6 +386,11 @@ input[type="color"] {
   font-weight: var(--weight-semibold);
 }
 
+/* Native controls follow the explicit page theme, including OS popup menus. */
+input[type="checkbox"]:not(.toggle-input), input[type="radio"] {
+  accent-color: var(--accent-color);
+}
+
 /* Native select element */
 select {
   height: 36px;

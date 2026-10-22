@@ -626,13 +626,19 @@
   <dialog id="bulkEditorDialog" class="modal bulk-editor" aria-labelledby="bulkEditorTitle">
     <div class="bulk-heading"><div><h3 id="bulkEditorTitle">批量编辑网站</h3><p id="bulkSpaceName"></p></div><button type="button" class="bulk-close" id="bulkClose" aria-label="关闭批量编辑" title="关闭">×</button></div>
     <div class="bulk-filters"><input type="search" id="bulkSearch" placeholder="搜索所有分组的网站名称或网址" aria-label="全局搜索网站"><button type="button" class="btn secondary" id="bulkImportBookmarks">导入收藏夹</button></div>
+    <form id="bulkCreateForm" class="bulk-create-form" hidden>
+      <strong id="bulkCreateTitle">新建</strong><label class="bulk-create-parent"><span id="bulkCreateParentLabel">所属位置</span><select id="bulkCreateParent" data-native="true" aria-label="所属位置"></select></label>
+      <label><span id="bulkCreateNameLabel">名称</span><input type="text" id="bulkCreateName" maxlength="200" required autocomplete="off"></label>
+      <label id="bulkCreateUrlField"><span>网址</span><input type="text" inputmode="url" id="bulkCreateUrl" placeholder="https://example.com" autocomplete="off" spellcheck="false"></label>
+      <div class="bulk-create-actions"><button type="submit" class="btn primary">创建</button><button type="button" id="bulkCreateCancel" class="btn secondary">取消</button></div>
+    </form>
     <div class="bulk-master-detail">
       <aside class="bulk-sidebar" aria-label="分组导航与拖放区">
         <nav id="bulkGroupNavigation" class="bulk-group-navigation" aria-label="选择分组">
           <button type="button" id="bulkAllGroups" class="bulk-all-groups active" aria-current="page"><span>全部网站</span><span id="bulkAllCount" class="bulk-group-count">0</span></button>
           <div id="bulkGroupList" class="bulk-group-list" role="list" aria-label="分组"></div>
         </nav>
-        <button type="button" id="bulkAddGroup" class="bulk-add-group">+ 新建分组</button>
+        <div class="bulk-new-controls"><label class="bulk-empty-spaces-toggle"><input type="checkbox" id="bulkShowEmptySpaces"> 显示空空间</label><button type="button" id="bulkAddGroup" class="bulk-add-group" aria-expanded="false" aria-controls="bulkCreateMenu">+ 新建</button><div id="bulkCreateMenu" class="bulk-create-menu" hidden><button type="button" data-create-kind="space">新建空间</button><button type="button" data-create-kind="group">新建分组</button><button type="button" data-create-kind="site">新建网站</button></div></div>
       </aside>
       <section class="bulk-detail" aria-labelledby="bulkCurrentGroup">
         <div class="bulk-detail-toolbar"><h4 id="bulkCurrentGroup">全部网站</h4><div class="bulk-detail-controls"><label><input type="checkbox" id="bulkSelectAll"> 全选当前筛选结果</label><div class="bulk-detail-tools"><span id="bulkFoldTools"><button type="button" id="bulkExpandAll" class="bulk-icon-button" title="全部展开" aria-label="全部展开"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 4 5 5 5-5M7 15l5 5 5-5"/></svg></button><button type="button" id="bulkCollapseAll" class="bulk-icon-button" title="全部折叠" aria-label="全部折叠"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 9 5-5 5 5M7 20l5-5 5 5"/></svg></button></span><span id="bulkSelectionCount" role="status" aria-live="polite"></span></div></div></div>
