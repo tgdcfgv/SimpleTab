@@ -94,7 +94,7 @@ const assert = require('node:assert/strict');
       syncManager.saveData = (...args) => { window.storeSaves++; return original(...args); };
     });
     await page.click('#settingsBtn');
-    await page.click('[data-settings-panel="settingsContent"]');
+    await page.click('[data-settings-panel="settingsLayout"]');
     await page.click('label[for="dockStoreToggle"]');
     await page.click('#closeSettingsBtn');
     await page.evaluate(() => { window.storeSaves = 0; });

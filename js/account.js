@@ -63,7 +63,7 @@ function update() {
   settingsModal.dataset.locked = String(locked || busy);
   document.getElementById('closeSettingsBtn').disabled = locked || busy;
   document.querySelectorAll('.settings-nav-btn').forEach(button => {
-    button.disabled = locked && button.dataset.settingsPanel !== 'settingsData';
+    button.disabled = locked && button.dataset.settingsPanel !== 'settingsAccount';
   });
   document.getElementById('importFileNew').disabled = locked;
   document.getElementById('bookmarkFile').disabled = locked;
@@ -92,7 +92,7 @@ function update() {
   const reloadBtn = document.getElementById('accountReload');
   if (reloadBtn) reloadBtn.hidden = !syncManager.conflict;
   document.querySelector('.app-container').inert = !syncManager.ready;
-  if (locked && syncManager.status !== 'syncing' && !document.getElementById('onboardingDialog').open && document.getElementById('authModal').classList.contains('hidden') && (settingsModal.classList.contains('hidden') || !document.getElementById('settingsData').classList.contains('active'))) openSettingsModal('settingsData');
+  if (locked && syncManager.status !== 'syncing' && !document.getElementById('onboardingDialog').open && document.getElementById('authModal').classList.contains('hidden') && (settingsModal.classList.contains('hidden') || !document.getElementById('settingsAccount').classList.contains('active'))) openSettingsModal('settingsAccount');
 }
 
 export function initAccount() {
@@ -103,7 +103,7 @@ export function initAccount() {
       openAuthModal();
     } else {
       update();
-      openSettingsModal('settingsData');
+      openSettingsModal('settingsAccount');
     }
   });
   document.getElementById('openAuthModalBtn')?.addEventListener('click', () => {
@@ -123,7 +123,7 @@ export function initAccount() {
       openAuthModal();
     } else if (syncManager.conflict) {
       update();
-      openSettingsModal('settingsData');
+      openSettingsModal('settingsAccount');
     } else {
       run(() => syncManager.syncNow());
     }
@@ -218,7 +218,7 @@ async function finishChoice(keepPage) {
   await syncManager.loadCloud(keepPage ? snapshot : null);
   cloud.storeSession({ ...cloud.session, needs_choice: false });
   choiceData = null;
-  applySettings(); render(); update(); openSettingsModal('settingsData');
+  applySettings(); render(); update(); openSettingsModal('settingsAccount');
 }
 
 async function leaveAccount() {
@@ -228,7 +228,7 @@ async function leaveAccount() {
   try { await cloud.logout(); }
   finally {
     choiceData = null;
-    await syncManager.loadLocal(); applySettings(); render(); update(); openSettingsModal('settingsData');
+    await syncManager.loadLocal(); applySettings(); render(); update(); openSettingsModal('settingsAccount');
     showToast('已退出登录');
   }
 }

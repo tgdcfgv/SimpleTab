@@ -9,24 +9,33 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await context.route('https://**/*', route => route.abort());
     const page = await context.newPage();
     const errors = [];
-    page.on('pageerror', error => errors.push(error.message));
+    page.on('pageerror', error => { errors.push(error.message); console.error('PAGE ERROR:', error.message); });
     await page.goto(APP_URL);
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
-    assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['账户与同步', '常规', '外观', '内容与布局', '关于与帮助']);
-    assert.equal(await page.locator('#settingsData').isVisible(), true);
+    assert.deepEqual(await page.locator('.settings-nav-btn span').allTextContents(), ['常规', '外观', '布局', '账户', '数据', '关于']);
+    assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
     await page.click('[data-settings-panel="settingsGeneral"]');
     assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
+    await page.selectOption('#defaultSearchEngineSelect','baidu',{force:true});
+    assert.equal(await page.locator('#searchEngineSelect').inputValue(),'baidu');
+    await page.click('label[for="engineToggle-baidu"]');
+    assert.equal(await page.locator('#defaultSearchEngineSelect').inputValue(),'bing');
+    assert.equal(await page.locator('#searchEngineSelect').inputValue(),'bing');
+    await page.click('label[for="engineToggle-bing"]');
+    assert.equal(await page.locator('#engineToggle-bing').isChecked(),true);
+    await page.selectOption('#defaultSearchEngineSelect','bing',{force:true});
     assert.equal(await page.locator('#settingsGeneral .settings-group').first().evaluate(el => getComputedStyle(el).animationName), 'none');
     for (const [panel, controls] of Object.entries({
-      settingsGeneral: ['openModeSelect', 'searchEngineSettings'],
-      settingsAppearance: ['themeSelect', 'wallpaperUpload', 'accentColorInput'],
-      settingsContent: ['cardDisplayLabel', 'iconSizeSlider', 'compactModeToggle', 'dockPositionSelect', 'dockEditButtonToggle', 'dockTabHintToggle'],
-      settingsData: ['accountPanel', 'bookmarkFile', 'exportBtnNew', 'importFileNew']
+      settingsGeneral: ['openModeSelect', 'searchEngineSettings', 'defaultSearchEngineSelect'],
+      settingsAppearance: ['themeSelect', 'wallpaperUpload', 'accentColorInput', 'cardDisplayLabel', 'iconSizeSlider'],
+      settingsLayout: ['groupColumnsSelect', 'compactModeToggle', 'dockPositionSelect', 'dockEditButtonToggle', 'dockTabHintToggle'],
+      settingsAccount: ['accountPanel', 'openAuthModalBtn', 'accountAvatar', 'accountLogout'],
+      settingsData: ['bookmarkFile', 'exportBtnNew', 'importFileNew', 'migrationGuide', 'openBulkEditor']
     })) {
       for (const id of controls) assert.equal(await page.locator(`#${id}`).evaluate(el => el.closest('.settings-section').id), panel);
     }
-    await page.click('[data-settings-panel="settingsContent"]');
+    await page.click('[data-settings-panel="settingsAppearance"]');
     assert.equal(await page.locator('#iconSizeSetting').isVisible(), false);
     const displayRowHeight = await page.locator('.card-display-setting').evaluate(el => el.offsetHeight);
     await page.click('button[data-card-mode="icon-only"]');
@@ -34,8 +43,10 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.locator('#iconSizeSlider').fill('48');
     assert.equal(await page.locator('html').getAttribute('data-card-mode'), 'icon-only');
     assert.equal(await page.locator('html').evaluate(el => el.style.getPropertyValue('--pure-icon-size')), '48px');
+    await page.click('[data-settings-panel="settingsLayout"]');
     await page.click('label[for="compactModeToggle"]');
     assert.equal(await page.locator('html').getAttribute('data-compact'), 'true');
+    await page.click('[data-settings-panel="settingsAppearance"]');
     await page.click('button[data-card-mode="icon-text"]');
     assert.equal(await page.locator('#iconSizeSetting').isVisible(), false);
     await page.click('button[data-card-mode="icon-only"]');
@@ -43,13 +54,15 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.reload();
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
-    await page.click('[data-settings-panel="settingsContent"]');
+    await page.click('[data-settings-panel="settingsAppearance"]');
     assert.equal(await page.locator('button[data-card-mode="icon-only"]').getAttribute('aria-pressed'), 'true');
     assert.equal(await page.locator('#iconSizeSlider').inputValue(), '48');
     await page.screenshot({ path: '/tmp/simtab-settings-appearance.png', animations: 'disabled' });
     await page.click('[data-settings-panel="settingsData"]');
     assert.equal(await page.locator('#dataOverviewGrid').count(), 0);
+    await page.click('[data-settings-panel="settingsAccount"]');
     assert.equal(await page.locator('#openAuthModalBtn').isVisible(), true);
+    await page.click('[data-settings-panel="settingsData"]');
     const oldGroups = await page.evaluate(async () => (await import('./js/storage.js')).appData.groups.length);
     await page.setInputFiles('#bookmarkFile', { name: 'bookmarks.html', mimeType: 'text/html', buffer: Buffer.from('<a href="https://example.com/new-bookmark">新书签</a>') });
     await page.waitForFunction(() => document.querySelector('#bulkEditorDialog').open);
@@ -65,7 +78,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     for (const width of [390, 620, 760, 1400]) {
       await page.setViewportSize({ width, height: 844 });
       assert.equal(await page.locator('.settings-sidebar').evaluate(el => el.scrollWidth > el.clientWidth + 1), false);
-      for (const panel of ['settingsGeneral', 'settingsAppearance', 'settingsContent', 'settingsData', 'settingsAbout']) {
+      for (const panel of ['settingsGeneral', 'settingsAppearance', 'settingsLayout', 'settingsAccount', 'settingsData', 'settingsAbout']) {
         await page.click(`[data-settings-panel="${panel}"]`);
         assert.equal(await page.locator('.settings-content').evaluate(el => el.scrollWidth > el.clientWidth + 1), false, `${panel} overflows at ${width}`);
       }
@@ -82,6 +95,9 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     assert.equal(await page.evaluate(() => document.querySelector('#settingsModal').contains(document.activeElement)), true);
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#settingsModal').isVisible(), false);
+    await page.click('#settingsBtn');
+    assert.equal(await page.locator('#settingsGeneral').isVisible(), true);
+    await page.keyboard.press('Escape');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.click('#settingsBtn');
     await page.click('[data-settings-panel="settingsGeneral"]');

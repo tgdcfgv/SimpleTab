@@ -5,7 +5,7 @@ import json
 root = Path(__file__).resolve().parent.parent
 manifest = json.loads((root / 'manifest.json').read_text())
 paths = [root / name for name in ('manifest.json', 'newtab.html', 'privacy.html', 'install.html')]
-for folder in ('css', 'js', 'icons'):
+for folder in ('css', 'js', 'icons', '_locales'):
     paths.extend(p for p in (root / folder).rglob('*') if p.is_file() and not p.name.startswith('.'))
 for icon in manifest['icons'].values():
     assert (root / icon).is_file(), icon

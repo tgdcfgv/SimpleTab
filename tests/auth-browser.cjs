@@ -148,7 +148,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     failRead = true;
     await page.click('#authVerifySubmitBtn');
     await page.waitForFunction(() => document.querySelector('#accountMessage').textContent.includes('同步暂时不可用'));
-    assert.equal(await page.locator('#settingsData').isVisible(), true);
+    assert.equal(await page.locator('#settingsAccount').isVisible(), true);
     failRead = false;
     await page.click('#accountSync');
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);

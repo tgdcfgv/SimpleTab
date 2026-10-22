@@ -1,7 +1,7 @@
 import { saveWallpaper, clearWallpaper, getWallpaperUrl } from './wallpaper.js';
 import { safeWebUrl, safeImageUrl } from './urls.js';
 import { icon } from './icons.js';
-import { appData, createTemporaryGroup, SEARCH_ENGINES, setActiveSpace, syncManager } from './storage.js';
+import { appData, SEARCH_ENGINES, syncManager } from './storage.js';
 import { generateId, getFaviconUrl } from './utils.js';
 import { applySettings, render } from './render.js';
 import { searchInput } from './search.js';
@@ -14,7 +14,6 @@ export const modalOverlay = document.getElementById('modalOverlay');
 export const siteModal = document.getElementById('siteModal');
 export const groupModal = document.getElementById('groupModal');
 export const settingsModal = document.getElementById('settingsModal');
-export const spaceModal = document.getElementById('spaceModal');
 export const authModal = document.getElementById('authModal');
 
 export const confirmModal = document.getElementById('confirmModal');
@@ -47,7 +46,6 @@ export function closeAllModals(notify = true) {
   siteModal.classList.add('hidden');
   groupModal.classList.add('hidden');
   settingsModal.classList.add('hidden');
-  if (spaceModal) spaceModal.classList.add('hidden');
   if (appStoreModal) appStoreModal.classList.add('hidden');
   if (confirmModal) confirmModal.classList.add('hidden');
   const authModalEl = document.getElementById('authModal');
@@ -407,6 +405,7 @@ function renderSearchEngineSettings() {
       }
       syncManager.saveData();
       applySettings();
+      updateDefaultSearchEngine();
     });
 
     toggle.appendChild(input);
@@ -415,7 +414,21 @@ function renderSearchEngineSettings() {
     row.appendChild(toggle);
     container.appendChild(row);
   });
+  updateDefaultSearchEngine();
 }
+
+function updateDefaultSearchEngine() {
+  const select = document.getElementById('defaultSearchEngineSelect');
+  const enabled = appData.settings.enabledSearchEngines || ['bing', 'baidu'];
+  select.replaceChildren(...SEARCH_ENGINES.filter(engine => enabled.includes(engine.id)).map(engine => new Option(engine.name, engine.id)));
+  select.value = appData.settings.searchEngine;
+  updateCustomSelectOptions(select);
+}
+
+document.getElementById('defaultSearchEngineSelect').addEventListener('change', event => {
+  appData.settings.searchEngine = event.target.value;
+  syncManager.saveData(); applySettings();
+});
 
 function updateDockSettings() {
   const enabled = appData.settings.dockEnabled !== false;
@@ -485,6 +498,7 @@ async function updateWallpaperPreview() {
 export function openSettingsModal(panelId) {
   const wasHidden = settingsModal.classList.contains('hidden');
   if (typeof panelId === 'string') selectSettingsPanel(panelId);
+  else if (wasHidden) selectSettingsPanel(settingsModal.dataset.locked === 'true' ? 'settingsAccount' : 'settingsGeneral');
   document.getElementById('compactModeToggle').checked = appData.settings.compactMode;
   updateDockSettings();
   updateWallpaperPreview();
@@ -633,201 +647,6 @@ document.getElementById('importFileNew').addEventListener('change', (e) => {
     e.target.value = ''; // reset file input
     closeAllModals();
   }
-});
-
-// Space Modal
-let spaceEditorDraft = [];
-let draggedSpaceId = null;
-let draggedSpaceElement = null;
-
-function escapeAttr(value) {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('"', '&quot;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;');
-}
-
-function syncSpaceDraftOrder(container) {
-  const spacesById = new Map(spaceEditorDraft.map(space => [space.id, space]));
-  spaceEditorDraft = Array.from(container.querySelectorAll('.space-editor-item'))
-    .map(item => spacesById.get(item.dataset.id))
-    .filter(Boolean);
-}
-
-function animateSpaceEditorShift(container, previousRects) {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  container.querySelectorAll('.space-editor-item:not(.dragging)').forEach(item => {
-    const previous = previousRects.get(item.dataset.id);
-    if (!previous) return;
-    const current = item.getBoundingClientRect();
-    const deltaY = previous.top - current.top;
-    if (Math.abs(deltaY) < 1) return;
-
-    item.getAnimations().forEach(animation => animation.cancel());
-    item.animate(
-      [
-        { transform: `translateY(${deltaY}px)` },
-        { transform: 'translateY(0)' }
-      ],
-      {
-        duration: 190,
-        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
-      }
-    );
-  });
-}
-
-function renderSpaceEditor() {
-  const container = document.getElementById('spaceEditorList');
-  if (!container) return;
-
-  container.innerHTML = '';
-  spaceEditorDraft.forEach((space, spaceIndex) => {
-    const item = document.createElement('div');
-    item.className = 'space-editor-item';
-    item.dataset.id = space.id;
-    item.innerHTML = `
-      <button type="button" class="space-icon-btn space-drag-handle" title="按住拖动排序" aria-label="按住拖动排序" draggable="true">
-        ${icon('menu', 17)}
-      </button>
-      <div class="space-editor-symbol" aria-hidden="true">${icon(spaceIndex === 0 ? 'house' : spaceIndex === 1 ? 'briefcase-business' : 'star', 22)}</div>
-      <div class="space-editor-identity"><input type="text" maxlength="32" value="${escapeAttr(space.name)}" aria-label="空间名称"><span class="space-editor-meta">${space.groups.length} 个分组 · ${space.groups.reduce((count, group) => count + group.links.length, 0)} 个网站${space.id === appData.activeSpaceId ? ' · 当前空间' : ''}</span></div>
-      <button type="button" class="space-icon-btn danger delete-space" title="删除空间" aria-label="删除空间" ${spaceEditorDraft.length <= 1 ? 'disabled' : ''}>
-        ${icon('x', 16)}
-      </button>
-    `;
-
-    const input = item.querySelector('input');
-    input.addEventListener('input', () => {
-      space.name = input.value;
-    });
-
-    const dragHandle = item.querySelector('.space-drag-handle');
-    dragHandle.addEventListener('keydown', event => {
-      if (!['ArrowUp', 'ArrowDown'].includes(event.key)) return;
-      event.preventDefault();
-      const source = spaceEditorDraft.findIndex(item => item.id === space.id);
-      const target = source + (event.key === 'ArrowUp' ? -1 : 1);
-      if (target < 0 || target >= spaceEditorDraft.length) return;
-      [spaceEditorDraft[source], spaceEditorDraft[target]] = [spaceEditorDraft[target], spaceEditorDraft[source]];
-      renderSpaceEditor();
-      container.children[target].querySelector('.space-drag-handle').focus();
-    });
-    dragHandle.addEventListener('dragstart', (e) => {
-      draggedSpaceId = space.id;
-      draggedSpaceElement = item;
-      item.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', space.id);
-      e.dataTransfer.setDragImage(item, 24, Math.round(item.offsetHeight / 2));
-    });
-
-    dragHandle.addEventListener('dragend', () => {
-      draggedSpaceId = null;
-      draggedSpaceElement = null;
-      item.classList.remove('dragging');
-    });
-
-    item.querySelector('.delete-space').addEventListener('click', () => {
-      if (spaceEditorDraft.length <= 1) return;
-      const index = spaceEditorDraft.findIndex(item => item.id === space.id);
-      if (index !== -1) spaceEditorDraft.splice(index, 1);
-      renderSpaceEditor();
-    });
-
-    container.appendChild(item);
-  });
-
-  container.ondragover = (e) => {
-    if (!draggedSpaceId || !draggedSpaceElement) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-
-    const siblings = Array.from(container.querySelectorAll('.space-editor-item:not(.dragging)'));
-    const nextItem = siblings.find(item => {
-      const rect = item.getBoundingClientRect();
-      return e.clientY < rect.top + rect.height / 2;
-    }) || null;
-    const isAlreadyPlaced = nextItem
-      ? draggedSpaceElement.nextElementSibling === nextItem
-      : draggedSpaceElement === container.lastElementChild;
-    if (isAlreadyPlaced) return;
-
-    const previousRects = new Map(
-      siblings.map(item => [item.dataset.id, item.getBoundingClientRect()])
-    );
-    container.insertBefore(draggedSpaceElement, nextItem);
-    syncSpaceDraftOrder(container);
-    animateSpaceEditorShift(container, previousRects);
-  };
-
-  container.ondrop = (e) => {
-    if (!draggedSpaceId) return;
-    e.preventDefault();
-    syncSpaceDraftOrder(container);
-  };
-}
-
-function openSpaceModal() {
-  spaceEditorDraft = appData.spaces.map(space => ({
-    id: space.id,
-    name: space.name,
-    groups: space.groups
-  }));
-  renderSpaceEditor();
-  showModal(spaceModal);
-  spaceModal.focus();
-}
-
-document.getElementById('spaceEditBtn')?.addEventListener('click', openSpaceModal);
-
-document.getElementById('addSpaceBtn')?.addEventListener('click', () => {
-  spaceEditorDraft.push({
-    id: generateId(),
-    name: `空间 ${spaceEditorDraft.length + 1}`,
-    groups: [createTemporaryGroup(spaceEditorDraft.length)]
-  });
-  renderSpaceEditor();
-  document.querySelector('.space-editor-item:last-child input').focus();
-  document.querySelector('.space-editor-item:last-child input').select();
-});
-
-spaceModal.addEventListener('keydown', event => {
-  if (event.key === 'Escape') {
-    event.preventDefault(); closeAllModals();
-    document.getElementById('spaceEditBtn').focus();
-  }
-  if (event.key !== 'Tab') return;
-  const controls = [...spaceModal.querySelectorAll('button:not(:disabled), input')];
-  const first = controls[0], last = controls.at(-1);
-  if (event.shiftKey && (document.activeElement === first || document.activeElement === spaceModal)) {
-    event.preventDefault(); last.focus();
-  } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === spaceModal)) {
-    event.preventDefault(); first.focus();
-  }
-});
-
-document.getElementById('cancelSpaceBtn')?.addEventListener('click', closeAllModals);
-
-document.getElementById('saveSpaceBtn')?.addEventListener('click', () => {
-  const nextSpaces = spaceEditorDraft
-    .map((space, index) => ({
-      ...space,
-      name: space.name.trim() || `空间 ${index + 1}`
-    }))
-    .filter(space => space.name);
-
-  if (nextSpaces.length === 0) return;
-
-  appData.spaces = nextSpaces;
-  if (!appData.spaces.some(space => space.id === appData.activeSpaceId)) {
-    appData.activeSpaceId = appData.spaces[0].id;
-  }
-  setActiveSpace(appData.activeSpaceId);
-  syncManager.saveData();
-  render();
-  closeAllModals();
 });
 
 // Close modals on overlay click

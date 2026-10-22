@@ -12,7 +12,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Manifest-V3-blue.svg?style=flat-square" alt="Manifest V3">
   <img src="https://img.shields.io/badge/Platform-Chrome%20%7C%20Edge%20%7C%20Web-blueviolet.svg?style=flat-square" alt="Platform">
-  <img src="https://img.shields.io/badge/Version-1.0.2-emerald.svg?style=flat-square" alt="Version 1.0.2">
+  <img src="https://img.shields.io/badge/Version-1.0.4-emerald.svg?style=flat-square" alt="Version 1.0.4">
   <img src="https://img.shields.io/badge/Deploy-Cloudflare%20Pages-orange.svg?style=flat-square" alt="Cloudflare Pages">
   <img src="https://img.shields.io/badge/Backend-Supabase-green.svg?style=flat-square" alt="Supabase">
 </p>
@@ -239,12 +239,21 @@ node tests/settings-browser.cjs
 
 ```bash
 python3 scripts/package-extension.py
-# 输出产物位于 dist/SimTab-1.0.2-edge.zip
+# 输出产物位于 dist/SimTab-1.0.4-edge.zip
 ```
 
 ---
 
 ## 📝 版本更新记录
+
+### v1.0.4
+
+- 设置重组为常规、外观、布局、账户、数据、关于六类，默认进入常规，支持默认搜索和分组列数设置。
+- 批量编辑采用左侧空间／列／分组导航与右侧网站明细的双栏布局；空空间自动隐藏，空间仅支持折叠与展开。
+- 支持网站名称与网址行内编辑、分组改名与新建、多选跨组／跨空间拖放、排序、删除及撤销，并保留网站图标和安全网址校验。
+- 程序坞原编辑空间按钮统一进入管理弹窗，移除重复入口和旧空间编辑窗口。
+- 提供 Edge、Chrome、Safari 迁移教程，书签 HTML 导入后先预览整理，再统一保存；保留 JSON 备份与恢复。
+- 修复分组拖动背景变黑，优化紧凑布局、图标操作、深色可读性、键盘焦点和窄屏显示。
 
 ### v1.0.2
 

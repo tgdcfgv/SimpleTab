@@ -65,7 +65,7 @@ function closeProfileEditor() {
   dialog.dataset.voluntaryEdit = 'false';
   const closeBtn = document.getElementById('profileCloseBtn');
   if (closeBtn) closeBtn.hidden = true;
-  openSettingsModal('settingsData');
+  openSettingsModal('settingsAccount');
 }
 
 export function initOnboarding() {
@@ -131,7 +131,7 @@ export function initOnboarding() {
       if (closeBtn) closeBtn.hidden = true;
       document.dispatchEvent(new Event('simtab-sync'));
       if (isVoluntary) {
-        openSettingsModal('settingsData');
+        openSettingsModal('settingsAccount');
         showToast('个人资料已更新');
       } else {
         document.getElementById('accountBtn').focus();

@@ -14,8 +14,11 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCA
     await page.goto(APP_URL);
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     assert.equal(await page.locator('#appStoreBtn').isVisible(), false);
+    await page.click('#spaceEditBtn');
+    assert.equal(await page.locator('#bulkEditorDialog').isVisible(),true);
+    await page.keyboard.press('Escape');
     await page.click('#settingsBtn');
-    await page.click('[data-settings-panel="settingsContent"]');
+    await page.click('[data-settings-panel="settingsLayout"]');
     const toggles = await page.locator('[data-dock-setting]').evaluateAll(inputs => inputs.map(input => input.id));
     const ids = ['accountBtn', 'settingsBtn', 'addGroupBtn', 'addSiteBtn', 'appStoreBtn', 'spaceEditBtn', 'spaceTabHint'];
     for (let index = 0; index < toggles.length; index++) {
@@ -34,7 +37,7 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCA
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     assert.equal(await page.locator('.space-dock-btn:not([hidden])').count(), 0);
     await page.click('#settingsBtn');
-    await page.click('[data-settings-panel="settingsContent"]');
+    await page.click('[data-settings-panel="settingsLayout"]');
     for (const input of await page.locator('#dockSpaceSettings input').all()) {
       const id = await input.getAttribute('id');
       await page.click(`label[for="${id}"]`);
@@ -45,6 +48,7 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCA
     await page.click('#closeSettingsBtn');
     assert.equal(await page.locator('#spaceDock').isVisible(), false);
     await page.click('#settingsFallbackBtn');
+    await page.click('[data-settings-panel="settingsLayout"]');
     await page.click('label[for="dockEnabledToggle"]');
     const positionTrigger = page.locator('#dockPositionSetting .custom-select-trigger-global');
     await positionTrigger.click();
@@ -55,7 +59,7 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCA
     assert.equal(await positionTrigger.evaluate(el => getComputedStyle(el).boxShadow), 'none');
     assert.equal(await positionTrigger.evaluate(el => getComputedStyle(el).outlineStyle), 'none');
     await page.waitForFunction(() => getComputedStyle(document.querySelector('#dockPositionSetting .custom-select-trigger-global')).borderTopColor === 'rgba(0, 0, 0, 0)');
-    for (const panel of ['settingsGeneral', 'settingsAppearance', 'settingsContent', 'settingsData', 'settingsAbout']) {
+    for (const panel of ['settingsGeneral', 'settingsAppearance', 'settingsLayout', 'settingsAccount', 'settingsData', 'settingsAbout']) {
       await page.click(`[data-settings-panel="${panel}"]`);
       const colors = await page.locator('.settings-nav-btn.active').evaluate(el => [getComputedStyle(el.querySelector('span')).color, getComputedStyle(el.querySelector('svg')).color]);
       assert.equal(colors[0], colors[1]);
@@ -91,19 +95,8 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCA
     await page.waitForFunction(() => document.body.style.backgroundImage.includes('blob:'));
     assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('appData')).settings.wallpaper), null);
     await page.click('#spaceEditBtn');
-    const names = await page.locator('#spaceEditorList input').evaluateAll(inputs => inputs.map(input => input.value));
-    await page.locator('.space-drag-handle').first().focus();
-    await page.keyboard.press('ArrowDown');
-    assert.equal(await page.locator('#spaceEditorList input').nth(1).inputValue(), names[0]);
-    await page.click('#cancelSpaceBtn');
-    await page.click('#spaceEditBtn');
-    assert.equal(await page.locator('#spaceEditorList input').first().inputValue(), names[0]);
-    await page.click('#addSpaceBtn');
-    await page.locator('#spaceEditorList input').last().fill('新空间');
-    await page.click('#saveSpaceBtn');
-    assert.equal(await page.locator('.space-dock-btn[aria-label="新空间"]').count(), 1);
-    await page.click('#spaceEditBtn');
-    await page.screenshot({ animations: 'disabled', path: '/tmp/simtab-space-editor.png' });
+    assert.equal(await page.locator('#bulkEditorDialog').isVisible(),true);
+    assert.equal(await page.locator('#spaceModal').count(),0);
     await page.keyboard.press('Escape');
     for (const theme of ['light', 'dark']) {
       await page.evaluate(async value => {
@@ -114,18 +107,18 @@ const png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCA
       for (const width of [390, 768, 1400]) {
         await page.setViewportSize({ width, height: 844 });
         await page.click('#settingsBtn');
-        for (const panel of ['settingsAppearance', 'settingsContent']) {
+        for (const panel of ['settingsAppearance', 'settingsLayout']) {
           await page.click(`[data-settings-panel="${panel}"]`);
           assert.equal(await page.locator('.settings-content').evaluate(el => el.scrollWidth > el.clientWidth + 1), false, `${panel}: ${width}`);
         }
         await page.click('#closeSettingsBtn');
         await page.click('#spaceEditBtn');
-        assert.equal(await page.locator('#spaceModal').evaluate(el => el.scrollWidth > el.clientWidth + 1), false);
+        assert.equal(await page.locator('#bulkEditorDialog').evaluate(el => el.scrollWidth > el.clientWidth + 1), false);
         await page.screenshot({ animations: 'disabled', path: `/tmp/simtab-spaces-${theme}-${width}.png` });
         await page.keyboard.press('Escape');
       }
     }
     assert.deepEqual(errors, []);
-    console.log('PASS: all Dock toggles, per-space visibility, disabled positioning, settings recovery, matching navigation colors, focus-free menus, wallpaper thumbnail/export/import/local-only storage, keyboard space reordering, responsive light/dark layouts.');
+    console.log('PASS: all Dock toggles, per-space visibility, disabled positioning, settings recovery, matching navigation colors, focus-free menus, wallpaper thumbnail/export/import/local-only storage, consolidated editor dock entry, responsive light/dark layouts.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });

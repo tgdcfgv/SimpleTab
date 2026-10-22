@@ -1,0 +1,40 @@
+const {chromium}=require('playwright');const assert=require('node:assert/strict');
+(async()=>{const browser=await chromium.launch({channel:'chrome',headless:true});try{
+ const context=await browser.newContext({viewport:{width:1360,height:920}});await context.route('https://**/*',r=>r.abort());
+ const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(process.env.SIMTAB_TEST_URL||'http://127.0.0.1:8091/newtab.html');await page.waitForFunction(()=>!document.querySelector('.app-container').inert);
+ await page.evaluate(async()=>{const{appData}=await import('./js/storage.js');appData.spaces[1].groups[0].links.push({id:'work-link',title:'工作网站',url:'https://example.org/work'});(await import('./js/render.js')).render();});
+ const snapshot=()=>page.evaluate(async()=>JSON.parse(JSON.stringify((await import('./js/storage.js')).appData.spaces)));
+ const original=await snapshot(),homeCount=original[0].groups.length,workGroupIndex=homeCount;
+ assert.equal(await page.locator('#bulkEditBtn').count(),0);assert.equal(await page.locator('#dockBulkEditToggle').count(),0);assert.equal(await page.locator('#spaceModal').count(),0);
+ await page.click('#spaceEditBtn');assert.equal(await page.locator('#bulkEditorDialog').isVisible(),true);
+ assert.equal(await page.locator('.bulk-space-section').count(),2);assert.equal(await page.locator('[data-fold-space="2"]').count(),0);
+ assert.equal(await page.locator('[data-fold-space="0"]').getAttribute('aria-expanded'),'true');
+ assert.equal(await page.locator('[data-fold-space="1"]').getAttribute('aria-expanded'),'false');
+ assert.equal(await page.locator('.bulk-space-toggle[draggable]').count(),0);
+ await page.click('[data-fold-space="0"]');assert.equal(await page.locator('#bulkSpaceGroups0').isVisible(),false);
+ await page.click('[data-fold-space="0"]');await page.click('[data-fold-space="1"]');assert.equal(await page.locator('#bulkSave').isDisabled(),true);
+ // Cross-space changes are drafts, including reactive empty-space hiding and undo.
+ await page.click('[data-select-nav="0"]');const title=await page.locator('.bulk-title-input').first().inputValue();
+ await page.locator('[data-key]').first().check();await page.locator('[data-drag-site]').first().dragTo(page.locator(`[data-nav-group="${workGroupIndex}"]`));
+ assert.equal(await page.locator('[data-fold-space="1"] .bulk-group-count').innerText(),'2');
+ await page.click(`[data-select-nav="${workGroupIndex}"]`);assert.match(await page.locator('#bulkCurrentGroup').innerText(),/工作/);
+ await page.check('#bulkSelectAll');await page.click('#bulkDelete');assert.equal(await page.locator('[data-fold-space="1"]').count(),0);
+ await page.click('#bulkUndo');assert.equal(await page.locator('[data-fold-space="1"] .bulk-group-count').innerText(),'2');
+ assert.deepEqual(await snapshot(),original);await page.click('#bulkClose');assert.deepEqual(await snapshot(),original);
+ // Persisting a move updates both spaces without changing the active homepage.
+ await page.click('#spaceEditBtn');await page.click('[data-fold-space="1"]');await page.click('[data-select-nav="0"]');
+ await page.locator('[data-drag-site]').first().dragTo(page.locator(`[data-nav-group="${workGroupIndex}"]`));
+ await page.click(`[data-select-nav="${workGroupIndex}"]`);await page.locator('.bulk-title-input').first().fill('编辑工作网站');
+ await page.screenshot({path:'/tmp/simtab-spaces-editor.png',animations:'disabled'});
+ await page.click('#bulkSave');await page.waitForFunction(()=>!document.querySelector('#bulkEditorDialog').open);
+ const after=await snapshot();assert.equal(after[0].groups[0].links.length,original[0].groups[0].links.length-1);
+ assert.equal(after[1].groups[0].links.length,2);assert(after[1].groups[0].links.some(link=>link.title===title));
+ assert.equal(await page.evaluate(async()=>(await import('./js/storage.js')).appData.activeSpaceId),original[0].id);
+ await page.reload();await page.waitForFunction(()=>!document.querySelector('.app-container').inert);assert.deepEqual(await snapshot(),after);
+ await page.click('#spaceEditBtn');await page.click('[data-select-nav="0"]');await page.locator('.bulk-title-input').first().fill('冲突草稿');
+ await page.evaluate(async()=>{(await import('./js/storage.js')).appData.spaces[1].groups[0].links[0].title='其他标签页改动';});
+ await page.click('#bulkSave');assert.match(await page.locator('#bulkEditStatus').innerText(),/数据已发生变化/);
+ await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#bulkEditorDialog').evaluate(el=>el.scrollWidth>el.clientWidth+1),false);
+ assert.deepEqual(errors,[]);console.log('PASS: populated-space disclosures, empty-space hiding, dock entry consolidation, staged cross-space move/delete/undo, multi-space persistence, inactive-space conflict checks, mobile layout.');
+}finally{await browser.close()}})().catch(e=>{console.error(e);process.exit(1)});

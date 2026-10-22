@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "minimum_chrome_version": "102",
-  "name": "SimTab - 极简新标签页",
-  "version": "1.0.2",
-  "description": "无需登录即可整理网站并在浏览器本地保存；登录账户后切换到独立的云端内容，跨设备同步。",
+  "name": "__MSG_extensionName__",
+  "version": "1.0.4",
+  "description": "__MSG_extensionDescription__",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },
@@ -45,5 +45,6 @@
     "https://*.bing.com/*",
     "https://api.bing.com/*",
     "https://www.bing.com/*"
-  ]
+  ],
+  "default_locale": "zh_CN"
 }

@@ -1,17 +1,17 @@
-# SimTab 1.0.2 · Edge 商店提交资料
+# SimTab 1.0.4 · Edge 商店提交资料
 
 状态：安装包及文案已准备；尚未提交审核。注册、审核及上线状态以 Partner Center 为准。
 
 ## 基本信息
 
 - 名称：SimTab - 极简新标签页
-- 版本：1.0.2
+- 版本：1.0.4
 - 主要语言：简体中文（zh-CN）
 - 建议分类：生产力（Productivity）
-- 安装包：dist/SimTab-1.0.2-edge.zip
+- 安装包：dist/SimTab-1.0.4-edge.zip
 - 商店图标：store-assets/logo-300.png（300 × 300 PNG）
 - 支持页面：https://github.com/tgdcfgv/SimpleTab/issues
-- 隐私政策：privacy.html（提交前必须发布为公开 HTTPS 页面并验证可访问）
+- 隐私政策：https://simtab.233032.xyz/privacy.html（2026-10-22 已验证可访问；提交前需部署本次验证码登录说明修订）
 - 不加载远程代码；所有 JavaScript 都包含在安装包中。
 
 ## 简短说明
@@ -48,6 +48,8 @@ storage: Save and read guest website groups and settings locally in chrome.stora
 
 https://zyttspnlrdzjosnitijb.supabase.co/*: Authenticate users and read/write only the signed-in user's account data through this dedicated Supabase project.
 
+https://*.bing.com/*, https://api.bing.com/*, https://www.bing.com/*: Send the text entered in the search box to Bing to retrieve search suggestions. Requests are made only for search suggestions, not to read browsing history or page content.
+
 favicon: Display website icons using the browser's favicon API in the extension's new-tab page and website selection interface.
 
 activeTab: Temporarily read the current page title and URL only after the user invokes the extension action or shortcut. No page content or browsing history is read.
@@ -58,16 +60,16 @@ bookmarks (optional): Requested only when the user chooses the browser bookmarks
 
 ## 审核测试说明 / Notes for certification
 
-Sign-in is optional. Guest mode works immediately and saves data locally. Before store submission, configure production SMTP and provide a dedicated reviewer test account through Partner Center (never publish credentials in this repository). Install the extension and open a new tab to use guest mode; sign in to test the separate cloud content. The new-tab override is the core functionality. On an HTTP/HTTPS page, click the extension action or page menu item 保存当前页面到 SimTab to open the save dialog. Choose a space and group before saving; duplicate URLs in that group are not added again. Cancelling adds nothing. The default shortcut is Alt+Shift+S; reassign it in extension shortcut settings if occupied. Open the website library (dock button labelled 网站库), select 我的收藏夹, and grant the optional bookmarks permission to view and select bookmarks. Refusing permission leaves the other features available. Settings > 账户与同步 provides HTML bookmark import and installation information. Importing HTML adds a new group without replacing existing groups. Settings > 账户与同步 provides JSON backup/restore; JSON restore replaces existing app data. All executable code is packaged locally. Remote images are data, not executable code. The extension does not scrape web pages or use a CORS proxy.
+Sign-in is optional. Guest mode works immediately and saves data locally. Production email OTP delivery is configured. Sign-in uses a code sent to the entered email address; reviewers can use an email inbox they control. No fixed password or reusable test credentials are available because codes expire. Install the extension and open a new tab to use guest mode; sign in to test the separate cloud content. The new-tab override is the core functionality. On an HTTP/HTTPS page, click the extension action or page menu item 保存当前页面到 SimTab to open the save dialog. Choose a space and group before saving; duplicate URLs in that group are not added again. Cancelling adds nothing. The default shortcut is Alt+Shift+S; reassign it in extension shortcut settings if occupied. Open the website library (dock button labelled 网站库), select 我的收藏夹, and grant the optional bookmarks permission to view and select bookmarks. Refusing permission leaves the other features available. Settings > 数据 provides HTML bookmark import and installation information. Importing HTML opens a preview in the management dialog; users can organize bookmarks and then save new groups without replacing existing groups. Settings > 数据 provides JSON backup/restore; JSON restore replaces existing app data. All executable code is packaged locally. Remote images are data, not executable code. The extension does not scrape web pages or use a CORS proxy.
 
 ## 数据使用声明核对
 
-应如实声明 Supabase Auth 处理邮箱和密码，云端保存用户的网站标题、地址、导入收藏夹和设置，并说明本地登录凭证及用户隔离。远程图片提供商、用户选定的搜索引擎、Cloudflare 和 GitHub 的请求处理已写入隐私政策。提交页面的具体选项需对照当前表单逐项填写。
+应如实声明 Supabase Auth 处理邮箱和验证码，Resend 发送验证码邮件，云端保存用户的网站标题、地址、导入收藏夹和设置，并说明本地登录凭证及用户隔离。远程图片提供商、用户选定的搜索引擎、Cloudflare 和 GitHub 的请求处理已写入隐私政策。提交页面的具体选项需对照当前表单逐项填写。
 
 ## 发布前剩余步骤
 
-1. 配置 Supabase SMTP，准备专用审核测试账户，并完成 Microsoft Edge 开发者计划注册与验证。
-2. 发布并验证公开隐私政策链接。
+1. SMTP 已配置；审核说明应解释邮箱验证码登录方式。Partner Center 已有扩展草稿，继续确认账户发布资格。
+2. 公开隐私政策链接已验证可访问；部署本次验证码说明修订后再提交。
 3. 上传 ZIP 与图标、粘贴介绍和权限说明。
 4. 检查数据声明，提交审核。不得把准备完成或上传完成描述为审核通过。
 5. 商店通过后，将 install.html 中“尚未上架”替换为实际商店地址。
