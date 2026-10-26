@@ -310,33 +310,24 @@ input[type="color"] {
   border: 1px solid transparent;
   z-index: 1001;
   padding: 4px;
-  display: grid;
-  grid-template-rows: 1fr;
+  display: block;
   min-height: 0;
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
   transform-origin: top center;
   overflow: hidden;
-  transition:
-    grid-template-rows var(--expand-duration) var(--expand-ease),
-    opacity var(--expand-fade-duration) ease,
-    transform var(--expand-duration) var(--expand-ease),
-    visibility 0s;
+  /* Animate the surface, not the scroll area's height, to avoid transient scrollbars. */
+  animation: select-menu-in var(--expand-fade-duration) var(--expand-ease);
 }
 
 [data-theme="dark"] .custom-select-options-global {
   background: #222224;
 }
 
-.custom-select-options-global.hidden {
-  grid-template-rows: 0fr;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-5px);
-  pointer-events: none;
-  display: grid !important;
-  transition-delay: 0s, 0s, 0s, var(--expand-duration);
+@keyframes select-menu-in {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .custom-select-options-content {
@@ -359,8 +350,8 @@ input[type="color"] {
   .sites-grid-wrapper, .fold-icon,
   .custom-select-options-global, .custom-select-trigger-global > svg {
     transition: none;
+    animation: none;
   }
-  .custom-select-options-global.hidden { transition-delay: 0s; }
 }
 
 .custom-option-global {
