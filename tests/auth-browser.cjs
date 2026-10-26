@@ -148,10 +148,16 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     failRead = true;
     await page.click('#authVerifySubmitBtn');
     await page.waitForFunction(() => document.querySelector('#accountMessage').textContent.includes('同步暂时不可用'));
-    assert.equal(await page.locator('#settingsAccount').isVisible(), true);
+    await page.waitForFunction(() => !document.querySelector('.app-container').inert);
+    assert.equal(await page.locator('#settingsModal').isVisible(), false);
+    assert.equal(await page.evaluate(async () => (await import('./js/storage.js')).syncManager.mode), 'local');
+    await page.click('#accountBtn');
+    await page.click('#closeSettingsBtn');
+    assert.equal(await page.locator('#settingsModal').isVisible(), false);
+    await page.click('#accountBtn');
     failRead = false;
     await page.click('#accountSync');
-    await page.waitForFunction(() => !document.querySelector('.app-container').inert);
+    await page.waitForFunction(() => document.querySelector('#syncStatus .status-text').textContent === '云端已保存' && !document.querySelector('#closeSettingsBtn').disabled);
     await page.click('#closeSettingsBtn');
     await assertSignedIn();
     await logout();

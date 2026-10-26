@@ -51,12 +51,13 @@ export const syncManager = {
   saving: null,
   conflict: false,
   error: '',
+  cloudUnavailable: false,
   localVersion: 'null',
 
   updateStatusUI() {
     const el = document.getElementById('syncStatus');
     if (!el) return;
-    const labels = { local: '本地已保存', saved: '云端已保存', unsynced: '有未保存更改', syncing: '云端同步中…',
+    const labels = { local: this.cloudUnavailable ? '云端不可用 · 本地已保存' : '本地已保存', saved: '云端已保存', unsynced: '有未保存更改', syncing: '云端同步中…',
       signedout: '请登录以使用云端数据', error: this.conflict ? '存在同步冲突 · 点击处理' : (this.mode === 'local' ? '本地保存失败 · 点击重试' : '同步失败 · 点击重试') };
     let dotClass = 'status-dot';
     if (this.status === 'syncing') dotClass = 'status-dot syncing';
@@ -65,7 +66,7 @@ export const syncManager = {
     else if (this.status === 'unsynced') dotClass = 'status-dot unsynced';
     el.querySelector('.status-dot').className = dotClass;
     el.querySelector('.status-text').textContent = labels[this.status];
-    el.title = this.error || (this.mode === 'local' ? '数据保存在此浏览器，登录后切换到云端内容' : '点击同步云端数据');
+    el.title = this.error || (this.cloudUnavailable ? '当前使用本地内容，点击重试读取云端内容' : this.mode === 'local' ? '数据保存在此浏览器，登录后切换到云端内容' : '点击同步云端数据');
     document.dispatchEvent(new Event('simtab-sync'));
   },
 
@@ -92,6 +93,7 @@ export const syncManager = {
     this.revision = null;
     this.conflict = false;
     this.error = '';
+    this.cloudUnavailable = false;
     try {
       const stored = await this.readLocal();
       this.localVersion = fingerprint(stored);
@@ -119,10 +121,16 @@ export const syncManager = {
       await this.loadCloud();
     } catch (error) {
       if (!cloud.session || cloud.session.needs_choice) return await this.loadLocal();
-      this.mode = 'cloud';
-      this.error = error.message;
-      this.status = 'error';
+      await this.useLocalAfterCloudFailure(error);
     } finally { this.updateStatusUI(); }
+  },
+
+  async useLocalAfterCloudFailure(error) {
+    // Keep local and account data separate while allowing the page to stay usable.
+    await this.loadLocal();
+    this.cloudUnavailable = true;
+    this.error = `云端暂时不可用，当前使用此浏览器的本地内容。可点击同步重试。${error.message}${this.error ? `；${this.error}` : ''}`;
+    this.updateStatusUI();
   },
 
   async loadCloud(currentData = null) {
@@ -144,6 +152,7 @@ export const syncManager = {
     this.pending = null;
     this.conflict = false;
     this.error = '';
+    this.cloudUnavailable = false;
     this.ready = true;
     this.status = 'saved';
     this.updateStatusUI();

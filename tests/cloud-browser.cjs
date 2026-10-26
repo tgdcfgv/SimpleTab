@@ -123,7 +123,9 @@ const assert = require('node:assert/strict');
   assert.equal(await page.evaluate(async()=>(await import('./js/storage.js')).appData.groups[0].name),'Legacy group');
   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('appData')).groups[0].name),'Legacy group');
   // Cloud outage must not overwrite local content; explicit logout remains available.
-  offline=true; await page.reload(); await page.waitForSelector('#settingsModal:not(.hidden)');
+  offline=true; await page.reload();
+  await page.waitForFunction(()=>!document.querySelector('.app-container').inert);
+  await openAccount();
   await page.click('#accountLogout');
   await page.waitForFunction(()=>localStorage.getItem('simtab.auth')===null && !document.querySelector('.app-container').inert);
   assert.equal(await page.evaluate(async()=>(await import('./js/storage.js')).appData.groups[0].name),'Legacy group');

@@ -879,16 +879,21 @@ document.addEventListener('contextmenu', (e) => {
       currentContextMenuGroupId = null;
     }
     
-    let x = e.clientX;
-    let y = e.clientY;
+    // Measure inside the viewport before revealing the menu. Measuring at the
+    // pointer first can temporarily expand the page and flash its scrollbars.
+    menu.style.visibility = 'hidden';
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+    menu.classList.remove('hidden');
+    const margin = 10;
+    const width = document.documentElement.clientWidth;
+    const height = document.documentElement.clientHeight;
+    // Layout sizes are unaffected by the menu's scale transition.
+    const x = Math.max(margin, Math.min(e.clientX, width - menu.offsetWidth - margin));
+    const y = Math.max(margin, Math.min(e.clientY, height - menu.offsetHeight - margin));
     menu.style.left = `${x}px`;
     menu.style.top = `${y}px`;
-    menu.classList.remove('hidden');
-    
-    // adjust if it goes off bottom/right
-    const rect = menu.getBoundingClientRect();
-    if (x + rect.width > window.innerWidth) menu.style.left = `${window.innerWidth - rect.width - 10}px`;
-    if (y + rect.height > window.innerHeight) menu.style.top = `${window.innerHeight - rect.height - 10}px`;
+    menu.style.visibility = '';
   } else {
     const menu = document.getElementById('contextMenu');
     if(menu) menu.classList.add('hidden');

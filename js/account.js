@@ -51,8 +51,9 @@ function update() {
   document.getElementById('accountTitle').textContent = choosing ? '选择同步内容' : '云端账户';
   const disclaimerText = document.getElementById('accountDisclaimerText');
   if (disclaimerText) {
-    disclaimerText.textContent = loggedIn
+    disclaimerText.textContent = loggedIn && syncManager.mode === 'cloud'
       ? '当前使用账户云端内容；退出登录后恢复此浏览器的本地内容。'
+      : loggedIn ? '当前使用此浏览器的本地内容；重试同步后切换到独立的云端内容，本地内容会保留。'
       : '未登录数据保存在此浏览器；登录后显示云端内容。';
   }
   if (choice) choice.hidden = !choosing;
@@ -68,6 +69,7 @@ function update() {
   });
   document.getElementById('importFileNew').disabled = locked;
   document.getElementById('bookmarkFile').disabled = locked;
+  document.getElementById('accountMigrate').disabled = busy || locked || syncManager.mode !== 'cloud';
   const status = document.getElementById('accountSyncStatus');
   const source = document.getElementById('syncStatus');
   if (status && source) {
@@ -127,13 +129,10 @@ export function initAccount() {
       update();
       openSettingsModal('settingsAccount');
     } else {
-      run(() => syncManager.syncNow());
+      run(retrySync);
     }
   });
-  document.getElementById('accountSync').addEventListener('click', () => run(async () => {
-    if (!syncManager.ready) { await syncManager.loadCloud(); applySettings(); render(); }
-    else await syncManager.syncNow();
-  }));
+  document.getElementById('accountSync').addEventListener('click', () => run(retrySync));
   document.getElementById('accountReload')?.addEventListener('click', () => run(async () => {
     if (!await askConfirm('读取云端版本', '将放弃当前页面未保存的更改。请先导出需要保留的数据。')) return;
     await syncManager.loadCloud(); applySettings(); render();
@@ -203,6 +202,16 @@ async function preserveLocal() {
   }
 }
 
+async function retrySync() {
+  if (cloud.session && syncManager.mode === 'local' && !cloud.session.needs_choice) {
+    await preserveLocal();
+    await syncManager.loadData();
+    applySettings(); render();
+  } else if (!syncManager.ready) {
+    await syncManager.loadCloud(); applySettings(); render();
+  } else await syncManager.syncNow();
+}
+
 async function enterAccount() {
   if (syncManager.saving) await syncManager.saving;
   // Keep the page untouched until the user explicitly chooses a sync direction.
@@ -269,7 +278,7 @@ async function run(action) {
 }
 
 async function migrateLegacy() {
-  if (!syncManager.ready || syncManager.pending || syncManager.saving) throw new Error('请先完成当前云端同步。');
+  if (syncManager.mode !== 'cloud' || !syncManager.ready || syncManager.pending || syncManager.saving) throw new Error('请先完成当前云端同步。');
   const legacy = await syncManager.readLocal();
   if (!legacy) throw new Error('此浏览器没有本地数据。你也可以在设置中导入 JSON 备份。');
   if (!await askConfirm('将本地内容复制到云端', '将用此浏览器本地内容替换当前账户的云端内容，本地副本仍会保留。是否继续？')) return;

@@ -288,9 +288,9 @@ async function onLoginSuccess(session) {
       applySettings();
       render();
     } catch (err) {
-      syncManager.error = err.message || '登录成功，但读取云端内容失败，请重试。';
-      syncManager.status = 'error';
-      syncManager.updateStatusUI();
+      await syncManager.useLocalAfterCloudFailure(err);
+      applySettings();
+      render();
     }
   }
   document.dispatchEvent(new Event('simtab-sync'));
