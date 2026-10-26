@@ -1154,8 +1154,6 @@ dialog.onboarding-modal {
 .guide-browser-options { display: flex; flex-wrap: wrap; gap: 8px; }
 
 
-#contextBulkEditor { width: 100%; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; }
-#contextBulkEditor:hover { background: var(--item-hover-bg); }
 .settings-shortcuts kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; min-height: 26px; padding: 2px 7px; border: 1px solid var(--border-default); border-radius: 5px; background: var(--bg-subtle); font: 12px var(--font-mono); white-space: nowrap; }
 .settings-shortcuts .setting-control { display: flex; align-items: center; gap: 4px; }
 
