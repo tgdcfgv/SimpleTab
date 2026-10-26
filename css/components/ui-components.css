@@ -22,7 +22,8 @@
 }
 
 .group-col.drag-over-col {
-  background: var(--bg-subtle);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 45%, transparent);
   border-radius: var(--radius-lg);
 }
 
