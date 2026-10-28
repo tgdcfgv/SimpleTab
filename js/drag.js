@@ -1,5 +1,6 @@
 import { appData, syncManager } from './storage.js';
 import { render } from './render.js';
+import { extractDroppedLink } from './urls.js';
 
 
 export let draggedItem = null;
@@ -141,12 +142,13 @@ export function moveGroupTo(sourceId, colIndex, targetId = null, position = 'aft
 }
 
 export function handleDragOver(e) {
-  e.preventDefault();
   if (draggedItemType !== 'site') return;
+  e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
 }
 
 export function handleDrop(e) {
+  if (draggedItemType !== 'site') return;
   e.preventDefault();
   e.stopPropagation();
 }
@@ -170,8 +172,8 @@ export function handleDragEnd(e) {
 }
 
 export function handleDragOverGroup(e) {
-  e.preventDefault();
   if (draggedItemType !== 'site') return;
+  e.preventDefault();
   const grid = e.currentTarget.closest('.sites-grid');
   if (!grid) return;
   e.dataTransfer.dropEffect = 'move';
@@ -226,8 +228,148 @@ export function handleDragLeaveGroup(e) {
 }
 
 export function handleDropOnGroup(e) {
+  if (draggedItemType !== 'site') return;
   e.preventDefault();
   e.stopPropagation();
+}
+
+let internalDragActive = false;
+let externalDropInitialized = false;
+
+function getExternalDropHint() {
+  let hint = document.getElementById('externalDropHint');
+  if (!hint) {
+    hint = document.createElement('div');
+    hint.id = 'externalDropHint';
+    hint.className = 'external-drop-hint hidden';
+    hint.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(hint);
+  }
+  return hint;
+}
+
+export function clearExternalDropState() {
+  document.body?.classList.remove('is-external-dragging');
+  document.querySelectorAll('.group-card.external-drop-target').forEach(el => {
+    el.classList.remove('external-drop-target');
+  });
+  const hint = document.getElementById('externalDropHint');
+  if (hint) {
+    hint.classList.add('hidden');
+    hint.textContent = '';
+  }
+}
+
+function canAcceptExternalDrop(e) {
+  if (internalDragActive || draggedItem || draggedItemType) return false;
+  const appContainer = document.querySelector('.app-container');
+  if (!appContainer || appContainer.inert) return false;
+  if (document.querySelector('dialog[open]')) return false;
+
+  const modalOverlay = document.getElementById('modalOverlay');
+  const siteModal = document.getElementById('siteModal');
+  if (modalOverlay && !modalOverlay.classList.contains('hidden')) {
+    if (!siteModal || siteModal.classList.contains('hidden')) return false;
+    const target = e.target instanceof Element ? e.target : null;
+    if (target?.closest('#siteTitle, #siteIconUrl')) return false;
+  }
+
+  const types = Array.from(e.dataTransfer?.types || []);
+  return (
+    types.includes('text/uri-list') ||
+    types.includes('text/x-moz-url') ||
+    (!types.includes('Files') && (types.includes('text/html') || types.includes('text/plain')))
+  );
+}
+
+function updateExternalDropFeedback(e) {
+  const modalOverlay = document.getElementById('modalOverlay');
+  const target = e.target instanceof Element ? e.target : null;
+  const groupCard = modalOverlay?.classList.contains('hidden')
+    ? target?.closest('.group-card')
+    : null;
+
+  document.querySelectorAll('.group-card.external-drop-target').forEach(card => {
+    if (card !== groupCard) card.classList.remove('external-drop-target');
+  });
+
+  let groupName = '';
+  if (groupCard) {
+    groupCard.classList.add('external-drop-target');
+    const group = appData.groups?.find(item => item.id === groupCard.dataset.id);
+    groupName = group?.name || groupCard.querySelector('.group-title')?.textContent?.trim() || '';
+  }
+
+  document.body.classList.add('is-external-dragging');
+  const hint = getExternalDropHint();
+  hint.textContent = groupName ? `松开添加到「${groupName}」` : '松开添加网站';
+  hint.classList.remove('hidden');
+}
+
+export function initExternalLinkDrop(onLinkDrop) {
+  if (externalDropInitialized || typeof document === 'undefined') return;
+  externalDropInitialized = true;
+
+  document.addEventListener('dragstart', () => {
+    internalDragActive = true;
+    clearExternalDropState();
+  }, true);
+
+  document.addEventListener('dragend', () => {
+    internalDragActive = false;
+    clearExternalDropState();
+  }, true);
+
+  document.addEventListener('pointerdown', () => {
+    internalDragActive = false;
+  }, true);
+
+  window.addEventListener('blur', clearExternalDropState);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') clearExternalDropState();
+  });
+
+  document.addEventListener('dragenter', (e) => {
+    if (!canAcceptExternalDrop(e)) return;
+    e.preventDefault();
+    updateExternalDropFeedback(e);
+  });
+
+  document.addEventListener('dragover', (e) => {
+    if (!canAcceptExternalDrop(e)) return;
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+    updateExternalDropFeedback(e);
+  });
+
+  document.addEventListener('dragleave', (e) => {
+    if (!e.relatedTarget) {
+      clearExternalDropState();
+    }
+  });
+
+  document.addEventListener('drop', (e) => {
+    const allowed = canAcceptExternalDrop(e);
+    const modalOverlay = document.getElementById('modalOverlay');
+    const target = e.target instanceof Element ? e.target : null;
+    const groupCard = modalOverlay?.classList.contains('hidden')
+      ? target?.closest('.group-card')
+      : null;
+    const targetGroupId = groupCard?.dataset.id || null;
+
+    internalDragActive = false;
+    clearExternalDropState();
+
+    if (!allowed) return;
+    const dropped = extractDroppedLink(e.dataTransfer);
+    if (!dropped) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof onLinkDrop === 'function') {
+      onLinkDrop({ ...dropped, groupId: targetGroupId });
+    }
+  });
 }
 
 

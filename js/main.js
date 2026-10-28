@@ -4,7 +4,8 @@ import { initCapture } from './capture.js';
 import { initAccount } from './account.js';
 import { syncManager } from './storage.js';
 import { applySettings, initSpaceShortcuts, render } from './render.js';
-import { initAllCustomSelects } from './modals.js';
+import { initAllCustomSelects, openSiteModal } from './modals.js';
+import { initExternalLinkDrop } from './drag.js';
 
 
 export async function init() {
@@ -13,6 +14,9 @@ export async function init() {
   render();
   initAllCustomSelects();
   initSpaceShortcuts();
+  initExternalLinkDrop(({ url, title, groupId }) => {
+    openSiteModal(null, groupId, { url, title });
+  });
   initAccount();
   await initCapture();
 }

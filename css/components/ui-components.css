@@ -72,3 +72,33 @@
   -webkit-backdrop-filter: none;
   background: var(--bg-surface-elevated);
 }
+
+/* External Link Drag-and-Drop Feedback */
+.group-card.external-drop-target {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring), var(--card-shadow-hover);
+}
+
+.external-drop-hint {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 950;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--accent-color);
+  box-shadow: var(--focus-ring), var(--shadow-popover);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.external-drop-hint.hidden {
+  display: none;
+}

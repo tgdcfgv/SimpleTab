@@ -1160,13 +1160,18 @@ dialog.onboarding-modal {
 /* Batch editor: fixed group navigation and independently scrolling detail. */
 dialog.bulk-editor { margin: auto; width: min(1040px, calc(100vw - 32px)); max-width: 1040px; max-height: calc(100dvh - 32px); padding: 18px; box-sizing: border-box; }
 dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
-.bulk-editor::backdrop { background: rgb(0 0 0 / 45%); }
+.bulk-editor::backdrop, .bulk-discard-dialog::backdrop, .bulk-create-dialog::backdrop { background: rgb(0 0 0 / 65%); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
 .bulk-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
 .bulk-heading h3 { margin: 0 0 3px; font-size: 18px; }
 .bulk-heading p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
+.bulk-heading-actions, .bulk-footer-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .bulk-close { display: grid; place-items: center; width: 32px; height: 32px; flex: 0 0 32px; border: 0; border-radius: 8px; background: var(--bg-subtle); color: var(--text-secondary); font: 24px/1 var(--font-family); cursor: pointer; }
 .bulk-filters { display: flex; gap: 8px; flex-shrink: 0; }
-#bulkSearch { flex: 1; min-width: 0; min-height: 36px; padding: 7px 10px; border-radius: 7px; border: 1px solid var(--border-default); background: var(--bg-subtle); color: var(--text-primary); font: 13px var(--font-family); }
+.bulk-search-field { position: relative; display: flex; align-items: center; width: 100%; min-width: 0; }
+.bulk-search-field > svg { position: absolute; left: 11px; color: var(--text-secondary); pointer-events: none; }
+#bulkSearch { flex: 1; min-width: 0; width: 100%; min-height: 36px; padding: 7px 36px 7px 35px; border-radius: 7px; border: 1px solid var(--border-default); background: var(--bg-subtle); color: var(--text-primary); font: 13px var(--font-family); }
+#bulkSearch::-webkit-search-cancel-button { display: none; }
+#bulkClearSearch { position: absolute; right: 5px; font-size: 20px; }
 #bulkEditorDialog .btn { min-height: 32px; padding: 6px 10px; font-size: 12px; white-space: nowrap; }
 .bulk-master-detail { display: flex; height: min(60vh, 560px); flex: 0 1 min(60vh, 560px); min-height: 150px; gap: 12px; border: 0; border-radius: 0; overflow: hidden; }
 .bulk-sidebar { width: 210px; flex: 0 0 210px; min-height: 0; display: flex; flex-direction: column; border: 0; border-radius: 10px; background: var(--bg-subtle); }
@@ -1174,7 +1179,7 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 .bulk-group-list { min-height: 0; overflow-y: auto; flex: 1; padding: 2px; }
 .bulk-all-groups, .bulk-group-select, .bulk-add-group { border: 0; background: transparent; color: var(--text-primary); font: 13px var(--font-family); cursor: pointer; text-align: left; }
 .bulk-all-groups { display: flex; align-items: center; justify-content: space-between; min-height: 38px; padding: 7px 10px; border-radius: 6px; flex-shrink: 0; }
-.bulk-nav-item { position: relative; display: flex; align-items: center; gap: 5px; min-height: 36px; padding: 2px 6px 2px 2px; border-radius: 6px; }
+.bulk-nav-item { position: relative; display: flex; align-items: center; gap: 5px; min-height: 36px; padding: 2px 6px 2px 2px; border-radius: 6px; cursor: pointer; }
 .bulk-nav-item + .bulk-nav-item { margin-top: 3px; }
 .bulk-all-groups.active, .bulk-nav-item.active { background: var(--accent-subtle); color: var(--accent-color); }
 .bulk-nav-item.active .bulk-group-select { color: var(--accent-color); }
@@ -1187,131 +1192,117 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 .bulk-detail-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; min-width: 0; }
 .bulk-detail-toolbar h4 { margin: 0; min-width: 0; font-size: 14px; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bulk-detail-controls, .bulk-detail-tools { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.bulk-detail-controls > label { white-space: nowrap; min-height: 32px; display: flex; align-items: center; gap: 5px; font-size: 12px; }
+.bulk-detail-controls > label { white-space: nowrap; min-height: 32px; display: flex; align-items: center; gap: 5px; font-size: 12px; cursor: pointer; }
 #bulkSelectionCount { color: var(--text-secondary); font-size: 11px; white-space: nowrap; }
+#bulkSelectionCount.has-selection { color: var(--accent-color); font-weight: 600; }
 #bulkFoldTools { display: inline-flex; align-items: center; gap: 2px; }
 .bulk-icon-button { display: inline-grid; place-items: center; width: 26px; height: 26px; border: 0; background: transparent; border-radius: 5px; color: var(--text-secondary); cursor: pointer; }
 .bulk-site-list { flex: 1; min-height: 0; overflow-y: auto; padding: 5px 6px; scroll-padding: 8px; }
 .bulk-detail-group { min-width: 0; border: 0; background: var(--bg-subtle); border-radius: 8px; padding: 4px; }
+.bulk-detail-group + .bulk-detail-group { margin-top: 8px; }
 .bulk-detail-group .bulk-detail-heading { margin-top: 0; }
 .bulk-group-empty { list-style: none; padding: 10px 7px; font-size: 12px; color: var(--text-secondary); }
-.bulk-detail-group.drop-target { outline: 2px solid var(--accent-color); outline-offset: -2px; background: var(--accent-subtle); }
+.bulk-detail-group.drop-target, .bulk-nav-column.drop-target, .bulk-nav-item.drop-target, .bulk-site-list.drop-target { outline: 2px solid var(--accent-color); outline-offset: -2px; background: var(--accent-subtle); border-radius: 6px; }
 .bulk-site-rows { list-style: none; padding: 0; margin: 0; }
 .bulk-detail-heading { width: 100%; display: flex; align-items: center; gap: 6px; border: 0; border-radius: 5px; padding: 6px; margin: 3px 0; text-align: left; color: var(--text-secondary); background: var(--bg-subtle); font: 600 12px var(--font-family); cursor: pointer; }
 .bulk-detail-heading .bulk-group-count { margin-left: auto; }
 .bulk-detail-heading[aria-expanded="false"] > svg { transform: rotate(-90deg); }
-.bulk-site-row { display: flex; align-items: center; gap: 6px; min-height: 34px; padding: 2px 4px; border-radius: 5px; position: relative; }
-.bulk-site-row:hover, .bulk-site-row:has(input:checked) { background: var(--bg-subtle); }
+.bulk-site-row { display: flex; align-items: center; gap: 6px; min-height: 34px; padding: 2px 4px; border-radius: 5px; position: relative; cursor: pointer; user-select: none; }
+.bulk-site-row:hover, .bulk-site-row:has(input:checked), .bulk-site-row.is-selected { background: var(--bg-subtle); }
+.bulk-site-row.is-editing { background: color-mix(in srgb, var(--accent-subtle) 45%, var(--bg-subtle)); cursor: default; user-select: text; }
 .bulk-drag-handle { display: grid; place-items: center; flex: 0 0 20px; width: 20px; height: 28px; border: 0; border-radius: 4px; background: transparent; color: var(--text-secondary); opacity: 0; cursor: grab; transition: opacity var(--transition-fast); }
 .bulk-nav-item > .bulk-drag-handle { margin-right: 2px; }
+.bulk-site-row > .bulk-drag-handle { opacity: .25; }
 .bulk-drag-handle:active { cursor: grabbing; }
 :is(.bulk-nav-item, .bulk-site-row):is(:hover, :focus-within) > .bulk-drag-handle, .bulk-drag-handle:focus-visible { opacity: 1; }
-.bulk-editor input[type="checkbox"] { width: 15px; height: 15px; margin: 0; flex: 0 0 15px; accent-color: var(--accent-color); }
+.bulk-editor input[type="checkbox"] { width: 15px; height: 15px; margin: 0; flex: 0 0 15px; accent-color: var(--accent-color); cursor: pointer; }
 .bulk-favicon { width: 18px; height: 18px; flex: 0 0 18px; object-fit: contain; border-radius: 4px; }
 .bulk-site-copy { min-width: 0; display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: center; gap: 8px; flex: 1; }
 /* Two container IDs override the shared form rules with excluded input IDs. */
-#bulkEditorDialog :is(#bulkSiteList, #bulkGroupList) input.bulk-field { min-width: 0; height: 28px; min-height: 28px; padding: 3px 6px; border: 1px solid transparent; border-color: transparent !important; border-radius: 5px; background: transparent; color: var(--text-primary); font: 13px var(--font-family); }
+#bulkEditorDialog :is(#bulkSiteList, #bulkGroupList) input.bulk-field { min-width: 0; height: 28px; min-height: 28px; padding: 3px 6px; border: 1px solid transparent; border-color: transparent !important; border-radius: 5px; background: transparent; color: var(--text-primary); font: 13px var(--font-family); transition: border-color 150ms ease, background 150ms ease; }
+#bulkEditorDialog #bulkSiteList .bulk-site-row:not(.is-editing) input.bulk-field { cursor: pointer; user-select: none; border-color: transparent !important; background: transparent !important; }
+#bulkEditorDialog #bulkSiteList .bulk-site-row.is-editing input.bulk-field { border-color: var(--border-default) !important; background: var(--bg-surface-elevated) !important; cursor: text; user-select: text; }
 #bulkEditorDialog #bulkSiteList input.bulk-title-input { width: 100%; max-width: none; text-overflow: ellipsis; }
 #bulkEditorDialog #bulkSiteList input.bulk-url-input { width: 100%; color: var(--text-secondary); font-size: 12px; text-overflow: ellipsis; }
-#bulkEditorDialog #bulkGroupList input.bulk-group-name-input { flex: 1; width: 0; background: var(--bg-surface-elevated); }
+#bulkEditorDialog #bulkGroupList input.bulk-group-name-input, #bulkEditorDialog #bulkGroupList input.bulk-space-name-input { flex: 1; width: 0; background: var(--bg-surface-elevated); }
 #bulkEditorDialog :is(#bulkSiteList, #bulkGroupList) input.bulk-field:focus { border-color: var(--accent-color) !important; outline: none !important; background: var(--bg-surface-elevated) !important; }
 #bulkEditorDialog #bulkSiteList input.bulk-field[aria-invalid="true"] { border-color: var(--color-danger) !important; }
 .bulk-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; padding-top: 4px; border: 0; flex-shrink: 0; }
 .bulk-feedback { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; flex: 1 1 170px; min-width: 0; }
 #bulkEditStatus { color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
+#bulkDirtyHint { color: var(--accent-color); font-size: 12px; line-height: 1.5; }
+.bulk-feedback:has(#bulkDirtyHint:not([hidden])) #bulkEditStatus:not(:empty) { flex-basis: 100%; }
 #bulkUndo { border: 0; border-radius: 4px; padding: 5px 8px; background: var(--bg-subtle); color: var(--accent-color); font: 12px var(--font-family); cursor: pointer; }
 .bulk-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; font-size: 12px; }
+.bulk-batch-actions { display: inline-flex; align-items: center; gap: 6px; }
 .bulk-move-control { display: inline-flex; align-items: stretch; border-radius: 6px; background: var(--bg-subtle); }
-#bulkMoveTarget { width: 145px; min-width: 0; height: 32px; padding: 5px 8px; border: 0; border-radius: 6px 0 0 6px; color: var(--text-primary); background: transparent; font: 12px var(--font-family); }
-#bulkEditorDialog #bulkDelete { color: var(--color-danger); }
+#bulkMoveTarget { width: 145px; min-width: 0; height: 32px; padding: 5px 8px; border: 0; border-radius: 6px; color: var(--text-primary); background: transparent; font: 12px var(--font-family); }
+#bulkEditorDialog #bulkDelete { width: 32px; min-width: 32px; padding: 6px; color: var(--color-danger); }
 #bulkEditorDialog .bulk-actions button:disabled { opacity: 1; color: var(--text-secondary); background: var(--bg-subtle); cursor: not-allowed; }
 #bulkEditorDialog #bulkDelete:disabled, #bulkMoveTarget:disabled { color: var(--text-secondary); opacity: .45; cursor: not-allowed; }
 #bulkSave { flex-shrink: 0; margin-left: auto; }
+#bulkSave:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
 .bulk-empty { text-align: center; padding: 32px 16px; color: var(--text-secondary); font-size: 13px; line-height: 1.7; }
-.bulk-nav-item.drop-target, .bulk-site-list.drop-target { background: var(--accent-subtle); outline: 2px solid var(--accent-color); outline-offset: -2px; }
 .bulk-drop-before { box-shadow: inset 0 2px var(--accent-color); }
 .bulk-drop-after { box-shadow: inset 0 -2px var(--accent-color); }
 #bulkEditorDialog [hidden] { display: none !important; }
-@media (hover: hover) {
-  #bulkEditorDialog #bulkSiteList .bulk-site-row:hover input.bulk-field:not(:focus):not([aria-invalid="true"]) { border-color: var(--border-default) !important; background: var(--bg-surface-elevated); }
-}
-@media (max-width: 640px) {
-  dialog.bulk-editor { padding: 12px; }
-  .bulk-master-detail { flex-direction: column; }
-  .bulk-sidebar { width: auto; flex: 0 0 auto; flex-direction: row; min-width: 0; border: 0; }
-  .bulk-group-navigation { flex-direction: row; align-items: center; padding: 4px; overflow-x: auto; gap: 4px; }
-  .bulk-group-list { display: flex; flex: 0 0 auto; gap: 4px; overflow: visible; padding: 0; }
-  .bulk-nav-item { flex: 0 0 auto; min-width: 110px; max-width: 180px; }
-  .bulk-nav-item + .bulk-nav-item { margin-top: 0; }
-  .bulk-all-groups { gap: 6px; white-space: nowrap; }
-  .bulk-add-group { border-top: 0; border-left: 1px solid var(--border-default); padding: 6px; max-width: 58px; font-size: 12px; }
-  .bulk-detail-toolbar { padding: 7px 8px; }
-  .bulk-detail-tools { gap: 3px; }
-  .bulk-site-list { padding: 4px; }
-  .bulk-site-copy { grid-template-columns: 100px minmax(0, 1fr); gap: 4px; }
-  #bulkEditorDialog #bulkSiteList input.bulk-title-input, #bulkEditorDialog #bulkSiteList input.bulk-url-input { width: 100%; max-width: none; }
-  .bulk-site-row { min-height: 38px; gap: 4px; }
-  .bulk-feedback { flex-basis: 100%; }
-  .bulk-actions { flex: 0 0 auto; }
-  #bulkMoveTarget { width: 125px; }
-  #bulkEditorDialog .bulk-actions .btn { padding: 6px 8px; }
-}
-@media (hover: none), (pointer: coarse) {
-  .bulk-drag-handle { min-height: 36px; }
-  .bulk-group-select, .bulk-all-groups, .bulk-add-group { min-height: 40px; }
-}
-@media (prefers-reduced-motion: reduce) { .bulk-drag-handle { transition: none; } }
 
 /* Group navigation mirrors the homepage's visible columns. */
 .bulk-nav-column + .bulk-nav-column { margin-top: 10px; }
 .bulk-column-label { margin: 4px 6px; color: var(--text-secondary); font-size: 11px; font-weight: 600; line-height: 1.6; }
 .bulk-column-empty { margin: 4px 8px 8px; color: var(--text-secondary); font-size: 11px; }
-.bulk-detail-group + .bulk-detail-group { margin-top: 8px; }
-@media (max-width: 640px) {
-  .bulk-nav-column { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
-  .bulk-nav-column + .bulk-nav-column { margin-top: 0; margin-left: 5px; padding-left: 6px; border-left: 1px solid var(--border-default); }
-  .bulk-column-label { white-space: nowrap; margin: 0 3px; }
-  .bulk-column-empty { white-space: nowrap; }
-}
-
-#bulkEditorDialog #bulkDelete { width: 32px; min-width: 32px; padding: 6px; }
 
 /* Spaces are disclosure sections only; empty spaces have no navigation entry. */
 .bulk-space-section + .bulk-space-section { margin-top: 10px; }
-.bulk-space-toggle { display: flex; align-items: center; gap: 6px; width: 100%; min-height: 36px; padding: 6px; border: 0; border-radius: 6px; background: transparent; color: var(--text-primary); font: 600 13px var(--font-family); text-align: left; cursor: pointer; }
+.bulk-space-header { position: relative; display: flex; align-items: center; gap: 5px; padding-left: 5px; }
+.bulk-space-header .bulk-space-toggle { flex: 1; width: 0; min-width: 0; display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px; border: 0; border-radius: 6px; background: transparent; color: var(--text-primary); font: 600 13px var(--font-family); text-align: left; cursor: pointer; }
 .bulk-space-toggle > span:first-of-type { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bulk-space-toggle .bulk-group-count { margin-left: auto; }
 .bulk-space-toggle[aria-expanded="false"] > svg { transform: rotate(-90deg); }
 .bulk-space-columns { padding-left: 8px; }
-@media (max-width: 640px) {
-  .bulk-space-section { display: flex; align-items: center; flex: 0 0 auto; }
-  .bulk-space-section + .bulk-space-section { margin-top: 0; margin-left: 5px; padding-left: 5px; border-left: 1px solid var(--border-default); }
-  .bulk-space-toggle { width: auto; max-width: 150px; flex-shrink: 0; }
-  .bulk-space-columns { display: flex; align-items: center; padding-left: 3px; }
-}
 
-/* Object-level actions share the draft editor's create and delete controls. */
-.bulk-space-header { display: flex; align-items: center; gap: 5px; padding-left: 5px; }
-.bulk-space-header .bulk-space-toggle { flex: 1; width: 0; min-width: 0; }
-.bulk-new-controls { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; border: 0; padding: 6px; }
-.bulk-new-controls .bulk-add-group { width: auto; white-space: nowrap; border: 0; border-radius: 5px; padding: 7px; }
-.bulk-empty-spaces-toggle { display: flex; align-items: center; gap: 5px; min-height: 28px; padding: 3px 7px; color: var(--text-secondary); font-size: 11px; }
-.bulk-create-menu { position: absolute; z-index: 20; left: 5px; right: 5px; bottom: calc(100% - 4px); display: grid; padding: 5px; border: 1px solid var(--border-default); border-radius: 8px; background: var(--bg-surface-elevated); box-shadow: var(--shadow-modal); }
+/* Row and navigation hover actions. */
+.bulk-nav-actions, .bulk-space-actions { position: absolute; right: 2px; display: flex; gap: 1px; border-radius: 5px; background: var(--bg-surface-elevated); }
+.bulk-site-actions { display: inline-flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.bulk-nav-actions, .bulk-space-actions, .bulk-site-actions { opacity: 0; pointer-events: none; transition: opacity 150ms ease; }
+.bulk-nav-item:is(:hover, :focus-within) .bulk-nav-actions,
+.bulk-space-header:is(:hover, :focus-within) .bulk-space-actions,
+.bulk-site-row:is(:hover, :focus-within) .bulk-site-actions { opacity: 1; pointer-events: auto; }
+.bulk-nav-item:is(:hover, :focus-within) > .bulk-group-count,
+.bulk-space-header:is(:hover, :focus-within) .bulk-space-toggle > .bulk-group-count { visibility: hidden; }
+.bulk-nav-item:has(.bulk-group-name-input:not([hidden])) .bulk-nav-actions,
+.bulk-space-header:has(.bulk-space-name-input:not([hidden])) .bulk-space-actions { display: none; }
+.bulk-nav-actions .bulk-icon-button, .bulk-space-actions .bulk-icon-button { width: 24px; height: 28px; }
+.bulk-site-actions .bulk-icon-button { width: 26px; height: 28px; }
+.bulk-site-delete { flex: 0 0 28px; height: 28px; }
+.bulk-row-delete { color: var(--color-danger); }
+.bulk-icon-button:hover, .bulk-close:hover { background: var(--bg-subtle); color: var(--text-primary); }
+.bulk-row-delete:hover { color: var(--color-danger); background: color-mix(in srgb, var(--color-danger) 12%, transparent); }
+#bulkEditorDialog :is(button, select, input[type="checkbox"]):focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+
+/* Sidebar controls and centered create / discard modal dialogs. */
+.bulk-sidebar-controls { padding: 6px; flex-shrink: 0; }
+.bulk-empty-spaces-toggle { display: flex; align-items: center; gap: 5px; min-height: 28px; padding: 3px 7px; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
+#bulkEditorDialog #bulkShowEmptySpaces { appearance: none; -webkit-appearance: none; position: relative; width: 28px; height: 17px; flex: 0 0 28px; border: 1px solid var(--border-default); border-radius: 99px; background: var(--bg-surface-elevated); cursor: pointer; transition: background 150ms ease; }
+#bulkShowEmptySpaces::before { content: ''; position: absolute; width: 11px; height: 11px; top: 2px; left: 2px; border-radius: 50%; background: var(--text-secondary); transition: transform 150ms ease; }
+#bulkEditorDialog #bulkShowEmptySpaces:checked { background: var(--accent-color); border-color: var(--accent-color); }
+#bulkShowEmptySpaces:checked::before { transform: translateX(11px); background: #fff; }
+.bulk-new-controls { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; border: 0; padding: 0; }
+#bulkEditorDialog #bulkAddGroup { display: grid; place-items: center; width: 32px; min-width: 32px; height: 32px; padding: 6px; }
+.bulk-create-menu { position: absolute; z-index: 20; top: calc(100% + 6px); bottom: auto; left: auto; right: 0; width: 150px; display: grid; padding: 5px; border: 1px solid var(--border-default); border-radius: 8px; background: var(--bg-surface-elevated); box-shadow: var(--shadow-modal); }
 .bulk-create-menu button { min-height: 34px; border: 0; border-radius: 5px; background: transparent; color: var(--text-primary); padding: 7px 10px; font: 13px var(--font-family); text-align: left; cursor: pointer; }
-.bulk-create-form { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; padding: 10px; border: 1px solid var(--border-default); border-radius: 8px; background: var(--bg-subtle); }
-.bulk-create-form strong { align-self: center; font-size: 13px; }
-.bulk-create-form label { display: grid; gap: 4px; flex: 1 1 140px; min-width: 0; font-size: 11px; color: var(--text-secondary); }
-#bulkEditorDialog #bulkCreateForm input[type="text"], #bulkEditorDialog #bulkCreateForm select { min-width: 0; height: 32px; padding: 5px 8px; border-radius: 5px; color: var(--text-primary); background: var(--bg-surface-elevated); font: 13px var(--font-family); }
-.bulk-create-actions { display: flex; gap: 5px; }
-@media (max-width: 640px) {
-  .bulk-new-controls { flex: 0 0 auto; flex-direction: column; justify-content: center; border: 0; padding: 3px 6px; }
-  .bulk-new-controls .bulk-add-group { max-width: none; min-height: 30px; }
-  .bulk-empty-spaces-toggle { padding: 3px; font-size: 10px; line-height: 1.3; }
-  .bulk-create-menu { left: auto; right: 0; top: 100%; bottom: auto; width: 150px; }
-  .bulk-space-header { flex-shrink: 0; padding-left: 2px; }
-  .bulk-space-header .bulk-space-toggle { width: auto; }
-  .bulk-create-form strong { flex-basis: 100%; }
-}
+.bulk-create-menu button:hover { background: var(--bg-subtle); }
+dialog.bulk-create-dialog { margin: auto; width: min(420px, calc(100vw - 32px)); max-width: 420px; padding: 24px; box-sizing: border-box; border: 1px solid var(--border-default); border-radius: 16px; background: var(--bg-surface-elevated); color: var(--text-primary); box-shadow: var(--shadow-modal); }
+.bulk-create-form { display: flex; flex-direction: column; gap: 14px; }
+.bulk-create-form h3 { margin: 0 0 2px; font-size: 18px; font-weight: 600; color: var(--text-primary); }
+.bulk-create-form .form-group { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.bulk-create-form label { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+#bulkEditorDialog #bulkCreateForm input[type="text"], #bulkEditorDialog #bulkCreateForm select { width: 100%; min-width: 0; height: 38px; padding: 8px 12px; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-primary); background: var(--bg-subtle); font: 13px var(--font-family); box-sizing: border-box; }
+#bulkEditorDialog #bulkCreateForm :is(input[type="text"], select):focus { border-color: var(--accent-color); outline: none; background: var(--bg-surface); }
+.bulk-create-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.bulk-discard-dialog { max-width: min(400px, calc(100vw - 32px)); }
+.bulk-discard-dialog p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+#bulkDiscard { color: var(--color-danger); }
 
 @media (min-width: 641px) and (max-width: 900px) {
   .bulk-site-copy { grid-template-columns: 130px minmax(0, 1fr); }
@@ -1319,71 +1310,51 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
   .bulk-detail-tools { flex: 1; }
 }
 @media (max-width: 640px) {
-  .bulk-detail-title { flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
-  .bulk-detail-tools { width: 100%; }
-  #bulkSelectionCount { white-space: normal; }
-  .bulk-detail-controls { gap: 4px; }
-  .bulk-detail-controls > label { font-size: 11px; }
-  #bulkMoveTarget { width: 104px; }
-}
-
-/* Batch editing: keep navigation, selection, and destructive actions distinct. */
-.bulk-editor::backdrop, .bulk-discard-dialog::backdrop { background: rgb(0 0 0 / 65%); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-.bulk-heading-actions, .bulk-footer-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.bulk-search-field { position: relative; display: flex; align-items: center; width: 100%; min-width: 0; }
-.bulk-search-field > svg { position: absolute; left: 11px; color: var(--text-secondary); pointer-events: none; }
-#bulkEditorDialog #bulkSearch { width: 100%; padding-left: 35px; padding-right: 36px; }
-#bulkSearch::-webkit-search-cancel-button { display: none; }
-#bulkClearSearch { position: absolute; right: 5px; font-size: 20px; }
-#bulkSelectionCount.has-selection { color: var(--accent-color); font-weight: 600; }
-#bulkMoveTarget { border-radius: 6px; }
-.bulk-site-row > .bulk-drag-handle { opacity: .25; }
-.bulk-site-row:is(:hover, :focus-within) > .bulk-drag-handle { opacity: 1; }
-#bulkEditorDialog #bulkSiteList input.bulk-field { border-color: color-mix(in srgb, var(--border-default) 45%, transparent) !important; background: color-mix(in srgb, var(--text-primary) 3%, transparent); transition: border-color 150ms ease, background 150ms ease; }
-#bulkEditorDialog #bulkSiteList input.bulk-field:focus { border-color: var(--accent-color) !important; }
-#bulkEditorDialog #bulkSiteList input.bulk-field[aria-invalid="true"] { border-color: var(--color-danger) !important; }
-.bulk-nav-item { cursor: pointer; }
-.bulk-nav-actions { position: absolute; right: 2px; display: flex; gap: 1px; border-radius: 5px; background: var(--bg-surface-elevated); }
-.bulk-nav-actions, .bulk-site-delete { opacity: 0; pointer-events: none; transition: opacity 150ms ease; }
-.bulk-nav-item:is(:hover, :focus-within) .bulk-nav-actions, .bulk-site-row:is(:hover, :focus-within) .bulk-site-delete { opacity: 1; pointer-events: auto; }
-.bulk-nav-actions .bulk-icon-button { width: 24px; height: 28px; }
-.bulk-site-delete { flex: 0 0 28px; height: 28px; }
-.bulk-row-delete { color: var(--color-danger); }
-.bulk-icon-button:hover, .bulk-close:hover { background: var(--bg-subtle); color: var(--text-primary); }
-.bulk-row-delete:hover { color: var(--color-danger); background: color-mix(in srgb, var(--color-danger) 12%, transparent); }
-#bulkEditorDialog :is(button, select, input[type="checkbox"]):focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
-#bulkEditorDialog #bulkShowEmptySpaces { appearance: none; -webkit-appearance: none; position: relative; width: 28px; height: 17px; flex: 0 0 28px; border: 1px solid var(--border-default); border-radius: 99px; background: var(--bg-surface-elevated); cursor: pointer; transition: background 150ms ease; }
-#bulkShowEmptySpaces::before { content: ''; position: absolute; width: 11px; height: 11px; top: 2px; left: 2px; border-radius: 50%; background: var(--text-secondary); transition: transform 150ms ease; }
-#bulkEditorDialog #bulkShowEmptySpaces:checked { background: var(--accent-color); border-color: var(--accent-color); }
-#bulkShowEmptySpaces:checked::before { transform: translateX(11px); background: #fff; }
-#bulkDirtyHint { color: var(--accent-color); font-size: 12px; line-height: 1.5; }
-.bulk-feedback:has(#bulkDirtyHint:not([hidden])) #bulkEditStatus:not(:empty) { flex-basis: 100%; }
-#bulkSave:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
-.bulk-discard-dialog { max-width: min(400px, calc(100vw - 32px)); }
-.bulk-discard-dialog p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
-#bulkDiscard { color: var(--color-danger); }
-@media (hover: none), (pointer: coarse) {
-  .bulk-nav-actions { position: static; }
-  .bulk-nav-actions, .bulk-site-delete { opacity: 1; pointer-events: auto; }
-}
-@media (max-width: 640px) {
+  dialog.bulk-editor { padding: 12px; }
   .bulk-heading { align-items: flex-start; gap: 8px; }
   .bulk-heading-actions { gap: 4px; }
   .bulk-heading h3 { font-size: 16px; }
   .bulk-heading p { font-size: 11px; }
+  .bulk-master-detail { flex-direction: column; }
+  .bulk-sidebar { width: auto; flex: 0 0 auto; flex-direction: row; min-width: 0; border: 0; }
+  .bulk-group-navigation { flex-direction: row; align-items: center; padding: 4px; overflow-x: auto; gap: 4px; }
+  .bulk-group-list { display: flex; flex: 0 0 auto; gap: 4px; overflow: visible; padding: 0; }
+  .bulk-space-section { display: flex; align-items: center; flex: 0 0 auto; }
+  .bulk-space-section + .bulk-space-section { margin-top: 0; margin-left: 5px; padding-left: 5px; border-left: 1px solid var(--border-default); }
+  .bulk-space-header { flex-shrink: 0; padding-left: 2px; }
+  .bulk-space-header .bulk-space-toggle { width: auto; max-width: 150px; flex-shrink: 0; }
+  .bulk-space-columns { display: flex; align-items: center; padding-left: 3px; }
+  .bulk-nav-column { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+  .bulk-nav-column + .bulk-nav-column { margin-top: 0; margin-left: 5px; padding-left: 6px; border-left: 1px solid var(--border-default); }
+  .bulk-column-label { white-space: nowrap; margin: 0 3px; }
+  .bulk-column-empty { white-space: nowrap; }
+  .bulk-nav-item { flex: 0 0 auto; min-width: 110px; max-width: 180px; }
+  .bulk-nav-item + .bulk-nav-item { margin-top: 0; }
+  .bulk-all-groups { gap: 6px; white-space: nowrap; }
+  .bulk-sidebar-controls { display: flex; align-items: center; padding: 3px 6px; }
+  .bulk-empty-spaces-toggle { padding: 3px; font-size: 10px; line-height: 1.3; }
+  .bulk-detail-toolbar { padding: 7px 8px; }
+  .bulk-detail-title { flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .bulk-detail-tools { width: 100%; gap: 3px; }
+  #bulkSelectionCount { white-space: normal; }
+  .bulk-detail-controls { gap: 4px; }
+  .bulk-detail-controls > label { font-size: 11px; }
+  .bulk-site-list { padding: 4px; }
+  .bulk-site-copy { grid-template-columns: minmax(65px, .8fr) minmax(80px, 1fr); gap: 4px; }
+  #bulkEditorDialog #bulkSiteList input.bulk-title-input, #bulkEditorDialog #bulkSiteList input.bulk-url-input { width: 100%; max-width: none; }
+  .bulk-site-row { min-height: 38px; gap: 4px; }
+  .bulk-feedback { flex-basis: 100%; }
   .bulk-footer-actions { margin-left: auto; }
-  .bulk-site-copy { grid-template-columns: minmax(65px, .8fr) minmax(80px, 1fr); }
+  .bulk-actions { flex: 0 0 auto; }
+  #bulkMoveTarget { width: 104px; }
+  #bulkEditorDialog .bulk-actions .btn { padding: 6px 8px; }
+}
+@media (hover: none), (pointer: coarse) {
+  .bulk-drag-handle { min-height: 36px; }
+  .bulk-group-select, .bulk-all-groups, .bulk-add-group { min-height: 40px; }
+  .bulk-nav-actions, .bulk-space-actions { position: static; }
+  .bulk-nav-actions, .bulk-space-actions, .bulk-site-actions { opacity: 1; pointer-events: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
-  #bulkEditorDialog input, #bulkEditorDialog button, .bulk-nav-actions { transition: none !important; }
+  .bulk-drag-handle, #bulkEditorDialog input, #bulkEditorDialog button, .bulk-nav-actions, .bulk-space-actions, .bulk-site-actions { transition: none !important; }
 }
-
-.bulk-nav-item:is(:hover, :focus-within) > .bulk-group-count { visibility: hidden; }
-.bulk-nav-item:has(.bulk-group-name-input:not([hidden])) .bulk-nav-actions { display: none; }
-
-/* Creation sits with the list actions; the space visibility switch stays below navigation. */
-.bulk-sidebar-controls { padding: 6px; flex-shrink: 0; }
-.bulk-actions .bulk-new-controls { padding: 0; flex-direction: row; }
-#bulkEditorDialog #bulkAddGroup { display: grid; place-items: center; width: 32px; min-width: 32px; height: 32px; padding: 6px; }
-.bulk-actions .bulk-create-menu { top: calc(100% + 6px); bottom: auto; left: auto; right: 0; width: 150px; }
-@media (max-width: 640px) { .bulk-sidebar-controls { display: flex; align-items: center; padding: 3px 6px; } }

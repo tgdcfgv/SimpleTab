@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeAppData } from '../js/data.js';
-import { safeWebUrl, safeImageUrl } from '../js/urls.js';
+import { safeWebUrl, safeImageUrl, deriveSiteTitle, extractDroppedLink } from '../js/urls.js';
 import { findLinks, nextSelection, parseSuggestions } from '../js/search-model.js';
 import { portableSnapshot } from '../js/wallpaper.js';
 
@@ -85,4 +85,52 @@ test('Dock defaults hide the store and migrate legacy hidden position without lo
 
 test('cloud snapshots exclude legacy remote wallpaper URLs as well as embedded images', () => {
   assert.equal(portableSnapshot({ settings: { wallpaper: 'https://example.test/photo.png' } }).settings.wallpaper, null);
+});
+
+test('extractDroppedLink parses external URLs, anchor titles, moz-url and bare domains while rejecting non-links', () => {
+  const mockTransfer = (entries, files = []) => ({
+    files,
+    getData: type => entries[type] || ''
+  });
+
+  // 1. Hyperlink with HTML anchor text
+  assert.deepEqual(
+    extractDroppedLink(mockTransfer({
+      'text/uri-list': '# comment\r\nhttps://github.com/torvalds/linux\r\n',
+      'text/html': '<meta charset="utf-8"><a href="https://github.com/torvalds/linux">Linux Kernel Repo</a>',
+      'text/plain': 'https://github.com/torvalds/linux'
+    })),
+    { url: 'https://github.com/torvalds/linux', title: 'Linux Kernel Repo' }
+  );
+
+  // 2. Address bar drag (URL only, derives title from hostname)
+  assert.deepEqual(
+    extractDroppedLink(mockTransfer({
+      'text/uri-list': 'https://www.bilibili.com/video/BV1xx',
+      'text/plain': 'https://www.bilibili.com/video/BV1xx'
+    })),
+    { url: 'https://www.bilibili.com/video/BV1xx', title: 'Bilibili' }
+  );
+
+  // 3. text/x-moz-url with second-line title
+  assert.deepEqual(
+    extractDroppedLink(mockTransfer({
+      'text/x-moz-url': 'https://developer.mozilla.org/zh-CN/\nMDN Web Docs'
+    })),
+    { url: 'https://developer.mozilla.org/zh-CN/', title: 'MDN Web Docs' }
+  );
+
+  // 4. Bare domain text drag
+  assert.deepEqual(
+    extractDroppedLink(mockTransfer({
+      'text/plain': 'news.ycombinator.com'
+    })),
+    { url: 'https://news.ycombinator.com/', title: 'News' }
+  );
+
+  // 5. Rejects plain non-URL text, unsafe schemes, and file drops without uri-list
+  assert.equal(extractDroppedLink(mockTransfer({ 'text/plain': 'hello world not a link' })), null);
+  assert.equal(extractDroppedLink(mockTransfer({ 'text/uri-list': 'javascript:alert(1)' })), null);
+  assert.equal(extractDroppedLink(mockTransfer({ 'text/plain': 'photo.png' }, [{ name: 'photo.png' }])), null);
+  assert.equal(deriveSiteTitle('https://www.figma.com/files'), 'Figma');
 });

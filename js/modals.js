@@ -1,5 +1,5 @@
 import { saveWallpaper, clearWallpaper, getWallpaperUrl } from './wallpaper.js';
-import { safeWebUrl, safeImageUrl } from './urls.js';
+import { safeWebUrl, safeImageUrl, deriveSiteTitle } from './urls.js';
 import { icon } from './icons.js';
 import { appData, SEARCH_ENGINES, syncManager } from './storage.js';
 import { generateId, getFaviconUrl } from './utils.js';
@@ -203,7 +203,7 @@ export function renderGroupSelectionGrid(selectedId) {
   container.appendChild(newBtn);
 }
 
-export function openSiteModal(siteId = null, groupId = null) {
+export function openSiteModal(siteId = null, groupId = null, draft = null) {
   const form = document.getElementById('siteForm');
   form.reset();
   
@@ -218,16 +218,29 @@ export function openSiteModal(siteId = null, groupId = null) {
     renderGroupSelectionGrid(group.id);
     document.getElementById('siteModalTitle').textContent = '编辑网站';
   } else {
+    const preferredGroupId = groupId && appData.groups.some(g => g.id === groupId)
+      ? groupId
+      : (appData.groups.length > 0 ? appData.groups[0].id : null);
     document.getElementById('siteId').value = '';
-    document.getElementById('siteIconUrl').value = '';
-    renderGroupSelectionGrid(appData.groups.length > 0 ? appData.groups[0].id : null);
+    document.getElementById('siteUrl').value = draft?.url || '';
+    document.getElementById('siteTitle').value = draft?.title || '';
+    document.getElementById('siteIconUrl').value = draft?.customIcon || '';
+    renderGroupSelectionGrid(preferredGroupId);
     document.getElementById('siteModalTitle').textContent = '添加网站';
   }
   
   closeAllModals();
   modalOverlay.classList.remove('hidden');
   siteModal.classList.remove('hidden');
-  setTimeout(() => document.getElementById('siteUrl').focus(), 50);
+  setTimeout(() => {
+    if (!siteId && draft?.url) {
+      const titleInput = document.getElementById('siteTitle');
+      titleInput.focus();
+      titleInput.select();
+    } else {
+      document.getElementById('siteUrl').focus();
+    }
+  }, 50);
 }
 
 document.getElementById('addSiteBtn').addEventListener('click', () => openSiteModal());
@@ -249,14 +262,8 @@ document.getElementById('refetchIconBtn').addEventListener('click', () => {
 document.getElementById('siteUrl').addEventListener('blur', (e) => {
   const titleInput = document.getElementById('siteTitle');
   if (e.target.value && !titleInput.value) {
-    try {
-      let urlStr = e.target.value;
-      if (!urlStr.startsWith('http')) urlStr = 'https://' + urlStr;
-      const url = new URL(urlStr);
-      let hostname = url.hostname.replace('www.', '');
-      hostname = hostname.split('.')[0];
-      titleInput.value = hostname.charAt(0).toUpperCase() + hostname.slice(1);
-    } catch(err) {}
+    const fallbackTitle = deriveSiteTitle(e.target.value);
+    if (fallbackTitle) titleInput.value = fallbackTitle;
   }
 });
 
