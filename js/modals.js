@@ -51,8 +51,14 @@ export function closeAllModals(notify = true) {
   if (confirmModal) confirmModal.classList.add('hidden');
   const authModalEl = document.getElementById('authModal');
   if (authModalEl) authModalEl.classList.add('hidden');
+  if (notify) creationContext?.onClose();
   if (settingsWereOpen && notify) document.dispatchEvent(new Event('simtab-settings-close'));
 }
+
+// A caller can stage creations while using the same homepage forms.
+let creationContext = null;
+export function setCreationContext(context) { creationContext = context; }
+function creationGroups() { return creationContext?.groups() || appData.groups; }
 
 // Group Modal
 export let currentLinksPerRow = 'auto';
@@ -94,8 +100,9 @@ export function openGroupModal(groupId = null, returnContext = null) {
   }
   updateLinksPerRowUI();
   
-  closeAllModals();
+  closeAllModals(!creationContext);
   modalOverlay.classList.remove('hidden');
+  creationContext?.onOpen();
   groupModal.classList.remove('hidden');
   setTimeout(() => document.getElementById('groupName').focus(), 50);
 }
@@ -113,6 +120,12 @@ document.getElementById('groupForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const id = document.getElementById('groupId').value;
   const name = document.getElementById('groupName').value.trim();
+  if (creationContext && !id) {
+    const group = creationContext.addGroup(name, currentLinksPerRow);
+    if (groupModalReturnContext) returnToGroupSelectionParent(group.id);
+    else closeAllModals();
+    return;
+  }
   let savedGroupId = id;
   
   if (id) {
@@ -142,7 +155,7 @@ document.getElementById('groupForm').addEventListener('submit', (e) => {
 });
 
 export function showModal(modal) {
-  closeAllModals();
+  closeAllModals(!creationContext);
   modalOverlay.classList.remove('hidden');
   modal.classList.remove('hidden');
 }
@@ -175,12 +188,12 @@ export function renderGroupSelectionGrid(selectedId) {
   const hiddenInput = document.getElementById('siteGroup');
   container.innerHTML = '';
   
-  if (!selectedId && appData.groups.length > 0) {
-    selectedId = appData.groups[0].id;
+  if (!selectedId && creationGroups().length > 0) {
+    selectedId = creationGroups()[0].id;
   }
   hiddenInput.value = selectedId || '';
 
-  appData.groups.forEach(g => {
+  creationGroups().forEach(g => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = `group-select-btn ${g.id === selectedId ? 'active' : ''}`;
@@ -209,7 +222,7 @@ export function openSiteModal(siteId = null, groupId = null, draft = null) {
   form.reset();
   
   if (siteId && groupId) {
-    const group = appData.groups.find(g => g.id === groupId);
+    const group = creationGroups().find(g => g.id === groupId);
     const site = group.links.find(l => l.id === siteId);
     
     document.getElementById('siteId').value = site.id;
@@ -219,9 +232,10 @@ export function openSiteModal(siteId = null, groupId = null, draft = null) {
     renderGroupSelectionGrid(group.id);
     document.getElementById('siteModalTitle').textContent = '编辑网站';
   } else {
-    const preferredGroupId = groupId && appData.groups.some(g => g.id === groupId)
+    groupId ||= creationContext?.selectedGroupId();
+    const preferredGroupId = groupId && creationGroups().some(g => g.id === groupId)
       ? groupId
-      : (appData.groups.length > 0 ? appData.groups[0].id : null);
+      : (creationGroups().length > 0 ? creationGroups()[0].id : null);
     document.getElementById('siteId').value = '';
     document.getElementById('siteUrl').value = draft?.url || '';
     document.getElementById('siteTitle').value = draft?.title || '';
@@ -230,7 +244,8 @@ export function openSiteModal(siteId = null, groupId = null, draft = null) {
     document.getElementById('siteModalTitle').textContent = '添加网站';
   }
   
-  closeAllModals();
+  closeAllModals(!creationContext);
+  creationContext?.onOpen();
   modalOverlay.classList.remove('hidden');
   siteModal.classList.remove('hidden');
   setTimeout(() => {
@@ -291,6 +306,11 @@ document.getElementById('siteForm').addEventListener('submit', (e) => {
     } catch(e) { title = 'New Site'; }
   }
 
+  if (creationContext && !id) {
+    creationContext.addSite(targetGroupId, { id: generateId(), title, url, ...(customIcon ? { customIcon } : {}) });
+    closeAllModals();
+    return;
+  }
   if (id) {
     let oldLink;
     for (const g of appData.groups) {
@@ -858,61 +878,68 @@ export function initAllCustomSelects() {
 export let currentContextMenuSiteId = null;
 export let currentContextMenuGroupId = null;
 
+export function openContextMenu(x, y, { siteBtn = null, host = document.body, creationOnly = false } = {}) {
+  const menu = document.getElementById('contextMenu');
+
+  host.appendChild(menu);
+  document.getElementById('contextBulkEditor').style.display = creationOnly ? 'none' : '';
+  document.getElementById('contextSettings').style.display = creationOnly ? 'none' : '';
+  const contextAddSite = document.getElementById('contextAddSite');
+  const contextAddGroup = document.getElementById('contextAddGroup');
+  const contextEditSite = document.getElementById('contextEditSite');
+  const contextDeleteSite = document.getElementById('contextDeleteSite');
+  const contextDivider = document.getElementById('contextDivider');
+  if (siteBtn) {
+    contextAddSite.style.display = 'none';
+    contextAddGroup.style.display = 'none';
+    if (contextEditSite) contextEditSite.style.display = 'flex';
+    if (contextDeleteSite) contextDeleteSite.style.display = 'flex';
+    if (contextDivider) contextDivider.style.display = 'none';
+
+    currentContextMenuSiteId = siteBtn.dataset.id;
+    currentContextMenuGroupId = siteBtn.closest('.sites-grid').dataset.groupId;
+  } else {
+    contextAddSite.style.display = 'flex';
+    contextAddGroup.style.display = 'flex';
+    if (contextEditSite) contextEditSite.style.display = 'none';
+    if (contextDeleteSite) contextDeleteSite.style.display = 'none';
+    if (contextDivider) contextDivider.style.display = 'none';
+
+    currentContextMenuSiteId = null;
+    currentContextMenuGroupId = null;
+  }
+
+  // Measure inside the viewport before revealing the menu. Measuring at the
+  // pointer first can temporarily expand the page and flash its scrollbars.
+  menu.style.visibility = 'hidden';
+  menu.style.left = '0px';
+  menu.style.top = '0px';
+  menu.classList.remove('hidden');
+  const margin = 10;
+  const width = document.documentElement.clientWidth;
+  const height = document.documentElement.clientHeight;
+  // Layout sizes are unaffected by the menu's scale transition.
+  const left = Math.max(margin, Math.min(x, width - menu.offsetWidth - margin));
+  const top = Math.max(margin, Math.min(y, height - menu.offsetHeight - margin));
+  menu.style.left = `${left}px`;
+  menu.style.top = `${top}px`;
+  menu.style.visibility = '';
+}
+
 document.addEventListener('contextmenu', (e) => {
-  const isBlankSpace = e.target === document.body || 
-                       e.target.classList.contains('app-container') || 
-                       e.target.classList.contains('groups-container') || 
+  const isBlankSpace = e.target === document.body ||
+                       e.target.classList.contains('app-container') ||
+                       e.target.classList.contains('groups-container') ||
                        e.target.classList.contains('group-col') ||
                        e.target.classList.contains('sites-grid-wrapper') ||
                        e.target.classList.contains('sites-grid') ||
                        e.target.classList.contains('group-card');
-                       
+
   const siteBtn = e.target.closest('.site-btn');
-  
+
   if (isBlankSpace || siteBtn) {
     e.preventDefault();
-    const menu = document.getElementById('contextMenu');
-    
-    const contextAddSite = document.getElementById('contextAddSite');
-    const contextAddGroup = document.getElementById('contextAddGroup');
-    const contextEditSite = document.getElementById('contextEditSite');
-    const contextDeleteSite = document.getElementById('contextDeleteSite');
-    const contextDivider = document.getElementById('contextDivider');
-    if (siteBtn) {
-      contextAddSite.style.display = 'none';
-      contextAddGroup.style.display = 'none';
-      if (contextEditSite) contextEditSite.style.display = 'flex';
-      if (contextDeleteSite) contextDeleteSite.style.display = 'flex';
-      if (contextDivider) contextDivider.style.display = 'none';
-      
-      currentContextMenuSiteId = siteBtn.dataset.id;
-      currentContextMenuGroupId = siteBtn.closest('.sites-grid').dataset.groupId;
-    } else {
-      contextAddSite.style.display = 'flex';
-      contextAddGroup.style.display = 'flex';
-      if (contextEditSite) contextEditSite.style.display = 'none';
-      if (contextDeleteSite) contextDeleteSite.style.display = 'none';
-      if (contextDivider) contextDivider.style.display = 'none';
-      
-      currentContextMenuSiteId = null;
-      currentContextMenuGroupId = null;
-    }
-    
-    // Measure inside the viewport before revealing the menu. Measuring at the
-    // pointer first can temporarily expand the page and flash its scrollbars.
-    menu.style.visibility = 'hidden';
-    menu.style.left = '0px';
-    menu.style.top = '0px';
-    menu.classList.remove('hidden');
-    const margin = 10;
-    const width = document.documentElement.clientWidth;
-    const height = document.documentElement.clientHeight;
-    // Layout sizes are unaffected by the menu's scale transition.
-    const x = Math.max(margin, Math.min(e.clientX, width - menu.offsetWidth - margin));
-    const y = Math.max(margin, Math.min(e.clientY, height - menu.offsetHeight - margin));
-    menu.style.left = `${x}px`;
-    menu.style.top = `${y}px`;
-    menu.style.visibility = '';
+    openContextMenu(e.clientX, e.clientY, { siteBtn });
   } else {
     const menu = document.getElementById('contextMenu');
     if(menu) menu.classList.add('hidden');

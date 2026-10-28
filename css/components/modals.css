@@ -1233,7 +1233,7 @@ dialog.onboarding-modal {
 /* Batch editor: fixed group navigation and independently scrolling detail. */
 dialog.bulk-editor { margin: auto; width: min(1040px, calc(100vw - 32px)); max-width: 1040px; max-height: calc(100dvh - 32px); padding: 18px; box-sizing: border-box; }
 dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
-.bulk-editor::backdrop, .bulk-discard-dialog::backdrop, .bulk-create-dialog::backdrop { background: rgb(0 0 0 / 65%); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.bulk-editor::backdrop, .bulk-discard-dialog::backdrop { background: rgb(0 0 0 / 65%); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
 .bulk-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
 .bulk-heading h3 { margin: 0 0 3px; font-size: 18px; }
 .bulk-heading p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
@@ -1362,17 +1362,8 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 #bulkShowEmptySpaces:checked::before { transform: translateX(11px); background: #fff; }
 .bulk-new-controls { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-shrink: 0; border: 0; padding: 0; }
 #bulkEditorDialog #bulkAddGroup { display: grid; place-items: center; width: 32px; min-width: 32px; height: 32px; padding: 6px; }
-.bulk-create-menu { position: absolute; z-index: 20; top: calc(100% + 6px); bottom: auto; left: auto; right: 0; width: 150px; display: grid; padding: 5px; border: 1px solid var(--border-default); border-radius: 8px; background: var(--bg-surface-elevated); box-shadow: var(--shadow-modal); }
-.bulk-create-menu button { min-height: 34px; border: 0; border-radius: 5px; background: transparent; color: var(--text-primary); padding: 7px 10px; font: 13px var(--font-family); text-align: left; cursor: pointer; }
-.bulk-create-menu button:hover { background: var(--bg-subtle); }
-dialog.bulk-create-dialog { margin: auto; width: min(420px, calc(100vw - 32px)); max-width: 420px; padding: 24px; box-sizing: border-box; border: 1px solid var(--border-default); border-radius: 16px; background: var(--bg-surface-elevated); color: var(--text-primary); box-shadow: var(--shadow-modal); }
-.bulk-create-form { display: flex; flex-direction: column; gap: 14px; }
-.bulk-create-form h3 { margin: 0 0 2px; font-size: 18px; font-weight: 600; color: var(--text-primary); }
-.bulk-create-form .form-group { margin: 0; display: flex; flex-direction: column; gap: 6px; }
-.bulk-create-form label { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
-#bulkEditorDialog #bulkCreateForm input[type="text"], #bulkEditorDialog #bulkCreateForm select { width: 100%; min-width: 0; height: 38px; padding: 8px 12px; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-primary); background: var(--bg-subtle); font: 13px var(--font-family); box-sizing: border-box; }
-#bulkEditorDialog #bulkCreateForm :is(input[type="text"], select):focus { border-color: var(--accent-color); outline: none; background: var(--bg-surface); }
-.bulk-create-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+dialog.shared-creation-host { position: fixed; inset: 0; width: 100vw; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; }
+dialog.shared-creation-host::backdrop { background: transparent; }
 .bulk-discard-dialog { max-width: min(400px, calc(100vw - 32px)); }
 .bulk-discard-dialog p { color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
 #bulkDiscard { color: var(--color-danger); }

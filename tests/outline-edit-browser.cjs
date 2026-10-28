@@ -73,9 +73,9 @@ const assert=require('node:assert/strict');
   assert.match(await page.locator('#bulkCurrentGroup').innerText(),new RegExp(original[1].name));
   // New group is inserted and focused without an extra dialog.
   await page.click('#bulkAddGroup');
-  await page.click('[data-create-kind="group"]');
-  await page.fill('#bulkCreateName','新建收藏');
-  await page.locator('#bulkCreateForm button[type="submit"]').click();
+  await page.click('#contextAddGroup');
+  await page.fill('#groupName','新建收藏');
+  await page.locator('#groupForm button[type="submit"]').click();
   await page.locator(`[data-select-nav="${original.length}"]`).dblclick();
   const newName=page.locator(`[data-edit-group="${original.length}"]`);assert.equal(await newName.evaluate(el=>el===document.activeElement),true);
   await newName.fill('新建收藏');await nav(1).click();

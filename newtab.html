@@ -575,14 +575,14 @@
 
   <!-- 右键菜单 -->
   <div id="contextMenu" class="context-menu hidden">
-    <div class="context-menu-item" id="contextAddSite">
+    <button type="button" class="context-menu-item" id="contextAddSite">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true"><path d="M5 12h14" /> <path d="M12 5v14" /></svg>
       添加网站
-    </div>
-    <div class="context-menu-item" id="contextAddGroup">
+    </button>
+    <button type="button" class="context-menu-item" id="contextAddGroup">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-plus" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" /> <path d="M8 12h8" /> <path d="M12 8v8" /></svg>
       添加分组
-    </div>
+    </button>
     <button type="button" class="context-menu-item" id="contextBulkEditor">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen" aria-hidden="true"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /> <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" /></svg>
       批量编辑网站
@@ -618,9 +618,14 @@
       <p id="profileDescription" class="onboarding-description">选一个头像，再告诉我们怎么称呼你。</p>
       <form id="profileForm">
         <div class="profile-avatar-section">
-          <input id="profileAvatarInput" class="profile-avatar-input" type="text" value="😊" aria-label="Emoji 头像" aria-describedby="profileAvatarHint" autocomplete="off" autocapitalize="off" spellcheck="false" required>
-          <div id="profileEmojiPresets" class="profile-emoji-presets" role="group" aria-label="常用 Emoji 头像"></div>
-          <p id="profileAvatarHint" class="profile-avatar-hint">点选常用头像，或点击大图标输入任意 Emoji</p>
+          <div class="profile-avatar-preview-wrap">
+            <input id="profileAvatarInput" class="profile-avatar-input" type="text" inputmode="none" value="😊" aria-label="当前 Emoji 头像" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+            <button type="button" id="profileRandomEmojiBtn" class="profile-avatar-random-btn" title="随机换一个头像" aria-label="随机换一个头像">🎲</button>
+          </div>
+          <div class="emoji-keyboard" aria-label="Emoji 键盘">
+            <div id="profileEmojiTabs" class="emoji-keyboard-tabs" role="tablist" aria-label="Emoji 分类"></div>
+            <div id="profileEmojiPresets" class="emoji-keyboard-body" role="group" aria-label="常用 Emoji 头像"></div>
+          </div>
         </div>
         <div class="profile-field-group">
           <label for="profileNickname" class="profile-nickname-label">昵称</label>
@@ -635,15 +640,6 @@
   <dialog id="bulkEditorDialog" class="modal bulk-editor" aria-labelledby="bulkEditorTitle">
     <div class="bulk-heading"><div><h3 id="bulkEditorTitle">批量编辑网站</h3><p id="bulkSpaceName"></p></div><div class="bulk-heading-actions"><button type="button" class="btn secondary" id="bulkImportBookmarks">导入收藏夹</button><button type="button" class="bulk-close" id="bulkClose" aria-label="关闭批量编辑" title="关闭">×</button></div></div>
     <div class="bulk-filters"><div class="bulk-search-field"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.34-4.34"/></svg><input type="search" id="bulkSearch" placeholder="搜索所有分组的网站名称或网址" aria-label="全局搜索网站"><button type="button" id="bulkClearSearch" class="bulk-icon-button" aria-label="清空搜索" title="清空搜索" hidden>×</button></div></div>
-    <dialog id="bulkCreateDialog" class="modal bulk-create-dialog" aria-labelledby="bulkCreateTitle">
-      <form id="bulkCreateForm" class="compact-form bulk-create-form" novalidate>
-        <h3 id="bulkCreateTitle">新建</h3>
-        <div class="form-group bulk-create-parent" id="bulkCreateParentField"><label for="bulkCreateParent" id="bulkCreateParentLabel">所属位置</label><select id="bulkCreateParent" data-native="true" aria-label="所属位置"></select></div>
-        <div class="form-group"><label for="bulkCreateName" id="bulkCreateNameLabel">名称</label><input type="text" id="bulkCreateName" maxlength="200" required autocomplete="off"></div>
-        <div class="form-group" id="bulkCreateUrlField"><label for="bulkCreateUrl">网址</label><input type="text" inputmode="url" id="bulkCreateUrl" placeholder="https://example.com" autocomplete="off" spellcheck="false"></div>
-        <div class="modal-actions bulk-create-actions"><button type="button" id="bulkCreateCancel" class="btn secondary">取消</button><button type="submit" class="btn primary">创建</button></div>
-      </form>
-    </dialog>
     <div class="bulk-master-detail">
       <aside class="bulk-sidebar" aria-label="分组导航与拖放区">
         <nav id="bulkGroupNavigation" class="bulk-group-navigation" aria-label="选择分组">
@@ -672,8 +668,7 @@
                 <button type="button" class="btn secondary bulk-delete" id="bulkDelete" title="删除所选" aria-label="删除所选"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M10 11v6M14 11v6M5 6l1 14h12l1-14M9 6V3h6v3"/></svg></button>
               </div>
               <div class="bulk-new-controls">
-                <button type="button" id="bulkAddGroup" class="btn secondary" title="新建" aria-label="新建" aria-expanded="false" aria-controls="bulkCreateMenu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
-                <div id="bulkCreateMenu" class="bulk-create-menu" hidden><button type="button" data-create-kind="space">新建空间</button><button type="button" data-create-kind="group">新建分组</button><button type="button" data-create-kind="site">新建网站</button></div>
+                <button type="button" id="bulkAddGroup" class="btn secondary" title="新建" aria-label="新建" aria-expanded="false" aria-controls="contextMenu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
               </div>
             </div>
           </div>

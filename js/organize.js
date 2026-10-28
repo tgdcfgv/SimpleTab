@@ -4,6 +4,7 @@ import { icon } from './icons.js';
 import { escapeHTML, generateId } from './utils.js';
 import { safeWebUrl } from './urls.js';
 import { loadSiteIcon } from './site-icons.js';
+import { openContextMenu, openGroupModal, modalOverlay, closeAllModals, setCreationContext } from './modals.js';
 
 const guides = {
   edge: `<h5>从 Edge 导出收藏夹</h5><ol><li>在电脑上打开 Edge，点击右上角“…” →“收藏夹”。也可以在地址栏输入 <code>edge://favorites</code>。</li><li>点击收藏夹面板中的“…” →“导出收藏夹”。</li><li>将文件保存为 HTML，回到这里选择该文件。</li></ol>`,
@@ -37,14 +38,12 @@ const saveButton = document.getElementById('bulkSave');
 const collapsedGroups = new Set();
 const collapsedSpaces = new Set();
 const selectedGroups = new Set(), selectedSpaces = new Set(), newSpaces = new Set();
-const createDialog = document.getElementById('bulkCreateDialog');
-const createForm = document.getElementById('bulkCreateForm');
-const createMenu = document.getElementById('bulkCreateMenu');
-const createParent = document.getElementById('bulkCreateParent');
-const createParentField = document.getElementById('bulkCreateParentField');
+const createDialog = document.createElement('dialog');
+createDialog.className = 'shared-creation-host';
+createDialog.setAttribute('aria-label', '添加网站或分组');
+document.body.appendChild(createDialog);
 const showEmptySpaces = document.getElementById('bulkShowEmptySpaces');
-let createKind = 'group', moveAfterCreate = false;
-let createLocations = new Map();
+let moveAfterCreate = false;
 // Object identity survives sorting, group switching and moving sites. IDs from
 // imported files need not be unique for editor selections to remain correct.
 let draftSpaces = [], draft = [], selected = new Set(), activeGroup = null;
@@ -172,7 +171,7 @@ function renderList() {
 function refresh() { renderNavigation(); renderList(); }
 function activate(group) { activeGroup = group; search.value = ''; refresh(); list.scrollTop = 0; }
 function closeCreateDialog() {
-  if (createDialog.open) createDialog.close();
+  if (createDialog.open) closeAllModals();
   moveAfterCreate = false;
 }
 function openEditor() {
@@ -188,7 +187,36 @@ function openEditor() {
   selectedGroups.clear(); selectedSpaces.clear(); newSpaces.clear(); showEmptySpaces.checked = false; closeCreateDialog(); closeCreateMenu();
   search.value = ''; target.value = ''; updateGroupOptions();
   document.getElementById('bulkSpaceName').textContent = `全部空间 · 单击选择，双击编辑名称与网址，拖动手柄整理`;
-  status.textContent = ''; refresh(); dialog.showModal(); search.focus();
+  status.textContent = ''; refresh(); dialog.showModal();
+  setCreationContext({
+    groups: () => parentSpace().groups,
+    selectedGroupId: () => (selectedGroups.size === 1 ? [...selectedGroups][0] : activeGroup)?.id,
+    onOpen() {
+      createDialog.appendChild(modalOverlay);
+      if (!createDialog.open) createDialog.showModal();
+    },
+    onClose() {
+      if (createDialog.open) createDialog.close();
+      document.body.appendChild(modalOverlay);
+      moveAfterCreate = false;
+      document.getElementById('bulkAddGroup').focus();
+    },
+    addGroup(name, linksPerRow) {
+      const space = parentSpace();
+      const group = { id: generateId(), name, linksPerRow, collapsed: false, links: [], column: 0, columnCount: editorColumnCount };
+      space.groups.push(group); rebuildDraft();
+      if (moveAfterCreate && selected.size) moveLinks(selected, group);
+      finishCreation(space, group, `已新建分组“${name}”，保存后生效`);
+      return group;
+    },
+    addSite(groupId, link) {
+      const group = parentSpace().groups.find(group => group.id === groupId);
+      if (!group) return;
+      group.links.push(link);
+      finishCreation(ownerSpace(group), group, `已新建网站“${link.title}”，保存后生效`);
+    }
+  });
+  search.focus();
 }
 for (const id of ['openBulkEditor', 'contextBulkEditor', 'spaceEditBtn']) document.getElementById(id).addEventListener('click', openEditor);
 allButton.addEventListener('click', () => activate(null));
@@ -274,102 +302,41 @@ groupList.addEventListener('focusout', event => {
 function parentSpace() {
   return selectedSpaces.size === 1 ? [...selectedSpaces][0] : selectedGroups.size === 1 ? ownerSpace([...selectedGroups][0]) : ownerSpace(activeGroup) || draftSpaces.find(space => space.id === spaceId) || draftSpaces[0];
 }
-function closeCreateMenu() { createMenu.hidden = true; document.getElementById('bulkAddGroup').setAttribute('aria-expanded', 'false'); }
-function openCreate(kind, moveSelection = false) {
-  moveAfterCreate = moveSelection; createKind = kind; closeCreateMenu();
-  const title = { space: '新建空间', group: '新建分组', site: '新建网站' }[kind];
-  document.getElementById('bulkCreateTitle').textContent = title;
-  document.getElementById('bulkCreateNameLabel').textContent = kind === 'site' ? '网站名称' : kind === 'group' ? '分组名称' : '空间名称';
-  const name = document.getElementById('bulkCreateName'), url = document.getElementById('bulkCreateUrl');
-  name.maxLength = kind === 'space' ? 32 : kind === 'group' ? 100 : 200;
-  name.placeholder = kind === 'space' ? '例如：个人空间' : kind === 'group' ? '例如：设计工具' : '例如：GitHub';
-  name.value = ''; name.setCustomValidity(''); url.value = ''; url.setCustomValidity(''); url.required = kind === 'site';
-  document.getElementById('bulkCreateUrlField').hidden = kind !== 'site';
-  createParentField.hidden = kind === 'space';
-  if (kind === 'group') {
-    createLocations = new Map(draftSpaces.map((space, index) => [String(index), space]));
-    createParent.innerHTML = draftSpaces.map((space, index) => `<option value="${index}">${escapeHTML(space.name)}</option>`).join('');
-    createParent.value = String(draftSpaces.indexOf(parentSpace()));
-  } else if (kind === 'site') {
-    createLocations = new Map(draft.map((group, index) => [`group:${index}`, group]));
-    draftSpaces.forEach((space, index) => createLocations.set(`space:${index}`, space));
-    createParent.innerHTML = draftSpaces.map((space, index) => `<optgroup label="${escapeHTML(space.name)}">${space.groups.length ? space.groups.map(group => `<option value="group:${draft.indexOf(group)}">${escapeHTML(group.name)}</option>`).join('') : `<option value="space:${index}">${escapeHTML(space.name)} / 新建常用分组</option>`}</optgroup>`).join('');
-    const parent = parentSpace();
-    const group = selectedGroups.size === 1 ? [...selectedGroups][0] : ownerSpace(activeGroup) === parent ? activeGroup : parent?.groups[0];
-    createParent.value = group ? `group:${draft.indexOf(group)}` : `space:${draftSpaces.indexOf(parentSpace())}`;
-  }
-  if (!createDialog.open) createDialog.showModal();
-  name.focus();
+function finishCreation(space, group, message) {
+  newSpaces.add(space); collapsedSpaces.delete(space); collapsedGroups.delete(group);
+  activeGroup = group; clearUndo(); rebuildDraft(); search.value = '';
+  updateGroupOptions(); changed(message); refresh();
 }
-document.getElementById('bulkAddGroup').addEventListener('click', () => {
-  const open = createMenu.hidden; createMenu.hidden = !open;
-  document.getElementById('bulkAddGroup').setAttribute('aria-expanded', String(open));
-  if (open) createMenu.querySelector('button').focus();
-});
-createMenu.addEventListener('click', event => { const button = event.target.closest('[data-create-kind]'); if (button) openCreate(button.dataset.createKind); });
-dialog.addEventListener('click', event => { if (!event.target.closest('.bulk-new-controls')) closeCreateMenu(); });
-createDialog.addEventListener('cancel', event => {
-  event.preventDefault();
+function closeCreateMenu() {
+  document.getElementById('contextMenu').classList.add('hidden');
+  document.getElementById('bulkAddGroup').setAttribute('aria-expanded', 'false');
+}
+function openCreate(moveSelection = false) {
+  moveAfterCreate = moveSelection; closeCreateMenu(); openGroupModal();
+}
+document.getElementById('bulkAddGroup').addEventListener('click', event => {
   event.stopPropagation();
-  closeCreateDialog();
-  document.getElementById('bulkAddGroup').focus();
+  const button = event.currentTarget;
+  if (!document.getElementById('contextMenu').classList.contains('hidden')) { closeCreateMenu(); return; }
+  const rect = button.getBoundingClientRect();
+  openContextMenu(rect.left, rect.bottom + 6, { host: dialog, creationOnly: true });
+  button.setAttribute('aria-expanded', 'true');
+  const first = document.getElementById('contextAddSite');
+  first.tabIndex = 0; first.focus();
 });
 const outsideDialogElement = (el, event) => {
   const rect = el.getBoundingClientRect();
   return event.target === el && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom);
 };
-let createBackdropPressed = false;
-createDialog.addEventListener('pointerdown', event => { createBackdropPressed = outsideDialogElement(createDialog, event); });
-createDialog.addEventListener('click', event => {
-  if (createBackdropPressed && outsideDialogElement(createDialog, event)) {
-    closeCreateDialog();
-    document.getElementById('bulkAddGroup').focus();
-  }
-  createBackdropPressed = false;
-});
+createDialog.addEventListener('cancel', event => { event.preventDefault(); closeCreateDialog(); });
 dialog.addEventListener('keydown', event => {
-  if (event.key !== 'Escape') return;
-  if (createDialog.open) {
-    event.preventDefault(); event.stopPropagation();
-    closeCreateDialog(); document.getElementById('bulkAddGroup').focus();
-    return;
-  }
-  if (!createMenu.hidden) {
-    event.preventDefault(); event.stopPropagation();
-    closeCreateMenu(); document.getElementById('bulkAddGroup').focus();
+  if (event.key === 'Escape' && !document.getElementById('contextMenu').classList.contains('hidden')) {
+    event.preventDefault(); event.stopPropagation(); closeCreateMenu(); document.getElementById('bulkAddGroup').focus();
   }
 });
-document.getElementById('bulkCreateCancel').addEventListener('click', () => { closeCreateDialog(); document.getElementById('bulkAddGroup').focus(); });
-document.getElementById('bulkCreateName').addEventListener('input', event => event.target.setCustomValidity(''));
-document.getElementById('bulkCreateUrl').addEventListener('input', event => event.target.setCustomValidity(''));
-createForm.addEventListener('submit', event => {
-  event.preventDefault();
-  const name = document.getElementById('bulkCreateName').value.trim(), urlInput = document.getElementById('bulkCreateUrl');
-  if (!name) { const input = document.getElementById('bulkCreateName'); input.setCustomValidity('请输入名称'); input.reportValidity(); return; }
-  if (createKind === 'site' && !safeWebUrl(urlInput.value, { allowBare: true })) { urlInput.setCustomValidity('请输入有效的 HTTP 或 HTTPS 网址'); urlInput.reportValidity(); return; }
-  let space, group;
-  if (createKind === 'space') {
-    space = { id: generateId(), name, groups: [] }; draftSpaces.push(space); newSpaces.add(space); collapsedSpaces.delete(space); activeGroup = null;
-  } else if (createKind === 'group') {
-    space = createLocations.get(createParent.value); if (!draftSpaces.includes(space)) { status.textContent = '所属空间已被删除，请重新选择新建位置'; return; }
-    group = { id: generateId(), name, collapsed: false, links: [], column: 0, columnCount: editorColumnCount }; space.groups.push(group); activeGroup = group;
-  } else {
-    if (createParent.value.startsWith('space:')) {
-      space = createLocations.get(createParent.value); if (!draftSpaces.includes(space)) { status.textContent = '所属空间已被删除，请重新选择新建位置'; return; }
-      group = { id: generateId(), name: '常用', collapsed: false, links: [], column: 0, columnCount: editorColumnCount }; space.groups.push(group);
-    } else { group = createLocations.get(createParent.value); space = ownerSpace(group); }
-    if (!group || !space) { status.textContent = '所属分组已被删除，请重新选择新建位置'; return; }
-    group.links.push({ id: generateId(), title: name, url: safeWebUrl(urlInput.value, { allowBare: true }) }); activeGroup = group; collapsedGroups.delete(group);
-  }
-  if (space) { newSpaces.add(space); collapsedSpaces.delete(space); }
-  const shouldMove = moveAfterCreate;
-  clearUndo();
-  rebuildDraft(); search.value = ''; closeCreateDialog(); updateGroupOptions();
-  target.value = '';
-  changed(`已${{space:'新建空间',group:'新建分组',site:'新建网站'}[createKind]}“${name}”，保存后生效`); refresh();
-  if (shouldMove && group && selected.size) moveLinks(selected, group);
-  if (space) groupList.querySelector(`[data-space-index="${draftSpaces.indexOf(space)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-});
+new MutationObserver(() => {
+  if (document.getElementById('contextMenu').classList.contains('hidden')) document.getElementById('bulkAddGroup').setAttribute('aria-expanded', 'false');
+}).observe(document.getElementById('contextMenu'), { attributes: true, attributeFilter: ['class'] });
 showEmptySpaces.addEventListener('change', renderNavigation);
 groupList.addEventListener('change', event => {
   const input = event.target;
@@ -392,7 +359,7 @@ groupList.addEventListener('change', event => {
   updateSelection();
 });
 target.addEventListener('change', () => {
-  if (target.value === 'new') { target.value = ''; openCreate('group', true); return; }
+  if (target.value === 'new') { target.value = ''; openCreate(true); return; }
   const destination = target.value === '' ? null : draft[Number(target.value)];
   if (destination && selected.size) moveLinks(selected, destination);
   target.value = ''; updateSelection();
@@ -744,4 +711,4 @@ document.addEventListener('simtab-bookmark-preview', event => {
   groupList.querySelector(`[data-nav-group="${draft.indexOf(first)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   if (!activeGroup) list.querySelector(`#bulkDetails${draft.indexOf(first)}`)?.scrollIntoView({ block: 'nearest' });
 });
-dialog.addEventListener('close', () => { closeCreateDialog(); if (hasImportedDraft) importStatus.textContent = '已取消导入，收藏夹未保存。'; hasImportedDraft = false; drag = null; clearDropMarks(); });
+dialog.addEventListener('close', () => { closeCreateDialog(); closeCreateMenu(); setCreationContext(null); document.body.appendChild(document.getElementById('contextMenu')); if (hasImportedDraft) importStatus.textContent = '已取消导入，收藏夹未保存。'; hasImportedDraft = false; drag = null; clearDropMarks(); });

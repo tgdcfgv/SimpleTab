@@ -71,17 +71,17 @@ const assert = require('node:assert/strict');
     }
     // The create-from-move path must also finish the move without an arrow.
     await page.selectOption('#bulkMoveTarget', 'new');
-    await page.fill('#bulkCreateName', '移动目标');
-    await page.locator('#bulkCreateForm button[type="submit"]').click();
+    await page.fill('#groupName', '移动目标');
+    await page.locator('#groupForm button[type="submit"]').click();
     assert.equal(await page.locator('[data-key]').count(), groupCount - 1);
     assert.equal(await page.locator('#bulkMoveTarget').inputValue(), '');
     const heightBeforeCreate = await page.locator('#bulkEditorDialog').evaluate(el => el.offsetHeight);
     await page.click('#bulkAddGroup');
-    await page.click('[data-create-kind="group"]');
-    assert(await page.locator('#bulkCreateDialog').isVisible());
+    await page.click('#contextAddGroup');
+    assert(await page.locator('#groupModal').isVisible());
     assert.equal(await page.locator('#bulkEditorDialog').evaluate(el => el.offsetHeight), heightBeforeCreate, 'create dialog does not increase bulk editor height');
     await page.keyboard.press('Escape');
-    assert(await page.locator('#bulkCreateDialog').isHidden());
+    assert(await page.locator('#groupModal').isHidden());
     await page.keyboard.press('Escape');
     assert(await page.locator('#bulkDiscardDialog').isVisible());
     await page.click('#bulkKeepEditing');
