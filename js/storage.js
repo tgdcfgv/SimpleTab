@@ -4,6 +4,7 @@ import { cloud } from './cloud.js';
 import { DEFAULT_DATA, normalizeAppData } from './data.js';
 import { migrateWallpaper, portableSnapshot, exportWallpaper } from './wallpaper.js';
 import { fingerprint, writeLocalSnapshot } from './local-store.js';
+import { readCloudCache, writeCloudCache } from './cloud-cache.js';
 export { SEARCH_ENGINES, DEFAULT_DATA, TEMPORARY_GROUP_NAME, createTemporaryGroup, ensureTemporaryGroup, createDefaultSpaces, normalizeAppData } from './data.js';
 
 export let appData = null;
@@ -53,6 +54,7 @@ export const syncManager = {
   error: '',
   cloudUnavailable: false,
   localVersion: 'null',
+  refreshing: null,
 
   updateStatusUI() {
     const el = document.getElementById('syncStatus');
@@ -112,17 +114,76 @@ export const syncManager = {
     this.updateStatusUI();
   },
 
-  async loadData() {
+  async loadData({ preferCache = false } = {}) {
     this.ready = false;
     appData = normalizeAppData(null);
+    // Only startup uses SWR. Explicit account/recovery actions await their result.
+    let session;
+    try { session = JSON.parse(localStorage.getItem('simtab.auth') || 'null'); } catch {}
+    const callback = /(?:[?#&])(?:access_token|token_hash|token|error|error_description)=/.test(location.href);
+    if (preferCache && session?.user?.id && session.access_token && session.refresh_token && !session.needs_choice && !callback) {
+      const cached = await readCloudCache(session.user.id);
+      let currentSession;
+      try { currentSession = JSON.parse(localStorage.getItem('simtab.auth') || 'null'); } catch {}
+      if (cached && currentSession?.user?.id === session.user.id && !currentSession.needs_choice) {
+        session = currentSession;
+        cloud.session = session;
+        const generation = ++this.generation;
+        appData = normalizeAppData(cached.data);
+        this.mode = 'cloud';
+        this.revision = cached.revision;
+        this.pending = null;
+        this.conflict = false;
+        this.error = '';
+        this.cloudUnavailable = false;
+        this.ready = true;
+        this.status = 'syncing';
+        this.updateStatusUI();
+        // Defer networking until the caller can render and attach UI listeners.
+        this.refreshing = new Promise(resolve => setTimeout(resolve, 0)).then(async () => {
+          try {
+            await cloud.restore();
+            if (generation !== this.generation) return;
+            if (!cloud.session || cloud.session.user?.id !== session.user.id) {
+              await this.handleSessionLoss();
+              return;
+            }
+            await this.syncNow();
+          } catch (error) {
+            if (generation !== this.generation) return;
+            if (!cloud.session) {
+              await this.handleSessionLoss();
+            } else {
+              this.status = 'error';
+              this.error = `暂时无法同步，当前显示上次同步的账户缓存。${error.message}`;
+              this.updateStatusUI();
+            }
+          }
+        }).finally(() => { this.refreshing = null; });
+        return;
+      }
+    }
     try {
       if (!await cloud.restore()) return await this.loadLocal();
       if (cloud.session.needs_choice) return await this.loadLocal();
       await this.loadCloud();
     } catch (error) {
+      if ([400, 401, 403].includes(error.status)) cloud.storeSession(null);
       if (!cloud.session || cloud.session.needs_choice) return await this.loadLocal();
       await this.useLocalAfterCloudFailure(error);
     } finally { this.updateStatusUI(); }
+  },
+
+  async handleSessionLoss() {
+    // Preserve edits for export when a session expires during background validation.
+    if (this.pending || this.saving) {
+      this.ready = false;
+      this.status = 'error';
+      this.error = '登录已失效。请先导出未保存的内容，再刷新页面重新登录。';
+      this.updateStatusUI();
+      return;
+    }
+    await this.loadLocal(); applySettings(); render();
   },
 
   async useLocalAfterCloudFailure(error) {
@@ -149,6 +210,8 @@ export const syncManager = {
     if (currentData || !row) this.revision = await cloud.write(portableSnapshot(data), this.revision);
     if (generation !== this.generation) return;
     appData = data;
+    await writeCloudCache(cloud.session?.user?.id, portableSnapshot(data), this.revision);
+    if (generation !== this.generation) return;
     this.pending = null;
     this.conflict = false;
     this.error = '';
@@ -193,9 +256,11 @@ export const syncManager = {
           if (generation !== this.generation) return false;
           this.localVersion = localVersion;
         } else {
+          const userId = cloud.session.user.id;
           const revision = await cloud.write(snapshot, this.revision);
           if (generation !== this.generation) return false;
           this.revision = revision;
+          await writeCloudCache(userId, snapshot, revision);
         }
         if (generation !== this.generation) return false;
         if (this.pending === snapshot) this.pending = null;
@@ -236,13 +301,19 @@ export const syncManager = {
         return false;
       }
     }
+    const generation = this.generation;
     try {
-      const generation = this.generation;
       const revision = this.revision;
       const row = await cloud.read();
       // A local edit may have happened while the read was in flight.
       if (generation !== this.generation || this.pending || this.saving || this.revision !== revision) return true;
       if (!row) throw new Error('云端记录已移除，请退出后重新登录。');
+      if (row.revision === revision) {
+        this.status = 'saved';
+        this.error = '';
+        this.updateStatusUI();
+        return true;
+      }
       const data = normalizeAppData(row.data);
       await migrateWallpaper(data);
       if (generation !== this.generation || this.pending || this.saving || this.revision !== revision) return true;
@@ -250,11 +321,19 @@ export const syncManager = {
       this.revision = row.revision;
       this.status = 'saved';
       this.error = '';
+      await writeCloudCache(cloud.session?.user?.id, portableSnapshot(data), row.revision);
+      if (generation !== this.generation) return true;
       this.updateStatusUI();
       applySettings();
       render();
       return true;
     } catch (error) {
+      if (generation !== this.generation) return false;
+      if ([401, 403].includes(error.status)) {
+        cloud.storeSession(null);
+        await this.handleSessionLoss();
+        return false;
+      }
       this.error = error.message;
       this.status = 'error';
       this.updateStatusUI();

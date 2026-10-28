@@ -5,7 +5,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
 (async () => {
   const browser = await chromium.launch({ headless: true, channel: 'chrome' });
   try {
-    for (const failure of ['auth', 'refresh', 'data']) {
+    for (const failure of ['refresh', 'data']) {
       const context = await browser.newContext();
       const user = { id: '00000000-0000-4000-8000-000000000001', email: 'test@example.com',
         user_metadata: { nickname: '测试', avatar_emoji: '😊', profile_completed: true } };
@@ -20,8 +20,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
       await context.route('https://**/*', async route => {
         const req = route.request(), url = new URL(req.url());
         if (url.hostname !== 'zyttspnlrdzjosnitijb.supabase.co') return route.abort();
-        if (offline && ((failure === 'auth' && url.pathname.endsWith('/user')) ||
-            (failure === 'refresh' && url.pathname.endsWith('/token')) ||
+        if (offline && ((failure === 'refresh' && url.pathname.endsWith('/token')) ||
             (failure === 'data' && url.pathname.endsWith('/account_data')))) return route.abort();
         const reply = json => route.fulfill({ contentType: 'application/json', body: JSON.stringify(json) });
         if (url.pathname.endsWith('/token')) return reply({ access_token: 'new-token', refresh_token: 'new-refresh', expires_in: 3600, user });
@@ -72,6 +71,6 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
       assert.deepEqual(errors, []);
       await context.close();
     }
-    console.log('PASS: auth, refresh and cloud-read outages allow local use, settings dismissal, safe local saves and explicit cloud retry.');
+    console.log('PASS: refresh and cloud-read outages without a cache allow local use, settings dismissal, safe local saves and explicit cloud retry.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });

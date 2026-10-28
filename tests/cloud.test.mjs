@@ -6,7 +6,7 @@ globalThis.localStorage = { getItem: key => values.get(key) ?? null, setItem: (k
 const session = () => ({ access_token: 'test-token', refresh_token: 'refresh-token', expires_at: Date.now() / 1000 + 3600, user: { id: 'user-a', email: 'test@example.test' } });
 const response = (data, status = 200) => new Response(JSON.stringify(data), { status });
 
-test('persists only the auth session, never account data', async () => {
+test('data API reads leave account snapshot caching to the sync manager', async () => {
   values.clear(); cloud.storeSession(session());
   globalThis.fetch = async (url, options) => {
     assert.equal(options.headers.Authorization, 'Bearer test-token');
@@ -51,7 +51,7 @@ test('simultaneous first writes report a conflict', async () => {
   await assert.rejects(cloud.write({}, null), error => error.conflict === true);
 });
 
-test('network failures are reported without caching account data', async () => {
+test('failed cloud writes do not cache unconfirmed account data', async () => {
   cloud.storeSession(session());
   globalThis.fetch = async () => { throw new TypeError('offline'); };
   await assert.rejects(cloud.write({ private: 'bookmark' }, 2), error => error.cause?.message === 'offline');

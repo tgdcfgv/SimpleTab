@@ -1,3 +1,5 @@
+import { clearCloudCache } from './cloud-cache.js';
+
 // Public client configuration. Never put a service_role key here.
 export const SUPABASE_URL = 'https://zyttspnlrdzjosnitijb.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_VYNEnxYwYEWMoQgSH7nKNQ_elImzIYs';
@@ -108,6 +110,8 @@ export const cloud = {
     throw new Error('请输入邮件中的验证码或完整验证链接。');
   },
   storeSession(session) {
+    let previousUserId = this.session?.user?.id;
+    try { previousUserId ||= JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')?.user?.id; } catch {}
     this.session = session?.access_token ? {
       access_token: session.access_token, refresh_token: session.refresh_token,
       expires_at: session.expires_at || Math.floor(Date.now() / 1000) + session.expires_in,
@@ -116,6 +120,7 @@ export const cloud = {
     } : null;
     if (this.session) localStorage.setItem(SESSION_KEY, JSON.stringify(this.session));
     else localStorage.removeItem(SESSION_KEY);
+    if (previousUserId && previousUserId !== this.session?.user?.id) void clearCloudCache(previousUserId);
   },
   async restore() {
     const callbackResult = this.handleAuthCallback();
@@ -134,6 +139,8 @@ export const cloud = {
     if (!this.session) return null;
     try {
       const token = await this.token();
+      // The data API verifies the token too; do not add a serial user request on every tab.
+      if (this.session.user?.id) return this.session.user;
       const user = await this.request('/auth/v1/user', { token });
       this.storeSession({ ...this.session, user });
       return user;

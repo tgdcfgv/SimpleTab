@@ -9,7 +9,7 @@ import { initExternalLinkDrop } from './drag.js';
 
 
 export async function init() {
-  await syncManager.loadData();
+  await syncManager.loadData({ preferCache: true });
   applySettings();
   render();
   initAllCustomSelects();
