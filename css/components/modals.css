@@ -1207,7 +1207,7 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 .bulk-group-list { min-height: 0; overflow-y: auto; flex: 1; padding: 2px; }
 .bulk-all-groups, .bulk-group-select, .bulk-add-group { border: 0; background: transparent; color: var(--text-primary); font: 13px var(--font-family); cursor: pointer; text-align: left; }
 .bulk-all-groups { display: flex; align-items: center; justify-content: space-between; min-height: 38px; padding: 7px 10px; border-radius: 6px; flex-shrink: 0; }
-.bulk-nav-item { position: relative; display: flex; align-items: center; gap: 5px; min-height: 36px; padding: 2px 6px 2px 2px; border-radius: 6px; cursor: pointer; }
+.bulk-nav-item { position: relative; display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 2px 6px; border-radius: 6px; cursor: pointer; }
 .bulk-nav-item + .bulk-nav-item { margin-top: 3px; }
 .bulk-all-groups.active, .bulk-nav-item.active { background: var(--accent-subtle); color: var(--accent-color); }
 .bulk-nav-item.active .bulk-group-select { color: var(--accent-color); }
@@ -1233,20 +1233,26 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 .bulk-detail-group.drop-target, .bulk-nav-column.drop-target, .bulk-nav-item.drop-target, .bulk-site-list.drop-target { outline: 2px solid var(--accent-color); outline-offset: -2px; background: var(--accent-subtle); border-radius: 6px; }
 .bulk-site-rows { list-style: none; padding: 0; margin: 0; }
 .bulk-detail-heading { width: 100%; display: flex; align-items: center; gap: 6px; border: 0; border-radius: 5px; padding: 6px; margin: 3px 0; text-align: left; color: var(--text-secondary); background: var(--bg-subtle); font: 600 12px var(--font-family); cursor: pointer; }
+.bulk-detail-heading > svg.lucide { width: 16px; height: 16px; flex: 0 0 16px; }
 .bulk-detail-heading .bulk-group-count { margin-left: auto; }
 .bulk-detail-heading[aria-expanded="false"] > svg { transform: rotate(-90deg); }
-.bulk-site-row { display: flex; align-items: center; gap: 6px; min-height: 34px; padding: 2px 4px; border-radius: 5px; position: relative; cursor: pointer; user-select: none; }
+.bulk-site-row { display: flex; align-items: center; gap: 6px; min-height: 34px; padding: 2px 6px; border-radius: 5px; position: relative; cursor: pointer; user-select: none; }
 .bulk-site-row:hover, .bulk-site-row:has(input:checked), .bulk-site-row.is-selected { background: var(--bg-subtle); }
 .bulk-site-row.is-editing { background: color-mix(in srgb, var(--accent-subtle) 45%, var(--bg-subtle)); cursor: default; user-select: text; }
 .bulk-nav-item, .bulk-site-row { -webkit-touch-callout: none; }
 .bulk-nav-item.is-dragging, .bulk-site-row.is-dragging { cursor: grabbing; background: var(--accent-subtle); opacity: .7; }
 .bulk-nav-item:focus-visible, .bulk-site-row:focus-visible { outline: 2px solid var(--accent-color); outline-offset: -2px; }
-.bulk-editor input[type="checkbox"] { width: 15px; height: 15px; margin: 0; flex: 0 0 15px; accent-color: var(--accent-color); cursor: pointer; }
+.bulk-editor input[type="checkbox"] { width: 16px; height: 16px; margin: 0; flex: 0 0 16px; accent-color: var(--accent-color); cursor: pointer; }
+/* Reserve the selection lane so hover and selection never shift the content. */
+.bulk-editor :is([data-key], [data-select-group], [data-select-space]) { opacity: 0; transition: opacity 120ms ease; }
+.bulk-editor.has-bulk-selection :is([data-key], [data-select-group], [data-select-space]),
+.bulk-site-row:hover > [data-key], .bulk-nav-item:hover > [data-select-group], .bulk-space-header:hover > [data-select-space],
+.bulk-editor :is([data-key], [data-select-group], [data-select-space]):focus-visible { opacity: 1; }
 .bulk-favicon { width: 18px; height: 18px; flex: 0 0 18px; object-fit: contain; border-radius: 4px; }
 .bulk-site-copy { min-width: 0; display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: center; gap: 8px; flex: 1; }
 /* Two container IDs override the shared form rules with excluded input IDs. */
 #bulkEditorDialog :is(#bulkSiteList, #bulkGroupList) input.bulk-field { min-width: 0; height: 28px; min-height: 28px; padding: 3px 6px; border: 1px solid transparent; border-color: transparent !important; border-radius: 5px; background: transparent; color: var(--text-primary); font: 13px var(--font-family); transition: border-color 150ms ease, background 150ms ease; }
-#bulkEditorDialog #bulkSiteList .bulk-site-row:not(.is-editing) input.bulk-field { cursor: pointer; user-select: none; border-color: transparent !important; background: transparent !important; }
+#bulkEditorDialog #bulkSiteList .bulk-site-row:not(.is-editing) input.bulk-field { cursor: pointer; user-select: none; pointer-events: none; border-color: transparent !important; background: transparent !important; }
 #bulkEditorDialog #bulkSiteList .bulk-site-row.is-editing input.bulk-field { border-color: var(--border-default) !important; background: var(--bg-surface-elevated) !important; cursor: text; user-select: text; }
 #bulkEditorDialog #bulkSiteList input.bulk-title-input { width: 100%; max-width: none; text-overflow: ellipsis; }
 #bulkEditorDialog #bulkSiteList input.bulk-url-input { width: 100%; color: var(--text-secondary); font-size: 12px; text-overflow: ellipsis; }
@@ -1279,12 +1285,13 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 
 /* Spaces are disclosure sections only; empty spaces have no navigation entry. */
 .bulk-space-section + .bulk-space-section { margin-top: 10px; }
-.bulk-space-header { position: relative; display: flex; align-items: center; gap: 5px; padding-left: 5px; }
+.bulk-space-header { position: relative; display: flex; align-items: center; gap: 6px; padding-left: 4px; }
 .bulk-space-header .bulk-space-toggle { flex: 1; width: 0; min-width: 0; display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px; border: 0; border-radius: 6px; background: transparent; color: var(--text-primary); font: 600 13px var(--font-family); text-align: left; cursor: pointer; }
+.bulk-space-toggle > svg.lucide { width: 16px; height: 16px; flex: 0 0 16px; }
 .bulk-space-toggle > span:first-of-type { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bulk-space-toggle .bulk-group-count { margin-left: auto; }
 .bulk-space-toggle[aria-expanded="false"] > svg { transform: rotate(-90deg); }
-.bulk-space-columns { padding-left: 8px; }
+.bulk-space-columns { padding-left: 26px; }
 
 /* Row and navigation hover actions. */
 .bulk-nav-actions, .bulk-space-actions { position: absolute; right: 2px; display: flex; gap: 1px; border-radius: 5px; background: var(--bg-surface-elevated); }
@@ -1297,10 +1304,10 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 .bulk-space-header:is(:hover, :focus-within) .bulk-space-toggle > .bulk-group-count { visibility: hidden; }
 .bulk-nav-item:has(.bulk-group-name-input:not([hidden])) .bulk-nav-actions,
 .bulk-space-header:has(.bulk-space-name-input:not([hidden])) .bulk-space-actions { display: none; }
-.bulk-nav-actions .bulk-icon-button, .bulk-space-actions .bulk-icon-button { width: 22px; height: 22px; padding: 3px; }
-.bulk-site-actions .bulk-icon-button { width: 22px; height: 22px; padding: 3px; }
-.bulk-editor :is(.bulk-nav-actions, .bulk-space-actions, .bulk-site-actions) svg { width: 12px; height: 12px; }
-.bulk-site-delete { flex: 0 0 22px; }
+.bulk-nav-actions .bulk-icon-button, .bulk-space-actions .bulk-icon-button { width: 26px; height: 28px; padding: 5px; }
+.bulk-site-actions .bulk-icon-button { width: 26px; height: 28px; padding: 5px; }
+.bulk-editor :is(.bulk-nav-actions, .bulk-space-actions, .bulk-site-actions) svg { width: 15px; height: 15px; }
+.bulk-site-delete { flex: 0 0 26px; }
 .bulk-row-delete { color: var(--color-danger); }
 .bulk-icon-button:hover, .bulk-close:hover { background: var(--bg-subtle); color: var(--text-primary); }
 .bulk-row-delete:hover { color: var(--color-danger); background: color-mix(in srgb, var(--color-danger) 12%, transparent); }
@@ -1367,6 +1374,7 @@ dialog.shared-creation-host::backdrop { background: transparent; }
   #bulkEditorDialog .bulk-actions .btn { padding: 6px 8px; }
 }
 @media (hover: none), (pointer: coarse) {
+  .bulk-editor :is([data-key], [data-select-group], [data-select-space]) { opacity: 1; }
   .bulk-editor :is(.bulk-nav-actions, .bulk-space-actions, .bulk-site-actions) .bulk-icon-button { width: 28px; height: 32px; }
   .bulk-site-delete { flex-basis: 28px; }
   .bulk-group-select, .bulk-all-groups, .bulk-add-group { min-height: 40px; }

@@ -97,6 +97,7 @@ function updateSelection() {
   groupList.querySelectorAll('[data-select-space]').forEach(input => { const space = draftSpaces[Number(input.dataset.selectSpace)]; if (space) syncParent(input, space.groups.flatMap(group => group.links), selectedSpaces.has(space)); });
   const searching = !!search.value.trim(), counter = document.getElementById('bulkSelectionCount');
   const hasBatchSelection = Boolean(selected.size || selectedGroups.size || selectedSpaces.size);
+  dialog.classList.toggle('has-bulk-selection', hasBatchSelection);
   counter.textContent = `已选 ${selected.size} 个网站${searching ? ` · 匹配 ${visible.length} 个` : ''}`;
   counter.hidden = false;
   counter.classList.toggle('has-selection', selected.size > 0);
@@ -122,7 +123,7 @@ function renderNavigation() {
   document.getElementById('bulkAllCount').textContent = total;
   allButton.classList.toggle('active', !activeGroup);
   allButton.setAttribute('aria-current', activeGroup ? 'false' : 'page');
-  const row = (group, index) => `<div class="bulk-nav-item ${group === activeGroup ? 'active' : ''}" data-nav-group="${index}" data-drag-group="${index}" tabindex="0" aria-label="${escapeHTML(group.name)}，长按拖拽，或按 Alt 加上下方向键排序" role="listitem">
+  const row = (group, index) => `<div class="bulk-nav-item ${group === activeGroup ? 'active' : ''}" data-nav-group="${index}" data-drag-group="${index}" draggable="true" tabindex="0" aria-label="${escapeHTML(group.name)}，拖拽或触屏长按整理，或按 Alt 加上下方向键排序" role="listitem">
     <input type="checkbox" data-select-group="${index}" aria-label="选择分组${escapeHTML(group.name)}及其网站" ${selectedGroups.has(group) ? 'checked' : ''}><button type="button" class="bulk-group-select" data-select-nav="${index}" aria-current="${group === activeGroup ? 'page' : 'false'}" title="${escapeHTML(group.name)}（双击或按 F2 改名）"><span class="bulk-nav-name">${escapeHTML(group.name || '未命名分组')}</span></button>
     <input type="text" class="bulk-field bulk-group-name-input" data-edit-group="${index}" value="${escapeHTML(group.name)}" aria-label="分组名称" maxlength="100" spellcheck="false" hidden>
     <span class="bulk-group-count">${group.links.length}</span><span class="bulk-nav-actions"><button type="button" class="bulk-icon-button" data-rename-group="${index}" title="重命名分组" aria-label="重命名分组">${icon('pencil-line', 13)}</button><button type="button" class="bulk-icon-button bulk-row-delete" data-delete-group="${index}" title="删除分组及其网站" aria-label="删除分组及其网站">${icon('trash', 13)}</button></span>
@@ -143,9 +144,9 @@ function renderNavigation() {
 }
 function siteRow({ link, key }) {
   const invalid = !safeWebUrl(link.url, { allowBare: true });
-  return `<li class="bulk-site-row ${selected.has(link) ? 'is-selected' : ''}" data-site-key="${key}" data-drag-site="${key}" tabindex="0" aria-label="${escapeHTML(link.title)}，长按拖拽，或按 Alt 加上下方向键排序">
+  return `<li class="bulk-site-row ${selected.has(link) ? 'is-selected' : ''}" data-site-key="${key}" data-drag-site="${key}" draggable="true" tabindex="0" aria-label="${escapeHTML(link.title)}，拖拽或触屏长按整理，或按 Alt 加上下方向键排序">
     <input type="checkbox" data-key="${key}" aria-label="选择${escapeHTML(link.title)}" ${selected.has(link) ? 'checked' : ''}>
-    <img class="bulk-favicon" data-icon-key="${key}" alt="" width="18" height="18">
+    <img draggable="false" class="bulk-favicon" data-icon-key="${key}" alt="" width="18" height="18">
     <div class="bulk-site-copy" title="单击选择，双击编辑"><input type="text" class="bulk-field bulk-title-input" data-edit-key="${key}" data-field="title" value="${escapeHTML(link.title)}" aria-label="网站名称" maxlength="200" spellcheck="false">
     <input type="text" inputmode="url" class="bulk-field bulk-url-input" data-edit-key="${key}" data-field="url" value="${escapeHTML(link.url)}" aria-label="网站网址" aria-invalid="${invalid}" spellcheck="false" autocomplete="off"></div>
     <span class="bulk-site-actions"><button type="button" class="bulk-icon-button bulk-site-edit" data-edit-site="${key}" title="编辑网站" aria-label="编辑${escapeHTML(link.title)}">${icon('pencil-line', 13)}</button><button type="button" class="bulk-icon-button bulk-site-open" data-open-site="${key}" title="在新标签页打开" aria-label="打开${escapeHTML(link.title)}">${icon('external-link', 13)}</button><button type="button" class="bulk-icon-button bulk-row-delete bulk-site-delete" data-delete-site="${key}" title="删除网站" aria-label="删除${escapeHTML(link.title)}">${icon('trash', 14)}</button></span>
@@ -185,7 +186,7 @@ function openEditor() {
   lastClickedLink = null; preDblClickState = null;
   selectedGroups.clear(); selectedSpaces.clear(); newSpaces.clear(); showEmptySpaces.checked = false; closeCreateDialog(); closeCreateMenu();
   search.value = ''; target.value = ''; updateGroupOptions();
-  document.getElementById('bulkSpaceName').textContent = `全部空间 · 单击选择，双击编辑名称与网址，长按拖拽整理`;
+  document.getElementById('bulkSpaceName').textContent = `全部空间 · 单击选择，双击编辑名称与网址，拖拽整理（触屏长按）`;
   status.textContent = ''; refresh(); dialog.showModal();
   setCreationContext({
     groups: () => parentSpace().groups,
@@ -501,7 +502,9 @@ list.addEventListener('dblclick', event => {
     applySiteSelection(link, preDblClickState.wasSelected, false);
     preDblClickState = null;
   }
-  startEditingSite(row, event.target.closest('.bulk-field') || row.querySelector('.bulk-title-input'));
+  const urlInput = row.querySelector('.bulk-url-input');
+  const field = event.target.closest('.bulk-field') || (event.clientX >= urlInput.getBoundingClientRect().left ? urlInput : row.querySelector('.bulk-title-input'));
+  startEditingSite(row, field);
 });
 for (const [id, collapse] of [['bulkExpandAll', false], ['bulkCollapseAll', true]]) document.getElementById(id).addEventListener('click', () => {
   collapsedGroups.clear(); if (collapse) draft.forEach(group => collapsedGroups.add(group)); renderList();
@@ -616,7 +619,7 @@ function dropDestination(event) {
   return null;
 }
 // Pointer-based long press keeps ordinary clicks, double clicks and touch scrolling intact.
-let press = null, dragFrame = null, suppressDragClick = false;
+let press = null, dragFrame = null, suppressDragClick = false, nativeDragRow = null;
 function stopPress() {
   const previous = press;
   press = null; drag = null;
@@ -629,33 +632,43 @@ function pointerDestination() {
   const element = document.elementFromPoint(press.x, press.y);
   return element ? dropDestination({ target: element, clientY: press.y }) : null;
 }
+function showDropDestination(destination, clientY) {
+  clearDropMarks();
+  if (!destination) return;
+  destination.element.classList.add(destination.emptyColumn || (drag.type === 'site' && destination.navigation) || destination.append ? 'drop-target' : destination.after ? 'bulk-drop-after' : 'bulk-drop-before');
+  const scrollable = destination.navigation || destination.emptyColumn ? groupList : list;
+  const rect = scrollable.getBoundingClientRect();
+  if (clientY < rect.top + 28) scrollable.scrollTop -= 8;
+  if (clientY > rect.bottom - 28) scrollable.scrollTop += 8;
+}
 function paintDrag() {
   if (!press || !drag) return;
-  const destination = pointerDestination();
-  clearDropMarks();
-  if (destination) {
-    destination.element.classList.add(destination.emptyColumn || (drag.type === 'site' && destination.navigation) || destination.append ? 'drop-target' : destination.after ? 'bulk-drop-after' : 'bulk-drop-before');
-    const scrollable = destination.navigation || destination.emptyColumn ? groupList : list;
-    const rect = scrollable.getBoundingClientRect();
-    if (press.y < rect.top + 28) scrollable.scrollTop -= 8;
-    if (press.y > rect.bottom - 28) scrollable.scrollTop += 8;
-  }
+  showDropDestination(pointerDestination(), press.y);
   dragFrame = requestAnimationFrame(paintDrag);
+}
+function dragSource(row) {
+  if (row.dataset.dragGroup !== undefined) return { type: 'group', group: draft[Number(row.dataset.dragGroup)] };
+  const link = linksByKey.get(row.dataset.dragSite);
+  return { type: 'site', links: selected.has(link) ? new Set(selected) : new Set([link]) };
+}
+function applyDrop(source, destination) {
+  if (!source || !destination) return;
+  if (source.type === 'group') {
+    if (destination.emptyColumn) moveGroupToColumn(source.group, destination.space, destination.column);
+    else reorderGroups(source.group, destination.group, destination.after);
+  } else if (destination.navigation || destination.append) moveLinks(source.links, destination.group);
+  else reorderSites(source.links, destination.group, destination.link, destination.after);
 }
 dialog.addEventListener('pointerdown', event => {
   suppressDragClick = false;
-  if (event.button !== 0 || !event.isPrimary || saving) return;
+  if (event.button !== 0 || !event.isPrimary || saving || event.pointerType === 'mouse') return;
   const row = event.target.closest('[data-drag-group], [data-drag-site]');
   if (!row || row.classList.contains('is-editing') || event.target.closest('input[type="checkbox"], .bulk-nav-actions, .bulk-site-actions, [data-edit-group]')) return;
   stopPress();
   press = { row, id: event.pointerId, startX: event.clientX, startY: event.clientY, x: event.clientX, y: event.clientY };
   press.timer = setTimeout(() => {
     if (!press || !row.isConnected) return;
-    if (row.dataset.dragGroup !== undefined) drag = { type: 'group', group: draft[Number(row.dataset.dragGroup)] };
-    else {
-      const link = linksByKey.get(row.dataset.dragSite);
-      drag = { type: 'site', links: selected.has(link) ? new Set(selected) : new Set([link]) };
-    }
+    drag = dragSource(row);
     row.setPointerCapture(press.id);
     row.classList.add('is-dragging');
     suppressDragClick = true;
@@ -676,21 +689,51 @@ dialog.addEventListener('pointerup', event => {
   stopPress();
   if (!destination) return;
   event.preventDefault();
-  if (source.type === 'group') {
-    if (destination.emptyColumn) moveGroupToColumn(source.group, destination.space, destination.column);
-    else reorderGroups(source.group, destination.group, destination.after);
-  } else if (destination.navigation || destination.append) moveLinks(source.links, destination.group);
-  else reorderSites(source.links, destination.group, destination.link, destination.after);
+  applyDrop(source, destination);
 });
 dialog.addEventListener('touchmove', event => { if (drag) event.preventDefault(); }, { passive: false });
-dialog.addEventListener('pointercancel', stopPress);
+dialog.addEventListener('pointercancel', () => { if (!nativeDragRow) stopPress(); });
 dialog.addEventListener('lostpointercapture', event => { if (press?.id === event.pointerId) stopPress(); });
 dialog.addEventListener('click', event => {
   if (!suppressDragClick) return;
   suppressDragClick = false; event.preventDefault(); event.stopImmediatePropagation();
 }, true);
 dialog.addEventListener('contextmenu', event => { if (press) event.preventDefault(); });
-dialog.addEventListener('dragstart', event => { if (event.target.closest('.bulk-master-detail')) event.preventDefault(); });
+// Desktop browsers delegate mouse/trackpad dragging to the operating system.
+// Touch and pen keep the long-press path so a quick swipe still scrolls.
+dialog.addEventListener('dragstart', event => {
+  const row = event.target.closest('[data-drag-group], [data-drag-site]');
+  if (!row || saving || press || row.classList.contains('is-editing') || event.target.closest('input, .bulk-nav-actions, .bulk-site-actions')) {
+    if (event.target.closest('.bulk-master-detail')) event.preventDefault();
+    return;
+  }
+  stopPress(); nativeDragRow = row; drag = dragSource(row);
+  suppressDragClick = true;
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('text/plain', 'simtab-editor');
+  event.dataTransfer.setDragImage(row, 24, row.offsetHeight / 2);
+  // Defer source styling until the browser has captured the native drag preview.
+  requestAnimationFrame(() => { if (nativeDragRow === row) row.classList.add('is-dragging'); });
+});
+dialog.addEventListener('dragover', event => {
+  if (!nativeDragRow) return;
+  const destination = dropDestination(event);
+  showDropDestination(destination, event.clientY);
+  if (!destination) return;
+  event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = 'move';
+});
+dialog.addEventListener('dragleave', event => { if (nativeDragRow && !dialog.contains(event.relatedTarget)) clearDropMarks(); });
+function stopNativeDrag() {
+  nativeDragRow?.classList.remove('is-dragging'); nativeDragRow = null;
+  drag = null; clearDropMarks();
+}
+dialog.addEventListener('drop', event => {
+  if (!nativeDragRow) return;
+  const destination = dropDestination(event), source = drag;
+  event.preventDefault(); event.stopPropagation(); stopNativeDrag();
+  applyDrop(source, destination);
+});
+dialog.addEventListener('dragend', stopNativeDrag);
 dialog.addEventListener('keydown', event => {
   if (event.key === 'Escape' && press) { event.preventDefault(); event.stopImmediatePropagation(); stopPress(); }
 }, true);
@@ -765,7 +808,7 @@ document.addEventListener('simtab-bookmark-preview', event => {
   if (!activeGroup) list.querySelector(`#bulkDetails${draft.indexOf(first)}`)?.scrollIntoView({ block: 'nearest' });
 });
 dialog.addEventListener('close', () => {
-  stopPress(); clearUndo();
+  stopPress(); stopNativeDrag(); clearUndo();
   const toast = document.getElementById('simtabToast');
   if (toast?.parentElement === dialog) {
     toast.hidden = true;
