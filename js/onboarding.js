@@ -3,14 +3,75 @@ import { openSettingsModal, showToast } from './modals.js';
 
 const emojiPattern = /^(?:\p{Regional_Indicator}{2}|[#*0-9]\uFE0F?\u20E3|\p{Extended_Pictographic}\uFE0F?\p{Emoji_Modifier}?(?:[\u{E0020}-\u{E007E}]+\u{E007F})?(?:\u200D\p{Extended_Pictographic}\uFE0F?\p{Emoji_Modifier}?)*)$/u;
 const emojiSegments = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
-const presetEmojis = [
-  '😊', '😎', '🥳', '🤓', '🤗', '😺', '🦊', '🐱',
-  '🐶', '🐼', '🐻', '🐨', '🐯', '🐰', '🐸', '🐧',
-  '🦉', '🦋', '🐳', '🐙', '🦄', '🐝', '🌱', '🌻',
-  '🍀', '🌵', '🌸', '🌈', '☀️', '🌙', '⭐', '🔥',
-  '🍊', '🍑', '🥑', '🍉', '🍓', '☕', '🍵', '🍰',
-  '🎨', '🎮', '🎧', '🚀', '🛸', '💎', '💡', '🎯'
+const emojiCategories = [
+  {
+    id: 'faces',
+    icon: '😀',
+    label: '表情',
+    emojis: [
+      '😊', '😄', '😁', '😆', '🥹', '😂', '🤣', '😉',
+      '😌', '😍', '🥰', '😘', '😎', '🤓', '🧐', '🥳',
+      '🤩', '🤗', '🤔', '🫡', '🤫', '🤭', '🤠', '😇',
+      '🙂', '🙃', '😋', '😛', '🤪', '😏', '😴', '🤯'
+    ]
+  },
+  {
+    id: 'animals',
+    icon: '🐱',
+    label: '动物',
+    emojis: [
+      '🦊', '🐱', '🐶', '🐼', '🐻', '🐨', '🐯', '🦁',
+      '🐰', '🐹', '🐭', '🐷', '🐸', '🐵', '🐧', '🐦',
+      '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🦄', '🐴',
+      '🐝', '🦋', '🐞', '🐢', '🐙', '🐳', '🐬', '🦈'
+    ]
+  },
+  {
+    id: 'nature',
+    icon: '🌱',
+    label: '自然',
+    emojis: [
+      '🌱', '🌿', '🍀', '🌵', '🌴', '🌲', '🌳', '🍁',
+      '🍂', '🍃', '🌸', '🌺', '🌻', '🌼', '🌷', '🌹',
+      '🪴', '🌾', '🍄', '🐚', '🌈', '☀️', '🌤️', '🌙',
+      '⭐', '🌟', '✨', '⚡', '🔥', '❄️', '🌊', '🫧'
+    ]
+  },
+  {
+    id: 'food',
+    icon: '☕',
+    label: '美食',
+    emojis: [
+      '🍎', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐',
+      '🍒', '🍑', '🥭', '🍍', '🥝', '🥑', '🥐', '🥯',
+      '🥞', '🧇', '🍔', '🍟', '🍕', '🌮', '🍣', '🍜',
+      '🍰', '🧁', '🍩', '🍪', '🍫', '🍿', '☕', '🧋'
+    ]
+  },
+  {
+    id: 'activities',
+    icon: '🎮',
+    label: '活动',
+    emojis: [
+      '🎮', '🕹️', '🎧', '🎵', '🎸', '🎹', '🎺', '🎻',
+      '🎨', '🎬', '📷', '📚', '✏️', '⚽', '🏀', '🎾',
+      '🏐', '🎱', '🏓', '🏸', '🥊', '🛹', '🚲', '🏆',
+      '🥇', '🎯', '🎳', '🧩', '🎲', '♟️', '⛺', '🎣'
+    ]
+  },
+  {
+    id: 'objects',
+    icon: '🚀',
+    label: '符号',
+    emojis: [
+      '🚀', '🛸', '✈️', '⛵', '🚗', '💻', '⌚', '📱',
+      '💡', '🔦', '💎', '👑', '🎩', '👓', '🎒', '🧭',
+      '⏰', '⏳', '🔑', '🧸', '🎈', '🎉', '🎁', '🔮',
+      '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '💯'
+    ]
+  }
 ];
+const allPresetEmojis = emojiCategories.flatMap(cat => cat.emojis);
 const dialog = document.getElementById('onboardingDialog');
 let currentAvatar = '😊';
 
@@ -25,13 +86,28 @@ function extractEmoji(value, previousEmoji = '') {
   return emojis[0];
 }
 
-function syncPresetSelection(value) {
+function syncPresetSelection(value, scrollIntoView = false) {
   const presets = document.getElementById('profileEmojiPresets');
   if (!presets) return;
+  let activeBtn = null;
   presets.querySelectorAll('.profile-emoji-preset').forEach(btn => {
     const active = btn.dataset.emoji === value;
     btn.classList.toggle('is-active', active);
     btn.setAttribute('aria-pressed', String(active));
+    if (active) activeBtn = btn;
+  });
+  if (scrollIntoView && activeBtn) {
+    activeBtn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+}
+
+function setActiveTab(categoryId) {
+  const tabs = document.getElementById('profileEmojiTabs');
+  if (!tabs) return;
+  tabs.querySelectorAll('.emoji-keyboard-tab').forEach(tab => {
+    const active = tab.dataset.category === categoryId;
+    tab.classList.toggle('is-active', active);
+    tab.setAttribute('aria-selected', String(active));
   });
 }
 
@@ -40,6 +116,8 @@ function setAvatar(profile) {
   currentAvatar = emoji;
   document.getElementById('profileAvatarInput').value = emoji;
   syncPresetSelection(emoji);
+  const matchedCat = emojiCategories.find(cat => cat.emojis.includes(emoji)) || emojiCategories[0];
+  setActiveTab(matchedCat.id);
 }
 
 let saving = false;
@@ -119,27 +197,87 @@ export function initOnboarding() {
     document.getElementById('profileNickname').focus();
   });
   const avatarInput = document.getElementById('profileAvatarInput');
+  const tabsContainer = document.getElementById('profileEmojiTabs');
   const presetsContainer = document.getElementById('profileEmojiPresets');
-  if (presetsContainer) {
-    presetsContainer.replaceChildren(...presetEmojis.map(emoji => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'profile-emoji-preset';
-      btn.dataset.emoji = emoji;
-      btn.textContent = emoji;
-      btn.setAttribute('aria-label', `选择 ${emoji} 作为头像`);
-      btn.setAttribute('aria-pressed', 'false');
-      btn.addEventListener('click', () => {
+  const randomBtn = document.getElementById('profileRandomEmojiBtn');
+
+  if (tabsContainer && presetsContainer) {
+    tabsContainer.replaceChildren(...emojiCategories.map((cat, idx) => {
+      const tab = document.createElement('button');
+      tab.type = 'button';
+      tab.className = `emoji-keyboard-tab${idx === 0 ? ' is-active' : ''}`;
+      tab.dataset.category = cat.id;
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-selected', String(idx === 0));
+      tab.setAttribute('aria-label', cat.label);
+      tab.title = cat.label;
+      tab.innerHTML = `<span class="emoji-tab-icon" aria-hidden="true">${cat.icon}</span><span class="emoji-tab-label">${cat.label}</span>`;
+      tab.addEventListener('click', () => {
         if (saving) return;
-        currentAvatar = emoji;
-        avatarInput.value = emoji;
-        avatarInput.classList.remove('is-composing');
-        syncPresetSelection(emoji);
-        document.getElementById('profileError').hidden = true;
+        setActiveTab(cat.id);
+        const section = presetsContainer.querySelector(`[data-category-section="${cat.id}"]`);
+        if (section) {
+          presetsContainer.scrollTo({ top: section.offsetTop - presetsContainer.offsetTop, behavior: 'smooth' });
+        }
       });
-      return btn;
+      return tab;
     }));
+
+    presetsContainer.replaceChildren(...emojiCategories.map(cat => {
+      const section = document.createElement('div');
+      section.className = 'emoji-keyboard-section';
+      section.dataset.categorySection = cat.id;
+      const title = document.createElement('div');
+      title.className = 'emoji-keyboard-section-title';
+      title.textContent = cat.label;
+      const grid = document.createElement('div');
+      grid.className = 'emoji-keyboard-grid';
+      grid.replaceChildren(...cat.emojis.map(emoji => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'profile-emoji-preset';
+        btn.dataset.emoji = emoji;
+        btn.textContent = emoji;
+        btn.setAttribute('aria-label', `选择 ${emoji} 作为头像`);
+        btn.setAttribute('aria-pressed', 'false');
+        btn.addEventListener('click', () => {
+          if (saving) return;
+          currentAvatar = emoji;
+          avatarInput.value = emoji;
+          avatarInput.classList.remove('is-composing');
+          syncPresetSelection(emoji);
+          setActiveTab(cat.id);
+          document.getElementById('profileError').hidden = true;
+        });
+        return btn;
+      }));
+      section.append(title, grid);
+      return section;
+    }));
+
+    presetsContainer.addEventListener('scroll', () => {
+      const scrollTop = presetsContainer.scrollTop + 28;
+      let currentCatId = emojiCategories[0].id;
+      presetsContainer.querySelectorAll('.emoji-keyboard-section').forEach(section => {
+        if (section.offsetTop - presetsContainer.offsetTop <= scrollTop) {
+          currentCatId = section.dataset.categorySection;
+        }
+      });
+      setActiveTab(currentCatId);
+    }, { passive: true });
   }
+
+  randomBtn?.addEventListener('click', () => {
+    if (saving) return;
+    const pool = allPresetEmojis.filter(e => e !== currentAvatar);
+    const picked = pool[Math.floor(Math.random() * pool.length)] || '😊';
+    currentAvatar = picked;
+    avatarInput.value = picked;
+    syncPresetSelection(picked, true);
+    const matchedCat = emojiCategories.find(cat => cat.emojis.includes(picked));
+    if (matchedCat) setActiveTab(matchedCat.id);
+    document.getElementById('profileError').hidden = true;
+  });
   const normalizeAvatar = () => {
     const next = extractEmoji(avatarInput.value, currentAvatar);
     avatarInput.value = next;
@@ -197,6 +335,8 @@ export function initOnboarding() {
     }
     saving = true;
     button.disabled = avatarInput.disabled = nickname.disabled = true;
+    if (randomBtn) randomBtn.disabled = true;
+    tabsContainer?.querySelectorAll('button').forEach(btn => { btn.disabled = true; });
     presetsContainer?.querySelectorAll('button').forEach(btn => { btn.disabled = true; });
     button.textContent = '正在保存…';
     try {
@@ -219,6 +359,8 @@ export function initOnboarding() {
     } finally {
       saving = false;
       button.disabled = avatarInput.disabled = nickname.disabled = false;
+      if (randomBtn) randomBtn.disabled = false;
+      tabsContainer?.querySelectorAll('button').forEach(btn => { btn.disabled = false; });
       presetsContainer?.querySelectorAll('button').forEach(btn => { btn.disabled = false; });
       button.textContent = '确定';
     }
