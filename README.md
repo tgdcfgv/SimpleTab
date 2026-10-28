@@ -234,6 +234,7 @@ node tests/capture-browser.cjs
 node tests/controls-browser.cjs
 node tests/settings-browser.cjs
 node tests/cloud-cache-browser.cjs
+node tests/site-icons-browser.cjs
 node tests/sync-fallback-browser.cjs
 ```
 
@@ -265,6 +266,8 @@ python3 scripts/package-extension.py
 - 移除按钮上浮，优化分组、空间和搜索栏交互，统一关闭按钮显示。
 - 设置分区使用灰色悬停背景，其他控件悬停边框跟随强调色，“更改即时生效”采用胶囊显示。
 - 网站图标加载失败或超时时使用本地生成的彩色字母／汉字徽标，覆盖网页列表、折叠分组、搜索和网站库。
+- 扩展版识别浏览器图标接口返回的默认占位图和透明空图，保留彩色徽标；通过像素比较判断，不会误伤正常的 16×16 网站图标。
+- 图标成功及失败结果跨标签页缓存：成功图标缓存 7 天，过期更新时保留旧图；失败记录保留 24 小时，点击重新获取可立即重试。扩展版把真实图标保存为本地 PNG，首屏预先解码，避免默认图标与真实图标来回切换。
 - 更新隐私与安装说明，统一版本号并补充 Chrome、Edge 及其他 Chromium 浏览器说明。
 
 ### v1.0.1

@@ -1,11 +1,93 @@
 import { escapeHTML, getFaviconUrl } from './utils.js';
+import { readIconCache, writeIconCache } from './icon-cache.js';
 
 const colors = ['#4338CA', '#0369A1', '#047857', '#A16207', '#B91C1C', '#A21CAF', '#6D28D9', '#0F766E'];
 const requests = new Map();
 const imageLoads = new WeakMap();
-const failureCacheMs = 5 * 60 * 1000;
+const failureCacheMs = 24 * 60 * 60 * 1000;
+const successCacheMs = 7 * 24 * 60 * 60 * 1000;
 const glyphPositions = new Map();
+const nativeFallbacks = new Map();
 let textContext;
+let initialization;
+
+export function initSiteIcons() {
+  return initialization ??= readIconCache().then(async entries => {
+    const decoding = [];
+    for (const [source, entry] of entries) {
+      if (!requests.has(source)) requests.set(source, { ...entry, promise: Promise.resolve(entry.value) });
+      if (entry.value?.startsWith('data:image/png;')) {
+        const image = new Image();
+        image.src = entry.value;
+        decoding.push(image.decode().catch(() => {}));
+      }
+    }
+    // Decode the tiny local PNGs before first render to avoid an empty-image frame.
+    await Promise.all(decoding);
+  });
+}
+
+export async function invalidateSiteIcon(url) {
+  const source = getFaviconUrl(url);
+  requests.delete(source);
+  await writeIconCache(source, null);
+}
+
+function localImage(image) {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.min(image.naturalWidth, 64);
+    canvas.height = Math.min(image.naturalHeight || image.naturalWidth, 64);
+    canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+    const value = canvas.toDataURL('image/png');
+    return value.startsWith('data:image/png;base64,') ? value : null;
+  } catch { return null; }
+}
+
+function nativeFaviconUrl(source) {
+  try {
+    const url = new URL(source);
+    return url.protocol === 'chrome-extension:' && url.pathname === '/_favicon/' ? url : null;
+  } catch { return null; }
+}
+
+function imageSignature(image) {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 32;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    context.drawImage(image, 0, 0, 32, 32);
+    const pixels = context.getImageData(0, 0, 32, 32).data;
+    return pixels.some((value, index) => index % 4 === 3 && value > 0) ? canvas.toDataURL() : '';
+  } catch { return undefined; }
+}
+
+function nativeFallbackSignature(url, timeoutMs) {
+  // The reserved .invalid host cannot have a real favicon in the browser cache.
+  // Compare pixels instead of rejecting all 16px icons, which may be genuine.
+  url.searchParams.set('pageUrl', 'https://simtab-missing-favicon.invalid/');
+  const source = url.href;
+  const key = `${source}:${globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches}`;
+  if (nativeFallbacks.has(key)) return nativeFallbacks.get(key);
+  const promise = new Promise(resolve => {
+    const probe = new Image();
+    const finish = signature => {
+      clearTimeout(timer);
+      probe.onload = probe.onerror = null;
+      if (signature === undefined) {
+        probe.removeAttribute('src');
+        nativeFallbacks.delete(key);
+      }
+      resolve(signature);
+    };
+    const timer = setTimeout(() => finish(undefined), timeoutMs);
+    probe.onload = () => finish(imageSignature(probe));
+    probe.onerror = () => finish(undefined);
+    probe.src = source;
+  });
+  nativeFallbacks.set(key, promise);
+  return promise;
+}
 
 function centeredGlyph(letter) {
   if (glyphPositions.has(letter)) return glyphPositions.get(letter);
@@ -38,19 +120,34 @@ export function letterBadge(url, title = '') {
 function resolveIcon(source, timeoutMs) {
   const cached = requests.get(source);
   if (cached && Date.now() < cached.expiresAt) return cached;
-  const entry = { value: null, expiresAt: Infinity, promise: null };
+  // An expired successful image stays visible during revalidation.
+  const entry = { value: cached?.value || null, expiresAt: Infinity, promise: null };
   entry.promise = new Promise(resolve => {
     const probe = new Image();
-    const finish = value => {
+    let finished = false;
+    const finish = async value => {
+      if (finished) return;
+      finished = true;
       clearTimeout(timer);
       probe.onload = probe.onerror = null;
       if (!value) probe.removeAttribute('src');
-      entry.value = value;
-      entry.expiresAt = value ? Infinity : Date.now() + failureCacheMs;
-      resolve(value);
+      entry.value = value || cached?.value || null;
+      entry.expiresAt = Date.now() + (value ? successCacheMs : failureCacheMs);
+      if (requests.get(source) === entry) await writeIconCache(source, { value: entry.value, expiresAt: entry.expiresAt });
+      resolve(entry.value);
     };
     const timer = setTimeout(() => finish(null), timeoutMs);
-    probe.onload = () => finish(probe.naturalWidth > 0 ? source : null);
+    probe.onload = async () => {
+      if (probe.naturalWidth <= 0) return finish(null);
+      const nativeUrl = nativeFaviconUrl(source);
+      if (nativeUrl) {
+        const signature = imageSignature(probe);
+        if (!signature) return finish(null);
+        const fallback = await nativeFallbackSignature(nativeUrl, timeoutMs);
+        if (fallback === undefined || signature === fallback) return finish(null);
+      }
+      finish(localImage(probe) || source);
+    };
     probe.onerror = () => finish(null);
     probe.referrerPolicy = 'no-referrer';
     probe.src = source;
@@ -76,6 +173,7 @@ export function loadSiteIcon(image, link, { timeoutMs = 5000 } = {}) {
         if (imageLoads.get(image) !== token) return;
         image.src = badge;
         if (requests.get(source) === entry) requests.delete(source);
+        void writeIconCache(source, { value: null, expiresAt: Date.now() + failureCacheMs });
       }, { once: true });
       image.src = loaded;
     }
@@ -85,6 +183,7 @@ export function loadSiteIcon(image, link, { timeoutMs = 5000 } = {}) {
   if (alreadyLoaded) showLoaded(entry.value);
   else image.src = badge;
   return entry.promise.then(loaded => {
-    if (!alreadyLoaded) showLoaded(loaded);
+    if (loaded !== entry.value || image.src === loaded) return;
+    showLoaded(loaded);
   });
 }

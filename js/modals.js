@@ -3,6 +3,7 @@ import { safeWebUrl, safeImageUrl, deriveSiteTitle } from './urls.js';
 import { icon } from './icons.js';
 import { appData, SEARCH_ENGINES, syncManager } from './storage.js';
 import { generateId, getFaviconUrl } from './utils.js';
+import { invalidateSiteIcon } from './site-icons.js';
 import { applySettings, render } from './render.js';
 import { searchInput } from './search.js';
 import { appStoreModal, currentStoreGroupId, renderAppStoreCategory, renderStoreGroupSelection, renderStoreMenu, setStoreSelectionFromGroup } from './store.js';
@@ -246,11 +247,12 @@ export function openSiteModal(siteId = null, groupId = null, draft = null) {
 document.getElementById('addSiteBtn').addEventListener('click', () => openSiteModal());
 document.getElementById('cancelSiteBtn').addEventListener('click', closeAllModals);
 
-document.getElementById('refetchIconBtn').addEventListener('click', () => {
+document.getElementById('refetchIconBtn').addEventListener('click', async () => {
   const value = document.getElementById('siteUrl').value.trim();
   try {
     const url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
     if (!['http:', 'https:'].includes(url.protocol) || !value) throw new Error();
+    await invalidateSiteIcon(url.href);
     // Use the browser favicon API in extensions; no page scraping or proxy.
     document.getElementById('siteIconUrl').value = globalThis.chrome?.runtime?.id
       ? '' : getFaviconUrl(url.href);

@@ -60,7 +60,7 @@ test('icons stay as badges on error or timeout, upgrade on success and share req
   } finally { globalThis.Image = previousImage; }
 });
 
-test('failed icons retry on a later load after five minutes, without polling', async () => {
+test('failed icons retry on a later load after 24 hours, without polling', async () => {
   const previousImage = globalThis.Image;
   const previousNow = Date.now;
   let now = 1000;
@@ -80,7 +80,7 @@ test('failed icons retry on a later load after five minutes, without polling', a
   const link = { url: 'https://retry.test', customIcon: 'https://icons.test/retry' };
   try {
     await loadSiteIcon(image, link);
-    now += 5 * 60 * 1000 - 1;
+    now += 24 * 60 * 60 * 1000 - 1;
     await loadSiteIcon(image, link);
     assert.equal(attempts, 1);
     now++;
@@ -123,4 +123,68 @@ test('an older icon request cannot overwrite an edited link with the same title'
     oldError();
     assert.equal(image.src, 'https://icons.test/latest');
   } finally { globalThis.Image = previousImage; }
+});
+
+test('native placeholder and transparent icons keep the badge while real 16px icons survive', async () => {
+  const previousImage = globalThis.Image;
+  const previousDocument = globalThis.document;
+  let fallbackProbes = 0;
+  globalThis.Image = class {
+    naturalWidth = 16;
+    set src(value) {
+      this.signature = value.includes('real-16') ? 'real-icon' : value.includes('transparent') ? '' : 'browser-default';
+      if (value.includes('simtab-missing-favicon.invalid')) fallbackProbes++;
+      queueMicrotask(() => this.onload?.());
+    }
+    removeAttribute() {}
+  };
+  globalThis.document = { createElement: () => {
+    const context = {
+      measureText: () => ({ actualBoundingBoxLeft: 0, actualBoundingBoxRight: 20, actualBoundingBoxAscent: 24, actualBoundingBoxDescent: 0 }),
+      drawImage(image) { this.signature = image.signature; },
+      getImageData() { return { data: new Uint8ClampedArray([0, 0, 0, this.signature ? 255 : 0]) }; }
+    };
+    return { getContext: () => context, toDataURL: () => context.signature };
+  } };
+  const image = () => ({ src: '', addEventListener() {} });
+  try {
+    for (const kind of ['missing', 'transparent', 'real-16']) {
+      const link = { url: `https://${kind}.test`, title: 'Native icon',
+        customIcon: `chrome-extension://native-test/_favicon/?pageUrl=https://${kind}.test&size=64` };
+      const visible = image();
+      await loadSiteIcon(visible, link);
+      assert.equal(visible.src, kind === 'real-16' ? link.customIcon : letterBadge(link.url, link.title));
+    }
+    assert.equal(fallbackProbes, 1, 'one native placeholder reference is shared across sites');
+  } finally {
+    globalThis.Image = previousImage;
+    globalThis.document = previousDocument;
+  }
+});
+
+test('expired successful icons stay visible while a background refresh fails', async () => {
+  const previousImage = globalThis.Image;
+  const previousNow = Date.now;
+  let now = 1000, attempts = 0;
+  Date.now = () => now;
+  globalThis.Image = class {
+    naturalWidth = 32;
+    set src(value) {
+      attempts++;
+      queueMicrotask(() => attempts === 1 ? this.onload?.() : this.onerror?.());
+    }
+    removeAttribute() {}
+  };
+  const image = () => ({ src: '', addEventListener() {} });
+  const link = { url: 'https://stale-icon.test/', customIcon: 'https://icons.test/stale-good' };
+  try {
+    await loadSiteIcon(image(), link);
+    now += 7 * 24 * 60 * 60 * 1000 + 1;
+    const next = image();
+    const pending = loadSiteIcon(next, link);
+    assert.equal(next.src, link.customIcon, 'show the old successful image immediately');
+    await pending;
+    assert.equal(attempts, 2);
+    assert.equal(next.src, link.customIcon, 'a refresh outage must not replace it with a badge');
+  } finally { globalThis.Image = previousImage; Date.now = previousNow; }
 });
