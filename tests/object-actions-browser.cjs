@@ -9,7 +9,7 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
  // Parent and child selection is deduplicated; undo preserves the full hierarchy.
  await page.check('[data-select-space="0"]');await page.check('[data-select-group="0"]');await page.locator('[data-key]').first().check();
  await page.click('#bulkDelete');assert.equal(await page.locator('.bulk-space-section').count(),before.spaces.length-1);
- assert.match(await page.locator('#bulkEditStatus').innerText(),/1 个空间、5 个分组、17 个网站/);
+ assert.match(await page.locator('#simtabToast').innerText(),/1 个空间、5 个分组、17 个网站/);
  await page.click('#bulkUndo');assert.equal(await page.locator('.bulk-space-section').count(),before.spaces.length);assert.deepEqual(await state(),before);
  // At least one space must remain to keep the application data valid.
  for(const checkbox of await page.locator('[data-select-space]').all())await checkbox.check();

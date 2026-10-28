@@ -4,7 +4,7 @@ import { icon } from './icons.js';
 import { escapeHTML, generateId } from './utils.js';
 import { safeWebUrl } from './urls.js';
 import { loadSiteIcon } from './site-icons.js';
-import { openContextMenu, openGroupModal, modalOverlay, closeAllModals, setCreationContext } from './modals.js';
+import { openContextMenu, openGroupModal, modalOverlay, closeAllModals, setCreationContext, showToast } from './modals.js';
 
 const guides = {
   edge: `<h5>从 Edge 导出收藏夹</h5><ol><li>在电脑上打开 Edge，点击右上角“…” →“收藏夹”。也可以在地址栏输入 <code>edge://favorites</code>。</li><li>点击收藏夹面板中的“…” →“导出收藏夹”。</li><li>将文件保存为 HTML，回到这里选择该文件。</li></ol>`,
@@ -32,7 +32,7 @@ const target = document.getElementById('bulkMoveTarget');
 const batchActions = document.getElementById('bulkBatchActions');
 const selectAll = document.getElementById('bulkSelectAll');
 const status = document.getElementById('bulkEditStatus');
-const undoButton = document.getElementById('bulkUndo');
+let dismissUndoToast = null;
 const allButton = document.getElementById('bulkAllGroups');
 const saveButton = document.getElementById('bulkSave');
 const collapsedGroups = new Set();
@@ -55,7 +55,8 @@ let lastClickedLink = null, preDblClickState = null, lastPointerShift = false;
 
 function clearUndo() {
   deletedItems = null;
-  undoButton.hidden = true;
+  dismissUndoToast?.();
+  dismissUndoToast = null;
 }
 function ownerSpace(group) { return draftSpaces.find(space => space.groups.includes(group)); }
 function rebuildDraft() { draft = draftSpaces.flatMap(space => space.groups); }
@@ -121,8 +122,7 @@ function renderNavigation() {
   document.getElementById('bulkAllCount').textContent = total;
   allButton.classList.toggle('active', !activeGroup);
   allButton.setAttribute('aria-current', activeGroup ? 'false' : 'page');
-  const row = (group, index) => `<div class="bulk-nav-item ${group === activeGroup ? 'active' : ''}" data-nav-group="${index}" role="listitem">
-    <button type="button" class="bulk-drag-handle" draggable="true" data-drag-group="${index}" aria-label="拖动分组排序，或按 Alt 加上下方向键" title="拖动分组排序">${icon('menu', 13)}</button>
+  const row = (group, index) => `<div class="bulk-nav-item ${group === activeGroup ? 'active' : ''}" data-nav-group="${index}" data-drag-group="${index}" tabindex="0" aria-label="${escapeHTML(group.name)}，长按拖拽，或按 Alt 加上下方向键排序" role="listitem">
     <input type="checkbox" data-select-group="${index}" aria-label="选择分组${escapeHTML(group.name)}及其网站" ${selectedGroups.has(group) ? 'checked' : ''}><button type="button" class="bulk-group-select" data-select-nav="${index}" aria-current="${group === activeGroup ? 'page' : 'false'}" title="${escapeHTML(group.name)}（双击或按 F2 改名）"><span class="bulk-nav-name">${escapeHTML(group.name || '未命名分组')}</span></button>
     <input type="text" class="bulk-field bulk-group-name-input" data-edit-group="${index}" value="${escapeHTML(group.name)}" aria-label="分组名称" maxlength="100" spellcheck="false" hidden>
     <span class="bulk-group-count">${group.links.length}</span><span class="bulk-nav-actions"><button type="button" class="bulk-icon-button" data-rename-group="${index}" title="重命名分组" aria-label="重命名分组">${icon('pencil-line', 13)}</button><button type="button" class="bulk-icon-button bulk-row-delete" data-delete-group="${index}" title="删除分组及其网站" aria-label="删除分组及其网站">${icon('trash', 13)}</button></span>
@@ -143,8 +143,7 @@ function renderNavigation() {
 }
 function siteRow({ link, key }) {
   const invalid = !safeWebUrl(link.url, { allowBare: true });
-  return `<li class="bulk-site-row ${selected.has(link) ? 'is-selected' : ''}" data-site-key="${key}">
-    <button type="button" class="bulk-drag-handle" draggable="true" data-drag-site="${key}" aria-label="拖动网站排序或移至左侧分组，也可按 Alt 加上下方向键" title="拖动排序或移到左侧分组">${icon('menu', 12)}</button>
+  return `<li class="bulk-site-row ${selected.has(link) ? 'is-selected' : ''}" data-site-key="${key}" data-drag-site="${key}" tabindex="0" aria-label="${escapeHTML(link.title)}，长按拖拽，或按 Alt 加上下方向键排序">
     <input type="checkbox" data-key="${key}" aria-label="选择${escapeHTML(link.title)}" ${selected.has(link) ? 'checked' : ''}>
     <img class="bulk-favicon" data-icon-key="${key}" alt="" width="18" height="18">
     <div class="bulk-site-copy" title="单击选择，双击编辑"><input type="text" class="bulk-field bulk-title-input" data-edit-key="${key}" data-field="title" value="${escapeHTML(link.title)}" aria-label="网站名称" maxlength="200" spellcheck="false">
@@ -186,7 +185,7 @@ function openEditor() {
   lastClickedLink = null; preDblClickState = null;
   selectedGroups.clear(); selectedSpaces.clear(); newSpaces.clear(); showEmptySpaces.checked = false; closeCreateDialog(); closeCreateMenu();
   search.value = ''; target.value = ''; updateGroupOptions();
-  document.getElementById('bulkSpaceName').textContent = `全部空间 · 单击选择，双击编辑名称与网址，拖动手柄整理`;
+  document.getElementById('bulkSpaceName').textContent = `全部空间 · 单击选择，双击编辑名称与网址，长按拖拽整理`;
   status.textContent = ''; refresh(); dialog.showModal();
   setCreationContext({
     groups: () => parentSpace().groups,
@@ -242,7 +241,7 @@ groupList.addEventListener('click', event => {
     if (expanded) collapsedSpaces.delete(space); else collapsedSpaces.add(space);
     toggle.setAttribute('aria-expanded', String(expanded)); document.getElementById(toggle.getAttribute('aria-controls')).hidden = !expanded; return;
   }
-  if (event.target.closest('input, .bulk-drag-handle')) return;
+  if (event.target.closest('input')) return;
   const button = event.target.closest('[data-nav-group]')?.querySelector('[data-select-nav]');
   if (!button) return;
   // Keep the clicked navigation element alive so a second click can start rename.
@@ -486,7 +485,7 @@ list.addEventListener('click', event => {
     return;
   }
   const row = event.target.closest('.bulk-site-row');
-  if (!row || row.classList.contains('is-editing') || event.target.closest('input[type="checkbox"], .bulk-drag-handle, .bulk-site-actions')) return;
+  if (!row || row.classList.contains('is-editing') || event.target.closest('input[type="checkbox"], .bulk-site-actions')) return;
   const link = linksByKey.get(row.dataset.siteKey);
   if (!link) return;
   if (event.detail === 1) {
@@ -496,7 +495,7 @@ list.addEventListener('click', event => {
 });
 list.addEventListener('dblclick', event => {
   const row = event.target.closest('.bulk-site-row');
-  if (!row || event.target.closest('input[type="checkbox"], .bulk-drag-handle, .bulk-site-actions')) return;
+  if (!row || event.target.closest('input[type="checkbox"], .bulk-site-actions')) return;
   const link = linksByKey.get(row.dataset.siteKey);
   if (preDblClickState && preDblClickState.link === link) {
     applySiteSelection(link, preDblClickState.wasSelected, false);
@@ -545,17 +544,21 @@ function deleteObjects(selected, selectedGroups, selectedSpaces) {
   deletedItems = removed; clearRemovedSelections(removedLinks, removedGroups, new Set(removed.spaces.map(item => item.space)));
   rebuildDraft(); if (activeGroup && !draft.includes(activeGroup)) activeGroup = null;
   const summary = [removed.spaces.length && `${removed.spaces.length} 个空间`, removedGroups.size && `${removedGroups.size} 个分组`, removedLinks.size && `${removedLinks.size} 个网站`].filter(Boolean).join('、');
-  undoButton.hidden = false; updateGroupOptions(); target.value = ''; changed(`已删除 ${summary}`); refresh();
+  updateGroupOptions(); target.value = ''; changed(); refresh();
+  dismissUndoToast = showToast(`已删除 ${summary}`, 8000, {
+    host: dialog, action: { id: 'bulkUndo', label: '撤销', onClick: undoDeletedObjects }
+  });
 }
-undoButton.addEventListener('click', () => {
+function undoDeletedObjects() {
   if (!deletedItems) return;
   const removed = deletedItems;
   removed.spaces.forEach(({ space, index }) => { draftSpaces.splice(Math.min(index, draftSpaces.length), 0, space); collapsedSpaces.delete(space); });
   removed.groups.forEach(({ space, group, index }) => { space.groups.splice(Math.min(index, space.groups.length), 0, group); collapsedSpaces.delete(space); });
   removed.links.forEach(({ group, link, index }) => { group.links.splice(Math.min(index, group.links.length), 0, link); collapsedGroups.delete(group); collapsedSpaces.delete(ownerSpace(group)); });
   rebuildDraft(); activeGroup = draft.includes(removed.activeGroup) ? removed.activeGroup : activeGroup;
-  clearUndo(); updateGroupOptions(); changed('已恢复删除的对象及其内容'); refresh();
-});
+  clearUndo(); updateGroupOptions(); changed(); refresh();
+  showToast('已恢复删除的对象及其内容', 3000, { host: dialog });
+}
 function reorderGroups(group, destination, after) {
   if (group === destination) return;
   const targetGroup = target.value === '' ? null : draft[Number(target.value)];
@@ -612,38 +615,88 @@ function dropDestination(event) {
   if (drag.type === 'site' && activeGroup && event.target.closest('#bulkSiteList')) return { group: activeGroup, element: list, append: true };
   return null;
 }
-dialog.addEventListener('dragstart', event => {
-  const handle = event.target.closest('[data-drag-group], [data-drag-site]');
-  if (!handle) { if (event.target.closest('.bulk-master-detail')) event.preventDefault(); return; }
-  if (handle.dataset.dragGroup !== undefined) drag = { type: 'group', group: draft[Number(handle.dataset.dragGroup)] };
-  else { const link = linksByKey.get(handle.dataset.dragSite); drag = { type: 'site', links: selected.has(link) ? new Set(selected) : new Set([link]) }; }
-  event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', 'simtab-editor');
-  event.dataTransfer.setDragImage(handle.closest('.bulk-nav-item, .bulk-site-row'), 16, 14);
+// Pointer-based long press keeps ordinary clicks, double clicks and touch scrolling intact.
+let press = null, dragFrame = null, suppressDragClick = false;
+function stopPress() {
+  const previous = press;
+  press = null; drag = null;
+  clearTimeout(previous?.timer);
+  if (previous?.row.hasPointerCapture(previous.id)) previous.row.releasePointerCapture(previous.id);
+  previous?.row.classList.remove('is-dragging');
+  cancelAnimationFrame(dragFrame); clearDropMarks();
+}
+function pointerDestination() {
+  const element = document.elementFromPoint(press.x, press.y);
+  return element ? dropDestination({ target: element, clientY: press.y }) : null;
+}
+function paintDrag() {
+  if (!press || !drag) return;
+  const destination = pointerDestination();
+  clearDropMarks();
+  if (destination) {
+    destination.element.classList.add(destination.emptyColumn || (drag.type === 'site' && destination.navigation) || destination.append ? 'drop-target' : destination.after ? 'bulk-drop-after' : 'bulk-drop-before');
+    const scrollable = destination.navigation || destination.emptyColumn ? groupList : list;
+    const rect = scrollable.getBoundingClientRect();
+    if (press.y < rect.top + 28) scrollable.scrollTop -= 8;
+    if (press.y > rect.bottom - 28) scrollable.scrollTop += 8;
+  }
+  dragFrame = requestAnimationFrame(paintDrag);
+}
+dialog.addEventListener('pointerdown', event => {
+  suppressDragClick = false;
+  if (event.button !== 0 || !event.isPrimary || saving) return;
+  const row = event.target.closest('[data-drag-group], [data-drag-site]');
+  if (!row || row.classList.contains('is-editing') || event.target.closest('input[type="checkbox"], .bulk-nav-actions, .bulk-site-actions, [data-edit-group]')) return;
+  stopPress();
+  press = { row, id: event.pointerId, startX: event.clientX, startY: event.clientY, x: event.clientX, y: event.clientY };
+  press.timer = setTimeout(() => {
+    if (!press || !row.isConnected) return;
+    if (row.dataset.dragGroup !== undefined) drag = { type: 'group', group: draft[Number(row.dataset.dragGroup)] };
+    else {
+      const link = linksByKey.get(row.dataset.dragSite);
+      drag = { type: 'site', links: selected.has(link) ? new Set(selected) : new Set([link]) };
+    }
+    row.setPointerCapture(press.id);
+    row.classList.add('is-dragging');
+    suppressDragClick = true;
+    paintDrag();
+  }, 350);
 });
-dialog.addEventListener('dragover', event => {
-  const destination = dropDestination(event); if (!destination) return;
-  event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = 'move'; clearDropMarks();
-  destination.element.classList.add(destination.emptyColumn || (drag.type === 'site' && destination.navigation) || destination.append ? 'drop-target' : destination.after ? 'bulk-drop-after' : 'bulk-drop-before');
-  const scrollable = destination.navigation || destination.emptyColumn ? groupList : list, rect = scrollable.getBoundingClientRect();
-  if (event.clientY < rect.top + 28) scrollable.scrollTop -= 12;
-  if (event.clientY > rect.bottom - 28) scrollable.scrollTop += 12;
+dialog.addEventListener('pointermove', event => {
+  if (!press || event.pointerId !== press.id) return;
+  press.x = event.clientX; press.y = event.clientY;
+  if (!drag && Math.hypot(press.x - press.startX, press.y - press.startY) > 8) stopPress();
+  else if (drag) event.preventDefault();
 });
-dialog.addEventListener('dragleave', event => { if (!dialog.contains(event.relatedTarget)) clearDropMarks(); });
-dialog.addEventListener('drop', event => {
-  const destination = dropDestination(event); if (!destination) return;
-  event.preventDefault(); event.stopPropagation(); clearDropMarks();
-  const source = drag; drag = null;
+dialog.addEventListener('pointerup', event => {
+  if (!press || event.pointerId !== press.id) return;
+  press.x = event.clientX; press.y = event.clientY;
+  const moved = Math.hypot(press.x - press.startX, press.y - press.startY) > 8;
+  const destination = drag && moved ? pointerDestination() : null, source = drag;
+  stopPress();
+  if (!destination) return;
+  event.preventDefault();
   if (source.type === 'group') {
     if (destination.emptyColumn) moveGroupToColumn(source.group, destination.space, destination.column);
     else reorderGroups(source.group, destination.group, destination.after);
-  }
-  else if (destination.navigation || destination.append) moveLinks(source.links, destination.group);
+  } else if (destination.navigation || destination.append) moveLinks(source.links, destination.group);
   else reorderSites(source.links, destination.group, destination.link, destination.after);
 });
-dialog.addEventListener('dragend', () => { drag = null; clearDropMarks(); });
+dialog.addEventListener('touchmove', event => { if (drag) event.preventDefault(); }, { passive: false });
+dialog.addEventListener('pointercancel', stopPress);
+dialog.addEventListener('lostpointercapture', event => { if (press?.id === event.pointerId) stopPress(); });
+dialog.addEventListener('click', event => {
+  if (!suppressDragClick) return;
+  suppressDragClick = false; event.preventDefault(); event.stopImmediatePropagation();
+}, true);
+dialog.addEventListener('contextmenu', event => { if (press) event.preventDefault(); });
+dialog.addEventListener('dragstart', event => { if (event.target.closest('.bulk-master-detail')) event.preventDefault(); });
+dialog.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && press) { event.preventDefault(); event.stopImmediatePropagation(); stopPress(); }
+}, true);
 dialog.addEventListener('keydown', event => {
   const handle = event.target.closest('[data-drag-group], [data-drag-site]');
-  if (!handle || !event.altKey || !['ArrowUp', 'ArrowDown'].includes(event.key)) return;
+  if (event.target.closest('input') || !handle || !event.altKey || !['ArrowUp', 'ArrowDown'].includes(event.key)) return;
   event.preventDefault();
   const direction = event.key === 'ArrowUp' ? -1 : 1;
   if (handle.dataset.dragGroup !== undefined) {
@@ -711,4 +764,16 @@ document.addEventListener('simtab-bookmark-preview', event => {
   groupList.querySelector(`[data-nav-group="${draft.indexOf(first)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   if (!activeGroup) list.querySelector(`#bulkDetails${draft.indexOf(first)}`)?.scrollIntoView({ block: 'nearest' });
 });
-dialog.addEventListener('close', () => { closeCreateDialog(); closeCreateMenu(); setCreationContext(null); document.body.appendChild(document.getElementById('contextMenu')); if (hasImportedDraft) importStatus.textContent = '已取消导入，收藏夹未保存。'; hasImportedDraft = false; drag = null; clearDropMarks(); });
+dialog.addEventListener('close', () => {
+  stopPress(); clearUndo();
+  const toast = document.getElementById('simtabToast');
+  if (toast?.parentElement === dialog) {
+    toast.hidden = true;
+    if (toast.matches(':popover-open')) toast.hidePopover();
+    document.body.appendChild(toast);
+  }
+  closeCreateDialog(); closeCreateMenu(); setCreationContext(null);
+  document.body.appendChild(document.getElementById('contextMenu'));
+  if (hasImportedDraft) importStatus.textContent = '已取消导入，收藏夹未保存。';
+  hasImportedDraft = false;
+});

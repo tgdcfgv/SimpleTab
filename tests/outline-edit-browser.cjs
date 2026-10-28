@@ -1,5 +1,14 @@
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
+
+async function longDrag(page, source, target, targetPosition) {
+ const from = await source.boundingBox(), to = await target.boundingBox();
+ await page.mouse.move(from.x + 40, from.y + from.height / 2);
+ await page.mouse.down();
+ await page.waitForTimeout(400);
+ await page.mouse.move(to.x + (targetPosition?.x ?? 60), to.y + (targetPosition?.y ?? to.height / 2), { steps: 12 });
+ await page.mouse.up();
+}
 (async()=>{
  const browser=await chromium.launch({headless:true,channel:'chrome'});
  try {
@@ -12,7 +21,7 @@ const assert=require('node:assert/strict');
   const original=await groups();
   const nav=i=>page.locator(`[data-select-nav="${i}"]`);
   const navRow=i=>page.locator(`[data-nav-group="${i}"]`);
-  const count=i=>navRow(i).locator('.bulk-group-count').innerText().then(Number);
+  const count=i=>navRow(i).locator('.bulk-group-count').textContent().then(Number);
   await page.click('#spaceEditBtn');
   assert.equal(await page.locator('#bulkGroupList [data-nav-group]').count(),original.length);
   assert.equal(await page.locator('.bulk-sidebar').evaluate(el=>el.offsetWidth),210);
@@ -26,10 +35,8 @@ const assert=require('node:assert/strict');
   const urls=await page.locator('.bulk-url-input').evaluateAll(inputs=>inputs.map(el=>el.getBoundingClientRect().x));
   assert(urls.length>1 && urls.every(x=>Math.abs(x-urls[0])<1),'URLs align across all groups');
   await page.locator('#bulkSearch').hover();
-  await page.waitForFunction(()=>[...document.querySelectorAll('[data-drag-site]')].every(el=>getComputedStyle(el).opacity==='0.25'));
-  await page.locator('.bulk-site-row').first().hover();
-  await page.waitForFunction(()=>getComputedStyle(document.querySelector('[data-drag-site]')).opacity==='1');
-  await page.locator('#bulkSearch').hover();
+  assert.equal(await page.locator('.bulk-drag-handle').count(),0);
+  assert.equal(await page.locator('[data-drag-site]').first().getAttribute('tabindex'),'0');
   const homeColumns=await page.locator('#groupsContainer > .group-col').count();
   assert.equal(await page.locator('.bulk-nav-column').count(),homeColumns);
   assert.equal(await page.locator('.bulk-column-label').first().innerText(),'第一列');
@@ -59,13 +66,13 @@ const assert=require('node:assert/strict');
   assert.equal(await page.locator('.bulk-url-input').inputValue(),'https://example.org/edited');
   await nav(0).click();assert.equal(await page.locator('[data-key]:checked').count(),2);
   // Drag a checked site to the left: the entire selected batch moves.
-  await page.locator('[data-drag-site]').first().dragTo(navRow(2));
+  await longDrag(page, page.locator('[data-drag-site]').first(), navRow(2));
   assert.equal(await count(2),original[2].links.length+2);
   assert.equal(await count(0),original[0].links.length-2);
   assert.match(await page.locator('#bulkEditStatus').innerText(),/已移动 2 个网站/);
   assert.deepEqual(await groups(),original);
   await page.click('#bulkDelete');assert.equal(await count(2),original[2].links.length);
-  assert.equal(await page.locator('#bulkEditStatus').innerText(),'已删除 2 个网站');
+  assert.match(await page.locator('#simtabToast').innerText(),/已删除 2 个网站/);
   await page.click('#bulkUndo');assert.equal(await count(2),original[2].links.length+2);
   await nav(2).dblclick();const name=navRow(2).locator('[data-edit-group]');
   await name.fill('研究资料');await nav(1).click();
@@ -81,13 +88,13 @@ const assert=require('node:assert/strict');
   await newName.fill('新建收藏');await nav(1).click();
   assert.equal(await page.locator('.bulk-title-input').first().inputValue(),original[1].links[0].title);
   // An unchecked dragged site moves alone, then sort the remaining group.
-  await page.locator('[data-drag-site]').first().dragTo(navRow(original.length));
+  await longDrag(page, page.locator('[data-drag-site]').first(), navRow(original.length));
   assert.equal(await count(original.length),1);
   const first=await page.locator('.bulk-title-input').first().inputValue();
-  await page.locator('[data-drag-site]').first().dragTo(page.locator('.bulk-site-row').nth(1),{targetPosition:{x:100,y:31}});
+  await longDrag(page, page.locator('[data-drag-site]').first(), page.locator('.bulk-site-row').nth(1), {x:100,y:31});
   assert.equal(await page.locator('.bulk-title-input').nth(1).inputValue(),first);
   // Group sorting does not change the active group or corrupt row edits.
-  await page.locator('[data-drag-group="1"]').dragTo(navRow(0),{targetPosition:{x:70,y:2}});
+  await longDrag(page, page.locator('[data-drag-group="1"]'), navRow(0), {x:70,y:2});
   assert.equal(await nav(0).locator('.bulk-nav-name').innerText(),original[1].name);
   assert.match(await page.locator('#bulkCurrentGroup').innerText(),new RegExp(original[1].name));
   await page.locator('[data-drag-site]').first().focus();await page.keyboard.press('Alt+ArrowDown');

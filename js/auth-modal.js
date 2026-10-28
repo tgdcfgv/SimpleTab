@@ -10,7 +10,7 @@ let currentStep = 'email'; // 'email' | 'verification'
 let isSubmitting = false;
 
 
-export function showToast(message, duration = 3000) {
+export function showToast(message, duration = 3000, { host = document.body, action } = {}) {
   let toast = document.getElementById('simtabToast');
   if (!toast) {
     toast = document.createElement('div');
@@ -18,22 +18,46 @@ export function showToast(message, duration = 3000) {
     toast.className = 'simtab-toast';
     toast.setAttribute('role', 'status');
     toast.setAttribute('aria-live', 'polite');
-    document.body.appendChild(toast);
   }
-  toast.textContent = message;
+  if (toast.matches(':popover-open')) toast.hidePopover();
+  host.appendChild(toast);
+  const revision = Symbol();
+  toast.revision = revision;
+  toast.replaceChildren(document.createTextNode(message));
+  toast.classList.toggle('has-action', Boolean(action));
+  if (action) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'toast-action';
+    if (action.id) button.id = action.id;
+    button.textContent = action.label;
+    button.addEventListener('click', action.onClick);
+    toast.appendChild(button);
+  }
   toast.hidden = false;
   toast.classList.remove('toast-exit');
   toast.classList.add('toast-enter');
-
-  if (toastTimer) clearTimeout(toastTimer);
+  // Keep the shared toast visible and interactive above native modal dialogs.
+  if (typeof toast.showPopover === 'function') {
+    toast.setAttribute('popover', 'manual');
+    toast.showPopover();
+  }
+  const dismiss = () => {
+    if (toast.revision !== revision) return;
+    clearTimeout(toastTimer);
+    if (toast.contains(document.activeElement)) host.querySelector('#bulkSearch')?.focus();
+    toast.hidden = true;
+    if (toast.matches(':popover-open')) toast.hidePopover();
+    toast.classList.remove('toast-enter', 'toast-exit');
+  };
+  clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
+    if (toast.revision !== revision) return;
     toast.classList.remove('toast-enter');
     toast.classList.add('toast-exit');
-    setTimeout(() => {
-      toast.hidden = true;
-      toast.classList.remove('toast-exit');
-    }, 250);
+    setTimeout(dismiss, 250);
   }, duration);
+  return dismiss;
 }
 
 export function maskEmail(email) {

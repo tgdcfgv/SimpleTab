@@ -882,6 +882,8 @@ export function openContextMenu(x, y, { siteBtn = null, host = document.body, cr
   const menu = document.getElementById('contextMenu');
 
   host.appendChild(menu);
+  // A top-layer menu uses viewport coordinates even inside an animated dialog.
+  if (typeof menu.showPopover === 'function') menu.setAttribute('popover', 'manual');
   document.getElementById('contextBulkEditor').style.display = creationOnly ? 'none' : '';
   document.getElementById('contextSettings').style.display = creationOnly ? 'none' : '';
   const contextAddSite = document.getElementById('contextAddSite');
@@ -915,6 +917,7 @@ export function openContextMenu(x, y, { siteBtn = null, host = document.body, cr
   menu.style.left = '0px';
   menu.style.top = '0px';
   menu.classList.remove('hidden');
+  if (menu.hasAttribute('popover') && !menu.matches(':popover-open')) menu.showPopover();
   const margin = 10;
   const width = document.documentElement.clientWidth;
   const height = document.documentElement.clientHeight;
@@ -925,6 +928,11 @@ export function openContextMenu(x, y, { siteBtn = null, host = document.body, cr
   menu.style.top = `${top}px`;
   menu.style.visibility = '';
 }
+
+new MutationObserver(() => {
+  const menu = document.getElementById('contextMenu');
+  if (menu.classList.contains('hidden') && menu.matches(':popover-open')) menu.hidePopover();
+}).observe(document.getElementById('contextMenu'), { attributes: true, attributeFilter: ['class'] });
 
 document.addEventListener('contextmenu', (e) => {
   const isBlankSpace = e.target === document.body ||

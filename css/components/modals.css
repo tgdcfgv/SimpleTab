@@ -954,8 +954,11 @@ dialog.modal[open] {
    ------------------------------------------------------------ */
 .simtab-toast {
   position: fixed;
-  top: 28px;
-  left: 50%;
+  inset: 28px auto auto 50%;
+  margin: 0;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
   transform: translateX(-50%);
   z-index: 2500;
   padding: 8px 18px;
@@ -967,7 +970,13 @@ dialog.modal[open] {
   border: 1px solid var(--border-default);
   box-shadow: var(--shadow-popover);
   pointer-events: none;
-  white-space: nowrap;
+  white-space: normal;
+}
+.simtab-toast[hidden] { display: none; }
+.simtab-toast.has-action { pointer-events: auto; display: flex; align-items: center; gap: 16px; }
+.simtab-toast .toast-action { flex-shrink: 0; border: 0; border-radius: 4px; padding: 5px 8px; background: var(--bg-subtle); color: var(--accent-color); font: 12px var(--font-family); cursor: pointer; }
+@media (prefers-reduced-motion: reduce) {
+  .simtab-toast.toast-enter, .simtab-toast.toast-exit { animation: none !important; }
 }
 
 .simtab-toast.toast-enter {
@@ -1229,11 +1238,9 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 .bulk-site-row { display: flex; align-items: center; gap: 6px; min-height: 34px; padding: 2px 4px; border-radius: 5px; position: relative; cursor: pointer; user-select: none; }
 .bulk-site-row:hover, .bulk-site-row:has(input:checked), .bulk-site-row.is-selected { background: var(--bg-subtle); }
 .bulk-site-row.is-editing { background: color-mix(in srgb, var(--accent-subtle) 45%, var(--bg-subtle)); cursor: default; user-select: text; }
-.bulk-drag-handle { display: grid; place-items: center; flex: 0 0 20px; width: 20px; height: 28px; border: 0; border-radius: 4px; background: transparent; color: var(--text-secondary); opacity: 0; cursor: grab; transition: opacity var(--transition-fast); }
-.bulk-nav-item > .bulk-drag-handle { margin-right: 2px; }
-.bulk-site-row > .bulk-drag-handle { opacity: .25; }
-.bulk-drag-handle:active { cursor: grabbing; }
-:is(.bulk-nav-item, .bulk-site-row):is(:hover, :focus-within) > .bulk-drag-handle, .bulk-drag-handle:focus-visible { opacity: 1; }
+.bulk-nav-item, .bulk-site-row { -webkit-touch-callout: none; }
+.bulk-nav-item.is-dragging, .bulk-site-row.is-dragging { cursor: grabbing; background: var(--accent-subtle); opacity: .7; }
+.bulk-nav-item:focus-visible, .bulk-site-row:focus-visible { outline: 2px solid var(--accent-color); outline-offset: -2px; }
 .bulk-editor input[type="checkbox"] { width: 15px; height: 15px; margin: 0; flex: 0 0 15px; accent-color: var(--accent-color); cursor: pointer; }
 .bulk-favicon { width: 18px; height: 18px; flex: 0 0 18px; object-fit: contain; border-radius: 4px; }
 .bulk-site-copy { min-width: 0; display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: center; gap: 8px; flex: 1; }
@@ -1251,7 +1258,6 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 #bulkEditStatus { color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
 #bulkDirtyHint { color: var(--accent-color); font-size: 12px; line-height: 1.5; }
 .bulk-feedback:has(#bulkDirtyHint:not([hidden])) #bulkEditStatus:not(:empty) { flex-basis: 100%; }
-#bulkUndo { border: 0; border-radius: 4px; padding: 5px 8px; background: var(--bg-subtle); color: var(--accent-color); font: 12px var(--font-family); cursor: pointer; }
 .bulk-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; font-size: 12px; }
 .bulk-batch-actions { display: inline-flex; align-items: center; gap: 6px; }
 .bulk-move-control { display: inline-flex; align-items: stretch; border-radius: 6px; background: var(--bg-subtle); }
@@ -1291,9 +1297,10 @@ dialog.bulk-editor[open] { display: flex; flex-direction: column; gap: 12px; }
 .bulk-space-header:is(:hover, :focus-within) .bulk-space-toggle > .bulk-group-count { visibility: hidden; }
 .bulk-nav-item:has(.bulk-group-name-input:not([hidden])) .bulk-nav-actions,
 .bulk-space-header:has(.bulk-space-name-input:not([hidden])) .bulk-space-actions { display: none; }
-.bulk-nav-actions .bulk-icon-button, .bulk-space-actions .bulk-icon-button { width: 24px; height: 28px; }
-.bulk-site-actions .bulk-icon-button { width: 26px; height: 28px; }
-.bulk-site-delete { flex: 0 0 28px; height: 28px; }
+.bulk-nav-actions .bulk-icon-button, .bulk-space-actions .bulk-icon-button { width: 22px; height: 22px; padding: 3px; }
+.bulk-site-actions .bulk-icon-button { width: 22px; height: 22px; padding: 3px; }
+.bulk-editor :is(.bulk-nav-actions, .bulk-space-actions, .bulk-site-actions) svg { width: 12px; height: 12px; }
+.bulk-site-delete { flex: 0 0 22px; }
 .bulk-row-delete { color: var(--color-danger); }
 .bulk-icon-button:hover, .bulk-close:hover { background: var(--bg-subtle); color: var(--text-primary); }
 .bulk-row-delete:hover { color: var(--color-danger); background: color-mix(in srgb, var(--color-danger) 12%, transparent); }
@@ -1360,11 +1367,12 @@ dialog.shared-creation-host::backdrop { background: transparent; }
   #bulkEditorDialog .bulk-actions .btn { padding: 6px 8px; }
 }
 @media (hover: none), (pointer: coarse) {
-  .bulk-drag-handle { min-height: 36px; }
+  .bulk-editor :is(.bulk-nav-actions, .bulk-space-actions, .bulk-site-actions) .bulk-icon-button { width: 28px; height: 32px; }
+  .bulk-site-delete { flex-basis: 28px; }
   .bulk-group-select, .bulk-all-groups, .bulk-add-group { min-height: 40px; }
   .bulk-nav-actions, .bulk-space-actions { position: static; }
   .bulk-nav-actions, .bulk-space-actions, .bulk-site-actions { opacity: 1; pointer-events: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bulk-drag-handle, #bulkEditorDialog input, #bulkEditorDialog button, .bulk-nav-actions, .bulk-space-actions, .bulk-site-actions { transition: none !important; }
+  #bulkEditorDialog input, #bulkEditorDialog button, .bulk-nav-actions, .bulk-space-actions, .bulk-site-actions { transition: none !important; }
 }

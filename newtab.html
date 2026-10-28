@@ -537,7 +537,7 @@
             <div class="setting-item"><div class="setting-copy"><span>补全选中的搜索建议</span></div><div class="setting-control"><kbd>Tab</kbd></div></div>
             <div class="setting-item"><div class="setting-copy"><span>关闭设置或管理弹窗</span><small>搜索框中按 Esc 可关闭搜索建议</small></div><div class="setting-control"><kbd>Esc</kbd></div></div>
             <div class="setting-item"><div class="setting-copy"><span>保存当前网页（扩展版）</span><small>默认快捷键，可在浏览器的扩展快捷键设置中修改</small></div><div class="setting-control"><kbd>Alt</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>S</kbd></div></div>
-            <div class="setting-item"><div class="setting-copy"><span>调整分组或网站顺序</span><small>在管理弹窗中聚焦拖动手柄后，按 Alt 加上下方向键</small></div><div class="setting-control"><kbd>↑</kbd><kbd>↓</kbd></div></div>
+            <div class="setting-item"><div class="setting-copy"><span>调整分组或网站顺序</span><small>在批量编辑弹窗中聚焦网站或分组行后，按 Alt 加上下方向键</small></div><div class="setting-control"><kbd>↑</kbd><kbd>↓</kbd></div></div>
           </div>
 
         </section>
@@ -666,7 +666,7 @@
         <div id="bulkSiteList" class="bulk-site-list"></div>
       </section>
     </div>
-    <div class="bulk-footer"><div class="bulk-feedback"><span id="bulkDirtyHint" hidden>有未保存的更改，点击保存后生效</span><span id="bulkEditStatus" role="status" aria-live="polite">更改将在保存后生效</span><button type="button" id="bulkUndo" hidden>撤销</button></div><div class="bulk-footer-actions"><button type="button" class="btn secondary" id="bulkCancel">取消</button><button type="button" class="btn primary" id="bulkSave" disabled>保存更改</button></div></div>
+    <div class="bulk-footer"><div class="bulk-feedback"><span id="bulkDirtyHint" hidden>有未保存的更改，点击保存后生效</span><span id="bulkEditStatus" role="status" aria-live="polite">更改将在保存后生效</span></div><div class="bulk-footer-actions"><button type="button" class="btn secondary" id="bulkCancel">取消</button><button type="button" class="btn primary" id="bulkSave" disabled>保存更改</button></div></div>
   </dialog>
 
   <dialog id="bulkDiscardDialog" class="modal bulk-discard-dialog" aria-labelledby="bulkDiscardTitle" aria-describedby="bulkDiscardMessage"><h3 id="bulkDiscardTitle">放弃修改？</h3><p id="bulkDiscardMessage">有未保存的更改，确定要放弃修改吗？</p><div class="modal-actions"><button type="button" class="btn secondary" id="bulkKeepEditing" autofocus>继续编辑</button><button type="button" class="btn secondary" id="bulkDiscard">放弃修改</button></div></dialog>

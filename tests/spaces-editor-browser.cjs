@@ -1,4 +1,13 @@
 const {chromium}=require('playwright');const assert=require('node:assert/strict');
+
+async function longDrag(page, source, target, targetPosition) {
+ const from = await source.boundingBox(), to = await target.boundingBox();
+ await page.mouse.move(from.x + 40, from.y + from.height / 2);
+ await page.mouse.down();
+ await page.waitForTimeout(400);
+ await page.mouse.move(to.x + (targetPosition?.x ?? 60), to.y + (targetPosition?.y ?? to.height / 2), { steps: 12 });
+ await page.mouse.up();
+}
 (async()=>{const browser=await chromium.launch({channel:'chrome',headless:true});try{
  const context=await browser.newContext({viewport:{width:1360,height:920}});await context.route('https://**/*',r=>r.abort());
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -16,7 +25,7 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
  await page.click('[data-fold-space="0"]');await page.click('[data-fold-space="1"]');assert.equal(await page.locator('#bulkSave').isDisabled(),true);
  // Cross-space changes are drafts, including reactive empty-space hiding and undo.
  await page.click('[data-select-nav="0"]');const title=await page.locator('.bulk-title-input').first().inputValue();
- await page.locator('[data-key]').first().check();await page.locator('[data-drag-site]').first().dragTo(page.locator(`[data-nav-group="${workGroupIndex}"]`));
+ await page.locator('[data-key]').first().check();await longDrag(page, page.locator('[data-drag-site]').first(), page.locator(`[data-nav-group="${workGroupIndex}"]`));
  assert.equal(await page.locator('[data-fold-space="1"] .bulk-group-count').innerText(),'2');
  await page.click(`[data-select-nav="${workGroupIndex}"]`);assert.match(await page.locator('#bulkCurrentGroup').innerText(),/工作/);
  await page.check('#bulkSelectAll');await page.click('#bulkDelete');assert.equal(await page.locator('[data-fold-space="1"]').count(),0);
