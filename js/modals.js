@@ -886,6 +886,7 @@ export function openContextMenu(x, y, { siteBtn = null, host = document.body, cr
   if (typeof menu.showPopover === 'function') menu.setAttribute('popover', 'manual');
   document.getElementById('contextBulkEditor').style.display = creationOnly ? 'none' : '';
   document.getElementById('contextSettings').style.display = creationOnly ? 'none' : '';
+  document.getElementById('contextAddSpace').style.display = creationOnly ? 'flex' : 'none';
   const contextAddSite = document.getElementById('contextAddSite');
   const contextAddGroup = document.getElementById('contextAddGroup');
   const contextEditSite = document.getElementById('contextEditSite');
@@ -922,8 +923,9 @@ export function openContextMenu(x, y, { siteBtn = null, host = document.body, cr
   const width = document.documentElement.clientWidth;
   const height = document.documentElement.clientHeight;
   // Layout sizes are unaffected by the menu's scale transition.
-  const left = Math.max(margin, Math.min(x, width - menu.offsetWidth - margin));
-  const top = Math.max(margin, Math.min(y, height - menu.offsetHeight - margin));
+  const bounds = creationOnly ? host.getBoundingClientRect() : { left: 0, top: 0, right: width, bottom: height };
+  const left = Math.max(bounds.left + margin, Math.min(x, bounds.right - menu.offsetWidth - margin));
+  const top = Math.max(bounds.top + margin, Math.min(y, bounds.bottom - menu.offsetHeight - margin));
   menu.style.left = `${left}px`;
   menu.style.top = `${top}px`;
   menu.style.visibility = '';

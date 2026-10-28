@@ -1,4 +1,5 @@
 import { appData, syncManager } from './storage.js';
+import { createTemporaryGroup } from './data.js';
 import { render } from './render.js';
 import { icon } from './icons.js';
 import { escapeHTML, generateId } from './utils.js';
@@ -43,7 +44,9 @@ createDialog.className = 'shared-creation-host';
 createDialog.setAttribute('aria-label', '添加网站或分组');
 document.body.appendChild(createDialog);
 const showEmptySpaces = document.getElementById('bulkShowEmptySpaces');
-let moveAfterCreate = false;
+let moveAfterCreate = false, activeSpaceForCreation = null;
+const spaceCreateDialog = document.getElementById('bulkSpaceCreateDialog');
+const newSpaceName = document.getElementById('bulkNewSpaceName');
 // Object identity survives sorting, group switching and moving sites. IDs from
 // imported files need not be unique for editor selections to remain correct.
 let draftSpaces = [], draft = [], selected = new Set(), activeGroup = null;
@@ -177,6 +180,7 @@ function closeCreateDialog() {
 function openEditor() {
   document.getElementById('contextMenu').classList.add('hidden');
   editorColumnCount = document.querySelectorAll('#groupsContainer > .group-col').length || 1;
+  activeSpaceForCreation = null;
   draftSpaces = structuredClone(currentSpaces()); rebuildDraft(); original = JSON.stringify(currentSpaces()); spaceId = appData.activeSpaceId;
   collapsedSpaces.clear();
   const expandedSpace = draftSpaces.find(space => space.id === spaceId && hasBookmarks(space)) || draftSpaces.find(hasBookmarks);
@@ -239,6 +243,7 @@ groupList.addEventListener('click', event => {
   const toggle = event.target.closest('[data-fold-space]');
   if (toggle) {
     const space = draftSpaces[Number(toggle.dataset.foldSpace)], expanded = collapsedSpaces.has(space);
+    activeSpaceForCreation = space; activeGroup = null; renderList();
     if (expanded) collapsedSpaces.delete(space); else collapsedSpaces.add(space);
     toggle.setAttribute('aria-expanded', String(expanded)); document.getElementById(toggle.getAttribute('aria-controls')).hidden = !expanded; return;
   }
@@ -300,7 +305,7 @@ groupList.addEventListener('focusout', event => {
   updateGroupOptions(); changed();
 });
 function parentSpace() {
-  return selectedSpaces.size === 1 ? [...selectedSpaces][0] : selectedGroups.size === 1 ? ownerSpace([...selectedGroups][0]) : ownerSpace(activeGroup) || draftSpaces.find(space => space.id === spaceId) || draftSpaces[0];
+  return selectedSpaces.size === 1 ? [...selectedSpaces][0] : selectedGroups.size === 1 ? ownerSpace([...selectedGroups][0]) : ownerSpace(activeGroup) || (draftSpaces.includes(activeSpaceForCreation) ? activeSpaceForCreation : null) || draftSpaces.find(space => space.id === spaceId) || draftSpaces[0];
 }
 function finishCreation(space, group, message) {
   newSpaces.add(space); collapsedSpaces.delete(space); collapsedGroups.delete(group);
@@ -319,10 +324,32 @@ document.getElementById('bulkAddGroup').addEventListener('click', event => {
   const button = event.currentTarget;
   if (!document.getElementById('contextMenu').classList.contains('hidden')) { closeCreateMenu(); return; }
   const rect = button.getBoundingClientRect();
-  openContextMenu(rect.left, rect.bottom + 6, { host: dialog, creationOnly: true });
+  openContextMenu(rect.right - 180, rect.bottom + 6, { host: dialog, creationOnly: true });
   button.setAttribute('aria-expanded', 'true');
   const first = document.getElementById('contextAddSite');
   first.tabIndex = 0; first.focus();
+});
+document.getElementById('contextAddSpace').addEventListener('click', () => {
+  if (!dialog.open) return;
+  closeCreateMenu();
+  document.getElementById('bulkSpaceCreateForm').reset();
+  newSpaceName.setCustomValidity('');
+  spaceCreateDialog.showModal(); newSpaceName.focus();
+});
+document.getElementById('bulkSpaceCreateCancel').addEventListener('click', () => spaceCreateDialog.close());
+spaceCreateDialog.addEventListener('close', () => document.getElementById('bulkAddGroup').focus());
+newSpaceName.addEventListener('input', () => newSpaceName.setCustomValidity(''));
+document.getElementById('bulkSpaceCreateForm').addEventListener('submit', event => {
+  event.preventDefault();
+  const name = newSpaceName.value.trim();
+  if (!name) { newSpaceName.setCustomValidity('请输入空间名称'); newSpaceName.reportValidity(); return; }
+  const group = { ...createTemporaryGroup(draftSpaces.length), id: generateId(), column: 0, columnCount: editorColumnCount };
+  const space = { id: generateId(), name, groups: [group] };
+  draftSpaces.push(space); activeSpaceForCreation = space;
+  selected.clear(); selectedGroups.clear(); selectedSpaces.clear();
+  finishCreation(space, group, `已新建空间“${name}”，保存后生效`);
+  spaceCreateDialog.close();
+  groupList.querySelector(`[data-space-index="${draftSpaces.indexOf(space)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 });
 const outsideDialogElement = (el, event) => {
   const rect = el.getBoundingClientRect();
@@ -833,6 +860,7 @@ document.addEventListener('simtab-bookmark-preview', event => {
 });
 dialog.addEventListener('close', () => {
   stopPress(); stopNativeDrag(); clearUndo();
+  if (spaceCreateDialog.open) spaceCreateDialog.close();
   const toast = document.getElementById('simtabToast');
   if (toast?.parentElement === dialog) {
     toast.hidden = true;

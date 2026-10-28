@@ -1387,3 +1387,8 @@ dialog.shared-creation-host::backdrop { background: transparent; }
 @media (prefers-reduced-motion: reduce) {
   #bulkEditorDialog input, #bulkEditorDialog button, .bulk-nav-actions, .bulk-space-actions, .bulk-site-actions { transition: none !important; }
 }
+
+/* Space creation follows the same compact form treatment as group creation. */
+dialog.bulk-space-create-dialog { width: min(400px, calc(100vw - 32px)); margin: auto; }
+.bulk-space-create-dialog::backdrop { background: rgb(0 0 0 / 35%); }
+.bulk-space-create-dialog .data-desc { font-size: 12px; color: var(--text-secondary); }

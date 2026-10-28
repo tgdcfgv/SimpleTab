@@ -13,8 +13,8 @@ const assert = require('node:assert/strict');
     await page.click('#bulkAddGroup');
     // The menu must be at its button and receive pointer hits, including in a modal.
     assert(await page.locator('#contextMenu').evaluate(menu => {
-      const rect = menu.getBoundingClientRect(), button = document.querySelector('#bulkAddGroup').getBoundingClientRect();
-      return rect.left >= 0 && rect.right <= innerWidth && rect.bottom <= innerHeight &&
+      const rect = menu.getBoundingClientRect(), button = document.querySelector('#bulkAddGroup').getBoundingClientRect(), dialog = document.querySelector('#bulkEditorDialog').getBoundingClientRect();
+      return rect.left >= dialog.left && rect.right <= dialog.right && rect.top >= dialog.top && rect.bottom <= dialog.bottom &&
         Math.abs(rect.top - button.bottom - 6) < 2 && menu.contains(document.elementFromPoint(rect.left + 20, rect.top + 20));
     }));
     await page.keyboard.press('Escape');
