@@ -615,23 +615,13 @@
     </section>
     <section id="profileStep" class="onboarding-step" hidden>
       <h3 id="profileTitle">让这里更像你</h3>
-      <p id="profileDescription" class="onboarding-description">选一个头像，再告诉我们怎么称呼你。</p>
+      <p class="onboarding-description">选一个头像，再告诉我们怎么称呼你。</p>
       <form id="profileForm">
-        <div class="profile-avatar-section">
-          <div class="profile-avatar-preview-wrap">
-            <input id="profileAvatarInput" class="profile-avatar-input" type="text" inputmode="none" value="😊" aria-label="当前 Emoji 头像" autocomplete="off" autocapitalize="off" spellcheck="false" required>
-            <button type="button" id="profileRandomEmojiBtn" class="profile-avatar-random-btn" title="随机换一个头像" aria-label="随机换一个头像">🎲</button>
-          </div>
-          <div class="emoji-keyboard" aria-label="Emoji 键盘">
-            <div id="profileEmojiTabs" class="emoji-keyboard-tabs" role="tablist" aria-label="Emoji 分类"></div>
-            <div id="profileEmojiPresets" class="emoji-keyboard-body" role="group" aria-label="常用 Emoji 头像"></div>
-          </div>
-        </div>
-        <div class="profile-field-group">
-          <label for="profileNickname" class="profile-nickname-label">昵称</label>
-          <input id="profileNickname" class="auth-input" type="text" placeholder="你的昵称" autocomplete="nickname" maxlength="24" required aria-describedby="profileError">
-          <p id="profileError" class="auth-error-msg" role="alert" hidden></p>
-        </div>
+        <input id="profileAvatarInput" class="profile-avatar-input" type="text" value="😊" aria-label="Emoji 头像" aria-describedby="profileAvatarHint" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+        <p id="profileAvatarHint" class="profile-avatar-hint">输入或粘贴一个 Emoji 作为头像</p>
+        <label for="profileNickname" class="profile-nickname-label">昵称</label>
+        <input id="profileNickname" class="auth-input" type="text" placeholder="你的昵称" autocomplete="nickname" maxlength="24" required aria-describedby="profileError">
+        <p id="profileError" class="auth-error-msg" role="alert" hidden></p>
         <button type="submit" id="profileConfirmBtn" class="btn primary onboarding-confirm">确定</button>
       </form>
     </section>
