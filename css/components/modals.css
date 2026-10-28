@@ -1092,8 +1092,8 @@ dialog.onboarding-modal {
 }
 .onboarding-close-btn {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1119,15 +1119,78 @@ dialog.onboarding-modal {
 .onboarding-step[hidden], .dock-avatar[hidden] { display: none; }
 .welcome-mark { display: grid; place-items: center; width: 76px; height: 76px; margin: 0 auto 24px; border-radius: 24px; background: var(--bg-subtle); font-size: 42px; }
 .onboarding-eyebrow { margin: 0 0 10px; color: var(--text-secondary); font-size: 11px; letter-spacing: .2em; }
-.onboarding-modal h3 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -.03em; }
-.onboarding-description { margin: 12px 0 24px; color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
-.onboarding-confirm { width: 100%; min-height: 44px; margin-top: 24px; }
-.profile-avatar-input { display: block; box-sizing: border-box; width: 80px; height: 80px; padding: 0; margin: 0 auto; border: 1px solid var(--border-default); border-radius: 26px; background: var(--bg-subtle); color: var(--text-primary); font-family: inherit; font-size: 44px; line-height: normal; text-align: center; }
-.profile-avatar-input:focus-visible { outline: 2px solid var(--text-secondary); outline-offset: 3px; }
-.profile-avatar-hint { margin: 12px 0 22px; color: var(--text-secondary); font-size: 12px; }
-.profile-nickname-label { display: block; margin-bottom: 8px; text-align: left; font-size: 13px; font-weight: 500; }
-#profileNickname { width: 100%; min-height: 44px; }
-#profileError { text-align: left; }
+.onboarding-modal h3 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.03em; }
+.onboarding-description { margin: 8px 0 22px; color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+.onboarding-confirm { width: 100%; min-height: 42px; margin-top: 22px; border-radius: 10px; font-size: 14px; }
+.profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#profileAvatarInput.profile-avatar-input {
+  display: block;
+  box-sizing: border-box;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  margin: 0 auto;
+  border: 1px solid var(--border-default);
+  border-radius: 26px;
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 44px;
+  line-height: 84px;
+  text-align: center;
+  cursor: pointer;
+  caret-color: transparent;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+#profileAvatarInput.profile-avatar-input::selection {
+  background: transparent;
+}
+.profile-emoji-presets {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  max-width: 332px;
+  margin: 14px auto 0;
+}
+.profile-emoji-preset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 36px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--bg-subtle);
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+.profile-emoji-preset.is-active,
+.profile-emoji-preset[aria-pressed="true"] {
+  background: var(--accent-subtle);
+  border-color: var(--accent-color);
+}
+.profile-avatar-hint { margin: 10px 0 0; color: var(--text-tertiary); font-size: 12px; }
+.profile-field-group { margin-top: 20px; text-align: left; }
+.profile-nickname-label { display: block; margin-bottom: 8px; text-align: left; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+#onboardingDialog #profileNickname {
+  width: 100%;
+  height: 42px;
+  min-height: 42px;
+  padding: 0 14px;
+  font-size: 14px;
+  border-radius: 10px;
+  background: var(--bg-subtle);
+}
+#profileError { margin: 8px 0 0; text-align: left; }
 .dock-avatar {
   display: flex;
   align-items: center;

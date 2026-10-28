@@ -3,6 +3,7 @@ import { openSettingsModal, showToast } from './modals.js';
 
 const emojiPattern = /^(?:\p{Regional_Indicator}{2}|[#*0-9]\uFE0F?\u20E3|\p{Extended_Pictographic}\uFE0F?\p{Emoji_Modifier}?(?:[\u{E0020}-\u{E007E}]+\u{E007F})?(?:\u200D\p{Extended_Pictographic}\uFE0F?\p{Emoji_Modifier}?)*)$/u;
 const emojiSegments = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+const presetEmojis = ['😊', '😎', '🥳', '🦊', '🐱', '🐼', '🌱', '🚀'];
 const dialog = document.getElementById('onboardingDialog');
 
 function firstEmoji(value) {
@@ -10,8 +11,20 @@ function firstEmoji(value) {
     .find(segment => emojiPattern.test(segment)) || '';
 }
 
+function syncPresetSelection(value) {
+  const presets = document.getElementById('profileEmojiPresets');
+  if (!presets) return;
+  presets.querySelectorAll('.profile-emoji-preset').forEach(btn => {
+    const active = btn.dataset.emoji === value;
+    btn.classList.toggle('is-active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+}
+
 function setAvatar(profile) {
-  document.getElementById('profileAvatarInput').value = firstEmoji(profile?.avatar_emoji || '') || '😊';
+  const emoji = firstEmoji(profile?.avatar_emoji || '') || '😊';
+  document.getElementById('profileAvatarInput').value = emoji;
+  syncPresetSelection(emoji);
 }
 
 let saving = false;
@@ -30,6 +43,8 @@ export function openOnboarding() {
   document.getElementById('profileStep').hidden = true;
   dialog.setAttribute('aria-labelledby', 'onboardingTitle');
   document.getElementById('profileTitle').textContent = '让这里更像你';
+  const desc = document.getElementById('profileDescription');
+  if (desc) desc.textContent = '选一个头像，再告诉我们怎么称呼你。';
   const closeBtn = document.getElementById('profileCloseBtn');
   if (closeBtn) closeBtn.hidden = true;
   dialog.dataset.voluntaryEdit = 'false';
@@ -49,6 +64,8 @@ export function openProfileEditor() {
   document.getElementById('profileStep').hidden = false;
   dialog.setAttribute('aria-labelledby', 'profileTitle');
   document.getElementById('profileTitle').textContent = '编辑个人资料';
+  const desc = document.getElementById('profileDescription');
+  if (desc) desc.textContent = '更换头像或修改你的显示昵称。';
   const closeBtn = document.getElementById('profileCloseBtn');
   if (closeBtn) closeBtn.hidden = false;
   dialog.dataset.voluntaryEdit = 'true';
@@ -87,8 +104,28 @@ export function initOnboarding() {
     document.getElementById('profileNickname').focus();
   });
   const avatarInput = document.getElementById('profileAvatarInput');
+  const presetsContainer = document.getElementById('profileEmojiPresets');
+  if (presetsContainer) {
+    presetsContainer.replaceChildren(...presetEmojis.map(emoji => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'profile-emoji-preset';
+      btn.dataset.emoji = emoji;
+      btn.textContent = emoji;
+      btn.setAttribute('aria-label', `选择 ${emoji} 作为头像`);
+      btn.setAttribute('aria-pressed', 'false');
+      btn.addEventListener('click', () => {
+        if (saving) return;
+        avatarInput.value = emoji;
+        syncPresetSelection(emoji);
+        document.getElementById('profileError').hidden = true;
+      });
+      return btn;
+    }));
+  }
   const normalizeAvatar = () => {
     avatarInput.value = firstEmoji(avatarInput.value);
+    syncPresetSelection(avatarInput.value);
     document.getElementById('profileError').hidden = true;
   };
   avatarInput.addEventListener('focus', () => avatarInput.select());
@@ -121,6 +158,7 @@ export function initOnboarding() {
     }
     saving = true;
     button.disabled = avatarInput.disabled = nickname.disabled = true;
+    presetsContainer?.querySelectorAll('button').forEach(btn => { btn.disabled = true; });
     button.textContent = '正在保存…';
     try {
       await cloud.updateProfile(nickname.value.trim(), avatar);
@@ -142,6 +180,7 @@ export function initOnboarding() {
     } finally {
       saving = false;
       button.disabled = avatarInput.disabled = nickname.disabled = false;
+      presetsContainer?.querySelectorAll('button').forEach(btn => { btn.disabled = false; });
       button.textContent = '确定';
     }
   });

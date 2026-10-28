@@ -615,13 +615,18 @@
     </section>
     <section id="profileStep" class="onboarding-step" hidden>
       <h3 id="profileTitle">让这里更像你</h3>
-      <p class="onboarding-description">选一个头像，再告诉我们怎么称呼你。</p>
+      <p id="profileDescription" class="onboarding-description">选一个头像，再告诉我们怎么称呼你。</p>
       <form id="profileForm">
-        <input id="profileAvatarInput" class="profile-avatar-input" type="text" value="😊" aria-label="Emoji 头像" aria-describedby="profileAvatarHint" autocomplete="off" autocapitalize="off" spellcheck="false" required>
-        <p id="profileAvatarHint" class="profile-avatar-hint">输入或粘贴一个 Emoji 作为头像</p>
-        <label for="profileNickname" class="profile-nickname-label">昵称</label>
-        <input id="profileNickname" class="auth-input" type="text" placeholder="你的昵称" autocomplete="nickname" maxlength="24" required aria-describedby="profileError">
-        <p id="profileError" class="auth-error-msg" role="alert" hidden></p>
+        <div class="profile-avatar-section">
+          <input id="profileAvatarInput" class="profile-avatar-input" type="text" value="😊" aria-label="Emoji 头像" aria-describedby="profileAvatarHint" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+          <div id="profileEmojiPresets" class="profile-emoji-presets" role="group" aria-label="常用 Emoji 头像"></div>
+          <p id="profileAvatarHint" class="profile-avatar-hint">点选常用头像，或点击大图标输入任意 Emoji</p>
+        </div>
+        <div class="profile-field-group">
+          <label for="profileNickname" class="profile-nickname-label">昵称</label>
+          <input id="profileNickname" class="auth-input" type="text" placeholder="你的昵称" autocomplete="nickname" maxlength="24" required aria-describedby="profileError">
+          <p id="profileError" class="auth-error-msg" role="alert" hidden></p>
+        </div>
         <button type="submit" id="profileConfirmBtn" class="btn primary onboarding-confirm">确定</button>
       </form>
     </section>
