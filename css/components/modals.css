@@ -1142,36 +1142,46 @@ dialog.onboarding-modal {
   font-size: 44px;
   line-height: 84px;
   text-align: center;
-  cursor: pointer;
-  caret-color: transparent;
-  transition: background var(--transition-fast), transform var(--transition-fast);
+  cursor: text;
+  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
-#profileAvatarInput.profile-avatar-input::selection {
-  background: transparent;
+#profileAvatarInput.profile-avatar-input:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2px var(--accent-subtle) !important;
+}
+#profileAvatarInput.profile-avatar-input.is-composing {
+  font-family: inherit;
+  font-size: 16px;
+  line-height: normal;
 }
 .profile-emoji-presets {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 6px;
+  gap: 4px;
   width: 100%;
-  max-width: 332px;
+  max-height: 120px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 6px;
   margin: 14px auto 0;
+  border-radius: 14px;
+  background: var(--bg-subtle);
 }
 .profile-emoji-preset {
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 0;
-  height: 36px;
+  height: 34px;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: 10px;
-  background: var(--bg-subtle);
+  border-radius: 8px;
+  background: transparent;
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
-  font-size: 19px;
+  font-size: 20px;
   line-height: 1;
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 .profile-emoji-preset.is-active,
 .profile-emoji-preset[aria-pressed="true"] {

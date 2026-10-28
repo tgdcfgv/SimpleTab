@@ -3,12 +3,26 @@ import { openSettingsModal, showToast } from './modals.js';
 
 const emojiPattern = /^(?:\p{Regional_Indicator}{2}|[#*0-9]\uFE0F?\u20E3|\p{Extended_Pictographic}\uFE0F?\p{Emoji_Modifier}?(?:[\u{E0020}-\u{E007E}]+\u{E007F})?(?:\u200D\p{Extended_Pictographic}\uFE0F?\p{Emoji_Modifier}?)*)$/u;
 const emojiSegments = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
-const presetEmojis = ['😊', '😎', '🥳', '🦊', '🐱', '🐼', '🌱', '🚀'];
+const presetEmojis = [
+  '😊', '😎', '🥳', '🤓', '🤗', '😺', '🦊', '🐱',
+  '🐶', '🐼', '🐻', '🐨', '🐯', '🐰', '🐸', '🐧',
+  '🦉', '🦋', '🐳', '🐙', '🦄', '🐝', '🌱', '🌻',
+  '🍀', '🌵', '🌸', '🌈', '☀️', '🌙', '⭐', '🔥',
+  '🍊', '🍑', '🥑', '🍉', '🍓', '☕', '🍵', '🍰',
+  '🎨', '🎮', '🎧', '🚀', '🛸', '💎', '💡', '🎯'
+];
 const dialog = document.getElementById('onboardingDialog');
+let currentAvatar = '😊';
 
-function firstEmoji(value) {
-  return Array.from(emojiSegments.segment(value), part => part.segment)
-    .find(segment => emojiPattern.test(segment)) || '';
+function extractEmoji(value, previousEmoji = '') {
+  const emojis = Array.from(emojiSegments.segment(value), part => part.segment)
+    .filter(segment => emojiPattern.test(segment));
+  if (!emojis.length) return '';
+  if (emojis.length > 1 && previousEmoji) {
+    const idx = emojis.indexOf(previousEmoji);
+    if (idx !== -1) emojis.splice(idx, 1);
+  }
+  return emojis[0];
 }
 
 function syncPresetSelection(value) {
@@ -22,7 +36,8 @@ function syncPresetSelection(value) {
 }
 
 function setAvatar(profile) {
-  const emoji = firstEmoji(profile?.avatar_emoji || '') || '😊';
+  const emoji = extractEmoji(profile?.avatar_emoji || '') || '😊';
+  currentAvatar = emoji;
   document.getElementById('profileAvatarInput').value = emoji;
   syncPresetSelection(emoji);
 }
@@ -116,7 +131,9 @@ export function initOnboarding() {
       btn.setAttribute('aria-pressed', 'false');
       btn.addEventListener('click', () => {
         if (saving) return;
+        currentAvatar = emoji;
         avatarInput.value = emoji;
+        avatarInput.classList.remove('is-composing');
         syncPresetSelection(emoji);
         document.getElementById('profileError').hidden = true;
       });
@@ -124,15 +141,37 @@ export function initOnboarding() {
     }));
   }
   const normalizeAvatar = () => {
-    avatarInput.value = firstEmoji(avatarInput.value);
-    syncPresetSelection(avatarInput.value);
+    const next = extractEmoji(avatarInput.value, currentAvatar);
+    avatarInput.value = next;
+    currentAvatar = next;
+    syncPresetSelection(next);
     document.getElementById('profileError').hidden = true;
   };
-  avatarInput.addEventListener('focus', () => avatarInput.select());
-  avatarInput.addEventListener('input', event => {
-    if (!event.isComposing) normalizeAvatar();
+  avatarInput.addEventListener('focus', () => {
+    requestAnimationFrame(() => avatarInput.select());
   });
-  avatarInput.addEventListener('compositionend', normalizeAvatar);
+  avatarInput.addEventListener('mouseup', event => {
+    if (document.activeElement === avatarInput && !avatarInput.classList.contains('is-composing')) {
+      event.preventDefault();
+      avatarInput.select();
+    }
+  });
+  avatarInput.addEventListener('compositionstart', () => {
+    avatarInput.classList.add('is-composing');
+  });
+  avatarInput.addEventListener('input', event => {
+    if (!event.isComposing) {
+      avatarInput.classList.remove('is-composing');
+      normalizeAvatar();
+    }
+  });
+  avatarInput.addEventListener('compositionend', () => {
+    avatarInput.classList.remove('is-composing');
+    normalizeAvatar();
+  });
+  avatarInput.addEventListener('blur', () => {
+    avatarInput.classList.remove('is-composing');
+  });
   document.getElementById('profileNickname').addEventListener('input', () => {
     document.getElementById('profileError').hidden = true;
   });
