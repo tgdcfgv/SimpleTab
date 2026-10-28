@@ -130,7 +130,7 @@ function renderDropdown(links, suggestions, query) {
   updateSelection();
 }
 
-function showResults() {
+export function showResults() {
   if (!appData) return;
   const query = searchInput.value.trim();
   if (!query) {

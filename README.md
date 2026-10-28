@@ -235,6 +235,7 @@ node tests/controls-browser.cjs
 node tests/settings-browser.cjs
 node tests/cloud-cache-browser.cjs
 node tests/site-icons-browser.cjs
+node tests/search-engine-focus-browser.cjs
 node tests/sync-fallback-browser.cjs
 ```
 

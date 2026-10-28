@@ -5,7 +5,7 @@ import { appData, SEARCH_ENGINES, syncManager } from './storage.js';
 import { generateId, getFaviconUrl } from './utils.js';
 import { invalidateSiteIcon } from './site-icons.js';
 import { applySettings, render } from './render.js';
-import { searchInput } from './search.js';
+import { searchInput, showResults } from './search.js';
 import { appStoreModal, currentStoreGroupId, renderAppStoreCategory, renderStoreGroupSelection, renderStoreMenu, setStoreSelectionFromGroup } from './store.js';
 import { openAuthModal, closeAuthModal, showToast } from './auth-modal.js';
 
@@ -611,8 +611,11 @@ document.getElementById('compactModeToggle').addEventListener('change', event =>
 document.getElementById('closeSettingsBtn').addEventListener('click', closeAllModals);
 
 document.getElementById('searchEngineSelect').addEventListener('change', (e) => {
+  if (appData.settings.searchEngine === e.target.value) return;
   appData.settings.searchEngine = e.target.value;
   syncManager.saveData();
+  // Pointer selection retains input focus, so update suggestion URLs explicitly.
+  if (document.activeElement === searchInput) showResults();
 });
 
 document.getElementById('wallpaperChooseBtn').addEventListener('click', () => document.getElementById('wallpaperUpload').click());
@@ -756,12 +759,20 @@ export function updateCustomSelectOptions(select) {
       setSelectOpen(container, open);
     });
 
-    container.addEventListener('keydown', event => {
+    // Engine switching is part of typing. Keep the caret and virtual keyboard
+    // in place instead of blurring the input on pointer-down.
+    container.addEventListener('pointerdown', event => {
+      if (select.id === 'searchEngineSelect' && !select.disabled && event.button === 0 &&
+          document.activeElement === searchInput && event.target.closest('button')) event.preventDefault();
+    });
+
+    const keyboardScope = select.id === 'searchEngineSelect' ? select.closest('.search-container') : container;
+    keyboardScope.addEventListener('keydown', event => {
       if (event.key === 'Escape' && container.classList.contains('open')) {
         event.preventDefault();
         event.stopPropagation();
+        if (document.activeElement !== searchInput) trigger.focus({ preventScroll: true });
         setSelectOpen(container, false);
-        trigger.focus();
       }
     });
     container.appendChild(trigger);
@@ -792,12 +803,11 @@ export function updateCustomSelectOptions(select) {
       e.stopPropagation();
       select.selectedIndex = index;
       select.dispatchEvent(new Event('change'));
+      // Restore focus before hiding/inerting a focused option. Doing this in
+      // reverse briefly drops :focus-within and restarts the header transition.
+      const nextFocus = select.id === 'searchEngineSelect' ? searchInput : container.querySelector('.custom-select-trigger-global');
+      nextFocus.focus({ preventScroll: true });
       setSelectOpen(container, false);
-      container.querySelector('.custom-select-trigger-global').focus();
-      if (select.id === 'searchEngineSelect') {
-        document.querySelector('.search-container')?.classList.remove('engine-select-open');
-        document.getElementById('searchInput').focus();
-      }
     });
     optionsContent.appendChild(optDiv);
   });
