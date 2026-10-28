@@ -598,7 +598,16 @@ function reorderSites(links, destination, reference, after) {
   destination.links.splice(index < 0 ? destination.links.length : index + (after ? 1 : 0), 0, ...moving);
   clearUndo(); collapsedGroups.delete(destination); changed('网站顺序已调整，保存后生效'); refresh();
 }
-function clearDropMarks() { dialog.querySelectorAll('.drop-target, .bulk-drop-before, .bulk-drop-after').forEach(el => el.classList.remove('drop-target', 'bulk-drop-before', 'bulk-drop-after')); }
+const insertionLine = document.createElement('div');
+insertionLine.className = 'bulk-insertion-line';
+insertionLine.setAttribute('aria-hidden', 'true');
+insertionLine.hidden = true;
+const dragPreview = document.createElement('canvas');
+dragPreview.width = dragPreview.height = 1;
+dragPreview.className = 'bulk-drag-preview';
+dragPreview.setAttribute('aria-hidden', 'true');
+dialog.appendChild(dragPreview);
+function clearDropMarks() { insertionLine.hidden = true; }
 function dropDestination(event) {
   if (!drag) return null;
   // Navigation takes priority over editable inputs and all right-pane drop zones.
@@ -634,12 +643,25 @@ function pointerDestination() {
 }
 function showDropDestination(destination, clientY) {
   clearDropMarks();
-  if (!destination) return;
-  destination.element.classList.add(destination.emptyColumn || (drag.type === 'site' && destination.navigation) || destination.append ? 'drop-target' : destination.after ? 'bulk-drop-after' : 'bulk-drop-before');
+  if (!destination || (drag.type === 'site' && destination.link && drag.links.has(destination.link)) || (drag.type === 'group' && destination.group === drag.group)) return;
   const scrollable = destination.navigation || destination.emptyColumn ? groupList : list;
   const rect = scrollable.getBoundingClientRect();
   if (clientY < rect.top + 28) scrollable.scrollTop -= 8;
   if (clientY > rect.bottom - 28) scrollable.scrollTop += 8;
+  // One shared marker represents the insertion boundary, including the gap
+  // shared by the bottom of one row and the top of the next.
+  let anchor = destination.element;
+  if (destination.append) {
+    anchor = [...destination.element.querySelectorAll('.bulk-site-row')].filter(row => row.getClientRects().length).at(-1)
+      || destination.element.querySelector('.bulk-detail-heading') || destination.element;
+  }
+  const bounds = anchor.getBoundingClientRect();
+  const after = destination.after || destination.append || destination.emptyColumn || (drag.type === 'site' && destination.navigation);
+  scrollable.appendChild(insertionLine);
+  insertionLine.style.left = `${bounds.left - rect.left + scrollable.scrollLeft}px`;
+  insertionLine.style.top = `${(after ? bounds.bottom : bounds.top) - rect.top + scrollable.scrollTop - 1}px`;
+  insertionLine.style.width = `${bounds.width}px`;
+  insertionLine.hidden = false;
 }
 function paintDrag() {
   if (!press || !drag) return;
@@ -711,7 +733,9 @@ dialog.addEventListener('dragstart', event => {
   suppressDragClick = true;
   event.dataTransfer.effectAllowed = 'move';
   event.dataTransfer.setData('text/plain', 'simtab-editor');
-  event.dataTransfer.setDragImage(row, 24, row.offsetHeight / 2);
+  // The insertion line is the drop feedback; avoid a second copy of the row
+  // floating above the list while keeping the native system drag gesture.
+  event.dataTransfer.setDragImage(dragPreview, 0, 0);
   // Defer source styling until the browser has captured the native drag preview.
   requestAnimationFrame(() => { if (nativeDragRow === row) row.classList.add('is-dragging'); });
 });

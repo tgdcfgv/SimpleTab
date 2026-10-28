@@ -36,14 +36,27 @@ const assert = require('node:assert/strict');
     const centerX = selector => page.locator(selector).first().evaluate(el => { const r = el.getBoundingClientRect(); return r.x + r.width / 2; });
     assert(Math.abs(await centerX('.bulk-detail-heading > svg') - await centerX('[data-key]')) < 1);
     assert(Math.abs(await centerX('.bulk-space-toggle > svg') - await centerX('[data-select-group]')) < 1);
+    const defaultBackground = await page.locator('.bulk-site-row').first().evaluate(el => getComputedStyle(el).backgroundColor);
     await page.locator('[data-key]').first().check();
     await page.locator('#bulkSearch').hover();
     await page.waitForTimeout(160);
     assert(await page.locator('[data-key], [data-select-group], [data-select-space]').evaluateAll(inputs => inputs.every(el => getComputedStyle(el).opacity === '1')));
+    assert.notEqual(await page.locator('.bulk-site-row').first().evaluate(el => getComputedStyle(el).backgroundColor), defaultBackground);
     await page.locator('[data-key]').first().uncheck();
     await page.locator('#bulkSearch').hover();
     await page.waitForTimeout(160);
     assert.equal(await opacity('[data-key]'), '0');
+    assert.equal(await page.locator('.bulk-site-actions').first().evaluate(el => getComputedStyle(el).opacity), '0', 'checkbox focus must not keep row actions visible after deselection');
+    for (const colorScheme of ['light', 'dark']) {
+      await page.emulateMedia({ colorScheme });
+      await page.locator('[data-key]').first().check();
+      await page.locator('#bulkSearch').hover();
+      const colors = await page.locator('.bulk-site-row').evaluateAll(rows => rows.slice(0, 2).map(row => getComputedStyle(row).backgroundColor));
+      assert.notEqual(colors[0], colors[1], `selection background in ${colorScheme}`);
+      await page.locator('[data-key]').first().uncheck();
+      await page.locator('#bulkSearch').hover();
+    }
+    await page.emulateMedia({ colorScheme: 'light' });
     await page.click('[data-select-nav="0"]');
     const beforeNative = await page.locator('.bulk-title-input').evaluateAll(inputs => inputs.map(input => input.value));
     await page.evaluate(() => {
@@ -54,6 +67,19 @@ const assert = require('node:assert/strict');
     await page.locator('.bulk-site-copy').first().dragTo(page.locator('.bulk-site-row').nth(1), { targetPosition: { x: 110, y: 31 } });
     assert.equal(await page.locator('.bulk-title-input').nth(1).inputValue(), beforeNative[0]);
     assert.equal(await page.evaluate(() => window.nativeStarts), 1);
+    const transfer = await page.evaluateHandle(() => new DataTransfer());
+    await page.locator('.bulk-site-row').first().dispatchEvent('dragstart', { dataTransfer: transfer });
+    const markerY = async (index, after) => {
+      const target = page.locator('.bulk-site-row').nth(index), bounds = await target.boundingBox();
+      await target.dispatchEvent('dragover', { dataTransfer: transfer, clientY: bounds.y + (after ? bounds.height - 2 : 2) });
+      assert.equal(await page.locator('.bulk-insertion-line:not([hidden])').count(), 1);
+      assert.equal(await page.locator('.bulk-drop-before, .bulk-drop-after, .drop-target').count(), 0);
+      return page.locator('.bulk-insertion-line').evaluate(el => el.getBoundingClientRect().top);
+    };
+    assert(Math.abs(await markerY(1, true) - await markerY(2, false)) < 1, 'adjacent row edges share one insertion line');
+    await page.screenshot({ path: '/tmp/simpletab-single-drop-line.png', animations: 'disabled' });
+    await page.locator('.bulk-site-row').first().dispatchEvent('dragend');
+    assert.equal(await page.locator('.bulk-insertion-line:not([hidden])').count(), 0);
     const url = page.locator('.bulk-url-input').first();
     const urlBox = await url.boundingBox();
     await page.mouse.dblclick(urlBox.x + 30, urlBox.y + urlBox.height / 2);
@@ -94,6 +120,6 @@ const assert = require('node:assert/strict');
     await touchPage.click('#bulkDiscard');
     assert(await touchPage.locator('#simtabToast').isHidden());
     assert.deepEqual(errors, []);
-    console.log('PASS: hover/global checkbox visibility, aligned selection columns, trusted native desktop drag over text, double-click URL editing, touch long-press sorting and top-layer undo.');
+    console.log('PASS: hover/global checkbox visibility, aligned selection columns, trusted native desktop drag over text, double-click URL editing, single insertion line, selected backgrounds, deselection action cleanup, touch long-press sorting and top-layer undo.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });
