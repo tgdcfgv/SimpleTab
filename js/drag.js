@@ -4,7 +4,7 @@ import { extractDroppedLink } from './urls.js';
 
 
 export let draggedItem = null;
-export let draggedItemType = null; // 'site' or 'group'
+export let draggedItemType = null; // 'site', 'dock-site' or 'group'
 let siteOrderChanged = false;
 
 function captureSiteRects() {
@@ -108,6 +108,15 @@ export function handleGroupDragStart(e) {
   setTimeout(() => { if (draggedItem === card) card.classList.add('dragging-group'); }, 0);
 }
 
+export function handleDockDragStart(e) {
+  draggedItem = e.currentTarget;
+  draggedItemType = 'dock-site';
+  siteOrderChanged = false;
+  e.stopPropagation();
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', draggedItem.href);
+}
+
 export function moveGroupTo(sourceId, colIndex, targetId = null, position = 'after') {
   // Persist the visible placement before reordering so drops work at every width.
   const columns = document.querySelectorAll('#groupsContainer > .group-col');
@@ -155,6 +164,8 @@ export function handleDrop(e) {
 }
 
 export function handleDragEnd(e) {
+  internalDragActive = false;
+  clearExternalDropState();
   if (draggedItem) {
     draggedItem.classList.remove('dragging', 'dragging-group', 'group-drag-surface');
   }

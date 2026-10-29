@@ -20,6 +20,11 @@ const assert = require('node:assert/strict');
     assert.equal(await page.locator('.site-btn').count(), count);
     await source.dragTo(page.locator('#spaceDock'));
     assert.equal(await page.locator('.dock-site-btn').count(), 1);
+    // Returning a pinned site to its original group does not create a duplicate.
+    await page.locator('.dock-site-btn').dragTo(source.locator('xpath=ancestor::div[contains(@class,"group-card")]').locator('.group-header'));
+    assert.equal(await page.locator('.dock-site-btn').count(), 0);
+    assert.equal(await page.locator('.site-btn').count(), count);
+    await source.dragTo(page.locator('#spaceDock'));
     const externalDrop = async value => page.evaluate(value => {
       const transfer = new DataTransfer();
       transfer.setData('text/uri-list', value);
@@ -49,7 +54,23 @@ const assert = require('node:assert/strict');
     await page.keyboard.press('Delete');
     await page.locator('#okConfirmBtn').click();
     assert.equal(await page.locator('.dock-site-btn').count(), 1);
+    // An external shortcut can be returned to an empty/collapsed group and survives reload.
+    await page.setViewportSize({ width: 1360, height: 920 });
+    const emptyGroup = page.locator('.group-card').filter({ has: page.locator('.empty-group-state') }).first();
+    const groupId = await emptyGroup.getAttribute('data-id');
+    const title = emptyGroup.locator('.group-header');
+    await page.locator('.dock-site-btn').dragTo(title);
+    assert.equal(await page.locator('.dock-site-btn').count(), 0);
+    assert.equal(await page.locator(`.group-card[data-id="${groupId}"] .site-btn[href="https://example.org/project"]`).count(), 1);
+    await page.waitForFunction(() => JSON.parse(localStorage.getItem('appData'))?.settings.dockLinks.length === 0);
+    await page.reload();
+    await page.locator('.site-btn[href="https://example.org/project"]').waitFor();
+    assert.equal(await page.locator('.dock-site-btn').count(), 0);
+    // Dropping outside a group leaves the shortcut in the dock.
+    await page.locator('.site-btn[href="https://example.org/project"]').dragTo(page.locator('#spaceDock'));
+    await page.locator('.dock-site-btn').dragTo(page.locator('.top-bar'));
+    assert.equal(await page.locator('.dock-site-btn').count(), 1);
     assert.deepEqual(errors, []);
-    console.log('PASS: internal/external dock drops, duplicate prevention, original retained, safe URLs, persistence, positions, keyboard removal.');
+    console.log('PASS: internal/external dock drops, duplicate prevention, original retained, safe URLs, persistence, positions, keyboard removal, returning to original/empty groups, canceled drops and persistence.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });
