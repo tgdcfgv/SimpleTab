@@ -281,10 +281,6 @@
   .site-btn {
     --site-inline-padding: 4px;
   }
-
-  .site-btn {
-    gap: 4px;
-  }
 }
 
 /* Pure Icon Mode */
