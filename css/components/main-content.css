@@ -37,6 +37,8 @@
 
 .group-card {
   min-width: 0;
+  container: group-card / inline-size;
+  --site-inline-padding: 10px;
   background: var(--card-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -53,7 +55,8 @@
   justify-content: space-between;
   margin-bottom: 8px;
   cursor: pointer;
-  padding: 8px 12px;
+  /* Match the favicon center, including its border and larger icon size. */
+  padding: 8px calc(var(--site-inline-padding) + 1px + (var(--favicon-size) - 14px) / 2);
   margin-left: 0;
   margin-right: 0;
   border-radius: var(--radius-md);
@@ -200,7 +203,6 @@
   min-height: 0;
   overflow: hidden;
   min-width: 0;
-  container: group-sites / inline-size;
 }
 
 .sites-grid.is-sorting {
@@ -231,7 +233,7 @@
   display: flex;
   align-items: center;
   height: var(--site-height);
-  padding: 0 10px;
+  padding: 0 var(--site-inline-padding);
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
@@ -274,9 +276,13 @@
   mask-image: linear-gradient(to right, #000 calc(100% - 12px), transparent);
 }
 
-@container group-sites (max-width: 400px) {
+@container group-card (max-width: 400px) {
+  .group-header,
   .site-btn {
-    padding-inline: 4px;
+    --site-inline-padding: 4px;
+  }
+
+  .site-btn {
     gap: 4px;
   }
 }

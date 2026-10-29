@@ -53,6 +53,9 @@ const assert = require('node:assert/strict');
               const title = header.querySelector('.group-title');
               if (getComputedStyle(title).maskImage !== 'none') problems.push('faded group title');
               if (title.textContent === '工作' && title.scrollWidth > title.clientWidth) problems.push('clipped short group title');
+              const fold = header.querySelector('.fold-icon').getBoundingClientRect();
+              const firstIcon = header.closest('.group-card').querySelector('.site-btn img').getBoundingClientRect();
+              if (Math.abs((fold.left + fold.width / 2) - (firstIcon.left + firstIcon.width / 2)) > 0.5) problems.push('misaligned leading icons');
             }
             return problems;
           });
