@@ -275,3 +275,30 @@
   [data-dock-position="bottom"] .space-edit-btn { width: 32px; height: 32px; flex: 0 0 32px; }
   [data-dock-position="bottom"] .space-tab-hint { display: none; }
 }
+
+.dock-sites {
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+  max-height: 36vh;
+  overflow: auto;
+  scrollbar-width: none;
+}
+.dock-sites[hidden], .dock-sites-divider[hidden] { display: none; }
+.dock-sites-divider { order: 1; }
+.dock-site-btn { text-decoration: none; }
+.dock-site-btn img { width: 26px; height: 26px; object-fit: contain; border-radius: 6px; pointer-events: none; }
+.space-dock.dock-drop-target { outline: 2px solid var(--primary-color); outline-offset: 4px; }
+.dock-site-btn:focus-visible { outline: 2px solid var(--primary-color); outline-offset: -2px; }
+[data-dock-position="bottom"] .dock-sites { flex-direction: row; max-height: none; }
+.space-dock .dock-sites-divider { order: 2; }
+.space-dock .dock-sites { order: 3; }
+.space-dock .dock-actions-divider { order: 4; }
+.space-dock .dock-actions { order: 5; }
+[data-dock-position="bottom"] .space-dock { overflow-x: auto; scrollbar-width: none; }
+[data-dock-position="bottom"] .space-switcher,
+[data-dock-position="bottom"] .dock-actions,
+[data-dock-position="bottom"] .dock-sites { flex-shrink: 0; }

@@ -1,3 +1,4 @@
+import { renderDockSites } from './dock.js';
 import { getWallpaperUrl } from './wallpaper.js';
 import { icon } from './icons.js';
 import { letterBadge, loadSiteIcon } from './site-icons.js';
@@ -257,6 +258,7 @@ export function renderSpaceDock() {
     });
     dockList.appendChild(btn);
   });
+  renderDockSites();
   updateDockVisibility();
 }
 
@@ -316,8 +318,11 @@ export function updateDockVisibility() {
   const spaces = document.querySelector('.space-switcher');
   actions.hidden = !actions.querySelector('button:not([hidden])');
   spaces.hidden = !spaces.querySelector('button:not([hidden])');
-  document.querySelector('.dock-divider').hidden = actions.hidden || spaces.hidden;
-  document.getElementById('spaceDock').hidden = settings.dockEnabled === false || (actions.hidden && spaces.hidden);
+  const sites = document.getElementById('dockSites');
+  sites.hidden = !sites.children.length;
+  document.getElementById('dockSitesDivider').hidden = sites.hidden || spaces.hidden;
+  document.querySelector('.dock-actions-divider').hidden = actions.hidden || (spaces.hidden && sites.hidden);
+  document.getElementById('spaceDock').hidden = settings.dockEnabled === false || (actions.hidden && spaces.hidden && sites.hidden);
   document.getElementById('settingsFallbackBtn').hidden = settings.dockEnabled !== false && settings.showDockSettingsButton !== false;
 }
 

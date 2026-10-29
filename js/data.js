@@ -83,6 +83,7 @@ export const DEFAULT_DATA = {
     showDockAddSiteButton: true,
     showDockStoreButton: false,
     hiddenDockSpaces: [],
+    dockLinks: [],
     showDockTabHint: true,
     showDockEditButton: true,
     wallpaper: null
@@ -153,6 +154,16 @@ export function normalizeAppData(data) {
   if (!['left', 'right', 'bottom'].includes(normalized.settings.dockPosition)) normalized.settings.dockPosition = 'bottom';
   normalized.settings.hiddenDockSpaces = Array.isArray(normalized.settings.hiddenDockSpaces)
     ? normalized.settings.hiddenDockSpaces.filter(id => typeof id === 'string') : [];
+  const dockUrls = new Set();
+  normalized.settings.dockLinks = (Array.isArray(normalized.settings.dockLinks) ? normalized.settings.dockLinks : []).flatMap(link => {
+    const url = safeWebUrl(link?.url);
+    if (!url || dockUrls.has(url)) return [];
+    dockUrls.add(url);
+    const clean = { id: String(link.id || `dock-${dockUrls.size}`), title: String(link.title || new URL(url).hostname), url };
+    const customIcon = safeImageUrl(link.customIcon);
+    if (customIcon) clean.customIcon = customIcon;
+    return [clean];
+  });
   normalized.settings.wallpaper = safeImageUrl(normalized.settings.wallpaper);
   const validEngineIds = new Set(SEARCH_ENGINES.map(engine => engine.id));
   normalized.settings.enabledSearchEngines = Array.isArray(normalized.settings.enabledSearchEngines)

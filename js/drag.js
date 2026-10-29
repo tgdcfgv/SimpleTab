@@ -89,7 +89,8 @@ export function handleDragStart(e) {
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', draggedItem.dataset.id || '');
   document.querySelectorAll('.sites-grid').forEach(grid => grid.classList.add('is-sorting'));
-  setTimeout(() => draggedItem.classList.add('dragging'), 0);
+  const item = draggedItem;
+  setTimeout(() => { if (draggedItem === item) item.classList.add('dragging'); }, 0);
 }
 
 export function handleGroupDragStart(e) {

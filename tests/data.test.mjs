@@ -134,3 +134,15 @@ test('extractDroppedLink parses external URLs, anchor titles, moz-url and bare d
   assert.equal(extractDroppedLink(mockTransfer({ 'text/plain': 'photo.png' }, [{ name: 'photo.png' }])), null);
   assert.equal(deriveSiteTitle('https://www.figma.com/files'), 'Figma');
 });
+
+
+test('dock shortcuts survive normalization with safe URLs, icons and no duplicates', () => {
+  const data = normalizeAppData({ settings: { dockLinks: [null, { url: 'javascript:alert(1)' },
+    { id: 'pin', title: 'Example', url: 'https://example.org', customIcon: 'https://example.org/icon.png' },
+    { url: 'https://example.org/' }, { url: 'https://example.net', customIcon: 'javascript:bad' }] } });
+  assert.equal(data.settings.dockLinks.length, 2);
+  assert.equal(data.settings.dockLinks[0].url, 'https://example.org/');
+  assert.equal(data.settings.dockLinks[0].customIcon, 'https://example.org/icon.png');
+  assert.equal(data.settings.dockLinks[1].customIcon, undefined);
+  assert.equal(normalizeAppData({}).settings.dockLinks.length, 0);
+});
