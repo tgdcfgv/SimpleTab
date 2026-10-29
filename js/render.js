@@ -102,7 +102,7 @@ export function render() {
     header.innerHTML = `
       <div class="group-title-container">
         ${icon('chevron-down', 16, 'fold-icon', `transform: rotate(${group.collapsed ? '-90deg' : '0'});`)}
-        <span class="group-title">${escapeHTML(group.name)}</span>
+        <span class="group-title" title="${escapeHTML(group.name)}">${escapeHTML(group.name)}</span>
         <div class="group-collapsed-icons">
           ${group.links.slice(0, 6).map(link => {
             const iconSrc = letterBadge(link.url, link.title);
@@ -174,7 +174,7 @@ export function render() {
     grid.className = 'sites-grid';
     grid.dataset.groupId = group.id;
     if (group.linksPerRow && group.linksPerRow !== 'auto') {
-      grid.style.gridTemplateColumns = `repeat(${group.linksPerRow}, 1fr)`;
+      grid.style.gridTemplateColumns = `repeat(${group.linksPerRow}, minmax(0, 1fr))`;
     }
 
     if (group.links.length === 0) {
@@ -184,6 +184,8 @@ export function render() {
         const siteBtn = document.createElement('a');
         siteBtn.className = 'site-btn';
         siteBtn.href = link.url;
+        siteBtn.title = link.title;
+        siteBtn.setAttribute('aria-label', link.title);
         if (openLinksInNewTab) {
           siteBtn.target = '_blank';
           siteBtn.rel = 'noopener noreferrer';

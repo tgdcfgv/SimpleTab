@@ -36,6 +36,7 @@
 }
 
 .group-card {
+  min-width: 0;
   background: var(--card-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -68,6 +69,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex: 1;
 }
 
 .group-title {
@@ -75,6 +78,11 @@
   font-weight: 600;
   color: var(--text-color);
   letter-spacing: -0.2px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 12px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 12px), transparent);
 }
 
 .group-collapsed-icons {
@@ -82,7 +90,9 @@
   align-items: center;
   gap: 6px;
   margin-left: 8px;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .group-card.is-collapsed .group-collapsed-icons {
@@ -130,6 +140,7 @@
 
 .group-actions {
   display: flex;
+  flex: 0 0 auto;
   gap: 4px;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -185,10 +196,12 @@
 
 .sites-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 130px), 1fr));
   gap: 8px;
   min-height: 0;
   overflow: hidden;
+  min-width: 0;
+  container: group-sites / inline-size;
 }
 
 .sites-grid.is-sorting {
@@ -228,6 +241,8 @@
   gap: 10px;
   cursor: pointer;
   position: relative;
+  min-width: 0;
+  overflow: hidden;
   transition: all 0.15s ease;
 }
 
@@ -240,6 +255,7 @@
   width: var(--favicon-size);
   height: var(--favicon-size);
   border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .site-title {
@@ -249,6 +265,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
+  min-width: 0;
+}
+
+/* Leave the icon intact; only the label fades as columns become narrower. */
+.site-btn .site-title {
+  text-overflow: clip;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 12px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 12px), transparent);
+}
+
+@container group-sites (max-width: 400px) {
+  .site-btn {
+    padding-inline: 4px;
+    gap: 4px;
+  }
 }
 
 /* Pure Icon Mode */
