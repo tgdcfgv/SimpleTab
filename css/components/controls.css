@@ -173,8 +173,6 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 #spaceModal .space-editor-item input[type="text"]:not(#searchInput):not(#groupLinksPerRow) { background: transparent; }
 @media (max-width: 768px) {
   .bottom-bar { display: none; }
-  .bottom-bar:has(#settingsFallbackBtn:not([hidden])) { display: flex; bottom: 12px; right: 12px; }
-  .bottom-bar:has(#settingsFallbackBtn:not([hidden])) .sync-status { display: none; }
 }
 
 .setting-slider { display: flex; align-items: center; gap: 10px; }

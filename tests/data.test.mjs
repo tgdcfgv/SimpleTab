@@ -146,3 +146,11 @@ test('dock shortcuts survive normalization with safe URLs, icons and no duplicat
   assert.equal(data.settings.dockLinks[1].customIcon, undefined);
   assert.equal(normalizeAppData({}).settings.dockLinks.length, 0);
 });
+
+
+test('dock ordering accepts unique typed item keys and ignores malformed saved values', () => {
+  const data = normalizeAppData({ settings: { dockOrder: ['action:settingsBtn', 'space:space-home',
+    'site:dock-1', 'action:settingsBtn', null, 42, {}, 'settingsBtn', 'site:'] } });
+  assert.deepEqual(data.settings.dockOrder, ['action:settingsBtn', 'space:space-home', 'site:dock-1']);
+  assert.deepEqual(normalizeAppData({}).settings.dockOrder, []);
+});

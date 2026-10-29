@@ -48,11 +48,11 @@
         <span class="status-dot"></span>
         <span class="status-text">正在读取数据…</span>
       </button>
-      <button type="button" id="settingsFallbackBtn" class="btn secondary" hidden title="设置">设置</button>
     </footer>
+    <button type="button" id="settingsFallbackBtn" class="btn secondary" hidden title="设置">设置</button>
 
     <nav class="space-dock" id="spaceDock" aria-label="程序坞">
-      <div class="dock-actions" aria-label="快捷操作">
+      <div class="dock-items" id="dockItems">
         <button type="button" id="accountBtn" class="dock-action-btn" title="登录或创建账户" aria-label="登录或创建账户">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-round" aria-hidden="true"><path d="M17.925 20.056a6 6 0 0 0-11.851.001" /> <circle cx="12" cy="11" r="4" /> <circle cx="12" cy="12" r="10" /></svg>
         </button>
@@ -68,16 +68,11 @@
         <button hidden id="appStoreBtn" class="dock-action-btn" title="网站库" aria-label="网站库">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check" aria-hidden="true"><circle cx="12" cy="12" r="10" /> <path d="m16 9-5.5 5.5L8 12" /></svg>
         </button>
-      </div>
-      <span class="dock-sites-divider dock-divider" id="dockSitesDivider" aria-hidden="true" hidden></span>
-      <div class="dock-sites" id="dockSites" aria-label="固定网站" hidden></div>
-      <span class="dock-divider dock-actions-divider" aria-hidden="true"></span>
-      <div class="space-switcher">
-        <button type="button" class="space-tab-hint" id="spaceTabHint" title="按 Tab 切换空间" disabled>
+
+        <button type="button" class="space-tab-hint" id="spaceTabHint" title="按 Tab 切换空间">
           <span class="tab-keycap">Tab</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-to-line" aria-hidden="true"><path d="M17 12H3" /> <path d="m11 18 6-6-6-6" /> <path d="M21 5v14" /></svg>
         </button>
-        <div class="space-dock-list" id="spaceDockList"></div>
         <button type="button" class="space-edit-btn" id="spaceEditBtn" title="编辑空间" aria-label="编辑空间">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-line" aria-hidden="true"><path d="M13 21h8" /> <path d="m15 5 4 4" /> <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /></svg>
         </button>

@@ -1,4 +1,4 @@
-import { renderDockSites } from './dock.js';
+import { renderDockSites, applyDockOrder, DOCK_ACTION_SETTINGS } from './dock.js';
 import { getWallpaperUrl } from './wallpaper.js';
 import { icon } from './icons.js';
 import { letterBadge, loadSiteIcon } from './site-icons.js';
@@ -238,10 +238,10 @@ function getSpaceDockIcon(space, index) {
 }
 
 export function renderSpaceDock() {
-  const dockList = document.getElementById('spaceDockList');
+  const dockList = document.getElementById('dockItems');
   if (!dockList || !appData?.spaces) return;
 
-  dockList.innerHTML = '';
+  dockList.querySelectorAll('.space-dock-btn').forEach(button => button.remove());
   appData.spaces.forEach((space, index) => {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -259,6 +259,7 @@ export function renderSpaceDock() {
     dockList.appendChild(btn);
   });
   renderDockSites();
+  applyDockOrder();
   updateDockVisibility();
 }
 
@@ -272,6 +273,7 @@ export function switchToNextSpace() {
 }
 
 export function initSpaceShortcuts() {
+  document.getElementById('spaceTabHint').addEventListener('click', switchToNextSpace);
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Tab' || e.ctrlKey || e.metaKey || e.altKey) return;
     if (!syncManager.ready) return;
@@ -308,21 +310,13 @@ let wallpaperRender = 0;
 export function updateDockVisibility() {
   if (!appData) return;
   const settings = appData.settings;
-  const buttons = { accountBtn: 'showDockAccountButton', settingsBtn: 'showDockSettingsButton', addGroupBtn: 'showDockAddGroupButton', addSiteBtn: 'showDockAddSiteButton', appStoreBtn: 'showDockStoreButton', spaceEditBtn: 'showDockEditButton', spaceTabHint: 'showDockTabHint' };
-  for (const [id, key] of Object.entries(buttons)) {
+  for (const [id, key] of Object.entries(DOCK_ACTION_SETTINGS)) {
     document.getElementById(id).hidden = key === 'showDockStoreButton' ? settings[key] !== true : settings[key] === false;
   }
   const hiddenSpaces = settings.hiddenDockSpaces || [];
   document.querySelectorAll('.space-dock-btn').forEach(button => { button.hidden = hiddenSpaces.includes(button.dataset.spaceId); });
-  const actions = document.querySelector('.dock-actions');
-  const spaces = document.querySelector('.space-switcher');
-  actions.hidden = !actions.querySelector('button:not([hidden])');
-  spaces.hidden = !spaces.querySelector('button:not([hidden])');
-  const sites = document.getElementById('dockSites');
-  sites.hidden = !sites.children.length;
-  document.getElementById('dockSitesDivider').hidden = sites.hidden || spaces.hidden;
-  document.querySelector('.dock-actions-divider').hidden = actions.hidden || (spaces.hidden && sites.hidden);
-  document.getElementById('spaceDock').hidden = settings.dockEnabled === false || (actions.hidden && spaces.hidden && sites.hidden);
+  const visibleItem = document.querySelector('#dockItems > :not([hidden])');
+  document.getElementById('spaceDock').hidden = settings.dockEnabled === false || !visibleItem;
   document.getElementById('settingsFallbackBtn').hidden = settings.dockEnabled !== false && settings.showDockSettingsButton !== false;
 }
 

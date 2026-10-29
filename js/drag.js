@@ -4,7 +4,7 @@ import { extractDroppedLink } from './urls.js';
 
 
 export let draggedItem = null;
-export let draggedItemType = null; // 'site', 'dock-site' or 'group'
+export let draggedItemType = null; // 'site', 'dock-site', 'dock-item' or 'group'
 let siteOrderChanged = false;
 
 function captureSiteRects() {
@@ -110,11 +110,11 @@ export function handleGroupDragStart(e) {
 
 export function handleDockDragStart(e) {
   draggedItem = e.currentTarget;
-  draggedItemType = 'dock-site';
+  draggedItemType = draggedItem.matches('.dock-site-btn') ? 'dock-site' : 'dock-item';
   siteOrderChanged = false;
   e.stopPropagation();
   e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', draggedItem.href);
+  e.dataTransfer.setData('text/plain', draggedItem.href || draggedItem.dataset.dockKey);
 }
 
 export function moveGroupTo(sourceId, colIndex, targetId = null, position = 'after') {

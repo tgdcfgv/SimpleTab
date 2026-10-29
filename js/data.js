@@ -84,6 +84,7 @@ export const DEFAULT_DATA = {
     showDockStoreButton: false,
     hiddenDockSpaces: [],
     dockLinks: [],
+    dockOrder: [],
     showDockTabHint: true,
     showDockEditButton: true,
     wallpaper: null
@@ -154,6 +155,8 @@ export function normalizeAppData(data) {
   if (!['left', 'right', 'bottom'].includes(normalized.settings.dockPosition)) normalized.settings.dockPosition = 'bottom';
   normalized.settings.hiddenDockSpaces = Array.isArray(normalized.settings.hiddenDockSpaces)
     ? normalized.settings.hiddenDockSpaces.filter(id => typeof id === 'string') : [];
+  normalized.settings.dockOrder = [...new Set(Array.isArray(normalized.settings.dockOrder)
+    ? normalized.settings.dockOrder.filter(key => typeof key === 'string' && /^(action|space|site):.+$/.test(key)) : [])];
   const dockUrls = new Set();
   normalized.settings.dockLinks = (Array.isArray(normalized.settings.dockLinks) ? normalized.settings.dockLinks : []).flatMap(link => {
     const url = safeWebUrl(link?.url);

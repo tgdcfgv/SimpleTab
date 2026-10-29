@@ -50,11 +50,11 @@ const assert = require('node:assert/strict');
     }
     await page.setViewportSize({ width: 390, height: 844 });
     await page.screenshot({ path: '/tmp/simpletab-dock-mobile.png' });
-    await page.locator('.dock-site-btn').first().focus();
+    await page.locator(`.dock-site-btn[href="${url}"]`).focus();
     await page.keyboard.press('Delete');
     await page.locator('#okConfirmBtn').click();
     assert.equal(await page.locator('.dock-site-btn').count(), 1);
-    // An external shortcut can be returned to an empty/collapsed group and survives reload.
+    // An external shortcut can be returned to an empty group and survives reload.
     await page.setViewportSize({ width: 1360, height: 920 });
     const emptyGroup = page.locator('.group-card').filter({ has: page.locator('.empty-group-state') }).first();
     const groupId = await emptyGroup.getAttribute('data-id');
@@ -66,11 +66,12 @@ const assert = require('node:assert/strict');
     await page.reload();
     await page.locator('.site-btn[href="https://example.org/project"]').waitFor();
     assert.equal(await page.locator('.dock-site-btn').count(), 0);
-    // Dropping outside a group leaves the shortcut in the dock.
+    // Dropping outside the dock removes only the shortcut.
     await page.locator('.site-btn[href="https://example.org/project"]').dragTo(page.locator('#spaceDock'));
     await page.locator('.dock-site-btn').dragTo(page.locator('.top-bar'));
-    assert.equal(await page.locator('.dock-site-btn').count(), 1);
+    assert.equal(await page.locator('.dock-site-btn').count(), 0);
+    assert.equal(await page.locator('.site-btn[href="https://example.org/project"]').count(), 1);
     assert.deepEqual(errors, []);
-    console.log('PASS: internal/external dock drops, duplicate prevention, original retained, safe URLs, persistence, positions, keyboard removal, returning to original/empty groups, canceled drops and persistence.');
+    console.log('PASS: internal/external dock drops, duplicate prevention, original retained, safe URLs, persistence, positions, keyboard removal, returning to original/empty groups, drag-out removal and persistence.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });
