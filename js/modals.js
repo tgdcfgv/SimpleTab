@@ -1,3 +1,5 @@
+import { getLocale, loadLocale } from './i18n.js';
+import { t } from './i18n.js';
 import { saveWallpaper, clearWallpaper, getWallpaperUrl } from './wallpaper.js';
 import { safeWebUrl, safeImageUrl, deriveSiteTitle } from './urls.js';
 import { icon } from './icons.js';
@@ -84,7 +86,7 @@ export function openGroupModal(groupId = null, returnContext = null) {
   const isIconOnly = appData.settings.cardDisplayMode === 'icon-only';
   const options = document.getElementById('groupLinksPerRowOptions');
   options.querySelectorAll('button').forEach(button => { button.disabled = isIconOnly; });
-  options.title = isIconOnly ? '纯图标状态下无法更改列数' : '';
+  options.title = isIconOnly ? t('纯图标状态下无法更改列数') : '';
   options.classList.toggle('is-disabled', isIconOnly);
 
   if (groupId) {
@@ -92,11 +94,11 @@ export function openGroupModal(groupId = null, returnContext = null) {
     document.getElementById('groupId').value = group.id;
     document.getElementById('groupName').value = group.name;
     currentLinksPerRow = [2, 3, 4, 5, 6].includes(Number(group.linksPerRow)) ? Number(group.linksPerRow) : 'auto';
-    document.getElementById('groupModalTitle').textContent = '编辑分组';
+    document.getElementById('groupModalTitle').textContent = t('编辑分组');
   } else {
     document.getElementById('groupId').value = '';
     currentLinksPerRow = 'auto';
-    document.getElementById('groupModalTitle').textContent = '添加分组';
+    document.getElementById('groupModalTitle').textContent = t('添加分组');
   }
   updateLinksPerRowUI();
   
@@ -210,7 +212,7 @@ export function renderGroupSelectionGrid(selectedId) {
   const newBtn = document.createElement('button');
   newBtn.type = 'button';
   newBtn.className = 'group-select-btn new-group';
-  newBtn.textContent = '+ 新建分组';
+  newBtn.textContent = t('+ 新建分组');
   newBtn.addEventListener('click', () => {
     openGroupModal(null, { source: 'site' });
   });
@@ -230,7 +232,7 @@ export function openSiteModal(siteId = null, groupId = null, draft = null) {
     document.getElementById('siteTitle').value = site.title;
     document.getElementById('siteIconUrl').value = site.customIcon || '';
     renderGroupSelectionGrid(group.id);
-    document.getElementById('siteModalTitle').textContent = '编辑网站';
+    document.getElementById('siteModalTitle').textContent = t('编辑网站');
   } else {
     groupId ||= creationContext?.selectedGroupId();
     const preferredGroupId = groupId && creationGroups().some(g => g.id === groupId)
@@ -241,7 +243,7 @@ export function openSiteModal(siteId = null, groupId = null, draft = null) {
     document.getElementById('siteTitle').value = draft?.title || '';
     document.getElementById('siteIconUrl').value = draft?.customIcon || '';
     renderGroupSelectionGrid(preferredGroupId);
-    document.getElementById('siteModalTitle').textContent = '添加网站';
+    document.getElementById('siteModalTitle').textContent = t('添加网站');
   }
   
   closeAllModals(!creationContext);
@@ -272,7 +274,7 @@ document.getElementById('refetchIconBtn').addEventListener('click', async () => 
     document.getElementById('siteIconUrl').value = globalThis.chrome?.runtime?.id
       ? '' : getFaviconUrl(url.href);
   } catch {
-    alert('请先输入有效的 HTTP 或 HTTPS 网址。');
+    alert(t('请先输入有效的 HTTP 或 HTTPS 网址。'));
   }
 });
 
@@ -293,13 +295,13 @@ document.getElementById('siteForm').addEventListener('submit', (e) => {
   const customIcon = document.getElementById('siteIconUrl').value.trim();
   
   if (!targetGroupId) {
-    alert("请选择一个分组");
+    alert(t("请选择一个分组"));
     return;
   }
 
   url = safeWebUrl(url, { allowBare: true });
-  if (!url) return alert('请输入有效的 HTTP 或 HTTPS 网址。');
-  if (customIcon && !safeImageUrl(customIcon)) return alert('请输入有效的 HTTP/HTTPS 图片地址或图片数据。');
+  if (!url) return alert(t('请输入有效的 HTTP 或 HTTPS 网址。'));
+  if (customIcon && !safeImageUrl(customIcon)) return alert(t('请输入有效的 HTTP/HTTPS 图片地址或图片数据。'));
   if (!title) {
     try {
       title = new URL(url).hostname.replace('www.', '');
@@ -518,13 +520,14 @@ async function updateWallpaperPreview() {
     button.querySelector('.wallpaper-empty').hidden = Boolean(url);
     button.querySelector('.wallpaper-replace').hidden = !url;
     button.classList.toggle('has-wallpaper', Boolean(url));
-    button.setAttribute('aria-label', url ? '重新上传壁纸图片' : '选择壁纸图片');
+    button.setAttribute('aria-label', url ? t('重新上传壁纸图片') : t('选择壁纸图片'));
     document.getElementById('clearWallpaperBtn').hidden = !url;
-  } catch (error) { showToast(`无法读取壁纸：${error.message}`); }
+  } catch (error) { showToast(t`无法读取壁纸：${error.message}`); }
 }
 
 // Settings Modal
 export function openSettingsModal(panelId) {
+  document.getElementById('languageSelect').value = getLocale();
   const wasHidden = settingsModal.classList.contains('hidden');
   if (typeof panelId === 'string') selectSettingsPanel(panelId);
   else if (wasHidden) selectSettingsPanel(settingsModal.dataset.locked === 'true' ? 'settingsAccount' : 'settingsGeneral');
@@ -652,7 +655,7 @@ document.getElementById('wallpaperUpload').addEventListener('change', async (e) 
     applySettings();
     await updateWallpaperPreview();
   } catch (error) {
-    showToast(`壁纸保存失败：${error.message}`);
+    showToast(t`壁纸保存失败：${error.message}`);
   } finally {
     input.value = ''; input.disabled = false;
     document.getElementById('wallpaperChooseBtn').disabled = false;
@@ -666,12 +669,12 @@ document.getElementById('clearWallpaperBtn').addEventListener('click', async () 
     appData.settings.wallpaper = null;
     applySettings();
     await updateWallpaperPreview();
-  } catch (error) { showToast(`移除壁纸失败：${error.message}`); }
+  } catch (error) { showToast(t`移除壁纸失败：${error.message}`); }
 });
 
 document.getElementById('exportBtnNew').addEventListener('click', async () => {
   try { await syncManager.exportData(); }
-  catch (error) { showToast(`导出失败：${error.message}`); }
+  catch (error) { showToast(t`导出失败：${error.message}`); }
 });
 document.getElementById('importFileNew').addEventListener('change', (e) => {
   if (e.target.files.length > 0) {
@@ -757,7 +760,7 @@ export function updateCustomSelectOptions(select) {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.disabled = select.disabled;
-    trigger.setAttribute('aria-label', select.getAttribute('aria-label') || document.querySelector(`label[for="${select.id}"]`)?.textContent || '选择搜索引擎');
+    trigger.setAttribute('aria-label', select.getAttribute('aria-label') || document.querySelector(`label[for="${select.id}"]`)?.textContent || t('选择搜索引擎'));
     trigger.className = 'custom-select-trigger-global';
     trigger.setAttribute('aria-expanded', 'false');
     trigger.innerHTML = `<div class="selected-content"></div>${icon('chevron-down', 14)}`;
@@ -989,7 +992,7 @@ document.getElementById('contextDeleteSite').addEventListener('click', () => {
   if (currentContextMenuSiteId && currentContextMenuGroupId) {
     const group = appData.groups.find(g => g.id === currentContextMenuGroupId);
     const link = group.links.find(l => l.id === currentContextMenuSiteId);
-    showConfirm('删除网站', `确定删除网站 "${link.title}" 吗？`, () => {
+    showConfirm(t('删除网站'), t`确定删除网站 "${link.title}" 吗？`, () => {
       group.links = group.links.filter(l => l.id !== currentContextMenuSiteId);
       syncManager.saveData();
       render();
@@ -1000,4 +1003,23 @@ document.getElementById('contextDeleteSite').addEventListener('click', () => {
 document.getElementById('groupColumnsSelect').addEventListener('change', event => {
   appData.settings.groupColumns = event.target.value === 'auto' ? 'auto' : Number(event.target.value);
   syncManager.saveData(); render();
+});
+
+// Save before reloading so every module starts in the selected language.
+document.getElementById('languageSelect').addEventListener('change', async event => {
+  const select = event.target;
+  const previous = getLocale();
+  select.disabled = true;
+  try {
+    await loadLocale(select.value);
+    appData.settings.language = select.value;
+    if (!await syncManager.saveData()) throw new Error(t('更改尚未保存，请重试同步'));
+    if (globalThis.chrome?.storage?.local) await chrome.storage.local.set({ 'simtab-language': select.value });
+    window.location.reload();
+  } catch (error) {
+    appData.settings.language = previous;
+    await loadLocale(previous);
+    select.value = previous;
+    showToast(error.message);
+  } finally { select.disabled = false; }
 });

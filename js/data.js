@@ -1,6 +1,7 @@
+import { getLocale, LANGUAGES, t } from './i18n.js';
 import { safeWebUrl, safeImageUrl } from './urls.js';
 
-export const SEARCH_ENGINES = [
+const ALL_SEARCH_ENGINES = [
   { id: "bing", name: "Bing", homeUrl: "https://www.bing.com", searchUrl: "https://www.bing.com/search?q=", suggestUrl: "https://api.bing.com/osjson.aspx?query=" },
   { id: "baidu", name: "百度", homeUrl: "https://www.baidu.com", searchUrl: "https://www.baidu.com/s?wd=" },
   { id: "so360", name: "360 搜索", homeUrl: "https://www.so.com", searchUrl: "https://www.so.com/s?q=" },
@@ -8,10 +9,12 @@ export const SEARCH_ENGINES = [
   { id: "google", name: "Google", homeUrl: "https://www.google.com", searchUrl: "https://www.google.com/search?q=" },
   { id: "duckduckgo", name: "DuckDuckGo", homeUrl: "https://duckduckgo.com", searchUrl: "https://duckduckgo.com/?q=" },
   { id: "yahoo", name: "Yahoo", homeUrl: "https://search.yahoo.com", searchUrl: "https://search.yahoo.com/search?p=" },
+  { id: "yahoo-jp", name: "Yahoo! Japan", homeUrl: "https://www.yahoo.co.jp", searchUrl: "https://search.yahoo.co.jp/search?p=" },
+  { id: "naver", name: "Naver", homeUrl: "https://www.naver.com", searchUrl: "https://search.naver.com/search.naver?query=" },
   { id: "yandex", name: "Yandex", homeUrl: "https://yandex.com", searchUrl: "https://yandex.com/search/?text=" }
 ];
 
-export const DEFAULT_DATA = {
+const CHINESE_DEFAULT_DATA = {
   groups: [
     {
       id: "g1",
@@ -91,12 +94,50 @@ export const DEFAULT_DATA = {
   }
 };
 
+
+export function defaultSearchSettings(language = getLocale()) {
+  return language === 'zh_CN'
+    ? { searchEngine: 'bing', enabledSearchEngines: ['bing', 'baidu'] }
+    : { searchEngine: 'google', enabledSearchEngines: language === 'ja'
+      ? ['google', 'yahoo-jp', 'bing', 'duckduckgo'] : ['google', 'bing', 'duckduckgo'] };
+}
+export function searchEnginesForLocale(language = getLocale()) {
+  const order = language === 'zh_CN' ? ['bing', 'baidu', 'google']
+    : language === 'ja' ? ['google', 'yahoo-jp', 'bing', 'duckduckgo', 'naver']
+      : ['google', 'bing', 'duckduckgo', 'yahoo', 'naver'];
+  return ALL_SEARCH_ENGINES.map(engine => ({ ...engine, name: t(engine.name) })).sort((a, b) => {
+    const rank = id => order.includes(id) ? order.indexOf(id) : order.length;
+    return rank(a.id) - rank(b.id);
+  });
+}
+export const SEARCH_ENGINES = searchEnginesForLocale();
+export function createDefaultData(language = getLocale()) {
+  const data = JSON.parse(JSON.stringify(CHINESE_DEFAULT_DATA));
+  data.settings = { ...data.settings, language, ...defaultSearchSettings(language) };
+  if (language !== 'zh_CN') {
+    const sites = [
+      [['YouTube', 'https://www.youtube.com'], ['Reddit', 'https://www.reddit.com'], ['GitHub', 'https://github.com'], ['Gmail', 'https://mail.google.com']],
+      [['ChatGPT', 'https://chatgpt.com'], ['Claude', 'https://claude.ai'], ['Gemini', 'https://gemini.google.com'], ['Perplexity', 'https://www.perplexity.ai']],
+      [['Wikipedia', language === 'ja' ? 'https://ja.wikipedia.org' : language === 'zh_TW' ? 'https://zh.wikipedia.org/zh-tw/' : 'https://en.wikipedia.org'], ['Coursera', 'https://www.coursera.org'], ['Notion', 'https://www.notion.so']],
+      [['Figma', 'https://www.figma.com'], ['Canva', 'https://www.canva.com'], ['Unsplash', 'https://unsplash.com']], []
+    ];
+    data.groups.forEach((group, index) => {
+      group.links = sites[index].map(([title, url], linkIndex) => ({ id: `l${index}-${linkIndex}`, title, url }));
+    });
+  }
+  data.groups.forEach(group => { group.name = t(group.name); });
+  data.groups.at(-1).kind = 'temporary';
+  return data;
+}
+export const DEFAULT_DATA = createDefaultData();
+
 export const TEMPORARY_GROUP_NAME = "临时收藏";
 
 export function createTemporaryGroup(index = 0) {
   return {
     id: `temporary-${Date.now()}-${index}`,
-    name: TEMPORARY_GROUP_NAME,
+    name: t(TEMPORARY_GROUP_NAME),
+    kind: 'temporary',
     collapsed: false,
     links: []
   };
@@ -105,7 +146,7 @@ export function createTemporaryGroup(index = 0) {
 export function ensureTemporaryGroup(groups, index = 0) {
   if (!Array.isArray(groups)) return [createTemporaryGroup(index)];
   groups = groups.filter(group => group && typeof group === 'object' && !Array.isArray(group));
-  const hasTemporaryGroup = groups.some(group => group.name === TEMPORARY_GROUP_NAME);
+  const hasTemporaryGroup = groups.some(group => group.kind === 'temporary' || ['临时收藏', '暫存收藏', 'Inbox', '一時保存'].includes(group.name));
   return hasTemporaryGroup ? groups : [...groups, createTemporaryGroup(index)];
 }
 
@@ -113,17 +154,17 @@ export function createDefaultSpaces(groups = []) {
   return [
     {
       id: "space-home",
-      name: "主页",
+      name: t("主页"),
       groups: ensureTemporaryGroup(groups, 0)
     },
     {
       id: "space-work",
-      name: "工作",
+      name: t("工作"),
       groups: [createTemporaryGroup(1)]
     },
     {
       id: "space-favorites",
-      name: "收藏",
+      name: t("收藏"),
       groups: [createTemporaryGroup(2)]
     }
   ];
@@ -139,14 +180,15 @@ function areGroupListsEqual(a, b) {
 
 export function normalizeAppData(data) {
   if (data != null && (typeof data !== 'object' || Array.isArray(data))) {
-    throw new TypeError('无效的配置数据');
+    throw new TypeError(t('无效的配置数据'));
   }
-  const normalized = JSON.parse(JSON.stringify(data ?? DEFAULT_DATA));
+  const normalized = JSON.parse(JSON.stringify(data ?? createDefaultData()));
   const topLevelGroups = Array.isArray(normalized.groups) ? normalized.groups : null;
   normalized.settings = {
-    ...DEFAULT_DATA.settings,
+    ...createDefaultData().settings,
     ...(normalized.settings || {})
   };
+  if (!LANGUAGES.some(item => item.id === normalized.settings.language)) normalized.settings.language = getLocale();
   if (![1, 2, 3, 4, 5, 6].includes(normalized.settings.groupColumns)) normalized.settings.groupColumns = 'auto';
   if (normalized.settings.dockPosition === 'hidden') {
     normalized.settings.dockEnabled = false;
@@ -171,9 +213,9 @@ export function normalizeAppData(data) {
   const validEngineIds = new Set(SEARCH_ENGINES.map(engine => engine.id));
   normalized.settings.enabledSearchEngines = Array.isArray(normalized.settings.enabledSearchEngines)
     ? normalized.settings.enabledSearchEngines.filter(id => validEngineIds.has(id))
-    : ["bing", "baidu"];
+    : defaultSearchSettings(normalized.settings.language).enabledSearchEngines;
   if (normalized.settings.enabledSearchEngines.length === 0) {
-    normalized.settings.enabledSearchEngines = ["bing", "baidu"];
+    normalized.settings.enabledSearchEngines = defaultSearchSettings(normalized.settings.language).enabledSearchEngines;
   }
   if (!normalized.settings.enabledSearchEngines.includes(normalized.settings.searchEngine)) {
     normalized.settings.searchEngine = normalized.settings.enabledSearchEngines[0];
@@ -201,7 +243,7 @@ export function normalizeAppData(data) {
   if (!normalized.spaces.length) normalized.spaces = createDefaultSpaces(topLevelGroups || []);
   normalized.spaces.forEach((space, index) => {
     if (!space.id) space.id = `space-${Date.now()}-${index}`;
-    if (!space.name) space.name = `空间 ${index + 1}`;
+    if (!space.name) space.name = t`空间 ${index + 1}`;
     if (!Array.isArray(space.groups)) space.groups = [];
     space.groups = ensureTemporaryGroup(space.groups.filter(group => group && typeof group === 'object' && !Array.isArray(group)), index);
   });
@@ -218,7 +260,7 @@ export function normalizeAppData(data) {
   normalized.spaces.forEach(space => {
     space.groups.forEach((group, groupIndex) => {
       group.id = String(group.id || `group-${space.id}-${groupIndex}`);
-      group.name = String(group.name || '未命名分组');
+      group.name = String(group.name || t('未命名分组'));
       if (!Array.isArray(group.links)) group.links = [];
       group.links = group.links.flatMap((link, linkIndex) => {
         if (!link || typeof link !== 'object') return [];

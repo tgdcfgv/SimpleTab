@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 // Uploaded wallpaper is a browser preference, stored separately from account data.
 const DB_NAME = 'simtab-assets';
 const KEY = 'wallpaper';
@@ -10,7 +11,7 @@ function withStore(mode, action) {
     const request = indexedDB.open(DB_NAME, 1);
     request.onupgradeneeded = () => request.result.createObjectStore('assets');
     request.onerror = () => reject(request.error);
-    request.onblocked = () => reject(new Error('壁纸存储被其他页面占用，请关闭旧页面后重试。'));
+    request.onblocked = () => reject(new Error(t('壁纸存储被其他页面占用，请关闭旧页面后重试。')));
     request.onsuccess = () => {
       const db = request.result;
       const transaction = db.transaction('assets', mode);
@@ -30,7 +31,7 @@ function serialize(action) {
 export function saveWallpaper(blob) {
   return serialize(async () => {
     if (!/^image\/(png|jpeg|gif|webp|avif)$/i.test(blob.type) || !blob.size || blob.size > MAX_BYTES) {
-      throw new Error('请选择不超过 10 MB 的 PNG、JPEG、GIF、WebP 或 AVIF 图片。');
+      throw new Error(t('请选择不超过 10 MB 的 PNG、JPEG、GIF、WebP 或 AVIF 图片。'));
     }
     await withStore('readwrite', store => store.put(blob, KEY));
     if (currentUrl) URL.revokeObjectURL(currentUrl);

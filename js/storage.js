@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { render, applySettings } from './render.js';
 import { cloud } from './cloud.js';
 
@@ -59,8 +60,8 @@ export const syncManager = {
   updateStatusUI() {
     const el = document.getElementById('syncStatus');
     if (!el) return;
-    const labels = { local: this.cloudUnavailable ? '云端不可用 · 本地已保存' : '本地已保存', saved: '云端已保存', unsynced: '有未保存更改', syncing: '云端同步中…',
-      signedout: '请登录以使用云端数据', error: this.conflict ? '存在同步冲突 · 点击处理' : (this.mode === 'local' ? '本地保存失败 · 点击重试' : '同步失败 · 点击重试') };
+    const labels = { local: this.cloudUnavailable ? t('云端不可用 · 本地已保存') : t('本地已保存'), saved: t('云端已保存'), unsynced: t('有未保存更改'), syncing: t('云端同步中…'),
+      signedout: t('请登录以使用云端数据'), error: this.conflict ? t('存在同步冲突 · 点击处理') : (this.mode === 'local' ? t('本地保存失败 · 点击重试') : t('同步失败 · 点击重试')) };
     let dotClass = 'status-dot';
     if (this.status === 'syncing') dotClass = 'status-dot syncing';
     else if (this.status === 'error') dotClass = 'status-dot error';
@@ -68,7 +69,7 @@ export const syncManager = {
     else if (this.status === 'unsynced') dotClass = 'status-dot unsynced';
     el.querySelector('.status-dot').className = dotClass;
     el.querySelector('.status-text').textContent = labels[this.status];
-    el.title = this.error || (this.cloudUnavailable ? '当前使用本地内容，点击重试读取云端内容' : this.mode === 'local' ? '数据保存在此浏览器，登录后切换到云端内容' : '点击同步云端数据');
+    el.title = this.error || (this.cloudUnavailable ? t('当前使用本地内容，点击重试读取云端内容') : this.mode === 'local' ? t('数据保存在此浏览器，登录后切换到云端内容') : t('点击同步云端数据'));
     document.dispatchEvent(new Event('simtab-sync'));
   },
 
@@ -107,7 +108,7 @@ export const syncManager = {
       this.status = 'local';
     } catch (error) {
       appData ??= normalizeAppData(null);
-      this.error = `读取本地数据或迁移壁纸失败：${error.message}。原数据未被清理，请检查浏览器存储后刷新。`;
+      this.error = t`读取本地数据或迁移壁纸失败：${error.message}。原数据未被清理，请检查浏览器存储后刷新。`;
       this.status = 'error';
     }
     this.ready = this.status !== 'error';
@@ -155,7 +156,7 @@ export const syncManager = {
               await this.handleSessionLoss();
             } else {
               this.status = 'error';
-              this.error = `暂时无法同步，当前显示上次同步的账户缓存。${error.message}`;
+              this.error = t`暂时无法同步，当前显示上次同步的账户缓存。${error.message}`;
               this.updateStatusUI();
             }
           }
@@ -179,7 +180,7 @@ export const syncManager = {
     if (this.pending || this.saving) {
       this.ready = false;
       this.status = 'error';
-      this.error = '登录已失效。请先导出未保存的内容，再刷新页面重新登录。';
+      this.error = t('登录已失效。请先导出未保存的内容，再刷新页面重新登录。');
       this.updateStatusUI();
       return;
     }
@@ -190,7 +191,7 @@ export const syncManager = {
     // Keep local and account data separate while allowing the page to stay usable.
     await this.loadLocal();
     this.cloudUnavailable = true;
-    this.error = `云端暂时不可用，当前使用此浏览器的本地内容。可点击同步重试。${error.message}${this.error ? `；${this.error}` : ''}`;
+    this.error = t`云端暂时不可用，当前使用此浏览器的本地内容。可点击同步重试。${error.message}${this.error ? `；${this.error}` : ''}`;
     this.updateStatusUI();
   },
 
@@ -307,7 +308,7 @@ export const syncManager = {
       const row = await cloud.read();
       // A local edit may have happened while the read was in flight.
       if (generation !== this.generation || this.pending || this.saving || this.revision !== revision) return true;
-      if (!row) throw new Error('云端记录已移除，请退出后重新登录。');
+      if (!row) throw new Error(t('云端记录已移除，请退出后重新登录。'));
       if (row.revision === revision) {
         this.status = 'saved';
         this.error = '';
@@ -367,12 +368,12 @@ export const syncManager = {
           const saved = await this.saveData();
           applySettings();
           render();
-          if (!saved) alert('内容已导入，但保存失败。请保持页面打开并重试保存或导出备份。');
+          if (!saved) alert(t('内容已导入，但保存失败。请保持页面打开并重试保存或导出备份。'));
         } else {
-          alert('无效的备份文件！');
+          alert(t('无效的备份文件！'));
         }
       } catch (err) {
-        alert(`导入失败：${err.message}`);
+        alert(t`导入失败：${err.message}`);
       }
     };
     reader.readAsText(file);

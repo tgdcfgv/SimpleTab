@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { cloud } from './cloud.js';
 import { openSettingsModal, showToast } from './modals.js';
 
@@ -38,7 +39,7 @@ export function openOnboarding() {
   document.getElementById('welcomeStep').hidden = false;
   document.getElementById('profileStep').hidden = true;
   dialog.setAttribute('aria-labelledby', 'onboardingTitle');
-  document.getElementById('profileTitle').textContent = '让这里更像你';
+  document.getElementById('profileTitle').textContent = t('让这里更像你');
   const closeBtn = document.getElementById('profileCloseBtn');
   if (closeBtn) closeBtn.hidden = true;
   dialog.dataset.voluntaryEdit = 'false';
@@ -57,7 +58,7 @@ export function openProfileEditor() {
   document.getElementById('welcomeStep').hidden = true;
   document.getElementById('profileStep').hidden = false;
   dialog.setAttribute('aria-labelledby', 'profileTitle');
-  document.getElementById('profileTitle').textContent = '编辑个人资料';
+  document.getElementById('profileTitle').textContent = t('编辑个人资料');
   const closeBtn = document.getElementById('profileCloseBtn');
   if (closeBtn) closeBtn.hidden = false;
   dialog.dataset.voluntaryEdit = 'true';
@@ -138,21 +139,21 @@ export function initOnboarding() {
     const button = document.getElementById('profileConfirmBtn');
     error.hidden = true;
     if (!nickname.value.trim()) {
-      error.textContent = '请输入昵称';
+      error.textContent = t('请输入昵称');
       error.hidden = false;
       nickname.focus();
       return;
     }
     const avatar = avatarInput.value;
     if (!emojiPattern.test(avatar)) {
-      error.textContent = '请输入一个 Emoji 作为头像';
+      error.textContent = t('请输入一个 Emoji 作为头像');
       error.hidden = false;
       avatarInput.focus();
       return;
     }
     saving = true;
     button.disabled = avatarInput.disabled = nickname.disabled = true;
-    button.textContent = '正在保存…';
+    button.textContent = t('正在保存…');
     try {
       await cloud.updateProfile(nickname.value.trim(), avatar);
       const isVoluntary = dialog.dataset.voluntaryEdit === 'true';
@@ -163,17 +164,17 @@ export function initOnboarding() {
       document.dispatchEvent(new Event('simtab-sync'));
       if (isVoluntary) {
         openSettingsModal('settingsAccount');
-        showToast('个人资料已更新');
+        showToast(t('个人资料已更新'));
       } else {
         document.getElementById('accountBtn').focus();
       }
     } catch (err) {
-      error.textContent = err.message || '保存失败，请重试';
+      error.textContent = err.message || t('保存失败，请重试');
       error.hidden = false;
     } finally {
       saving = false;
       button.disabled = avatarInput.disabled = nickname.disabled = false;
-      button.textContent = '确定';
+      button.textContent = t('确定');
     }
   });
   openOnboarding();

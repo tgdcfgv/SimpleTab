@@ -1,3 +1,4 @@
+import { t, getLocale } from './i18n.js';
 import { appData, syncManager } from './storage.js';
 import { createTemporaryGroup } from './data.js';
 import { render } from './render.js';
@@ -8,9 +9,9 @@ import { loadSiteIcon } from './site-icons.js';
 import { openContextMenu, openGroupModal, modalOverlay, closeAllModals, setCreationContext, showToast } from './modals.js';
 
 const guides = {
-  edge: `<h5>从 Edge 导出收藏夹</h5><ol><li>在电脑上打开 Edge，点击右上角“…” →“收藏夹”。也可以在地址栏输入 <code>edge://favorites</code>。</li><li>点击收藏夹面板中的“…” →“导出收藏夹”。</li><li>将文件保存为 HTML，回到这里选择该文件。</li></ol>`,
-  chrome: `<h5>从 Chrome 导出书签</h5><ol><li>在电脑上打开 Chrome，点击右上角“⋮” →“书签和清单” →“书签管理器”。也可以在地址栏输入 <code>chrome://bookmarks</code>。</li><li>点击书签管理器右上角的“⋮” →“导出书签”。</li><li>保存 HTML 文件，回到这里选择该文件。</li></ol><a href="https://support.google.com/chrome/answer/96816?hl=zh-Hans" target="_blank" rel="noopener noreferrer">Chrome 官方说明</a>`,
-  safari: `<h5>从 Safari 导出书签（Mac）</h5><ol><li>打开 Safari，在屏幕顶部菜单选择“文件” →“将浏览数据导出到文件”（部分版本显示“从 Safari 导出”）。</li><li>仅选择“书签”并导出。如果得到 ZIP 文件，先双击解压，再找到其中的书签 HTML 文件。</li><li>旧版 Safari 可直接选择“文件” →“导出” →“书签”，保存为 HTML。</li><li>回到这里，选择导出的 HTML 文件。</li></ol><a href="https://support.apple.com/zh-cn/guide/safari/ibrwebf10132/mac" target="_blank" rel="noopener noreferrer">Safari 官方说明</a>`
+  edge: t`<h5>从 Edge 导出收藏夹</h5><ol><li>在电脑上打开 Edge，点击右上角“…” →“收藏夹”。也可以在地址栏输入 <code>edge://favorites</code>。</li><li>点击收藏夹面板中的“…” →“导出收藏夹”。</li><li>将文件保存为 HTML，回到这里选择该文件。</li></ol>`,
+  chrome: t`<h5>从 Chrome 导出书签</h5><ol><li>在电脑上打开 Chrome，点击右上角“⋮” →“书签和清单” →“书签管理器”。也可以在地址栏输入 <code>chrome://bookmarks</code>。</li><li>点击书签管理器右上角的“⋮” →“导出书签”。</li><li>保存 HTML 文件，回到这里选择该文件。</li></ol><a href="https://support.google.com/chrome/answer/96816?hl=${getLocale().replace('_', '-')}" target="_blank" rel="noopener noreferrer">Chrome 官方说明</a>`,
+  safari: t`<h5>从 Safari 导出书签（Mac）</h5><ol><li>打开 Safari，在屏幕顶部菜单选择“文件” →“将浏览数据导出到文件”（部分版本显示“从 Safari 导出”）。</li><li>仅选择“书签”并导出。如果得到 ZIP 文件，先双击解压，再找到其中的书签 HTML 文件。</li><li>旧版 Safari 可直接选择“文件” →“导出” →“书签”，保存为 HTML。</li><li>回到这里，选择导出的 HTML 文件。</li></ol><a href="https://support.apple.com/${({ zh_CN: 'zh-cn', en: 'en-us', zh_TW: 'zh-tw', ja: 'ja-jp' })[getLocale()]}/guide/safari/ibrwebf10132/mac" target="_blank" rel="noopener noreferrer">Safari 官方说明</a>`
 };
 const guide = document.getElementById('migrationGuide');
 guide.innerHTML = guides.edge;
@@ -41,7 +42,7 @@ const collapsedSpaces = new Set();
 const selectedGroups = new Set(), selectedSpaces = new Set(), newSpaces = new Set();
 const createDialog = document.createElement('dialog');
 createDialog.className = 'shared-creation-host';
-createDialog.setAttribute('aria-label', '添加网站或分组');
+createDialog.setAttribute('aria-label', t('添加网站或分组'));
 document.body.appendChild(createDialog);
 const showEmptySpaces = document.getElementById('bulkShowEmptySpaces');
 let moveAfterCreate = false, activeSpaceForCreation = null;
@@ -101,10 +102,10 @@ function updateSelection() {
   const searching = !!search.value.trim(), counter = document.getElementById('bulkSelectionCount');
   const hasBatchSelection = Boolean(selected.size || selectedGroups.size || selectedSpaces.size);
   dialog.classList.toggle('has-bulk-selection', hasBatchSelection);
-  counter.textContent = `已选 ${selected.size} 个网站${searching ? ` · 匹配 ${visible.length} 个` : ''}`;
+  counter.textContent = t`已选 ${selected.size} 个网站${searching ? t` · 匹配 ${visible.length} 个` : ''}`;
   counter.hidden = false;
   counter.classList.toggle('has-selection', selected.size > 0);
-  document.getElementById('bulkSelectAllLabel').textContent = searching ? '全选当前筛选结果' : '全选当前视图';
+  document.getElementById('bulkSelectAllLabel').textContent = searching ? t('全选当前筛选结果') : t('全选当前视图');
   document.getElementById('bulkClearSearch').hidden = !search.value;
   document.getElementById('bulkDirtyHint').hidden = !dirty;
   if (batchActions) batchActions.hidden = !hasBatchSelection;
@@ -112,13 +113,13 @@ function updateSelection() {
   document.getElementById('bulkDelete').disabled = saving || !hasBatchSelection;
   saveButton.disabled = saving || !dirty;
   document.getElementById('bulkCurrentGroup').textContent = search.value.trim()
-    ? `搜索结果 (${visible.length})` : activeGroup ? `${ownerSpace(activeGroup)?.name || ''} / ${activeGroup.name || '未命名分组'} (${activeGroup.links.length})` : `全部网站 (${visible.length})`;
+    ? t`搜索结果 (${visible.length})` : activeGroup ? `${ownerSpace(activeGroup)?.name || ''} / ${activeGroup.name || t('未命名分组')} (${activeGroup.links.length})` : t`全部网站 (${visible.length})`;
   document.getElementById('bulkFoldTools').hidden = !!activeGroup && !search.value.trim();
 }
 function changed(message = '') { dirty = saveFailed || JSON.stringify(draftSpaces) !== original; status.textContent = message; updateSelection(); }
 function updateGroupOptions() {
   const previous = target.value;
-  target.innerHTML = '<option value="">移动到分组…</option>' + draftSpaces.map(space => `<optgroup label="${escapeHTML(space.name)}">${space.groups.map(group => `<option value="${draft.indexOf(group)}">${escapeHTML(group.name || '未命名分组')}</option>`).join('')}</optgroup>`).join('') + '<option value="new">+ 新建分组...</option>';
+  target.innerHTML = t('<option value="">移动到分组…</option>') + draftSpaces.map(space => `<optgroup label="${escapeHTML(space.name)}">${space.groups.map(group => `<option value="${draft.indexOf(group)}">${escapeHTML(group.name || t('未命名分组'))}</option>`).join('')}</optgroup>`).join('') + t('<option value="new">+ 新建分组...</option>');
   target.value = previous === 'new' ? '' : previous;
 }
 function renderNavigation() {
@@ -126,28 +127,28 @@ function renderNavigation() {
   document.getElementById('bulkAllCount').textContent = total;
   allButton.classList.toggle('active', !activeGroup);
   allButton.setAttribute('aria-current', activeGroup ? 'false' : 'page');
-  const row = (group, index) => `<div class="bulk-nav-item ${group === activeGroup ? 'active' : ''}" data-nav-group="${index}" data-drag-group="${index}" draggable="true" tabindex="0" aria-label="${escapeHTML(group.name)}，拖拽或触屏长按整理，或按 Alt 加上下方向键排序" role="listitem">
-    <input type="checkbox" data-select-group="${index}" aria-label="选择分组${escapeHTML(group.name)}及其网站" ${selectedGroups.has(group) ? 'checked' : ''}><button type="button" class="bulk-group-select" data-select-nav="${index}" aria-current="${group === activeGroup ? 'page' : 'false'}" title="${escapeHTML(group.name)}（双击或按 F2 改名）"><span class="bulk-nav-name">${escapeHTML(group.name || '未命名分组')}</span></button>
+  const row = (group, index) => t`<div class="bulk-nav-item ${group === activeGroup ? 'active' : ''}" data-nav-group="${index}" data-drag-group="${index}" draggable="true" tabindex="0" aria-label="${escapeHTML(group.name)}，拖拽或触屏长按整理，或按 Alt 加上下方向键排序" role="listitem">
+    <input type="checkbox" data-select-group="${index}" aria-label="选择分组${escapeHTML(group.name)}及其网站" ${selectedGroups.has(group) ? 'checked' : ''}><button type="button" class="bulk-group-select" data-select-nav="${index}" aria-current="${group === activeGroup ? 'page' : 'false'}" title="${escapeHTML(group.name)}（双击或按 F2 改名）"><span class="bulk-nav-name">${escapeHTML(group.name || t('未命名分组'))}</span></button>
     <input type="text" class="bulk-field bulk-group-name-input" data-edit-group="${index}" value="${escapeHTML(group.name)}" aria-label="分组名称" maxlength="100" spellcheck="false" hidden>
     <span class="bulk-group-count">${group.links.length}</span><span class="bulk-nav-actions"><button type="button" class="bulk-icon-button" data-rename-group="${index}" title="重命名分组" aria-label="重命名分组">${icon('pencil-line', 13)}</button><button type="button" class="bulk-icon-button bulk-row-delete" data-delete-group="${index}" title="删除分组及其网站" aria-label="删除分组及其网站">${icon('trash', 13)}</button></span>
   </div>`;
-  const columnNames = ['第一列', '第二列', '第三列', '第四列', '第五列', '第六列'];
+  const columnNames = [t('第一列'), t('第二列'), t('第三列'), t('第四列'), t('第五列'), t('第六列')];
   groupList.innerHTML = draftSpaces.flatMap((space, spaceIndex) => {
     if (!hasBookmarks(space) && !showEmptySpaces.checked && !newSpaces.has(space)) return [];
     const expanded = !collapsedSpaces.has(space), name = escapeHTML(space.name);
     const columns = Array.from({ length: editorColumnCount }, (_, column) => {
       const groups = space.groups.filter(group => groupColumn(group) === column);
-      const label = columnNames[column] || `第 ${column + 1} 列`;
+      const label = columnNames[column] || t`第 ${column + 1} 列`;
       const id = `bulkColumn${spaceIndex}-${column}`;
-      return `<section class="bulk-nav-column" data-nav-space="${spaceIndex}" data-nav-column="${column}" role="group" aria-labelledby="${id}"><h5 class="bulk-column-label" id="${id}">${label}</h5>${groups.map(group => row(group, draft.indexOf(group))).join('')}${groups.length ? '' : '<p class="bulk-column-empty">暂无分组 · 可拖入此列</p>'}</section>`;
+      return `<section class="bulk-nav-column" data-nav-space="${spaceIndex}" data-nav-column="${column}" role="group" aria-labelledby="${id}"><h5 class="bulk-column-label" id="${id}">${label}</h5>${groups.map(group => row(group, draft.indexOf(group))).join('')}${groups.length ? '' : t('<p class="bulk-column-empty">暂无分组 · 可拖入此列</p>')}</section>`;
     }).join('');
-    return [`<section class="bulk-space-section" data-space-index="${spaceIndex}"><div class="bulk-space-header"><input type="checkbox" data-select-space="${spaceIndex}" aria-label="选择空间${name}及其内容" ${selectedSpaces.has(space) ? 'checked' : ''}><button type="button" class="bulk-space-toggle" data-fold-space="${spaceIndex}" aria-expanded="${expanded}" aria-controls="bulkSpaceGroups${spaceIndex}" title="${name}（双击改名）">${icon('chevron-down', 14)}<span class="bulk-space-name">${name}</span><span class="bulk-group-count">${space.groups.reduce((sum, group) => sum + group.links.length, 0)}</span></button><input type="text" class="bulk-field bulk-space-name-input" data-edit-space="${spaceIndex}" value="${name}" aria-label="空间名称" maxlength="32" spellcheck="false" hidden><span class="bulk-space-actions"><button type="button" class="bulk-icon-button" data-rename-space="${spaceIndex}" title="重命名空间" aria-label="重命名空间">${icon('pencil-line', 13)}</button></span></div><div class="bulk-space-columns" id="bulkSpaceGroups${spaceIndex}" ${expanded ? '' : 'hidden'}>${columns}</div></section>`];
+    return [t`<section class="bulk-space-section" data-space-index="${spaceIndex}"><div class="bulk-space-header"><input type="checkbox" data-select-space="${spaceIndex}" aria-label="选择空间${name}及其内容" ${selectedSpaces.has(space) ? 'checked' : ''}><button type="button" class="bulk-space-toggle" data-fold-space="${spaceIndex}" aria-expanded="${expanded}" aria-controls="bulkSpaceGroups${spaceIndex}" title="${name}（双击改名）">${icon('chevron-down', 14)}<span class="bulk-space-name">${name}</span><span class="bulk-group-count">${space.groups.reduce((sum, group) => sum + group.links.length, 0)}</span></button><input type="text" class="bulk-field bulk-space-name-input" data-edit-space="${spaceIndex}" value="${name}" aria-label="空间名称" maxlength="32" spellcheck="false" hidden><span class="bulk-space-actions"><button type="button" class="bulk-icon-button" data-rename-space="${spaceIndex}" title="重命名空间" aria-label="重命名空间">${icon('pencil-line', 13)}</button></span></div><div class="bulk-space-columns" id="bulkSpaceGroups${spaceIndex}" ${expanded ? '' : 'hidden'}>${columns}</div></section>`];
   }).join('');
   updateSelection();
 }
 function siteRow({ link, key }) {
   const invalid = !safeWebUrl(link.url, { allowBare: true });
-  return `<li class="bulk-site-row ${selected.has(link) ? 'is-selected' : ''}" data-site-key="${key}" data-drag-site="${key}" draggable="true" tabindex="0" aria-label="${escapeHTML(link.title)}，拖拽或触屏长按整理，或按 Alt 加上下方向键排序">
+  return t`<li class="bulk-site-row ${selected.has(link) ? 'is-selected' : ''}" data-site-key="${key}" data-drag-site="${key}" draggable="true" tabindex="0" aria-label="${escapeHTML(link.title)}，拖拽或触屏长按整理，或按 Alt 加上下方向键排序">
     <input type="checkbox" data-key="${key}" aria-label="选择${escapeHTML(link.title)}" ${selected.has(link) ? 'checked' : ''}>
     <img draggable="false" class="bulk-favicon" data-icon-key="${key}" alt="" width="18" height="18">
     <div class="bulk-site-copy" title="单击选择，双击编辑"><input type="text" class="bulk-field bulk-title-input" data-edit-key="${key}" data-field="title" value="${escapeHTML(link.title)}" aria-label="网站名称" maxlength="200" spellcheck="false">
@@ -157,18 +158,18 @@ function siteRow({ link, key }) {
 }
 function renderList() {
   const visible = visibleLinks(), grouped = !activeGroup || !!search.value.trim();
-  if (!visible.length && !(grouped && !search.value.trim() && draftSpaces.some(hasBookmarks))) list.innerHTML = `<p class="bulk-empty">${search.value.trim() ? '没有匹配的网站' : '此处还没有网站，可导入收藏夹或从其他分组移动'}</p>`;
-  else if (!grouped) list.innerHTML = `<ul class="bulk-site-rows" aria-label="网站列表">${visible.map(siteRow).join('')}</ul>`;
+  if (!visible.length && !(grouped && !search.value.trim() && draftSpaces.some(hasBookmarks))) list.innerHTML = `<p class="bulk-empty">${search.value.trim() ? t('没有匹配的网站') : t('此处还没有网站，可导入收藏夹或从其他分组移动')}</p>`;
+  else if (!grouped) list.innerHTML = t`<ul class="bulk-site-rows" aria-label="网站列表">${visible.map(siteRow).join('')}</ul>`;
   else {
     const byGroup = new Map(search.value.trim() ? [] : draft.filter(group => hasBookmarks(ownerSpace(group))).map(group => [group, []]));
     visible.forEach(item => { if (!byGroup.has(item.group)) byGroup.set(item.group, []); byGroup.get(item.group).push(item); });
     list.innerHTML = [...byGroup].map(([group, items]) => {
       const index = draft.indexOf(group), expanded = !collapsedGroups.has(group);
-      return `<section class="bulk-detail-group" data-detail-group="${index}"><button type="button" class="bulk-detail-heading" data-fold-group="${index}" aria-expanded="${expanded}" aria-controls="bulkDetails${index}">${icon('chevron-down', 13)}<span>${escapeHTML(ownerSpace(group).name)} / ${escapeHTML(group.name || '未命名分组')}</span><span class="bulk-group-count">${items.length}</span></button><ul id="bulkDetails${index}" class="bulk-site-rows" ${expanded ? '' : 'hidden'}>${items.length ? items.map(siteRow).join('') : '<li class="bulk-group-empty">暂无网站 · 可拖入此分组</li>'}</ul></section>`;
+      return `<section class="bulk-detail-group" data-detail-group="${index}"><button type="button" class="bulk-detail-heading" data-fold-group="${index}" aria-expanded="${expanded}" aria-controls="bulkDetails${index}">${icon('chevron-down', 13)}<span>${escapeHTML(ownerSpace(group).name)} / ${escapeHTML(group.name || t('未命名分组'))}</span><span class="bulk-group-count">${items.length}</span></button><ul id="bulkDetails${index}" class="bulk-site-rows" ${expanded ? '' : 'hidden'}>${items.length ? items.map(siteRow).join('') : t('<li class="bulk-group-empty">暂无网站 · 可拖入此分组</li>')}</ul></section>`;
     }).join('');
   }
   list.querySelectorAll('[data-icon-key]').forEach(image => loadSiteIcon(image, linksByKey.get(image.dataset.iconKey)));
-  list.querySelectorAll('[data-field="url"]').forEach(input => input.setCustomValidity(input.getAttribute('aria-invalid') === 'true' ? '请输入有效的 HTTP 或 HTTPS 网址' : ''));
+  list.querySelectorAll('[data-field="url"]').forEach(input => input.setCustomValidity(input.getAttribute('aria-invalid') === 'true' ? t('请输入有效的 HTTP 或 HTTPS 网址') : ''));
   updateSelection();
 }
 function refresh() { renderNavigation(); renderList(); }
@@ -190,7 +191,7 @@ function openEditor() {
   lastClickedLink = null; preDblClickState = null;
   selectedGroups.clear(); selectedSpaces.clear(); newSpaces.clear(); showEmptySpaces.checked = false; closeCreateDialog(); closeCreateMenu();
   search.value = ''; target.value = ''; updateGroupOptions();
-  document.getElementById('bulkSpaceName').textContent = `全部空间 · 单击选择，双击编辑名称与网址，拖拽整理（触屏长按）`;
+  document.getElementById('bulkSpaceName').textContent = t`全部空间 · 单击选择，双击编辑名称与网址，拖拽整理（触屏长按）`;
   status.textContent = ''; refresh(); dialog.showModal();
   setCreationContext({
     groups: () => parentSpace().groups,
@@ -210,14 +211,14 @@ function openEditor() {
       const group = { id: generateId(), name, linksPerRow, collapsed: false, links: [], column: 0, columnCount: editorColumnCount };
       space.groups.push(group); rebuildDraft();
       if (moveAfterCreate && selected.size) moveLinks(selected, group);
-      finishCreation(space, group, `已新建分组“${name}”，保存后生效`);
+      finishCreation(space, group, t`已新建分组“${name}”，保存后生效`);
       return group;
     },
     addSite(groupId, link) {
       const group = parentSpace().groups.find(group => group.id === groupId);
       if (!group) return;
       group.links.push(link);
-      finishCreation(ownerSpace(group), group, `已新建网站“${link.title}”，保存后生效`);
+      finishCreation(ownerSpace(group), group, t`已新建网站“${link.title}”，保存后生效`);
     }
   });
   search.focus();
@@ -279,29 +280,29 @@ groupList.addEventListener('input', event => {
   if (input.dataset.editSpace !== undefined) {
     const space = draftSpaces[Number(input.dataset.editSpace)];
     space.name = input.value;
-    input.closest('.bulk-space-header').querySelector('.bulk-space-name').textContent = space.name || '未命名空间';
+    input.closest('.bulk-space-header').querySelector('.bulk-space-name').textContent = space.name || t('未命名空间');
     updateGroupOptions(); changed();
     return;
   }
   if (input.dataset.editGroup === undefined) return;
   const group = draft[Number(input.dataset.editGroup)]; group.name = input.value;
-  input.closest('[data-nav-group]').querySelector('.bulk-nav-name').textContent = group.name || '未命名分组';
+  input.closest('[data-nav-group]').querySelector('.bulk-nav-name').textContent = group.name || t('未命名分组');
   updateGroupOptions(); changed();
 });
 groupList.addEventListener('focusout', event => {
   const input = event.target;
   if (input.dataset.editSpace !== undefined) {
     const space = draftSpaces[Number(input.dataset.editSpace)];
-    space.name = space.name.trim() || '未命名空间'; input.value = space.name;
+    space.name = space.name.trim() || t('未命名空间'); input.value = space.name;
     const button = input.closest('.bulk-space-header').querySelector('[data-fold-space]'); button.hidden = false;
-    button.querySelector('.bulk-space-name').textContent = space.name; button.title = `${space.name}（双击改名）`; input.hidden = true;
+    button.querySelector('.bulk-space-name').textContent = space.name; button.title = t`${space.name}（双击改名）`; input.hidden = true;
     updateGroupOptions(); renderList(); changed();
     return;
   }
   if (input.dataset.editGroup === undefined) return;
-  const group = draft[Number(input.dataset.editGroup)]; group.name = group.name.trim() || '未命名分组'; input.value = group.name;
+  const group = draft[Number(input.dataset.editGroup)]; group.name = group.name.trim() || t('未命名分组'); input.value = group.name;
   const button = input.closest('[data-nav-group]').querySelector('[data-select-nav]'); button.hidden = false;
-  button.querySelector('.bulk-nav-name').textContent = group.name; button.title = `${group.name}（双击或按 F2 改名）`; input.hidden = true;
+  button.querySelector('.bulk-nav-name').textContent = group.name; button.title = t`${group.name}（双击或按 F2 改名）`; input.hidden = true;
   updateGroupOptions(); changed();
 });
 function parentSpace() {
@@ -342,12 +343,12 @@ newSpaceName.addEventListener('input', () => newSpaceName.setCustomValidity(''))
 document.getElementById('bulkSpaceCreateForm').addEventListener('submit', event => {
   event.preventDefault();
   const name = newSpaceName.value.trim();
-  if (!name) { newSpaceName.setCustomValidity('请输入空间名称'); newSpaceName.reportValidity(); return; }
+  if (!name) { newSpaceName.setCustomValidity(t('请输入空间名称')); newSpaceName.reportValidity(); return; }
   const group = { ...createTemporaryGroup(draftSpaces.length), id: generateId(), column: 0, columnCount: editorColumnCount };
   const space = { id: generateId(), name, groups: [group] };
   draftSpaces.push(space); activeSpaceForCreation = space;
   selected.clear(); selectedGroups.clear(); selectedSpaces.clear();
-  finishCreation(space, group, `已新建空间“${name}”，保存后生效`);
+  finishCreation(space, group, t`已新建空间“${name}”，保存后生效`);
   spaceCreateDialog.close();
   groupList.querySelector(`[data-space-index="${draftSpaces.indexOf(space)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 });
@@ -450,7 +451,7 @@ list.addEventListener('input', event => {
   link[input.dataset.field] = input.value;
   if (input.dataset.field === 'url') {
     const valid = !!safeWebUrl(input.value, { allowBare: true });
-    input.setCustomValidity(valid ? '' : '请输入有效的 HTTP 或 HTTPS 网址'); input.setAttribute('aria-invalid', String(!valid));
+    input.setCustomValidity(valid ? '' : t('请输入有效的 HTTP 或 HTTPS 网址')); input.setAttribute('aria-invalid', String(!valid));
   }
   changed();
 });
@@ -542,7 +543,7 @@ function moveLinks(links, destination) {
     if (group === destination) return;
     group.links = group.links.filter(link => { if (!links.has(link)) return true; destination.links.push(link); count++; return false; });
   });
-  if (count) { clearUndo(); collapsedGroups.delete(destination); changed(`已移动 ${count} 个网站到“${destination.name}”，保存后生效`); }
+  if (count) { clearUndo(); collapsedGroups.delete(destination); changed(t`已移动 ${count} 个网站到“${destination.name}”，保存后生效`); }
   refresh(); return count;
 }
 document.getElementById('bulkDelete').addEventListener('click', () => deleteObjects(new Set(selected), new Set(selectedGroups), new Set(selectedSpaces)));
@@ -551,7 +552,7 @@ function clearRemovedSelections(links, groups, spaces) {
 }
 function deleteObjects(selected, selectedGroups, selectedSpaces) {
   if (!selected.size && !selectedGroups.size && !selectedSpaces.size) return;
-  if (selectedSpaces.size >= draftSpaces.length) { status.textContent = '至少保留一个空间，请先取消选择一个空间'; return; }
+  if (selectedSpaces.size >= draftSpaces.length) { status.textContent = t('至少保留一个空间，请先取消选择一个空间'); return; }
   const removed = { spaces: [], groups: [], links: [], activeGroup };
   const removedGroups = new Set(), removedLinks = new Set();
   draftSpaces.forEach((space, index) => {
@@ -573,10 +574,10 @@ function deleteObjects(selected, selectedGroups, selectedSpaces) {
   if (!removed.spaces.length && !removedGroups.size && !removedLinks.size) return;
   deletedItems = removed; clearRemovedSelections(removedLinks, removedGroups, new Set(removed.spaces.map(item => item.space)));
   rebuildDraft(); if (activeGroup && !draft.includes(activeGroup)) activeGroup = null;
-  const summary = [removed.spaces.length && `${removed.spaces.length} 个空间`, removedGroups.size && `${removedGroups.size} 个分组`, removedLinks.size && `${removedLinks.size} 个网站`].filter(Boolean).join('、');
+  const summary = [removed.spaces.length && t`${removed.spaces.length} 个空间`, removedGroups.size && t`${removedGroups.size} 个分组`, removedLinks.size && t`${removedLinks.size} 个网站`].filter(Boolean).join('、');
   updateGroupOptions(); target.value = ''; changed(); refresh();
-  dismissUndoToast = showToast(`已删除 ${summary}`, 8000, {
-    host: dialog, action: { id: 'bulkUndo', label: '撤销', onClick: undoDeletedObjects }
+  dismissUndoToast = showToast(t`已删除 ${summary}`, 8000, {
+    host: dialog, action: { id: 'bulkUndo', label: t('撤销'), onClick: undoDeletedObjects }
   });
 }
 function undoDeletedObjects() {
@@ -587,7 +588,7 @@ function undoDeletedObjects() {
   removed.links.forEach(({ group, link, index }) => { group.links.splice(Math.min(index, group.links.length), 0, link); collapsedGroups.delete(group); collapsedSpaces.delete(ownerSpace(group)); });
   rebuildDraft(); activeGroup = draft.includes(removed.activeGroup) ? removed.activeGroup : activeGroup;
   clearUndo(); updateGroupOptions(); changed(); refresh();
-  showToast('已恢复删除的对象及其内容', 3000, { host: dialog });
+  showToast(t('已恢复删除的对象及其内容'), 3000, { host: dialog });
 }
 function reorderGroups(group, destination, after) {
   if (group === destination) return;
@@ -601,7 +602,7 @@ function reorderGroups(group, destination, after) {
   destinationSpace.groups.splice(destinationSpace.groups.indexOf(destination) + (after ? 1 : 0), 0, group);
   group.column = destinationColumn; collapsedSpaces.delete(destinationSpace); rebuildDraft();
   clearUndo(); updateGroupOptions(); target.value = targetGroup ? String(draft.indexOf(targetGroup)) : '';
-  changed('分组顺序已调整，保存后生效'); refresh();
+  changed(t('分组顺序已调整，保存后生效')); refresh();
 }
 function moveGroupToColumn(group, destinationSpace, destinationColumn) {
   if (!group || !destinationSpace) return;
@@ -614,7 +615,7 @@ function moveGroupToColumn(group, destinationSpace, destinationColumn) {
   group.columnCount = editorColumnCount;
   collapsedSpaces.delete(destinationSpace); rebuildDraft();
   clearUndo(); updateGroupOptions(); target.value = targetGroup ? String(draft.indexOf(targetGroup)) : '';
-  changed('分组已移至目标列，保存后生效'); refresh();
+  changed(t('分组已移至目标列，保存后生效')); refresh();
 }
 function reorderSites(links, destination, reference, after) {
   if (links.has(reference)) return;
@@ -623,7 +624,7 @@ function reorderSites(links, destination, reference, after) {
   draft.forEach(group => { group.links = group.links.filter(link => !links.has(link)); });
   const index = destination.links.indexOf(reference);
   destination.links.splice(index < 0 ? destination.links.length : index + (after ? 1 : 0), 0, ...moving);
-  clearUndo(); collapsedGroups.delete(destination); changed('网站顺序已调整，保存后生效'); refresh();
+  clearUndo(); collapsedGroups.delete(destination); changed(t('网站顺序已调整，保存后生效')); refresh();
 }
 const insertionLine = document.createElement('div');
 insertionLine.className = 'bulk-insertion-line';
@@ -823,11 +824,11 @@ saveButton.addEventListener('click', async () => {
     activeGroup = group; collapsedSpaces.delete(ownerSpace(group)); search.value = ''; refresh();
     const input = list.querySelector(`[data-edit-key="${keyFor(link)}"][data-field="url"]`);
     startEditingSite(input.closest('.bulk-site-row'), input);
-    input.setCustomValidity('请输入有效的 HTTP 或 HTTPS 网址'); input.focus(); input.reportValidity(); status.textContent = '有网站的网址无效，请修改后保存'; return;
+    input.setCustomValidity(t('请输入有效的 HTTP 或 HTTPS 网址')); input.focus(); input.reportValidity(); status.textContent = t('有网站的网址无效，请修改后保存'); return;
   }
-  if (appData.activeSpaceId !== spaceId || JSON.stringify(currentSpaces()) !== original) { status.textContent = '网站数据已发生变化，请关闭并重新打开批量编辑后再操作。'; return; }
-  draftSpaces.forEach(space => { space.name = space.name.trim() || '未命名空间'; });
-  draft.forEach(group => { group.name = group.name.trim() || '未命名分组'; group.links.forEach(link => { link.url = safeWebUrl(link.url, { allowBare: true }); link.title = link.title.trim() || new URL(link.url).hostname; }); });
+  if (appData.activeSpaceId !== spaceId || JSON.stringify(currentSpaces()) !== original) { status.textContent = t('网站数据已发生变化，请关闭并重新打开批量编辑后再操作。'); return; }
+  draftSpaces.forEach(space => { space.name = space.name.trim() || t('未命名空间'); });
+  draft.forEach(group => { group.name = group.name.trim() || t('未命名分组'); group.links.forEach(link => { link.url = safeWebUrl(link.url, { allowBare: true }); link.title = link.title.trim() || new URL(link.url).hostname; }); });
   // Persist a separate snapshot so the editor draft never mutates live appData.
   const snapshot = structuredClone(draftSpaces); appData.spaces = snapshot;
   const nextActive = snapshot.find(space => space.id === spaceId) || snapshot[0];
@@ -835,16 +836,16 @@ saveButton.addEventListener('click', async () => {
   dirty = false; render(); original = JSON.stringify(currentSpaces());
   saving = true;
   const controls = [...dialog.querySelectorAll('button, input, select')], previouslyDisabled = controls.map(control => control.disabled);
-  controls.forEach(control => { control.disabled = true; }); saveButton.textContent = '正在保存…';
+  controls.forEach(control => { control.disabled = true; }); saveButton.textContent = t('正在保存…');
   try {
     const saved = await syncManager.saveData();
-    status.textContent = saved ? '更改已保存' : '更改已应用，但保存失败，请返回设置重试同步或导出备份。';
-    if (hasImportedDraft) importStatus.textContent = saved ? '收藏夹已导入并保存，可在主页查看。' : status.textContent;
+    status.textContent = saved ? t('更改已保存') : t('更改已应用，但保存失败，请返回设置重试同步或导出备份。');
+    if (hasImportedDraft) importStatus.textContent = saved ? t('收藏夹已导入并保存，可在主页查看。') : status.textContent;
     hasImportedDraft = false; saveFailed = !saved; dirty = !saved; if (saved) dialog.close();
   } catch (error) {
-    saveFailed = true; dirty = true; status.textContent = `保存失败：${error.message || '请重试'}`;
+    saveFailed = true; dirty = true; status.textContent = t`保存失败：${error.message || t('请重试')}`;
   } finally {
-    saving = false; controls.forEach((control, index) => { control.disabled = previouslyDisabled[index]; }); saveButton.textContent = '保存更改'; updateSelection();
+    saving = false; controls.forEach((control, index) => { control.disabled = previouslyDisabled[index]; }); saveButton.textContent = t('保存更改'); updateSelection();
   }
 });
 document.getElementById('bulkImportBookmarks').addEventListener('click', () => document.getElementById('bookmarkFile').click());
@@ -854,7 +855,7 @@ document.addEventListener('simtab-bookmark-preview', event => {
   const space = ownerSpace(activeGroup) || draftSpaces.find(item => item.id === spaceId) || draftSpaces[0];
   space.groups.push(...event.detail.groups); rebuildDraft(); collapsedSpaces.delete(space); hasImportedDraft = true; dirty = true;
   activeGroup = event.detail.groups.length === 1 ? first : null; search.value = ''; collapsedGroups.clear();
-  updateGroupOptions(); status.textContent = `“${event.detail.filename}”：${event.detail.count} 个网站待导入，可先整理，保存后生效`; refresh();
+  updateGroupOptions(); status.textContent = t`“${event.detail.filename}”：${event.detail.count} 个网站待导入，可先整理，保存后生效`; refresh();
   groupList.querySelector(`[data-nav-group="${draft.indexOf(first)}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   if (!activeGroup) list.querySelector(`#bulkDetails${draft.indexOf(first)}`)?.scrollIntoView({ block: 'nearest' });
 });
@@ -869,6 +870,6 @@ dialog.addEventListener('close', () => {
   }
   closeCreateDialog(); closeCreateMenu(); setCreationContext(null);
   document.body.appendChild(document.getElementById('contextMenu'));
-  if (hasImportedDraft) importStatus.textContent = '已取消导入，收藏夹未保存。';
+  if (hasImportedDraft) importStatus.textContent = t('已取消导入，收藏夹未保存。');
   hasImportedDraft = false;
 });

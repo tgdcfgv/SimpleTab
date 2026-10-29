@@ -1,3 +1,4 @@
+import { searchRegion } from '../../js/search-locale.js';
 export async function onRequestGet({ request }) {
   const url = new URL(request.url);
   const q = (url.searchParams.get('q') || url.searchParams.get('query') || '').trim();
@@ -12,7 +13,7 @@ export async function onRequestGet({ request }) {
   }
 
   try {
-    const targetUrl = `https://www.bing.com/osjson.aspx?query=${encodeURIComponent(q)}&cc=cn`;
+    const targetUrl = `https://www.bing.com/osjson.aspx?query=${encodeURIComponent(q)}&cc=${searchRegion(url.searchParams.get('language'))}`;
     const res = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',

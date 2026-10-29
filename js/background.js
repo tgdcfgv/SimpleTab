@@ -1,6 +1,31 @@
+import { resolveLocale, LANGUAGES } from './i18n.js';
+import { searchRegion } from './search-locale.js';
 import { CAPTURE_PREFIX, captureDraft, validDraft } from './capture-model.js';
 
 export const CAPTURE_MENU_ID = 'simtab-save-page';
+let captureTitle = chrome.i18n?.getMessage('savePage') || '保存当前页面到 SimTab';
+let captureFailure = chrome.i18n?.getMessage('captureFailed') || '收藏窗口未能打开，请重试';
+async function refreshCaptureLanguage() {
+  if (!chrome.storage?.local?.get) return;
+  try {
+    const stored = await chrome.storage.local.get(['appData', 'simtab-language']);
+    const preferred = stored['simtab-language'] || stored.appData?.settings?.language;
+    const language = LANGUAGES.some(item => item.id === preferred)
+      ? preferred : resolveLocale(chrome.i18n?.getUILanguage() || 'en');
+    const response = await fetch(new URL(`../_locales/${language}/messages.json`, import.meta.url));
+    if (!response.ok) return;
+    const catalog = await response.json();
+    captureTitle = catalog.savePage.message;
+    captureFailure = catalog.captureFailed.message;
+    await chrome.action.setTitle({ title: captureTitle });
+    // The menu may not exist until onInstalled creates it.
+    try { await chrome.contextMenus.update(CAPTURE_MENU_ID, { title: captureTitle }); } catch {}
+  } catch { /* Keep the browser-language labels when local storage is unavailable. */ }
+}
+chrome.storage?.onChanged?.addListener((changes, area) => {
+  if (area === 'local' && (changes['simtab-language'] || changes.appData?.newValue?.settings?.language !== changes.appData?.oldValue?.settings?.language)) refreshCaptureLanguage();
+});
+void refreshCaptureLanguage();
 
 export async function openCapture(tab, api = chrome) {
   const drafts = await api.storage.session.get(null);
@@ -20,18 +45,19 @@ export async function openCapture(tab, api = chrome) {
 }
 
 function launch(tab) {
-  chrome.action.setTitle({ title: '保存当前页面到 SimTab', ...(tab?.id ? { tabId: tab.id } : {}) });
+  chrome.action.setTitle({ title: captureTitle, ...(tab?.id ? { tabId: tab.id } : {}) });
   chrome.action.setBadgeText({ text: '', ...(tab?.id ? { tabId: tab.id } : {}) });
   openCapture(tab).catch(error => {
     console.error('无法打开 SimTab 收藏窗口', error);
     chrome.action.setBadgeText({ text: '!', ...(tab?.id ? { tabId: tab.id } : {}) });
-    chrome.action.setTitle({ title: '收藏窗口未能打开，请重试', ...(tab?.id ? { tabId: tab.id } : {}) });
+    chrome.action.setTitle({ title: captureFailure, ...(tab?.id ? { tabId: tab.id } : {}) });
   });
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.removeAll().then(() => {
-    chrome.contextMenus.create({ id: CAPTURE_MENU_ID, title: '保存当前页面到 SimTab',
+  chrome.contextMenus.removeAll().then(async () => {
+    await refreshCaptureLanguage();
+    chrome.contextMenus.create({ id: CAPTURE_MENU_ID, title: captureTitle,
       contexts: ['page'], documentUrlPatterns: ['http://*/*', 'https://*/*'] });
   }).catch(error => console.error('无法创建收藏菜单', error));
 });
@@ -47,7 +73,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse({ ok: true, data: [q, []] });
       return false;
     }
-    const url = `https://www.bing.com/osjson.aspx?query=${encodeURIComponent(q)}&cc=cn`;
+    const url = `https://www.bing.com/osjson.aspx?query=${encodeURIComponent(q)}&cc=${searchRegion(message.language)}`;
     fetch(url, { headers: { Accept: 'application/json, text/plain, */*' } })
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);

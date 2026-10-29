@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { renderDockSites, applyDockOrder, DOCK_ACTION_SETTINGS } from './dock.js';
 import { getWallpaperUrl } from './wallpaper.js';
 import { icon } from './icons.js';
@@ -99,7 +100,7 @@ export function render() {
     // Header
     const header = document.createElement('div');
     header.className = 'group-header';
-    header.innerHTML = `
+    header.innerHTML = t`
       <div class="group-title-container">
         ${icon('chevron-down', 16, 'fold-icon', `transform: rotate(${group.collapsed ? '-90deg' : '0'});`)}
         <span class="group-title" title="${escapeHTML(group.name)}">${escapeHTML(group.name)}</span>
@@ -154,7 +155,7 @@ export function render() {
     });
     header.querySelector('.delete-group-btn').addEventListener('click', (e) => {
       e.stopPropagation();
-      showConfirm('删除分组', `确定要删除分组 "${escapeHTML(group.name)}" 及其包含的所有网站吗？`, () => {
+      showConfirm(t('删除分组'), t`确定要删除分组 "${escapeHTML(group.name)}" 及其包含的所有网站吗？`, () => {
         const groupIndex = appData.groups.findIndex(g => g.id === group.id);
         if (groupIndex !== -1) {
           appData.groups.splice(groupIndex, 1);
@@ -178,7 +179,7 @@ export function render() {
     }
 
     if (group.links.length === 0) {
-      grid.innerHTML = `<div class="empty-group-state">拖拽网站到此处</div>`;
+      grid.innerHTML = t`<div class="empty-group-state">拖拽网站到此处</div>`;
     } else {
       group.links.forEach(link => {
         const siteBtn = document.createElement('a');
@@ -227,11 +228,11 @@ export function render() {
 }
 
 function getSpaceDockIcon(space, index) {
-  const iconKey = space.id === 'space-home' || space.name === '主页'
+  const iconKey = space.id === 'space-home' || space.name === t('主页')
     ? 'home'
-    : space.id === 'space-work' || space.name === '工作'
+    : space.id === 'space-work' || space.name === t('工作')
       ? 'work'
-      : space.id === 'space-favorites' || space.name === '收藏'
+      : space.id === 'space-favorites' || space.name === t('收藏')
         ? 'favorites'
         : index === 0 ? 'home' : index === 1 ? 'work' : index === 2 ? 'favorites' : 'space';
 
@@ -387,7 +388,7 @@ export function applySettings() {
     document.body.style.backgroundSize = 'cover';
     document.body.style.backgroundPosition = 'center';
     document.body.style.backgroundAttachment = 'fixed';
-  }).catch(error => console.warn('无法读取本机壁纸', error));
+  }).catch(error => console.warn(t('无法读取本机壁纸'), error));
 }
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {

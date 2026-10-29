@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { icon as lucideIcon } from './icons.js';
 import { appData, syncManager } from './storage.js';
 import { linkStore } from './catalog.js';
@@ -43,7 +44,7 @@ export function updateStoreSelectionCount() {
   document.getElementById('selectedLinksCount').textContent = count;
   const status = document.getElementById('storeStatusMsg');
   if (status) {
-    status.textContent = count > 0 ? `已选择 ${count} 项` : '';
+    status.textContent = count > 0 ? t`已选择 ${count} 项` : '';
     status.className = 'store-status';
   }
 }
@@ -71,7 +72,7 @@ function requestBookmarksPermission() {
 function readBrowserBookmarks() {
   return new Promise((resolve, reject) => {
     if (!globalThis.chrome?.bookmarks?.getTree) {
-      reject(new Error('当前环境无法读取浏览器收藏夹'));
+      reject(new Error(t('当前环境无法读取浏览器收藏夹')));
       return;
     }
     chrome.bookmarks.getTree(nodes => {
@@ -136,7 +137,7 @@ export function ensureStoreLayout() {
   if (document.getElementById('appStoreMenu')) return;
 
   const title = appStoreModal.querySelector('h3');
-  if (title) title.textContent = '网站库';
+  if (title) title.textContent = t('网站库');
 
   const shell = document.createElement('div');
   shell.className = 'store-shell';
@@ -144,7 +145,7 @@ export function ensureStoreLayout() {
   const menu = document.createElement('aside');
   menu.id = 'appStoreMenu';
   menu.className = 'store-menu';
-  menu.setAttribute('aria-label', '网站分类');
+  menu.setAttribute('aria-label', t('网站分类'));
 
   const main = document.createElement('section');
   main.className = 'store-main';
@@ -203,29 +204,29 @@ export async function renderAppStoreCategory() {
     const state = document.createElement('div');
     state.className = 'empty-group-state';
     const message = document.createElement('span');
-    message.textContent = '正在读取我的收藏夹…';
+    message.textContent = t('正在读取我的收藏夹…');
     state.appendChild(message);
     content.appendChild(state);
 
     if (!globalThis.chrome?.runtime?.id || !globalThis.chrome?.permissions?.request) {
-      message.textContent = '网页版无法直接读取浏览器收藏夹。可在“设置 → 账户与同步”导入书签 HTML 文件，或使用扩展版。';
+      message.textContent = t('网页版无法直接读取浏览器收藏夹。可在“设置 → 账户与同步”导入书签 HTML 文件，或使用扩展版。');
       const installLink = document.createElement('a');
       installLink.className = 'btn primary';
       installLink.href = 'install.html';
       installLink.target = '_blank';
       installLink.rel = 'noopener noreferrer';
-      installLink.textContent = '查看扩展安装方法';
+      installLink.textContent = t('查看扩展安装方法');
       state.appendChild(installLink);
       return;
     }
 
     const granted = await requestBookmarksPermission();
     if (!granted) {
-      message.textContent = '需要允许读取书签，才能显示我的收藏夹。';
+      message.textContent = t('需要允许读取书签，才能显示我的收藏夹。');
       const retryBtn = document.createElement('button');
       retryBtn.type = 'button';
       retryBtn.className = 'btn primary';
-      retryBtn.textContent = '允许读取收藏夹';
+      retryBtn.textContent = t('允许读取收藏夹');
       retryBtn.addEventListener('click', renderAppStoreCategory);
       state.appendChild(retryBtn);
       return;
@@ -238,7 +239,7 @@ export async function renderAppStoreCategory() {
       renderStoreMenu();
       if (activeStoreCategoryId === category.id) renderAppStoreCategory();
     } catch (error) {
-      message.textContent = `读取收藏夹失败：${error.message}`;
+      message.textContent = t`读取收藏夹失败：${error.message}`;
     }
     return;
   }
@@ -259,8 +260,8 @@ export async function renderAppStoreCategory() {
     const empty = document.createElement('div');
     empty.className = 'empty-group-state';
     empty.textContent = category.dynamicType === BROWSER_BOOKMARKS_TYPE
-      ? '收藏夹中暂无可添加的网站'
-      : '此分类暂无内容';
+      ? t('收藏夹中暂无可添加的网站')
+      : t('此分类暂无内容');
     grid.appendChild(empty);
   }
 
@@ -362,7 +363,7 @@ export function renderStoreGroupSelection(selectedId) {
   const newBtn = document.createElement('button');
   newBtn.type = 'button';
   newBtn.className = 'group-select-btn new-group';
-  newBtn.textContent = '+ 新建分组';
+  newBtn.textContent = t('+ 新建分组');
   newBtn.addEventListener('click', () => {
     openGroupModal(null, { source: 'store' });
   });
@@ -375,7 +376,7 @@ export function renderAppStore() {
   activeStoreCategoryId = activeStoreCategoryId || linkStore[0]?.id || null;
   const addStoreLinksBtn = document.getElementById('addStoreLinksBtn');
   if (addStoreLinksBtn) {
-    addStoreLinksBtn.innerHTML = '保存选中 (<span id="selectedLinksCount">0</span>)';
+    addStoreLinksBtn.innerHTML = t('保存选中 (<span id="selectedLinksCount">0</span>)');
   }
 
   const storeGroupSelectEl = document.getElementById('storeGroupSelect');
@@ -384,7 +385,7 @@ export function renderAppStore() {
   if (appData.groups.length === 0) {
     appData.groups.push({
       id: generateId(),
-      name: '网站库',
+      name: t('网站库'),
       collapsed: false,
       links: [],
       column: 0,
@@ -427,7 +428,7 @@ document.getElementById('addStoreLinksBtn').addEventListener('click', async () =
   const groupId = currentStoreGroupId || document.getElementById('storeGroupSelect').value;
   const group = appData.groups.find(g => g.id === groupId);
   if (!group) {
-    setStoreStatus('请选择有效分组', 'warning');
+    setStoreStatus(t('请选择有效分组'), 'warning');
     return;
   }
 
@@ -458,11 +459,11 @@ document.getElementById('addStoreLinksBtn').addEventListener('click', async () =
   });
 
   try {
-    if (!await syncManager.saveData()) throw new Error(syncManager.error || '更改尚未保存，请重试同步');
+    if (!await syncManager.saveData()) throw new Error(syncManager.error || t('更改尚未保存，请重试同步'));
     render();
     closeAllModals();
   } catch (error) {
-    setStoreStatus(`保存失败：${error.message}`, 'warning');
+    setStoreStatus(t`保存失败：${error.message}`, 'warning');
   }
 });
 

@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { cloud } from './cloud.js';
 import { syncManager } from './storage.js';
 import { applySettings, render } from './render.js';
@@ -33,7 +34,7 @@ export function initAccountSecurity() {
   }
   function errorMessage(error) {
     message.dataset.state = 'error';
-    message.textContent = error.message || '操作失败，请稍后重试。';
+    message.textContent = error.message || t('操作失败，请稍后重试。');
   }
   document.getElementById('accountDelete').addEventListener('click', open);
   cancel.addEventListener('click', close);
@@ -53,15 +54,15 @@ export function initAccountSecurity() {
     if (busy || remaining) return;
     setBusy(true);
     try {
-      if (cloud.session?.user?.id !== userId) throw new Error('账户已更改，请重新打开此窗口。');
+      if (cloud.session?.user?.id !== userId) throw new Error(t('账户已更改，请重新打开此窗口。'));
       await cloud.sendSecurityCode();
       message.dataset.state = 'success';
-      message.textContent = '验证码已发送，请查收邮箱。请勿向他人透露验证码。';
+      message.textContent = t('验证码已发送，请查收邮箱。请勿向他人透露验证码。');
       remaining = 60;
-      send.textContent = `${remaining} 秒后重发`;
+      send.textContent = t`${remaining} 秒后重发`;
       timer = setInterval(() => {
         remaining--;
-        send.textContent = remaining ? `${remaining} 秒后重发` : '重新获取';
+        send.textContent = remaining ? t`${remaining} 秒后重发` : t('重新获取');
         if (!remaining) { clearInterval(timer); timer = null; send.disabled = busy; }
       }, 1000);
       code.focus();
@@ -71,10 +72,10 @@ export function initAccountSecurity() {
   form.addEventListener('submit', async event => {
     event.preventDefault();
     if (busy) return;
-    if (cloud.session?.user?.id !== userId) { errorMessage(new Error('账户已更改，请重新打开此窗口。')); return; }
+    if (cloud.session?.user?.id !== userId) { errorMessage(new Error(t('账户已更改，请重新打开此窗口。'))); return; }
     setBusy(true);
     message.dataset.state = '';
-    message.textContent = '正在注销账户…';
+    message.textContent = t('正在注销账户…');
     try {
       if (syncManager.saving) await syncManager.saving;
       await cloud.deleteAccount(code.value.trim());
@@ -82,7 +83,7 @@ export function initAccountSecurity() {
       applySettings(); render();
       openSettingsModal('settingsAccount');
       dialog.close();
-      showToast('账户已注销，已恢复此浏览器的本地内容');
+      showToast(t('账户已注销，已恢复此浏览器的本地内容'));
     } catch (error) {
       errorMessage(error);
     }

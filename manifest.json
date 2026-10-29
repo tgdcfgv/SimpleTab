@@ -12,7 +12,7 @@
     "type": "module"
   },
   "action": {
-    "default_title": "保存当前页面到 SimTab",
+    "default_title": "__MSG_savePage__",
     "default_icon": {
       "16": "icons/icon-16.png",
       "32": "icons/icon-32.png",
@@ -46,5 +46,5 @@
     "https://api.bing.com/*",
     "https://www.bing.com/*"
   ],
-  "default_locale": "zh_CN"
+  "default_locale": "en"
 }

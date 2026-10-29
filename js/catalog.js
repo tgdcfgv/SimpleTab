@@ -1,4 +1,5 @@
-export const linkStore = [
+import { getLocale, t } from './i18n.js';
+const chineseLinkStore = [
   {
     id: "browser-bookmarks",
     name: "我的收藏夹",
@@ -286,3 +287,23 @@ export const linkStore = [
     ]
   }
 ];
+
+// Keep domestic recommendations for Simplified Chinese; international profiles
+// show global services without changing bookmarks already saved by the user.
+export function catalogForLocale(language = getLocale()) {
+  if (language === 'zh_CN') return chineseLinkStore.map(category => ({ ...category, name: t(category.name) }));
+  const international = chineseLinkStore.map(category => ({ ...category, name: t(category.name),
+    links: category.links.filter(link => !/[\u3400-\u9fff]/.test(link.name)) }));
+  const add = (id, links) => {
+    const category = international.find(item => item.id === id);
+    for (const [name, url] of links) if (!category.links.some(link => link.url === url)) category.links.push({ name, url });
+  };
+  add('shopping', [['Amazon', language === 'ja' ? 'https://www.amazon.co.jp' : 'https://www.amazon.com'], ['eBay', 'https://www.ebay.com'], ['Etsy', 'https://www.etsy.com']]);
+  add('study', [['Wikipedia', language === 'ja' ? 'https://ja.wikipedia.org' : language === 'zh_TW' ? 'https://zh.wikipedia.org/zh-tw/' : 'https://en.wikipedia.org']]);
+  if (language === 'ja') {
+    add('community', [['Yahoo! Japan', 'https://www.yahoo.co.jp'], ['note', 'https://note.com']]);
+    add('shopping', [['Rakuten', 'https://www.rakuten.co.jp']]);
+  }
+  return international;
+}
+export const linkStore = catalogForLocale();

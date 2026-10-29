@@ -1,0 +1,1914 @@
+{
+  "extensionName": {
+    "message": "SimTab - 極簡新分頁"
+  },
+  "extensionDescription": {
+    "message": "無需登入即可整理網站並儲存於瀏覽器；登入後切換至獨立的雲端內容，跨裝置同步。"
+  },
+  "savePage": {
+    "message": "儲存目前頁面至 SimTab"
+  },
+  "captureFailed": {
+    "message": "無法開啟收藏視窗，請重試"
+  },
+  "ui_0000": {
+    "message": "設定",
+    "description": "设置"
+  },
+  "ui_0001": {
+    "message": "一般",
+    "description": "常规"
+  },
+  "ui_0002": {
+    "message": "外觀",
+    "description": "外观"
+  },
+  "ui_0003": {
+    "message": "版面配置",
+    "description": "布局"
+  },
+  "ui_0004": {
+    "message": "帳戶",
+    "description": "账户"
+  },
+  "ui_0005": {
+    "message": "資料",
+    "description": "数据"
+  },
+  "ui_0006": {
+    "message": "關於",
+    "description": "关于"
+  },
+  "ui_0007": {
+    "message": "語言",
+    "description": "语言"
+  },
+  "ui_0008": {
+    "message": "介面語言",
+    "description": "界面语言"
+  },
+  "ui_0009": {
+    "message": "切換後將重新載入頁面",
+    "description": "切换后将重新加载页面"
+  },
+  "ui_0010": {
+    "message": "SimTab · 新分頁",
+    "description": "SimTab · 新标签页"
+  },
+  "ui_0011": {
+    "message": "搜尋已儲存的網站，或按 Enter 搜尋…",
+    "description": "搜索已保存的网站，或直接回车搜索..."
+  },
+  "ui_0012": {
+    "message": "點擊同步雲端資料",
+    "description": "点击同步云端数据"
+  },
+  "ui_0013": {
+    "message": "正在讀取資料…",
+    "description": "正在读取数据…"
+  },
+  "ui_0014": {
+    "message": "Dock",
+    "description": "程序坞"
+  },
+  "ui_0015": {
+    "message": "登入或建立帳戶",
+    "description": "登录或创建账户"
+  },
+  "ui_0016": {
+    "message": "新增群組",
+    "description": "添加分组"
+  },
+  "ui_0017": {
+    "message": "新增網站",
+    "description": "添加网站"
+  },
+  "ui_0018": {
+    "message": "網站庫",
+    "description": "网站库"
+  },
+  "ui_0019": {
+    "message": "按 Tab 切換空間",
+    "description": "按 Tab 切换空间"
+  },
+  "ui_0020": {
+    "message": "編輯空間",
+    "description": "编辑空间"
+  },
+  "ui_0021": {
+    "message": "返回上一步",
+    "description": "返回上一步"
+  },
+  "ui_0022": {
+    "message": "關閉",
+    "description": "关闭"
+  },
+  "ui_0023": {
+    "message": "歡迎使用 SimTab",
+    "description": "欢迎使用 Sim Tab"
+  },
+  "ui_0024": {
+    "message": "登入或建立帳戶，同步你的捷徑、版面與設定。",
+    "description": "登录或创建账户，同步你的快捷方式、布局和设置。"
+  },
+  "ui_0025": {
+    "message": "傳送驗證碼",
+    "description": "发送验证码"
+  },
+  "ui_0026": {
+    "message": "首次使用將自動建立帳戶",
+    "description": "首次使用将自动创建账户"
+  },
+  "ui_0027": {
+    "message": "繼續即表示你同意",
+    "description": "继续即表示你同意"
+  },
+  "ui_0028": {
+    "message": "《服務條款》",
+    "description": "《服务条款》"
+  },
+  "ui_0029": {
+    "message": "與",
+    "description": "和"
+  },
+  "ui_0030": {
+    "message": "《隱私權政策》",
+    "description": "《隐私政策》"
+  },
+  "ui_0031": {
+    "message": "輸入驗證碼",
+    "description": "输入验证码"
+  },
+  "ui_0032": {
+    "message": "驗證碼已傳送至",
+    "description": "验证码已发送至"
+  },
+  "ui_0033": {
+    "message": "8 位數驗證碼",
+    "description": "8 位验证码输入"
+  },
+  "ui_0034": {
+    "message": "8 位數電子郵件驗證碼",
+    "description": "8 位邮箱验证码"
+  },
+  "ui_0035": {
+    "message": "驗證並登入",
+    "description": "验证并登录"
+  },
+  "ui_0036": {
+    "message": "未收到郵件？請檢查垃圾郵件，或稍後重新傳送。",
+    "description": "未收到邮件？请检查垃圾邮件，或稍后重新发送。"
+  },
+  "ui_0037": {
+    "message": "重新傳送 (60s)",
+    "description": "重新发送 (60s)"
+  },
+  "ui_0038": {
+    "message": "更換電子郵件",
+    "description": "更换邮箱"
+  },
+  "ui_0039": {
+    "message": "網址",
+    "description": "网址"
+  },
+  "ui_0040": {
+    "message": "名稱",
+    "description": "名称"
+  },
+  "ui_0041": {
+    "message": "留空以自動取得",
+    "description": "留空自动获取"
+  },
+  "ui_0042": {
+    "message": "自訂圖示",
+    "description": "自定义图标"
+  },
+  "ui_0043": {
+    "message": "選填，留空以自動取得",
+    "description": "可选，留空自动获取"
+  },
+  "ui_0044": {
+    "message": "使用預設圖示",
+    "description": "使用默认图标"
+  },
+  "ui_0045": {
+    "message": "所屬群組",
+    "description": "所属分组"
+  },
+  "ui_0046": {
+    "message": "取消",
+    "description": "取消"
+  },
+  "ui_0047": {
+    "message": "儲存",
+    "description": "保存"
+  },
+  "ui_0048": {
+    "message": "群組名稱",
+    "description": "分组名称"
+  },
+  "ui_0049": {
+    "message": "例如：設計工具",
+    "description": "例如：设计工具"
+  },
+  "ui_0050": {
+    "message": "每列顯示數量",
+    "description": "一行显示个数"
+  },
+  "ui_0051": {
+    "message": "自動",
+    "description": "自动"
+  },
+  "ui_0052": {
+    "message": "關閉設定",
+    "description": "关闭设置"
+  },
+  "ui_0053": {
+    "message": "設定分類",
+    "description": "设置分类"
+  },
+  "ui_0054": {
+    "message": "讓每一次開啟，都更順手。",
+    "description": "让每一次打开，都更顺手。"
+  },
+  "ui_0055": {
+    "message": "瀏覽行為",
+    "description": "浏览行为"
+  },
+  "ui_0056": {
+    "message": "開啟方式",
+    "description": "打开方式"
+  },
+  "ui_0057": {
+    "message": "目前分頁",
+    "description": "当前标签页"
+  },
+  "ui_0058": {
+    "message": "新分頁",
+    "description": "新标签页"
+  },
+  "ui_0059": {
+    "message": "預設搜尋",
+    "description": "默认搜索"
+  },
+  "ui_0060": {
+    "message": "預設搜尋引擎",
+    "description": "默认搜索引擎"
+  },
+  "ui_0061": {
+    "message": "用於搜尋框搜尋；可從已啟用的引擎中選擇",
+    "description": "用于搜索框搜索；可从已启用的快捷引擎中选择"
+  },
+  "ui_0062": {
+    "message": "快捷搜尋引擎",
+    "description": "快捷引擎"
+  },
+  "ui_0063": {
+    "message": "選擇搜尋框中可快速切換的引擎，至少保留一個。",
+    "description": "选择搜索框中可快速切换的引擎，至少保留一个。"
+  },
+  "ui_0064": {
+    "message": "為你的新分頁，選一種喜歡的樣子。",
+    "description": "为你的新标签页，选一种喜欢的样子。"
+  },
+  "ui_0065": {
+    "message": "主題與視覺",
+    "description": "主题与视觉"
+  },
+  "ui_0066": {
+    "message": "主題模式",
+    "description": "主题模式"
+  },
+  "ui_0067": {
+    "message": "淺色",
+    "description": "浅色"
+  },
+  "ui_0068": {
+    "message": "深色",
+    "description": "深色"
+  },
+  "ui_0069": {
+    "message": "跟隨系統",
+    "description": "跟随系统"
+  },
+  "ui_0070": {
+    "message": "強調色",
+    "description": "强调色"
+  },
+  "ui_0071": {
+    "message": "選擇強調色",
+    "description": "选择强调色"
+  },
+  "ui_0072": {
+    "message": "套用",
+    "description": "应用"
+  },
+  "ui_0073": {
+    "message": "自訂桌布",
+    "description": "自定义壁纸"
+  },
+  "ui_0074": {
+    "message": "僅儲存在目前瀏覽器，可隨備份匯出，不上傳雲端",
+    "description": "仅保存在当前浏览器，可随备份导出，不上传云端"
+  },
+  "ui_0075": {
+    "message": "選擇桌布圖片",
+    "description": "选择壁纸图片"
+  },
+  "ui_0076": {
+    "message": "選擇圖片",
+    "description": "选择图片"
+  },
+  "ui_0077": {
+    "message": "目前桌布預覽",
+    "description": "当前壁纸缩略图"
+  },
+  "ui_0078": {
+    "message": "重新上傳",
+    "description": "重新上传"
+  },
+  "ui_0079": {
+    "message": "移除",
+    "description": "移除"
+  },
+  "ui_0080": {
+    "message": "網站卡片",
+    "description": "网站卡片"
+  },
+  "ui_0081": {
+    "message": "連結顯示方式",
+    "description": "链接显示方式"
+  },
+  "ui_0082": {
+    "message": "圖示 + 文字",
+    "description": "图标 + 文字"
+  },
+  "ui_0083": {
+    "message": "僅圖示",
+    "description": "仅图标"
+  },
+  "ui_0084": {
+    "message": "圖示大小",
+    "description": "图标大小"
+  },
+  "ui_0085": {
+    "message": "安排群組結構、顯示密度與 Dock。",
+    "description": "安排分组结构、显示密度和程序坞。"
+  },
+  "ui_0086": {
+    "message": "群組與密度",
+    "description": "分组与密度"
+  },
+  "ui_0087": {
+    "message": "群組欄數",
+    "description": "分组列数"
+  },
+  "ui_0088": {
+    "message": "自動隨視窗調整；固定欄數在窄螢幕下自動減少",
+    "description": "自适应随窗口调整；固定列数在窄屏下自动减少"
+  },
+  "ui_0089": {
+    "message": "自動調整",
+    "description": "自适应"
+  },
+  "ui_0090": {
+    "message": "1 欄",
+    "description": "1 列"
+  },
+  "ui_0091": {
+    "message": "2 欄",
+    "description": "2 列"
+  },
+  "ui_0092": {
+    "message": "3 欄",
+    "description": "3 列"
+  },
+  "ui_0093": {
+    "message": "4 欄",
+    "description": "4 列"
+  },
+  "ui_0094": {
+    "message": "5 欄",
+    "description": "5 列"
+  },
+  "ui_0095": {
+    "message": "6 欄",
+    "description": "6 列"
+  },
+  "ui_0096": {
+    "message": "緊湊模式",
+    "description": "紧凑模式"
+  },
+  "ui_0097": {
+    "message": "Dock",
+    "description": "程序坞（Dock）"
+  },
+  "ui_0098": {
+    "message": "顯示 Dock",
+    "description": "显示程序坞"
+  },
+  "ui_0099": {
+    "message": "顯示位置",
+    "description": "显示位置"
+  },
+  "ui_0100": {
+    "message": "左側",
+    "description": "左侧"
+  },
+  "ui_0101": {
+    "message": "右側",
+    "description": "右侧"
+  },
+  "ui_0102": {
+    "message": "底部",
+    "description": "底部"
+  },
+  "ui_0103": {
+    "message": "Dock 按鈕",
+    "description": "程序坞按钮"
+  },
+  "ui_0104": {
+    "message": "帳戶頭像",
+    "description": "账户头像"
+  },
+  "ui_0105": {
+    "message": "Tab 切換提示",
+    "description": "Tab 切换提示"
+  },
+  "ui_0106": {
+    "message": "空間按鈕",
+    "description": "空间按钮"
+  },
+  "ui_0107": {
+    "message": "每個按鈕都可獨立隱藏。也可以右鍵點擊首頁空白處開啟設定。",
+    "description": "每个按钮都可独立隐藏。也可以右键点击主页空白处打开设置。"
+  },
+  "ui_0108": {
+    "message": "管理登入身分、個人資料與雲端同步。",
+    "description": "管理登录身份、个人资料与云端同步。"
+  },
+  "ui_0109": {
+    "message": "雲端帳戶",
+    "description": "云端账户"
+  },
+  "ui_0110": {
+    "message": "尚未登入",
+    "description": "未登录账户"
+  },
+  "ui_0111": {
+    "message": "登入後可跨裝置自動同步捷徑與設定",
+    "description": "登录后可跨设备自动同步快捷方式与设置"
+  },
+  "ui_0112": {
+    "message": "登入或註冊",
+    "description": "登录或注册"
+  },
+  "ui_0113": {
+    "message": "修改頭像與暱稱",
+    "description": "点击修改头像与昵称"
+  },
+  "ui_0114": {
+    "message": "已同步",
+    "description": "已同步"
+  },
+  "ui_0115": {
+    "message": "立即同步",
+    "description": "立即同步"
+  },
+  "ui_0116": {
+    "message": "登出",
+    "description": "退出登录"
+  },
+  "ui_0117": {
+    "message": "雲端資料維護",
+    "description": "云端数据维护"
+  },
+  "ui_0118": {
+    "message": "以此瀏覽器的本機內容取代雲端內容，本機副本仍會保留",
+    "description": "用此浏览器本地内容替换云端内容，本地副本仍会保留"
+  },
+  "ui_0119": {
+    "message": "上傳本機內容至雲端",
+    "description": "上传本地至云端"
+  },
+  "ui_0120": {
+    "message": "放棄變更並重新讀取雲端",
+    "description": "放弃本地并重新拉取"
+  },
+  "ui_0121": {
+    "message": "刪除帳戶",
+    "description": "注销账户"
+  },
+  "ui_0122": {
+    "message": "永久刪除帳戶及雲端資料，此操作無法復原",
+    "description": "永久删除账户及云端数据，此操作无法撤销"
+  },
+  "ui_0123": {
+    "message": "未登入時資料儲存在此瀏覽器；登入後顯示雲端內容。",
+    "description": "未登录数据保存在此浏览器；登录后显示云端内容。"
+  },
+  "ui_0124": {
+    "message": "隱私權政策",
+    "description": "隐私政策"
+  },
+  "ui_0125": {
+    "message": "匯入書籤、整理網站，以及備份和還原資料。",
+    "description": "导入收藏夹、整理网站，以及备份和恢复你的数据。"
+  },
+  "ui_0126": {
+    "message": "移轉書籤",
+    "description": "一键迁移收藏夹"
+  },
+  "ui_0127": {
+    "message": "先從電腦瀏覽器匯出書籤，再選擇 HTML 檔案，預覽後匯入目前空間。",
+    "description": "先从电脑浏览器导出收藏夹，再选择 HTML 文件，在大纲中预览后导入当前空间。"
+  },
+  "ui_0128": {
+    "message": "選擇瀏覽器教學",
+    "description": "选择浏览器教程"
+  },
+  "ui_0129": {
+    "message": "選擇書籤 HTML 並預覽",
+    "description": "选择书签 HTML 并预览"
+  },
+  "ui_0130": {
+    "message": "匯入前可預覽、移動或刪除網站；儲存後依原書籤目錄新增群組，現有網站會保留。同一檔案內的重複網址會合併；每次上限 5000 筆、5 MB。",
+    "description": "导入前可在大纲中预览、移动或删除网站；保存后按原收藏夹目录新增分组，现有网站会保留。相同文件内的重复网址会自动合并；一次最多 5000 条、5 MB。"
+  },
+  "ui_0131": {
+    "message": "整理網站",
+    "description": "网站整理"
+  },
+  "ui_0132": {
+    "message": "批次編輯網站",
+    "description": "批量编辑网站"
+  },
+  "ui_0133": {
+    "message": "搜尋、多選、移動或刪除所有空間的網站",
+    "description": "搜索、多选、移动或删除所有空间的网站"
+  },
+  "ui_0134": {
+    "message": "批次編輯",
+    "description": "批量编辑"
+  },
+  "ui_0135": {
+    "message": "JSON 備份與還原",
+    "description": "JSON 备份与恢复"
+  },
+  "ui_0136": {
+    "message": "匯出資料備份",
+    "description": "导出数据备份"
+  },
+  "ui_0137": {
+    "message": "儲存所有空間、群組、網址與偏好設定（JSON）",
+    "description": "保存所有空间、分组、网址和偏好设置（JSON）"
+  },
+  "ui_0138": {
+    "message": "匯出 JSON",
+    "description": "导出 JSON"
+  },
+  "ui_0139": {
+    "message": "還原資料備份",
+    "description": "恢复数据备份"
+  },
+  "ui_0140": {
+    "message": "從 JSON 檔案還原（將覆寫目前內容）",
+    "description": "从 JSON 文件恢复（将覆盖当前内容）"
+  },
+  "ui_0141": {
+    "message": "選擇檔案",
+    "description": "选择文件"
+  },
+  "ui_0142": {
+    "message": "版本資訊、快捷鍵與專案支援。",
+    "description": "版本信息、快捷键与项目支持。"
+  },
+  "ui_0143": {
+    "message": "關於 SimTab",
+    "description": "关于 SimTab"
+  },
+  "ui_0144": {
+    "message": "將常用網站放在每一個新分頁。",
+    "description": "将常用网站放在每一个新标签页。"
+  },
+  "ui_0145": {
+    "message": "擴充功能可取代新分頁，並在你授權後讀取書籤。",
+    "description": "扩展版可替换新标签页，并在你授权后读取收藏夹。"
+  },
+  "ui_0146": {
+    "message": "擴充功能安裝說明",
+    "description": "扩展安装说明"
+  },
+  "ui_0147": {
+    "message": "開源專案",
+    "description": "开源项目"
+  },
+  "ui_0148": {
+    "message": "回報問題",
+    "description": "反馈问题"
+  },
+  "ui_0149": {
+    "message": "快捷鍵一覽",
+    "description": "快捷键一览"
+  },
+  "ui_0150": {
+    "message": "切換至下一個空間",
+    "description": "切换到下一个空间"
+  },
+  "ui_0151": {
+    "message": "於首頁使用，輸入欄位或對話框內不生效",
+    "description": "主页中使用，输入或弹窗内不生效"
+  },
+  "ui_0152": {
+    "message": "選擇搜尋結果",
+    "description": "选择搜索结果"
+  },
+  "ui_0153": {
+    "message": "於搜尋框中使用",
+    "description": "搜索框中使用"
+  },
+  "ui_0154": {
+    "message": "開啟結果或搜尋",
+    "description": "打开结果或搜索"
+  },
+  "ui_0155": {
+    "message": "補全選取的搜尋建議",
+    "description": "补全选中的搜索建议"
+  },
+  "ui_0156": {
+    "message": "關閉設定或管理對話框",
+    "description": "关闭设置或管理弹窗"
+  },
+  "ui_0157": {
+    "message": "在搜尋框按 Esc 可關閉搜尋建議",
+    "description": "搜索框中按 Esc 可关闭搜索建议"
+  },
+  "ui_0158": {
+    "message": "儲存目前網頁（擴充功能）",
+    "description": "保存当前网页（扩展版）"
+  },
+  "ui_0159": {
+    "message": "預設快捷鍵，可在瀏覽器的擴充功能快捷鍵設定中修改",
+    "description": "默认快捷键，可在浏览器的扩展快捷键设置中修改"
+  },
+  "ui_0160": {
+    "message": "調整群組或網站順序",
+    "description": "调整分组或网站顺序"
+  },
+  "ui_0161": {
+    "message": "在批次編輯中聚焦網站或群組後，按 Alt 加上下方向鍵",
+    "description": "在批量编辑弹窗中聚焦网站或分组行后，按 Alt 加上下方向键"
+  },
+  "ui_0162": {
+    "message": "新增至群組",
+    "description": "添加到分组"
+  },
+  "ui_0163": {
+    "message": "新增選取項目 (",
+    "description": "添加选中 ("
+  },
+  "ui_0164": {
+    "message": "確認操作",
+    "description": "确认操作"
+  },
+  "ui_0165": {
+    "message": "刪除",
+    "description": "删除"
+  },
+  "ui_0166": {
+    "message": "新增空間",
+    "description": "新建空间"
+  },
+  "ui_0167": {
+    "message": "編輯網站",
+    "description": "编辑网站"
+  },
+  "ui_0168": {
+    "message": "刪除網站",
+    "description": "删除网站"
+  },
+  "ui_0169": {
+    "message": "歡迎來到你的新起點",
+    "description": "欢迎来到你的新起点"
+  },
+  "ui_0170": {
+    "message": "帳戶已就緒。讓常用網站與喜歡的版面，隨你前往每一台裝置。",
+    "description": "账户已准备就绪。让常用的网站和喜欢的布局，随你前往每一台设备。"
+  },
+  "ui_0171": {
+    "message": "確定",
+    "description": "确定"
+  },
+  "ui_0172": {
+    "message": "讓這裡更像你",
+    "description": "让这里更像你"
+  },
+  "ui_0173": {
+    "message": "選一個頭像，再告訴我們怎麼稱呼你。",
+    "description": "选一个头像，再告诉我们怎么称呼你。"
+  },
+  "ui_0174": {
+    "message": "Emoji 頭像",
+    "description": "Emoji 头像"
+  },
+  "ui_0175": {
+    "message": "輸入或貼上一個 Emoji 作為頭像",
+    "description": "输入或粘贴一个 Emoji 作为头像"
+  },
+  "ui_0176": {
+    "message": "暱稱",
+    "description": "昵称"
+  },
+  "ui_0177": {
+    "message": "你的暱稱",
+    "description": "你的昵称"
+  },
+  "ui_0178": {
+    "message": "匯入書籤",
+    "description": "导入收藏夹"
+  },
+  "ui_0179": {
+    "message": "關閉批次編輯",
+    "description": "关闭批量编辑"
+  },
+  "ui_0180": {
+    "message": "搜尋所有群組的網站名稱或網址",
+    "description": "搜索所有分组的网站名称或网址"
+  },
+  "ui_0181": {
+    "message": "搜尋所有網站",
+    "description": "全局搜索网站"
+  },
+  "ui_0182": {
+    "message": "清除搜尋",
+    "description": "清空搜索"
+  },
+  "ui_0183": {
+    "message": "群組導覽與拖放區",
+    "description": "分组导航与拖放区"
+  },
+  "ui_0184": {
+    "message": "選擇群組",
+    "description": "选择分组"
+  },
+  "ui_0185": {
+    "message": "所有網站",
+    "description": "全部网站"
+  },
+  "ui_0186": {
+    "message": "群組",
+    "description": "分组"
+  },
+  "ui_0187": {
+    "message": "顯示空白空間",
+    "description": "显示空空间"
+  },
+  "ui_0188": {
+    "message": "全部展開",
+    "description": "全部展开"
+  },
+  "ui_0189": {
+    "message": "全部摺疊",
+    "description": "全部折叠"
+  },
+  "ui_0190": {
+    "message": "全選目前檢視",
+    "description": "全选当前视图"
+  },
+  "ui_0191": {
+    "message": "移動選取的網站",
+    "description": "移动所选网站"
+  },
+  "ui_0192": {
+    "message": "移至群組",
+    "description": "移动到分组"
+  },
+  "ui_0193": {
+    "message": "刪除選取項目",
+    "description": "删除所选"
+  },
+  "ui_0194": {
+    "message": "新增",
+    "description": "新建"
+  },
+  "ui_0195": {
+    "message": "有尚未儲存的變更，儲存後生效",
+    "description": "有未保存的更改，点击保存后生效"
+  },
+  "ui_0196": {
+    "message": "變更將在儲存後生效",
+    "description": "更改将在保存后生效"
+  },
+  "ui_0197": {
+    "message": "儲存變更",
+    "description": "保存更改"
+  },
+  "ui_0198": {
+    "message": "放棄變更？",
+    "description": "放弃修改？"
+  },
+  "ui_0199": {
+    "message": "有尚未儲存的變更，確定要放棄嗎？",
+    "description": "有未保存的更改，确定要放弃修改吗？"
+  },
+  "ui_0200": {
+    "message": "繼續編輯",
+    "description": "继续编辑"
+  },
+  "ui_0201": {
+    "message": "放棄變更",
+    "description": "放弃修改"
+  },
+  "ui_0202": {
+    "message": "空間名稱",
+    "description": "空间名称"
+  },
+  "ui_0203": {
+    "message": "例如：工作、學習",
+    "description": "例如：工作、学习"
+  },
+  "ui_0204": {
+    "message": "新空間將在儲存變更後生效。",
+    "description": "新空间将在保存更改后生效。"
+  },
+  "ui_0205": {
+    "message": "儲存目前頁面",
+    "description": "保存当前页面"
+  },
+  "ui_0206": {
+    "message": "空間",
+    "description": "空间"
+  },
+  "ui_0207": {
+    "message": "儲存網站",
+    "description": "保存网站"
+  },
+  "ui_0208": {
+    "message": "確認",
+    "description": "确认"
+  },
+  "ui_0209": {
+    "message": "刪除後，帳戶、個人資料及雲端捷徑和設定將永久刪除，無法復原。此瀏覽器的本機內容會保留。如需保留雲端內容，請先到「資料」匯出備份。驗證電子郵件後確認刪除。",
+    "description": "注销后，账户、个人资料及云端的快捷方式和设置将永久删除，无法恢复。此浏览器原有的本地内容会保留。如需保留云端内容，请先到「数据」导出备份。验证邮箱后确认注销。"
+  },
+  "ui_0210": {
+    "message": "驗證電子郵件",
+    "description": "验证邮箱"
+  },
+  "ui_0211": {
+    "message": "電子郵件驗證碼",
+    "description": "邮箱验证码"
+  },
+  "ui_0212": {
+    "message": "輸入郵件中的驗證碼",
+    "description": "输入邮件中的验证码"
+  },
+  "ui_0213": {
+    "message": "取得驗證碼",
+    "description": "获取验证码"
+  },
+  "ui_0214": {
+    "message": "永久刪除帳戶",
+    "description": "永久注销账户"
+  },
+  "ui_0215": {
+    "message": "編輯個人資料",
+    "description": "编辑个人资料"
+  },
+  "ui_0216": {
+    "message": "請輸入暱稱",
+    "description": "请输入昵称"
+  },
+  "ui_0217": {
+    "message": "請輸入一個 Emoji 作為頭像",
+    "description": "请输入一个 Emoji 作为头像"
+  },
+  "ui_0218": {
+    "message": "正在儲存…",
+    "description": "正在保存…"
+  },
+  "ui_0219": {
+    "message": "個人資料已更新",
+    "description": "个人资料已更新"
+  },
+  "ui_0220": {
+    "message": "儲存失敗，請重試",
+    "description": "保存失败，请重试"
+  },
+  "ui_0221": {
+    "message": "放開以新增至「{0}」",
+    "description": "松开添加到「{0}」"
+  },
+  "ui_0222": {
+    "message": "放開以新增網站",
+    "description": "松开添加网站"
+  },
+  "ui_0223": {
+    "message": "{0}（拖曳排序、移除或拖回群組）",
+    "description": "{0}（拖动排序，拖出移除或拖回分组）"
+  },
+  "ui_0224": {
+    "message": "從 Dock 移除",
+    "description": "从程序坞移除"
+  },
+  "ui_0225": {
+    "message": "移除「{0}」的捷徑圖示？",
+    "description": "移除「{0}」的快捷图标？"
+  },
+  "ui_0226": {
+    "message": "拖出 Dock 以移除",
+    "description": "拖出程序坞移除"
+  },
+  "ui_0227": {
+    "message": "放開以移除",
+    "description": "松开移除"
+  },
+  "ui_0228": {
+    "message": "已從 Dock 移除",
+    "description": "已从程序坞移除"
+  },
+  "ui_0229": {
+    "message": "桌布儲存空間由其他頁面使用中，請關閉舊頁面後重試。",
+    "description": "壁纸存储被其他页面占用，请关闭旧页面后重试。"
+  },
+  "ui_0230": {
+    "message": "請選擇不超過 10 MB 的 PNG、JPEG、GIF、WebP 或 AVIF 圖片。",
+    "description": "请选择不超过 10 MB 的 PNG、JPEG、GIF、WebP 或 AVIF 图片。"
+  },
+  "ui_0231": {
+    "message": "已選取 {0} 項",
+    "description": "已选择 {0} 项"
+  },
+  "ui_0232": {
+    "message": "目前環境無法讀取瀏覽器書籤",
+    "description": "当前环境无法读取浏览器收藏夹"
+  },
+  "ui_0233": {
+    "message": "網站分類",
+    "description": "网站分类"
+  },
+  "ui_0234": {
+    "message": "正在讀取我的書籤…",
+    "description": "正在读取我的收藏夹…"
+  },
+  "ui_0235": {
+    "message": "網頁版無法直接讀取瀏覽器書籤。可在「設定 → 資料」匯入書籤 HTML，或使用擴充功能。",
+    "description": "网页版无法直接读取浏览器收藏夹。可在“设置 → 账户与同步”导入书签 HTML 文件，或使用扩展版。"
+  },
+  "ui_0236": {
+    "message": "查看擴充功能安裝方法",
+    "description": "查看扩展安装方法"
+  },
+  "ui_0237": {
+    "message": "需要允許讀取書籤，才能顯示我的書籤。",
+    "description": "需要允许读取书签，才能显示我的收藏夹。"
+  },
+  "ui_0238": {
+    "message": "允許讀取書籤",
+    "description": "允许读取收藏夹"
+  },
+  "ui_0239": {
+    "message": "讀取書籤失敗：{0}",
+    "description": "读取收藏夹失败：{0}"
+  },
+  "ui_0240": {
+    "message": "書籤中暫無可新增的網站",
+    "description": "收藏夹中暂无可添加的网站"
+  },
+  "ui_0241": {
+    "message": "此分類暫無內容",
+    "description": "此分类暂无内容"
+  },
+  "ui_0242": {
+    "message": "+ 新增群組",
+    "description": "+ 新建分组"
+  },
+  "ui_0243": {
+    "message": "儲存選取項目 (",
+    "description": "保存选中 ("
+  },
+  "ui_0244": {
+    "message": "請選擇有效群組",
+    "description": "请选择有效分组"
+  },
+  "ui_0245": {
+    "message": "變更尚未儲存，請重試同步",
+    "description": "更改尚未保存，请重试同步"
+  },
+  "ui_0246": {
+    "message": "儲存失敗：{0}",
+    "description": "保存失败：{0}"
+  },
+  "ui_0247": {
+    "message": "操作失敗，請稍後重試。",
+    "description": "操作失败，请稍后重试。"
+  },
+  "ui_0248": {
+    "message": "帳戶已變更，請重新開啟此視窗。",
+    "description": "账户已更改，请重新打开此窗口。"
+  },
+  "ui_0249": {
+    "message": "驗證碼已傳送，請查看郵件。請勿向他人透露驗證碼。",
+    "description": "验证码已发送，请查收邮箱。请勿向他人透露验证码。"
+  },
+  "ui_0250": {
+    "message": "{0} 秒後重新傳送",
+    "description": "{0} 秒后重发"
+  },
+  "ui_0251": {
+    "message": "重新取得",
+    "description": "重新获取"
+  },
+  "ui_0252": {
+    "message": "正在刪除帳戶…",
+    "description": "正在注销账户…"
+  },
+  "ui_0253": {
+    "message": "帳戶已刪除，已還原此瀏覽器的本機內容",
+    "description": "账户已注销，已恢复此浏览器的本地内容"
+  },
+  "ui_0254": {
+    "message": "編輯",
+    "description": "编辑"
+  },
+  "ui_0255": {
+    "message": "刪除群組",
+    "description": "删除分组"
+  },
+  "ui_0256": {
+    "message": "確定刪除群組「{0}」及其所有網站嗎？",
+    "description": "确定要删除分组 \"{0}\" 及其包含的所有网站吗？"
+  },
+  "ui_0257": {
+    "message": "拖曳網站至此處",
+    "description": "拖拽网站到此处"
+  },
+  "ui_0258": {
+    "message": "首頁",
+    "description": "主页"
+  },
+  "ui_0259": {
+    "message": "工作",
+    "description": "工作"
+  },
+  "ui_0260": {
+    "message": "收藏",
+    "description": "收藏"
+  },
+  "ui_0261": {
+    "message": "常用",
+    "description": "常用"
+  },
+  "ui_0262": {
+    "message": "AI 工具",
+    "description": "AI 工具"
+  },
+  "ui_0263": {
+    "message": "學習與參考",
+    "description": "学习与参考"
+  },
+  "ui_0264": {
+    "message": "設計工具",
+    "description": "设计工具"
+  },
+  "ui_0265": {
+    "message": "暫存收藏",
+    "description": "临时收藏"
+  },
+  "ui_0266": {
+    "message": "未命名群組",
+    "description": "未命名分组"
+  },
+  "ui_0267": {
+    "message": "未命名空間",
+    "description": "未命名空间"
+  },
+  "ui_0268": {
+    "message": "空間 {0}",
+    "description": "空间 {0}"
+  },
+  "ui_0269": {
+    "message": "無效的設定資料",
+    "description": "无效的配置数据"
+  },
+  "ui_0270": {
+    "message": "無法讀取本機桌布",
+    "description": "无法读取本机壁纸"
+  },
+  "ui_0271": {
+    "message": "驗證連結無效或已過期，請重新傳送郵件並使用最新連結。",
+    "description": "验证链接无效或已过期，请重新发送邮件并使用最新链接。"
+  },
+  "ui_0272": {
+    "message": "驗證連結不完整，請複製完整連結。",
+    "description": "验证链接不完整，请复制完整链接。"
+  },
+  "ui_0273": {
+    "message": "連線失敗，請稍後重試",
+    "description": "连接失败，请稍后重试"
+  },
+  "ui_0274": {
+    "message": "雲端服務暫時無法回應，請稍後重試",
+    "description": "云端服务暂时无法响应，请稍后重试"
+  },
+  "ui_0275": {
+    "message": "電子郵件或密碼不正確",
+    "description": "邮箱或密码不正确"
+  },
+  "ui_0276": {
+    "message": "請先完成電子郵件驗證再登入",
+    "description": "请先完成邮箱验证，再登录"
+  },
+  "ui_0277": {
+    "message": "郵件服務尚未開放此信箱，請聯絡管理員設定 SMTP 寄信服務",
+    "description": "邮件服务尚未开放此邮箱，请联系管理员配置 SMTP 发信服务"
+  },
+  "ui_0278": {
+    "message": "操作過於頻繁，請稍後再試",
+    "description": "操作过于频繁，请稍后再试"
+  },
+  "ui_0279": {
+    "message": "驗證碼或連結已過期，請重新取得",
+    "description": "验证码或验证链接已过期，请重新获取"
+  },
+  "ui_0280": {
+    "message": "驗證碼或連結無效，請重新輸入或取得新郵件",
+    "description": "验证码或验证链接无效，请重新输入或获取新邮件"
+  },
+  "ui_0281": {
+    "message": "驗證碼或連結無效，請重新輸入",
+    "description": "验证码或验证链接无效，请重新输入"
+  },
+  "ui_0282": {
+    "message": "密碼強度不足，請使用更長、更複雜的密碼",
+    "description": "密码强度不足，请使用更长、更复杂的密码"
+  },
+  "ui_0283": {
+    "message": "雲端請求失敗，請重試。",
+    "description": "云端请求失败，请重试。"
+  },
+  "ui_0284": {
+    "message": "驗證未傳回有效登入資訊，請重新取得郵件。",
+    "description": "验证未返回有效登录信息，请重新获取邮件。"
+  },
+  "ui_0285": {
+    "message": "此連結未包含有效驗證資訊，請複製完整連結。",
+    "description": "此链接中未包含有效的验证信息，请复制完整链接。"
+  },
+  "ui_0286": {
+    "message": "請輸入郵件中的驗證碼或完整驗證連結。",
+    "description": "请输入邮件中的验证码或完整验证链接。"
+  },
+  "ui_0287": {
+    "message": "登入已失效，請重新登入。",
+    "description": "登录已失效，请重新登录。"
+  },
+  "ui_0288": {
+    "message": "帳戶已變更，請重新整理後重試。",
+    "description": "账户已更改，请刷新后重试。"
+  },
+  "ui_0289": {
+    "message": "其他裝置已更新資料。請先匯出未儲存的變更，再按「讀取雲端版本」。",
+    "description": "其他设备已更新数据。请先导出未保存的更改，再点击“读取云端版本”。"
+  },
+  "ui_0290": {
+    "message": "新增網站或群組",
+    "description": "添加网站或分组"
+  },
+  "ui_0291": {
+    "message": " · 符合 {0} 個",
+    "description": " · 匹配 {0} 个"
+  },
+  "ui_0292": {
+    "message": "已選取 {0} 個網站{1}",
+    "description": "已选 {0} 个网站{1}"
+  },
+  "ui_0293": {
+    "message": "全選目前篩選結果",
+    "description": "全选当前筛选结果"
+  },
+  "ui_0294": {
+    "message": "搜尋結果 ({0})",
+    "description": "搜索结果 ({0})"
+  },
+  "ui_0295": {
+    "message": "所有網站 ({0})",
+    "description": "全部网站 ({0})"
+  },
+  "ui_0296": {
+    "message": "移至群組…",
+    "description": "移动到分组…"
+  },
+  "ui_0297": {
+    "message": "+ 新增群組…",
+    "description": "+ 新建分组..."
+  },
+  "ui_0298": {
+    "message": "第 1 欄",
+    "description": "第一列"
+  },
+  "ui_0299": {
+    "message": "第 2 欄",
+    "description": "第二列"
+  },
+  "ui_0300": {
+    "message": "第 3 欄",
+    "description": "第三列"
+  },
+  "ui_0301": {
+    "message": "第 4 欄",
+    "description": "第四列"
+  },
+  "ui_0302": {
+    "message": "第 5 欄",
+    "description": "第五列"
+  },
+  "ui_0303": {
+    "message": "第 6 欄",
+    "description": "第六列"
+  },
+  "ui_0304": {
+    "message": "第 {0} 欄",
+    "description": "第 {0} 列"
+  },
+  "ui_0305": {
+    "message": "暫無群組 · 可拖入此欄",
+    "description": "暂无分组 · 可拖入此列"
+  },
+  "ui_0306": {
+    "message": "{0}，拖曳或長按整理，或按 Alt 加上下方向鍵排序",
+    "description": "{0}，拖拽或触屏长按整理，或按 Alt 加上下方向键排序"
+  },
+  "ui_0307": {
+    "message": "選取群組 {0} 及其網站",
+    "description": "选择分组{0}及其网站"
+  },
+  "ui_0308": {
+    "message": "{0}（按兩下或按 F2 重新命名）",
+    "description": "{0}（双击或按 F2 改名）"
+  },
+  "ui_0309": {
+    "message": "重新命名群組",
+    "description": "重命名分组"
+  },
+  "ui_0310": {
+    "message": "刪除群組及其網站",
+    "description": "删除分组及其网站"
+  },
+  "ui_0311": {
+    "message": "選取空間 {0} 及其內容",
+    "description": "选择空间{0}及其内容"
+  },
+  "ui_0312": {
+    "message": "{0}（按兩下重新命名）",
+    "description": "{0}（双击改名）"
+  },
+  "ui_0313": {
+    "message": "重新命名空間",
+    "description": "重命名空间"
+  },
+  "ui_0314": {
+    "message": "選取 {0}",
+    "description": "选择{0}"
+  },
+  "ui_0315": {
+    "message": "按一下選取，按兩下編輯",
+    "description": "单击选择，双击编辑"
+  },
+  "ui_0316": {
+    "message": "網站名稱",
+    "description": "网站名称"
+  },
+  "ui_0317": {
+    "message": "網站網址",
+    "description": "网站网址"
+  },
+  "ui_0318": {
+    "message": "編輯 {0}",
+    "description": "编辑{0}"
+  },
+  "ui_0319": {
+    "message": "在新分頁開啟",
+    "description": "在新标签页打开"
+  },
+  "ui_0320": {
+    "message": "開啟 {0}",
+    "description": "打开{0}"
+  },
+  "ui_0321": {
+    "message": "刪除 {0}",
+    "description": "删除{0}"
+  },
+  "ui_0322": {
+    "message": "沒有符合的網站",
+    "description": "没有匹配的网站"
+  },
+  "ui_0323": {
+    "message": "此處尚無網站，可匯入書籤或從其他群組移入",
+    "description": "此处还没有网站，可导入收藏夹或从其他分组移动"
+  },
+  "ui_0324": {
+    "message": "網站清單",
+    "description": "网站列表"
+  },
+  "ui_0325": {
+    "message": "暫無網站 · 可拖入此群組",
+    "description": "暂无网站 · 可拖入此分组"
+  },
+  "ui_0326": {
+    "message": "請輸入有效的 HTTP 或 HTTPS 網址",
+    "description": "请输入有效的 HTTP 或 HTTPS 网址"
+  },
+  "ui_0327": {
+    "message": "所有空間 · 按一下選取，按兩下編輯名稱與網址，拖曳整理（觸控長按）",
+    "description": "全部空间 · 单击选择，双击编辑名称与网址，拖拽整理（触屏长按）"
+  },
+  "ui_0328": {
+    "message": "已新增群組「{0}」，儲存後生效",
+    "description": "已新建分组“{0}”，保存后生效"
+  },
+  "ui_0329": {
+    "message": "已新增網站「{0}」，儲存後生效",
+    "description": "已新建网站“{0}”，保存后生效"
+  },
+  "ui_0330": {
+    "message": "請輸入空間名稱",
+    "description": "请输入空间名称"
+  },
+  "ui_0331": {
+    "message": "已新增空間「{0}」，儲存後生效",
+    "description": "已新建空间“{0}”，保存后生效"
+  },
+  "ui_0332": {
+    "message": "已將 {0} 個網站移至「{1}」，儲存後生效",
+    "description": "已移动 {0} 个网站到“{1}”，保存后生效"
+  },
+  "ui_0333": {
+    "message": "至少保留一個空間，請先取消選取其中一個",
+    "description": "至少保留一个空间，请先取消选择一个空间"
+  },
+  "ui_0334": {
+    "message": "{0} 個空間",
+    "description": "{0} 个空间"
+  },
+  "ui_0335": {
+    "message": "{0} 個群組",
+    "description": "{0} 个分组"
+  },
+  "ui_0336": {
+    "message": "{0} 個網站",
+    "description": "{0} 个网站"
+  },
+  "ui_0337": {
+    "message": "已刪除 {0}",
+    "description": "已删除 {0}"
+  },
+  "ui_0338": {
+    "message": "復原",
+    "description": "撤销"
+  },
+  "ui_0339": {
+    "message": "已還原刪除的項目及其內容",
+    "description": "已恢复删除的对象及其内容"
+  },
+  "ui_0340": {
+    "message": "群組順序已調整，儲存後生效",
+    "description": "分组顺序已调整，保存后生效"
+  },
+  "ui_0341": {
+    "message": "群組已移至目標欄，儲存後生效",
+    "description": "分组已移至目标列，保存后生效"
+  },
+  "ui_0342": {
+    "message": "網站順序已調整，儲存後生效",
+    "description": "网站顺序已调整，保存后生效"
+  },
+  "ui_0343": {
+    "message": "部分網站網址無效，請修改後儲存",
+    "description": "有网站的网址无效，请修改后保存"
+  },
+  "ui_0344": {
+    "message": "網站資料已變更，請關閉並重新開啟批次編輯。",
+    "description": "网站数据已发生变化，请关闭并重新打开批量编辑后再操作。"
+  },
+  "ui_0345": {
+    "message": "變更已儲存",
+    "description": "更改已保存"
+  },
+  "ui_0346": {
+    "message": "變更已套用但儲存失敗，請回設定重試同步或匯出備份。",
+    "description": "更改已应用，但保存失败，请返回设置重试同步或导出备份。"
+  },
+  "ui_0347": {
+    "message": "書籤已匯入並儲存，可在首頁查看。",
+    "description": "收藏夹已导入并保存，可在主页查看。"
+  },
+  "ui_0348": {
+    "message": "請重試",
+    "description": "请重试"
+  },
+  "ui_0349": {
+    "message": "「{0}」：{1} 個網站待匯入，可先整理，儲存後生效",
+    "description": "“{0}”：{1} 个网站待导入，可先整理，保存后生效"
+  },
+  "ui_0350": {
+    "message": "已取消匯入，書籤未儲存。",
+    "description": "已取消导入，收藏夹未保存。"
+  },
+  "ui_0351": {
+    "message": "重新傳送 ({0}s)",
+    "description": "重新发送 ({0}s)"
+  },
+  "ui_0352": {
+    "message": "重新傳送",
+    "description": "重新发送"
+  },
+  "ui_0353": {
+    "message": "請輸入有效的電子郵件地址",
+    "description": "请输入有效的邮箱地址"
+  },
+  "ui_0354": {
+    "message": "正在傳送…",
+    "description": "正在发送…"
+  },
+  "ui_0355": {
+    "message": "帳戶已建立，SimTab 同步已啟用",
+    "description": "账户已创建，Sim Tab 同步已开启"
+  },
+  "ui_0356": {
+    "message": "登入成功",
+    "description": "登录成功"
+  },
+  "ui_0357": {
+    "message": "請輸入郵件中的 8 位數驗證碼",
+    "description": "请输入邮件中的 8 位数字验证码"
+  },
+  "ui_0358": {
+    "message": "正在驗證…",
+    "description": "正在验证…"
+  },
+  "ui_0359": {
+    "message": "驗證失敗，請確認驗證碼有效",
+    "description": "验证失败，请确认验证码有效"
+  },
+  "ui_0360": {
+    "message": "驗證碼已重新傳送",
+    "description": "验证码已重新发送"
+  },
+  "ui_0361": {
+    "message": "SimTab 致力於保護你的資料安全與隱私",
+    "description": "Sim Tab 致力于保护你的数据安全与隐私"
+  },
+  "ui_0362": {
+    "message": "請輸入有效的 HTTP 或 HTTPS 網址。",
+    "description": "请输入有效的 HTTP 或 HTTPS 网址。"
+  },
+  "ui_0363": {
+    "message": "目標空間或群組已變更，請重新選擇。",
+    "description": "目标空间或分组已变更，请重新选择。"
+  },
+  "ui_0364": {
+    "message": "帳戶與同步",
+    "description": "账户与同步"
+  },
+  "ui_0365": {
+    "message": "{0} · 帳戶與同步",
+    "description": "{0} · 账户与同步"
+  },
+  "ui_0366": {
+    "message": "選擇同步內容",
+    "description": "选择同步内容"
+  },
+  "ui_0367": {
+    "message": "目前使用帳戶雲端內容；登出後還原此瀏覽器的本機內容。",
+    "description": "当前使用账户云端内容；退出登录后恢复此浏览器的本地内容。"
+  },
+  "ui_0368": {
+    "message": "目前使用此瀏覽器的本機內容；重試同步後切換至獨立的雲端內容，本機內容會保留。",
+    "description": "当前使用此浏览器的本地内容；重试同步后切换到独立的云端内容，本地内容会保留。"
+  },
+  "ui_0369": {
+    "message": "正在同步…",
+    "description": "正在同步…"
+  },
+  "ui_0370": {
+    "message": "已登入。請選擇使用雲端內容，或將目前頁面儲存至雲端。",
+    "description": "已登录。请选择使用云端内容，或将当前页面保存到云端。"
+  },
+  "ui_0371": {
+    "message": "捷徑、版面與偏好設定可在裝置間同步。",
+    "description": "快捷方式、布局和偏好设置可以在你的设备之间同步。"
+  },
+  "ui_0372": {
+    "message": "目前使用帳戶的雲端內容。登出後還原此瀏覽器的本機內容。",
+    "description": "当前使用账户的云端内容。退出登录后恢复此浏览器的本地内容。"
+  },
+  "ui_0373": {
+    "message": "讀取雲端版本",
+    "description": "读取云端版本"
+  },
+  "ui_0374": {
+    "message": "將放棄目前頁面未儲存的變更。請先匯出需要保留的資料。",
+    "description": "将放弃当前页面未保存的更改。请先导出需要保留的数据。"
+  },
+  "ui_0375": {
+    "message": "註冊密碼至少需要 8 個字元。",
+    "description": "注册密码至少需要 8 位。"
+  },
+  "ui_0376": {
+    "message": "驗證郵件已傳送。可將驗證連結貼到下方，或在郵件中驗證後返回登入。",
+    "description": "验证邮件已发送。可将邮件中的验证链接粘贴到下方完成验证，也可在邮件中验证后返回登录。"
+  },
+  "ui_0377": {
+    "message": "帳戶已在其他分頁變更。請先匯出未儲存的內容，再重新整理頁面。",
+    "description": "账户已在其他标签页更改。请先导出未保存的内容，再刷新页面。"
+  },
+  "ui_0378": {
+    "message": "本機內容尚未儲存，請先匯出備份或重試，再登入。",
+    "description": "本地内容尚未保存，请先导出备份或重试，再登录。"
+  },
+  "ui_0379": {
+    "message": "仍有未儲存的變更，登出會遺失這些變更。是否繼續？",
+    "description": "还有未保存的更改，退出会丢失这些更改。是否继续？"
+  },
+  "ui_0380": {
+    "message": "已登出",
+    "description": "已退出登录"
+  },
+  "ui_0381": {
+    "message": "處理中…",
+    "description": "处理中…"
+  },
+  "ui_0382": {
+    "message": "操作失敗，請重試。",
+    "description": "操作失败，请重试。"
+  },
+  "ui_0383": {
+    "message": "請先完成目前的雲端同步。",
+    "description": "请先完成当前云端同步。"
+  },
+  "ui_0384": {
+    "message": "此瀏覽器沒有本機資料。也可在設定中匯入 JSON 備份。",
+    "description": "此浏览器没有本地数据。你也可以在设置中导入 JSON 备份。"
+  },
+  "ui_0385": {
+    "message": "將本機內容複製至雲端",
+    "description": "将本地内容复制到云端"
+  },
+  "ui_0386": {
+    "message": "將以此瀏覽器的本機內容取代帳戶雲端內容，本機副本仍會保留。是否繼續？",
+    "description": "将用此浏览器本地内容替换当前账户的云端内容，本地副本仍会保留。是否继续？"
+  },
+  "ui_0387": {
+    "message": "上傳失敗，舊版本機資料仍保留。",
+    "description": "上传失败，旧版本地数据仍然保留。"
+  },
+  "ui_0388": {
+    "message": "本機內容已複製至雲端，瀏覽器中的本機內容仍保留。",
+    "description": "本地内容已复制到云端，浏览器中的本地内容仍然保留。"
+  },
+  "ui_0389": {
+    "message": "其他分頁已更新本機內容。請先匯出目前變更，再重新整理後重試，避免覆寫新書籤。",
+    "description": "其他标签页已更新本地内容。请先导出当前更改，再刷新页面后重试，避免覆盖新收藏。"
+  },
+  "ui_0390": {
+    "message": "目前瀏覽器不支援安全的多分頁儲存，請使用新版瀏覽器。",
+    "description": "当前浏览器不支持安全的多标签页保存，请使用新版浏览器。"
+  },
+  "ui_0391": {
+    "message": "無法清理書籤草稿",
+    "description": "无法清理收藏草稿"
+  },
+  "ui_0392": {
+    "message": "儲存至此瀏覽器的本機內容",
+    "description": "保存到此浏览器的本地内容"
+  },
+  "ui_0393": {
+    "message": "儲存至雲端帳戶 {0}",
+    "description": "保存到云端账户 {0}"
+  },
+  "ui_0394": {
+    "message": "書籤草稿已過期，請回原頁面重新收藏。",
+    "description": "收藏草稿已过期，请回到原页面重新收藏。"
+  },
+  "ui_0395": {
+    "message": "此頁面無法收藏，請在 HTTP 或 HTTPS 網頁使用此功能。",
+    "description": "当前页面无法收藏，请在 HTTP 或 HTTPS 网页上使用此功能。"
+  },
+  "ui_0396": {
+    "message": "內容來源已變更，請確認目標空間與群組後儲存。",
+    "description": "内容来源已更改，请确认目标空间和分组后保存。"
+  },
+  "ui_0397": {
+    "message": "內容來源已變更，請重新確認儲存位置。",
+    "description": "内容来源已更改，请重新确认保存位置。"
+  },
+  "ui_0398": {
+    "message": "尚有未儲存內容，請重試同步。",
+    "description": "尚有未保存内容，请重试同步。"
+  },
+  "ui_0399": {
+    "message": "無法讀取最新內容，請重試。",
+    "description": "无法读取最新内容，请重试。"
+  },
+  "ui_0400": {
+    "message": "儲存失敗，請重試。",
+    "description": "保存失败，请重试。"
+  },
+  "ui_0401": {
+    "message": "已儲存至「{0} / {1}」。",
+    "description": "已保存到「{0} / {1}」。"
+  },
+  "ui_0402": {
+    "message": "此網址已在「{0} / {1}」中，無需重複新增。",
+    "description": "此网址已在「{0} / {1}」中，无需重复添加。"
+  },
+  "ui_0403": {
+    "message": "查看已儲存網站",
+    "description": "查看已保存的网站"
+  },
+  "ui_0404": {
+    "message": "變更仍在目前頁面，請保持頁面開啟並重試。",
+    "description": "更改仍在当前页面，请保持页面打开并重试。"
+  },
+  "ui_0405": {
+    "message": "保留頁面，稍後處理",
+    "description": "保留页面，稍后处理"
+  },
+  "ui_0406": {
+    "message": "僅圖示模式下無法變更欄數",
+    "description": "纯图标状态下无法更改列数"
+  },
+  "ui_0407": {
+    "message": "編輯群組",
+    "description": "编辑分组"
+  },
+  "ui_0408": {
+    "message": "請先輸入有效的 HTTP 或 HTTPS 網址。",
+    "description": "请先输入有效的 HTTP 或 HTTPS 网址。"
+  },
+  "ui_0409": {
+    "message": "請選擇一個群組",
+    "description": "请选择一个分组"
+  },
+  "ui_0410": {
+    "message": "請輸入有效的 HTTP/HTTPS 圖片網址或圖片資料。",
+    "description": "请输入有效的 HTTP/HTTPS 图片地址或图片数据。"
+  },
+  "ui_0411": {
+    "message": "重新上傳桌布圖片",
+    "description": "重新上传壁纸图片"
+  },
+  "ui_0412": {
+    "message": "無法讀取桌布：{0}",
+    "description": "无法读取壁纸：{0}"
+  },
+  "ui_0413": {
+    "message": "桌布儲存失敗：{0}",
+    "description": "壁纸保存失败：{0}"
+  },
+  "ui_0414": {
+    "message": "移除桌布失敗：{0}",
+    "description": "移除壁纸失败：{0}"
+  },
+  "ui_0415": {
+    "message": "匯出失敗：{0}",
+    "description": "导出失败：{0}"
+  },
+  "ui_0416": {
+    "message": "選擇搜尋引擎",
+    "description": "选择搜索引擎"
+  },
+  "ui_0417": {
+    "message": "確定刪除網站「{0}」嗎？",
+    "description": "确定删除网站 \"{0}\" 吗？"
+  },
+  "ui_0418": {
+    "message": "雲端無法使用 · 已儲存於本機",
+    "description": "云端不可用 · 本地已保存"
+  },
+  "ui_0419": {
+    "message": "已儲存於本機",
+    "description": "本地已保存"
+  },
+  "ui_0420": {
+    "message": "已儲存至雲端",
+    "description": "云端已保存"
+  },
+  "ui_0421": {
+    "message": "有未儲存的變更",
+    "description": "有未保存更改"
+  },
+  "ui_0422": {
+    "message": "雲端同步中…",
+    "description": "云端同步中…"
+  },
+  "ui_0423": {
+    "message": "請登入以使用雲端資料",
+    "description": "请登录以使用云端数据"
+  },
+  "ui_0424": {
+    "message": "同步衝突 · 點擊處理",
+    "description": "存在同步冲突 · 点击处理"
+  },
+  "ui_0425": {
+    "message": "本機儲存失敗 · 點擊重試",
+    "description": "本地保存失败 · 点击重试"
+  },
+  "ui_0426": {
+    "message": "同步失敗 · 點擊重試",
+    "description": "同步失败 · 点击重试"
+  },
+  "ui_0427": {
+    "message": "目前使用本機內容，點擊重試讀取雲端內容",
+    "description": "当前使用本地内容，点击重试读取云端内容"
+  },
+  "ui_0428": {
+    "message": "資料儲存在此瀏覽器，登入後切換至雲端內容",
+    "description": "数据保存在此浏览器，登录后切换到云端内容"
+  },
+  "ui_0429": {
+    "message": "讀取本機資料或移轉桌布失敗：{0}。原資料已保留，請檢查瀏覽器儲存空間後重新整理。",
+    "description": "读取本地数据或迁移壁纸失败：{0}。原数据未被清理，请检查浏览器存储后刷新。"
+  },
+  "ui_0430": {
+    "message": "暫時無法同步，目前顯示上次同步的帳戶快取。{0}",
+    "description": "暂时无法同步，当前显示上次同步的账户缓存。{0}"
+  },
+  "ui_0431": {
+    "message": "登入已失效。請先匯出未儲存的內容，再重新整理並登入。",
+    "description": "登录已失效。请先导出未保存的内容，再刷新页面重新登录。"
+  },
+  "ui_0432": {
+    "message": "雲端暫時無法使用，目前使用此瀏覽器的本機內容。可點擊同步重試。{0}{1}",
+    "description": "云端暂时不可用，当前使用此浏览器的本地内容。可点击同步重试。{0}{1}"
+  },
+  "ui_0433": {
+    "message": "；{0}",
+    "description": "；{0}"
+  },
+  "ui_0434": {
+    "message": "雲端記錄已移除，請登出後重新登入。",
+    "description": "云端记录已移除，请退出后重新登录。"
+  },
+  "ui_0435": {
+    "message": "內容已匯入但儲存失敗。請保持頁面開啟，重試儲存或匯出備份。",
+    "description": "内容已导入，但保存失败。请保持页面打开并重试保存或导出备份。"
+  },
+  "ui_0436": {
+    "message": "無效的備份檔案！",
+    "description": "无效的备份文件！"
+  },
+  "ui_0437": {
+    "message": "匯入失敗：{0}",
+    "description": "导入失败：{0}"
+  },
+  "ui_0438": {
+    "message": "你正在使用擴充功能，可在網站庫的「我的書籤」中授權讀取書籤。",
+    "description": "你正在使用扩展版，可在热门网站的“我的收藏夹”中授权读取书签。"
+  },
+  "ui_0439": {
+    "message": "匯入的書籤",
+    "description": "导入的收藏夹"
+  },
+  "ui_0440": {
+    "message": "請選擇小於 5 MB 的書籤 HTML 檔案。",
+    "description": "请选择小于 5 MB 的书签 HTML 文件。"
+  },
+  "ui_0441": {
+    "message": "檔案中沒有可匯入的 HTTP/HTTPS 書籤。",
+    "description": "文件中没有可导入的 HTTP/HTTPS 书签。"
+  },
+  "ui_0442": {
+    "message": "每次最多匯入 5000 筆書籤，請拆分檔案後重試。",
+    "description": "一次最多导入 5000 条书签，请拆分文件后重试。"
+  },
+  "ui_0443": {
+    "message": "已讀取 {0} 筆書籤，請在大綱中預覽並儲存。",
+    "description": "已读取 {0} 条书签，请在大纲中预览并保存。"
+  },
+  "ui_0444": {
+    "message": "匯入失敗，請重試。",
+    "description": "导入失败，请重试。"
+  },
+  "ui_0445": {
+    "message": "我的書籤",
+    "description": "我的收藏夹"
+  },
+  "ui_0446": {
+    "message": "效率與辦公",
+    "description": "效率与办公"
+  },
+  "ui_0447": {
+    "message": "開發與技術",
+    "description": "开发与技术"
+  },
+  "ui_0448": {
+    "message": "設計與靈感",
+    "description": "设计与灵感"
+  },
+  "ui_0449": {
+    "message": "圖片與素材",
+    "description": "图片与素材"
+  },
+  "ui_0450": {
+    "message": "社群與社交",
+    "description": "社交与社区"
+  },
+  "ui_0451": {
+    "message": "影音與娛樂",
+    "description": "影音与娱乐"
+  },
+  "ui_0452": {
+    "message": "科技與資訊",
+    "description": "科技与资讯"
+  },
+  "ui_0453": {
+    "message": "學習與學術",
+    "description": "学习与学术"
+  },
+  "ui_0454": {
+    "message": "雲端儲存",
+    "description": "云盘与存储"
+  },
+  "ui_0455": {
+    "message": "購物與生活",
+    "description": "购物与生活"
+  },
+  "ui_0456": {
+    "message": "地圖與旅行",
+    "description": "地图与出行"
+  },
+  "ui_0457": {
+    "message": "從 Edge 匯出書籤",
+    "description": "从 Edge 导出收藏夹"
+  },
+  "ui_0458": {
+    "message": "在電腦開啟 Edge，點擊右上角「…」→「我的最愛」。也可在網址列輸入",
+    "description": "在电脑上打开 Edge，点击右上角“…” →“收藏夹”。也可以在地址栏输入"
+  },
+  "ui_0459": {
+    "message": "在我的最愛面板選擇「…」→「匯出我的最愛」。",
+    "description": "点击收藏夹面板中的“…” →“导出收藏夹”。"
+  },
+  "ui_0460": {
+    "message": "將檔案儲存為 HTML，再回到此處選取。",
+    "description": "将文件保存为 HTML，回到这里选择该文件。"
+  },
+  "ui_0461": {
+    "message": "從 Chrome 匯出書籤",
+    "description": "从 Chrome 导出书签"
+  },
+  "ui_0462": {
+    "message": "在電腦開啟 Chrome，選擇「⋮」→「書籤和清單」→「書籤管理員」。也可在網址列輸入",
+    "description": "在电脑上打开 Chrome，点击右上角“⋮” →“书签和清单” →“书签管理器”。也可以在地址栏输入"
+  },
+  "ui_0463": {
+    "message": "在書籤管理員選擇「⋮」→「匯出書籤」。",
+    "description": "点击书签管理器右上角的“⋮” →“导出书签”。"
+  },
+  "ui_0464": {
+    "message": "儲存 HTML 檔案，再回到此處選取。",
+    "description": "保存 HTML 文件，回到这里选择该文件。"
+  },
+  "ui_0465": {
+    "message": "Chrome 官方說明",
+    "description": "Chrome 官方说明"
+  },
+  "ui_0466": {
+    "message": "從 Safari 匯出書籤（Mac）",
+    "description": "从 Safari 导出书签（Mac）"
+  },
+  "ui_0467": {
+    "message": "開啟 Safari，選擇「檔案」→「將瀏覽資料輸出至檔案」（部分版本為「從 Safari 輸出」）。",
+    "description": "打开 Safari，在屏幕顶部菜单选择“文件” →“将浏览数据导出到文件”（部分版本显示“从 Safari 导出”）。"
+  },
+  "ui_0468": {
+    "message": "僅選「書籤」並匯出。若取得 ZIP 檔案，先解壓縮，再找到書籤 HTML 檔案。",
+    "description": "仅选择“书签”并导出。如果得到 ZIP 文件，先双击解压，再找到其中的书签 HTML 文件。"
+  },
+  "ui_0469": {
+    "message": "舊版 Safari 可選「檔案」→「輸出」→「書籤」，儲存為 HTML。",
+    "description": "旧版 Safari 可直接选择“文件” →“导出” →“书签”，保存为 HTML。"
+  },
+  "ui_0470": {
+    "message": "回到此處，選取匯出的 HTML 檔案。",
+    "description": "回到这里，选择导出的 HTML 文件。"
+  },
+  "ui_0471": {
+    "message": "Safari 官方說明",
+    "description": "Safari 官方说明"
+  },
+  "ui_search_0": {
+    "message": "百度",
+    "description": "百度"
+  },
+  "ui_search_1": {
+    "message": "360 搜尋",
+    "description": "360 搜索"
+  },
+  "ui_search_2": {
+    "message": "搜狗",
+    "description": "搜狗"
+  }
+}

@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { appData, syncManager } from './storage.js';
 import { draggedItem, draggedItemType, clearExternalDropState, handleDockDragStart, handleDragEnd } from './drag.js';
 import { render } from './render.js';
@@ -36,7 +37,7 @@ export function renderDockSites() {
     anchor.className = 'dock-site-btn dock-action-btn';
     anchor.href = link.url;
     anchor.dataset.dockId = link.id;
-    anchor.title = `${link.title}（拖动排序，拖出移除或拖回分组）`;
+    anchor.title = t`${link.title}（拖动排序，拖出移除或拖回分组）`;
     anchor.setAttribute('aria-label', link.title);
     if (appData.settings.openLinksInNewTab) {
       anchor.target = '_blank';
@@ -45,7 +46,7 @@ export function renderDockSites() {
     const image = document.createElement('img');
     anchor.append(image);
     loadSiteIcon(image, link);
-    const remove = () => showConfirm('从程序坞移除', `移除「${link.title}」的快捷图标？`, () => {
+    const remove = () => showConfirm(t('从程序坞移除'), t`移除「${link.title}」的快捷图标？`, () => {
       appData.settings.dockLinks = appData.settings.dockLinks.filter(item => item.id !== link.id);
       appData.settings.dockOrder = (appData.settings.dockOrder || []).filter(key => key !== `site:${link.id}`);
       syncManager.saveData();
@@ -78,7 +79,7 @@ export function initDockDrop(onChange) {
   removeHint.id = 'dockRemoveHint';
   removeHint.className = 'dock-remove-hint';
   removeHint.hidden = true;
-  removeHint.textContent = '拖出程序坞移除';
+  removeHint.textContent = t('拖出程序坞移除');
   removeHint.setAttribute('role', 'status');
   document.body.append(removeHint);
   const marker = document.createElement('div');
@@ -132,7 +133,7 @@ export function initDockDrop(onChange) {
     if (!item || !ready()) { event.preventDefault(); return; }
     // Use the browser's native drag image and move cursor.
     handleDockDragStart({ currentTarget: item, dataTransfer: event.dataTransfer, stopPropagation: () => event.stopPropagation() });
-    removeHint.textContent = '拖出程序坞移除';
+    removeHint.textContent = t('拖出程序坞移除');
     removeHint.classList.remove('is-removing');
     placeHint();
     removeHint.hidden = false;
@@ -159,7 +160,7 @@ export function initDockDrop(onChange) {
       const group = inside ? null : targetGroup(event);
       marker.hidden = true;
       removeHint.classList.toggle('is-removing', !inside && !group);
-      removeHint.textContent = !inside && !group ? '松开移除' : '拖出程序坞移除';
+      removeHint.textContent = !inside && !group ? t('松开移除') : t('拖出程序坞移除');
       if (inside) insertion(event);
       if (group) event.target.closest('.group-card').classList.add('external-drop-target');
     }, true);
@@ -190,7 +191,7 @@ export function initDockDrop(onChange) {
       } else {
         appData.settings[DOCK_ACTION_SETTINGS[item.id]] = false;
       }
-      if (!group) showToast('已从程序坞移除');
+      if (!group) showToast(t('已从程序坞移除'));
     }
     cleanup();
     handleDragEnd();

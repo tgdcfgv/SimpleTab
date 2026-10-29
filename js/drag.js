@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { appData, syncManager } from './storage.js';
 import { render } from './render.js';
 import { extractDroppedLink } from './urls.js';
@@ -314,7 +315,7 @@ function updateExternalDropFeedback(e) {
 
   document.body.classList.add('is-external-dragging');
   const hint = getExternalDropHint();
-  hint.textContent = groupName ? `松开添加到「${groupName}」` : '松开添加网站';
+  hint.textContent = groupName ? t`松开添加到「${groupName}」` : t('松开添加网站');
   hint.classList.remove('hidden');
 }
 

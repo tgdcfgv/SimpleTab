@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { appData, setActiveSpace, syncManager } from './storage.js';
 import { cloud } from './cloud.js';
 import { render } from './render.js';
@@ -29,7 +30,7 @@ export async function initCapture() {
 
   async function discard() {
     try { await chrome.storage.session.remove(key); }
-    catch (error) { console.warn('无法清理收藏草稿', error); }
+    catch (error) { console.warn(t('无法清理收藏草稿'), error); }
     history.replaceState(null, '', location.pathname + location.search);
   }
 
@@ -49,7 +50,7 @@ export async function initCapture() {
     if (appData.spaces.some(space => space.id === preferredSpace)) spaceSelect.value = preferredSpace;
     groups(preferredGroup);
     document.getElementById('captureDestination').textContent = syncManager.mode === 'local'
-      ? '保存到此浏览器的本地内容' : `保存到云端账户 ${cloud.session?.user?.email || ''}`;
+      ? t('保存到此浏览器的本地内容') : t`保存到云端账户 ${cloud.session?.user?.email || ''}`;
     sourceGeneration = syncManager.generation;
   }
 
@@ -60,11 +61,11 @@ export async function initCapture() {
       if (!validDraft(draft)) {
         form.hidden = true;
         submit.hidden = true;
-        message.textContent = '收藏草稿已过期，请回到原页面重新收藏。';
+        message.textContent = t('收藏草稿已过期，请回到原页面重新收藏。');
       } else if (!safeWebUrl(draft.url)) {
         form.hidden = true;
         submit.hidden = true;
-        message.textContent = '当前页面无法收藏，请在 HTTP 或 HTTPS 网页上使用此功能。';
+        message.textContent = t('当前页面无法收藏，请在 HTTP 或 HTTPS 网页上使用此功能。');
       } else {
         document.getElementById('captureUrl').value = draft.url;
         document.getElementById('captureTitle').value = draft.title;
@@ -73,7 +74,7 @@ export async function initCapture() {
       dialog.showModal();
     } else if (!busy && sourceGeneration !== syncManager.generation && !form.hidden) {
       destinations();
-      message.textContent = '内容来源已更改，请确认目标空间和分组后保存。';
+      message.textContent = t('内容来源已更改，请确认目标空间和分组后保存。');
     }
   }
 
@@ -102,39 +103,39 @@ export async function initCapture() {
     fields.disabled = true;
     submit.disabled = true;
     cancel.disabled = true;
-    message.textContent = '正在保存…';
+    message.textContent = t('正在保存…');
     try {
       const retryingSave = unsaved;
       const generation = syncManager.generation;
       if (!syncManager.ready || generation !== sourceGeneration || cloud.session?.needs_choice) {
-        throw new Error('内容来源已更改，请重新确认保存位置。');
+        throw new Error(t('内容来源已更改，请重新确认保存位置。'));
       }
       // Retry any failed prior save before treating an existing URL as persisted.
       if ((syncManager.pending || syncManager.saving) && !await syncManager.saveData()) {
-        throw new Error(syncManager.error || '尚有未保存内容，请重试同步。');
+        throw new Error(syncManager.error || t('尚有未保存内容，请重试同步。'));
       }
-      if (!await syncManager.syncNow()) throw new Error(syncManager.error || '无法读取最新内容，请重试。');
-      if (generation !== syncManager.generation) throw new Error('内容来源已更改，请重新确认保存位置。');
+      if (!await syncManager.syncNow()) throw new Error(syncManager.error || t('无法读取最新内容，请重试。'));
+      if (generation !== syncManager.generation) throw new Error(t('内容来源已更改，请重新确认保存位置。'));
       unsaved = false;
       const result = addCapturedLink(appData, request, crypto.randomUUID());
       if (result.added) {
         unsaved = true;
-        if (!await syncManager.saveData()) throw new Error(syncManager.error || '保存失败，请重试。');
+        if (!await syncManager.saveData()) throw new Error(syncManager.error || t('保存失败，请重试。'));
         unsaved = false;
       }
       targetSpace = result.space.id;
       message.textContent = result.added || retryingSave
-        ? `已保存到「${result.space.name} / ${result.group.name}」。`
-        : `此网址已在「${result.space.name} / ${result.group.name}」中，无需重复添加。`;
+        ? t`已保存到「${result.space.name} / ${result.group.name}」。`
+        : t`此网址已在「${result.space.name} / ${result.group.name}」中，无需重复添加。`;
       form.hidden = true;
       submit.hidden = true;
-      cancel.textContent = '查看已保存的网站';
+      cancel.textContent = t('查看已保存的网站');
       await discard();
       render();
     } catch (error) {
-      message.textContent = `${error.message}${unsaved ? ' 更改仍在当前页面，请保持页面打开并重试。' : ''}`;
+      message.textContent = `${error.message}${unsaved ? t(' 更改仍在当前页面，请保持页面打开并重试。') : ''}`;
       destinations();
-      cancel.textContent = unsaved ? '保留页面，稍后处理' : '取消';
+      cancel.textContent = unsaved ? t('保留页面，稍后处理') : t('取消');
     } finally {
       busy = false;
       fields.disabled = false;

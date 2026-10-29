@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { safeWebUrl } from './urls.js';
 
 export const CAPTURE_PREFIX = 'simtab.capture.';
@@ -15,10 +16,10 @@ export function validDraft(draft, now = Date.now()) {
 
 export function addCapturedLink(data, { spaceId, groupId, title, url }, id) {
   const safeUrl = safeWebUrl(url);
-  if (!safeUrl) throw new Error('请输入有效的 HTTP 或 HTTPS 网址。');
+  if (!safeUrl) throw new Error(t('请输入有效的 HTTP 或 HTTPS 网址。'));
   const space = data.spaces.find(item => item.id === spaceId);
   const group = space?.groups.find(item => item.id === groupId);
-  if (!group) throw new Error('目标空间或分组已变更，请重新选择。');
+  if (!group) throw new Error(t('目标空间或分组已变更，请重新选择。'));
   const existing = group.links.find(link => safeWebUrl(link.url) === safeUrl);
   if (existing) return { added: false, link: existing, space, group };
   const link = { id, title: String(title || '').trim() || new URL(safeUrl).hostname, url: safeUrl };

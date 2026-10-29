@@ -1,8 +1,9 @@
+import { t } from './i18n.js';
 import { generateId } from './utils.js';
 
 const environment = document.getElementById('extensionEnvironment');
 if (environment && globalThis.chrome?.runtime?.id) {
-  environment.textContent = '你正在使用扩展版，可在热门网站的“我的收藏夹”中授权读取书签。';
+  environment.textContent = t('你正在使用扩展版，可在热门网站的“我的收藏夹”中授权读取书签。');
 }
 
 // Read only anchors from an inert document; never insert imported HTML into the UI.
@@ -39,7 +40,7 @@ export function parseBookmarkGroups(html) {
         if (heading?.textContent.trim()) names.unshift(heading.textContent.trim());
         folder = folder.parentElement?.closest('dl');
       }
-      const name = names.join(' / ') || '导入的收藏夹';
+      const name = names.join(' / ') || t('导入的收藏夹');
       if (!groups.has(name)) groups.set(name, { id: generateId(), name, collapsed: false, links: [] });
       groups.get(name).links.push({ id: generateId(), title: anchor.textContent.trim() || url.hostname, url: url.href });
     } catch { /* Skip invalid URLs and bookmarklets. */ }
@@ -54,15 +55,15 @@ fileInput?.addEventListener('change', async () => {
   if (!file) return;
   fileInput.disabled = true;
   try {
-    if (file.size > 5 * 1024 * 1024) throw new Error('请选择小于 5 MB 的书签 HTML 文件。');
+    if (file.size > 5 * 1024 * 1024) throw new Error(t('请选择小于 5 MB 的书签 HTML 文件。'));
     const groups = parseBookmarkGroups(await file.text());
     const count = groups.reduce((total, group) => total + group.links.length, 0);
-    if (!count) throw new Error('文件中没有可导入的 HTTP/HTTPS 书签。');
-    if (count > 5000) throw new Error('一次最多导入 5000 条书签，请拆分文件后重试。');
-    status.textContent = `已读取 ${count} 条书签，请在大纲中预览并保存。`;
+    if (!count) throw new Error(t('文件中没有可导入的 HTTP/HTTPS 书签。'));
+    if (count > 5000) throw new Error(t('一次最多导入 5000 条书签，请拆分文件后重试。'));
+    status.textContent = t`已读取 ${count} 条书签，请在大纲中预览并保存。`;
     document.dispatchEvent(new CustomEvent('simtab-bookmark-preview', { detail: { groups, count, filename: file.name } }));
   } catch (error) {
-    status.textContent = error.message || '导入失败，请重试。';
+    status.textContent = error.message || t('导入失败，请重试。');
   } finally {
     fileInput.disabled = false;
     fileInput.value = '';

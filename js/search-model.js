@@ -1,3 +1,5 @@
+import { getLocale } from './i18n.js';
+import { searchRegion } from './search-locale.js';
 import { safeWebUrl } from './urls.js';
 
 export function findLinks(data, query, limit = 8) {
@@ -74,7 +76,7 @@ export async function fetchBingSuggestions(query, signal, limit = 6, suggestUrl 
     try {
       const res = await new Promise((resolve) => {
         const timer = setTimeout(() => resolve(null), 2000);
-        chrome.runtime.sendMessage({ action: 'bing-suggest', query: term }, (resp) => {
+        chrome.runtime.sendMessage({ action: 'bing-suggest', query: term, language: getLocale() }, (resp) => {
           clearTimeout(timer);
           if (chrome.runtime.lastError || !resp?.ok) resolve(null);
           else resolve(resp.data);
@@ -92,7 +94,7 @@ export async function fetchBingSuggestions(query, signal, limit = 6, suggestUrl 
   // 2. Web environment (Cloudflare Pages): same-origin edge function
   if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
     try {
-      const res = await fetch(`/api/suggest?q=${encodeURIComponent(term)}`, {
+      const res = await fetch(`/api/suggest?q=${encodeURIComponent(term)}&language=${getLocale()}`, {
         signal,
         headers: { Accept: 'application/json' }
       });
@@ -108,7 +110,7 @@ export async function fetchBingSuggestions(query, signal, limit = 6, suggestUrl 
 
   // 3. Direct fetch to Bing
   try {
-    const url = `${suggestUrl}${encodeURIComponent(term)}&cc=cn`;
+    const url = `${suggestUrl}${encodeURIComponent(term)}&cc=${searchRegion(getLocale())}`;
     const res = await fetch(url, {
       signal,
       headers: { Accept: 'application/json, text/plain, */*' }
@@ -123,7 +125,7 @@ export async function fetchBingSuggestions(query, signal, limit = 6, suggestUrl 
   }
 
   // 4. Fallback for static/file environments where CORS blocks HTTP fetch
-  if (typeof document !== 'undefined' && (!window.chrome || !window.chrome.runtime || !window.chrome.runtime.id)) {
+  if (getLocale() === 'zh_CN' && typeof document !== 'undefined' && (!window.chrome || !window.chrome.runtime || !window.chrome.runtime.id)) {
     try {
       const jsonpResults = await fetchJsonpSuggestions(term, limit);
       if (jsonpResults.length) return jsonpResults;

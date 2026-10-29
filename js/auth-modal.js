@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { cloud } from './cloud.js';
 import { needsProfile, openOnboarding } from './onboarding.js';
 import { syncManager } from './storage.js';
@@ -241,7 +242,7 @@ function startResendCountdown(seconds = 60) {
   if (resendTimer) clearInterval(resendTimer);
   let remaining = seconds;
   resendBtn.disabled = true;
-  resendBtn.textContent = `重新发送 (${remaining}s)`;
+  resendBtn.textContent = t`重新发送 (${remaining}s)`;
 
   resendTimer = setInterval(() => {
     remaining--;
@@ -249,9 +250,9 @@ function startResendCountdown(seconds = 60) {
       clearInterval(resendTimer);
       resendTimer = null;
       resendBtn.disabled = false;
-      resendBtn.textContent = '重新发送';
+      resendBtn.textContent = t('重新发送');
     } else {
-      resendBtn.textContent = `重新发送 (${remaining}s)`;
+      resendBtn.textContent = t`重新发送 (${remaining}s)`;
     }
   }, 1000);
 }
@@ -267,7 +268,7 @@ async function handleEmailSubmit(event) {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRegex.test(email)) {
-    showEmailError('请输入有效的邮箱地址');
+    showEmailError(t('请输入有效的邮箱地址'));
     emailInput?.focus();
     return;
   }
@@ -275,7 +276,7 @@ async function handleEmailSubmit(event) {
   isSubmitting = true;
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.textContent = '正在发送…';
+    submitBtn.textContent = t('正在发送…');
   }
 
   try {
@@ -283,12 +284,12 @@ async function handleEmailSubmit(event) {
     currentEmail = email;
     switchStep('verification');
   } catch (error) {
-    showEmailError(error.message || '连接失败，请稍后重试');
+    showEmailError(error.message || t('连接失败，请稍后重试'));
   } finally {
     isSubmitting = false;
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = '发送验证码';
+      submitBtn.textContent = t('发送验证码');
     }
   }
 }
@@ -301,9 +302,9 @@ async function onLoginSuccess(session) {
   if (needsProfile()) {
     openOnboarding();
   } else if (isNewUser) {
-    showToast('账户已创建，Sim Tab 同步已开启');
+    showToast(t('账户已创建，Sim Tab 同步已开启'));
   } else {
-    showToast('登录成功');
+    showToast(t('登录成功'));
   }
 
   if (syncManager) {
@@ -330,7 +331,7 @@ async function handleManualVerify(event) {
   const val = manualInput?.value.trim() || '';
 
   if (!/^\d{6,10}$/.test(val)) {
-    showVerifyError('请输入邮件中的 8 位数字验证码');
+    showVerifyError(t('请输入邮件中的 8 位数字验证码'));
     manualInput?.focus();
     return;
   }
@@ -338,7 +339,7 @@ async function handleManualVerify(event) {
   isSubmitting = true;
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.textContent = '正在验证…';
+    submitBtn.textContent = t('正在验证…');
   }
 
   try {
@@ -346,12 +347,12 @@ async function handleManualVerify(event) {
 
     await onLoginSuccess(session);
   } catch (error) {
-    showVerifyError(error.message || '验证失败，请确认验证码有效');
+    showVerifyError(error.message || t('验证失败，请确认验证码有效'));
   } finally {
     isSubmitting = false;
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = '验证并登录';
+      submitBtn.textContent = t('验证并登录');
     }
   }
 }
@@ -494,15 +495,15 @@ export function initAuthModal() {
     clearErrors();
     isSubmitting = true;
     resendBtn.disabled = true;
-    resendBtn.textContent = '正在发送…';
+    resendBtn.textContent = t('正在发送…');
     try {
       await cloud.sendOtp(currentEmail);
       startResendCountdown(60);
-      showToast('验证码已重新发送');
+      showToast(t('验证码已重新发送'));
     } catch (err) {
-      showVerifyError(err.message || '操作过于频繁，请稍后再试');
+      showVerifyError(err.message || t('操作过于频繁，请稍后再试'));
       resendBtn.disabled = false;
-      resendBtn.textContent = '重新发送';
+      resendBtn.textContent = t('重新发送');
     } finally {
       isSubmitting = false;
     }
@@ -516,7 +517,7 @@ export function initAuthModal() {
   // 服务条款点击
   termsLink?.addEventListener('click', e => {
     e.preventDefault();
-    showToast('Sim Tab 致力于保护你的数据安全与隐私');
+    showToast(t('Sim Tab 致力于保护你的数据安全与隐私'));
   });
 
   // ESC 键关闭

@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 rm -rf .pages-output
 mkdir -p .pages-output
 cp newtab.html .pages-output/index.html
-cp -R css js icons .pages-output/
+cp -R css js icons _locales .pages-output/
 cp privacy.html install.html .pages-output/
 cp icons/favicon.ico .pages-output/favicon.ico
 if [ -d functions ]; then

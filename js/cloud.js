@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { clearCloudCache } from './cloud-cache.js';
 
 // Public client configuration. Never put a service_role key here.
@@ -10,9 +11,9 @@ export function parseAuthUrl(value) {
   const url = new URL(value);
   const hash = new URLSearchParams(url.hash.slice(1));
   const error = hash.get('error_description') || hash.get('error') || url.searchParams.get('error_description') || url.searchParams.get('error');
-  if (error) return { error: '验证链接无效或已过期，请重新发送邮件并使用最新链接。' };
+  if (error) return { error: t('验证链接无效或已过期，请重新发送邮件并使用最新链接。') };
   if (hash.has('access_token')) {
-    if (!hash.get('refresh_token')) return { error: '验证链接不完整，请复制完整链接。' };
+    if (!hash.get('refresh_token')) return { error: t('验证链接不完整，请复制完整链接。') };
     const expiresIn = Number(hash.get('expires_in') || 3600);
     return { session: {
       access_token: hash.get('access_token'), refresh_token: hash.get('refresh_token'),
@@ -36,7 +37,7 @@ export const cloud = {
         ...(body === undefined ? {} : { body: JSON.stringify(body) })
       });
     } catch (networkError) {
-      const err = new Error('连接失败，请稍后重试');
+      const err = new Error(t('连接失败，请稍后重试'));
       err.cause = networkError;
       throw err;
     }
@@ -44,23 +45,23 @@ export const cloud = {
     let result = null;
     try { result = text ? JSON.parse(text) : null; }
     catch {
-      const error = new Error('云端服务暂时无法响应，请稍后重试');
+      const error = new Error(t('云端服务暂时无法响应，请稍后重试'));
       error.status = response.status;
       throw error;
     }
     if (!response.ok) {
       const messages = {
-        invalid_credentials: '邮箱或密码不正确',
-        email_not_confirmed: '请先完成邮箱验证，再登录',
-        email_address_not_authorized: '邮件服务尚未开放此邮箱，请联系管理员配置 SMTP 发信服务',
-        over_email_send_rate_limit: '操作过于频繁，请稍后再试',
-        over_request_rate_limit: '操作过于频繁，请稍后再试',
-        otp_expired: '验证码或验证链接已过期，请重新获取',
-        invalid_grant: '验证码或验证链接无效，请重新输入或获取新邮件',
-        bad_jwt: '验证码或验证链接无效，请重新输入',
-        weak_password: '密码强度不足，请使用更长、更复杂的密码'
+        invalid_credentials: t('邮箱或密码不正确'),
+        email_not_confirmed: t('请先完成邮箱验证，再登录'),
+        email_address_not_authorized: t('邮件服务尚未开放此邮箱，请联系管理员配置 SMTP 发信服务'),
+        over_email_send_rate_limit: t('操作过于频繁，请稍后再试'),
+        over_request_rate_limit: t('操作过于频繁，请稍后再试'),
+        otp_expired: t('验证码或验证链接已过期，请重新获取'),
+        invalid_grant: t('验证码或验证链接无效，请重新输入或获取新邮件'),
+        bad_jwt: t('验证码或验证链接无效，请重新输入'),
+        weak_password: t('密码强度不足，请使用更长、更复杂的密码')
       };
-      const error = new Error(messages[result?.error_code || result?.code] || result?.msg || result?.message || result?.error_description || '云端请求失败，请重试。');
+      const error = new Error(messages[result?.error_code || result?.code] || result?.msg || result?.message || result?.error_description || t('云端请求失败，请重试。'));
       error.status = response.status;
       error.code = result?.error_code || result?.code;
       throw error;
@@ -86,7 +87,7 @@ export const cloud = {
     return result;
   },
   async acceptSession(session) {
-    if (!session?.access_token || !session.refresh_token) throw new Error('验证未返回有效登录信息，请重新获取邮件。');
+    if (!session?.access_token || !session.refresh_token) throw new Error(t('验证未返回有效登录信息，请重新获取邮件。'));
     let verified = session;
     if (session.expires_at <= Date.now() / 1000 + 60) {
       verified = await this.request('/auth/v1/token?grant_type=refresh_token', {
@@ -103,11 +104,11 @@ export const cloud = {
       const parsed = parseAuthUrl(value);
       if (parsed?.error) throw new Error(parsed.error);
       if (parsed?.session) return this.acceptSession(parsed.session);
-      if (!parsed?.tokenHash) throw new Error('此链接中未包含有效的验证信息，请复制完整链接。');
+      if (!parsed?.tokenHash) throw new Error(t('此链接中未包含有效的验证信息，请复制完整链接。'));
       return this.verifyOtp({ token_hash: parsed.tokenHash, type: parsed.type });
     }
     if (/^\d{6,10}$/.test(value)) return this.verifyOtp({ email, token: value, type: 'email' });
-    throw new Error('请输入邮件中的验证码或完整验证链接。');
+    throw new Error(t('请输入邮件中的验证码或完整验证链接。'));
   },
   storeSession(session) {
     let previousUserId = this.session?.user?.id;
@@ -153,7 +154,7 @@ export const cloud = {
     const refresh = async () => {
       // Re-read after taking the lock: another tab may have rotated the token.
       const saved = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-      if (!saved || saved.user?.id !== this.session?.user?.id) throw new Error('登录已失效，请重新登录。');
+      if (!saved || saved.user?.id !== this.session?.user?.id) throw new Error(t('登录已失效，请重新登录。'));
       this.session = saved;
       if (saved.expires_at > Date.now() / 1000 + 60) return saved.access_token;
       const session = await this.request('/auth/v1/token?grant_type=refresh_token', {
@@ -172,7 +173,7 @@ export const cloud = {
     const user = await this.request('/auth/v1/user', {
       method: 'PUT', token, body: { data: { nickname, avatar_emoji: avatar, profile_completed: true } }
     });
-    if (this.session?.user?.id !== userId) throw new Error('账户已更改，请刷新后重试。');
+    if (this.session?.user?.id !== userId) throw new Error(t('账户已更改，请刷新后重试。'));
     this.storeSession({ ...this.session, user });
     document.dispatchEvent(new Event('simtab-sync'));
   },
@@ -232,7 +233,7 @@ export const cloud = {
         throw error;
       }
     }
-    if (!session?.access_token || !session.refresh_token || !session.user?.id) throw new Error('验证未返回有效登录信息，请重新获取邮件。');
+    if (!session?.access_token || !session.refresh_token || !session.user?.id) throw new Error(t('验证未返回有效登录信息，请重新获取邮件。'));
     this.storeSession({ ...session, needs_choice: false });
     this.broadcastAuth('login');
     return session;
@@ -270,7 +271,7 @@ export const cloud = {
       rows = [];
     }
     if (!rows.length) {
-      const error = new Error('其他设备已更新数据。请先导出未保存的更改，再点击“读取云端版本”。');
+      const error = new Error(t('其他设备已更新数据。请先导出未保存的更改，再点击“读取云端版本”。'));
       error.conflict = true;
       throw error;
     }

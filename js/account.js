@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 import { openSettingsModal, settingsModal, openAuthModal, showToast } from './modals.js';
 import { initAuthModal } from './auth-modal.js';
 import { initOnboarding, openProfileEditor } from './onboarding.js';
@@ -20,7 +21,7 @@ function update() {
   const loggedIn = Boolean(cloud.session);
   const choosing = loggedIn && Boolean(cloud.session?.needs_choice);
   const accountButton = document.getElementById('accountBtn');
-  accountButton.title = loggedIn ? '账户与同步' : '登录或创建账户';
+  accountButton.title = loggedIn ? t('账户与同步') : t('登录或创建账户');
   accountButton.setAttribute('aria-label', accountButton.title);
   accountButton.dataset.signedIn = String(loggedIn);
   const profile = cloud.session?.user?.user_metadata;
@@ -45,16 +46,16 @@ function update() {
   secondaryEmail.textContent = cloud.session?.user?.email || '';
   secondaryEmail.hidden = !profile?.nickname;
   if (profile?.nickname) {
-    accountButton.title = `${profile.nickname} · 账户与同步`;
+    accountButton.title = t`${profile.nickname} · 账户与同步`;
     accountButton.setAttribute('aria-label', accountButton.title);
   }
-  document.getElementById('accountTitle').textContent = choosing ? '选择同步内容' : '云端账户';
+  document.getElementById('accountTitle').textContent = choosing ? t('选择同步内容') : t('云端账户');
   const disclaimerText = document.getElementById('accountDisclaimerText');
   if (disclaimerText) {
     disclaimerText.textContent = loggedIn && syncManager.mode === 'cloud'
-      ? '当前使用账户云端内容；退出登录后恢复此浏览器的本地内容。'
-      : loggedIn ? '当前使用此浏览器的本地内容；重试同步后切换到独立的云端内容，本地内容会保留。'
-      : '未登录数据保存在此浏览器；登录后显示云端内容。';
+      ? t('当前使用账户云端内容；退出登录后恢复此浏览器的本地内容。')
+      : loggedIn ? t('当前使用此浏览器的本地内容；重试同步后切换到独立的云端内容，本地内容会保留。')
+      : t('未登录数据保存在此浏览器；登录后显示云端内容。');
   }
   if (choice) choice.hidden = !choosing;
   document.getElementById('accountEmailLabel').textContent = profile?.nickname || cloud.session?.user?.email || '';
@@ -77,19 +78,19 @@ function update() {
     const textEl = status.querySelector('.status-text');
     if (textEl) {
       if (syncManager.status === 'saved') {
-        textEl.textContent = '已同步';
+        textEl.textContent = t('已同步');
       } else if (syncManager.status === 'syncing') {
-        textEl.textContent = '正在同步…';
+        textEl.textContent = t('正在同步…');
       } else {
-        textEl.textContent = source.querySelector('.status-text').textContent || '已同步';
+        textEl.textContent = source.querySelector('.status-text').textContent || t('已同步');
       }
     }
   }
   const intro = document.getElementById('accountIntro');
   if (intro) {
-    intro.textContent = choosing ? '已登录。请选择使用云端内容，或将当前页面保存到云端。' : syncManager.mode === 'local'
-      ? '快捷方式、布局和偏好设置可以在你的设备之间同步。'
-      : '当前使用账户的云端内容。退出登录后恢复此浏览器的本地内容。';
+    intro.textContent = choosing ? t('已登录。请选择使用云端内容，或将当前页面保存到云端。') : syncManager.mode === 'local'
+      ? t('快捷方式、布局和偏好设置可以在你的设备之间同步。')
+      : t('当前使用账户的云端内容。退出登录后恢复此浏览器的本地内容。');
   }
   if (!busy) message.textContent = syncManager.error || '';
   const reloadBtn = document.getElementById('accountReload');
@@ -134,7 +135,7 @@ export function initAccount() {
   });
   document.getElementById('accountSync').addEventListener('click', () => run(retrySync));
   document.getElementById('accountReload')?.addEventListener('click', () => run(async () => {
-    if (!await askConfirm('读取云端版本', '将放弃当前页面未保存的更改。请先导出需要保留的数据。')) return;
+    if (!await askConfirm(t('读取云端版本'), t('将放弃当前页面未保存的更改。请先导出需要保留的数据。'))) return;
     await syncManager.loadCloud(); applySettings(); render();
   }));
   document.getElementById('accountLogout').addEventListener('click', () => run(leaveAccount));
@@ -158,12 +159,12 @@ export function initAccount() {
       const email = document.getElementById('accountEmail').value.trim();
       const password = document.getElementById('accountPassword').value;
       if (event.submitter?.value === 'signup') {
-        if (password.length < 8) throw new Error('注册密码至少需要 8 位。');
+        if (password.length < 8) throw new Error(t('注册密码至少需要 8 位。'));
         const signedIn = await cloud.signup(email, password);
         if (!signedIn) {
           const verifySection = document.getElementById('accountVerification');
           if (verifySection) verifySection.hidden = false;
-          message.textContent = '验证邮件已发送。可将邮件中的验证链接粘贴到下方完成验证，也可在邮件中验证后返回登录。';
+          message.textContent = t('验证邮件已发送。可将邮件中的验证链接粘贴到下方完成验证，也可在邮件中验证后返回登录。');
           return;
         }
       } else await cloud.login(email, password);
@@ -183,7 +184,7 @@ export function initAccount() {
         syncManager.ready = false;
         cloud.session = null;
         update();
-        message.textContent = '账户已在其他标签页更改。请先导出未保存的内容，再刷新页面。';
+        message.textContent = t('账户已在其他标签页更改。请先导出未保存的内容，再刷新页面。');
         form?.querySelectorAll('button').forEach(button => { button.disabled = true; });
       } else {
         // Reload routes to local data after logout, or to the newly signed-in account.
@@ -198,7 +199,7 @@ export function initAccount() {
 
 async function preserveLocal() {
   if (syncManager.mode === 'local' && (syncManager.pending || syncManager.saving)) {
-    if (!await syncManager.saveData()) throw new Error('本地内容尚未保存，请先导出备份或重试，再登录。');
+    if (!await syncManager.saveData()) throw new Error(t('本地内容尚未保存，请先导出备份或重试，再登录。'));
   }
 }
 
@@ -234,13 +235,13 @@ async function finishChoice(keepPage) {
 
 async function leaveAccount() {
   if (syncManager.saving) await syncManager.saving;
-  if (syncManager.pending && !await askConfirm('退出登录', '还有未保存的更改，退出会丢失这些更改。是否继续？')) return;
+  if (syncManager.pending && !await askConfirm(t('退出登录'), t('还有未保存的更改，退出会丢失这些更改。是否继续？'))) return;
   syncManager.pending = null;
   try { await cloud.logout(); }
   finally {
     choiceData = null;
     await syncManager.loadLocal(); applySettings(); render(); update(); openSettingsModal('settingsAccount');
-    showToast('已退出登录');
+    showToast(t('已退出登录'));
   }
 }
 
@@ -264,30 +265,30 @@ async function run(action) {
   document.getElementById('closeSettingsBtn').disabled = true;
   const buttons = [...panel.querySelectorAll('button')];
   buttons.forEach(button => { button.disabled = true; });
-  message.textContent = '处理中…';
+  message.textContent = t('处理中…');
   try { await action(); }
-  catch (error) { message.textContent = error.message || '操作失败，请重试。'; }
+  catch (error) { message.textContent = error.message || t('操作失败，请重试。'); }
   finally {
     busy = false;
     buttons.forEach(button => { button.disabled = false; });
     // Preserve action messages while refreshing account visibility.
     const text = message.textContent;
     update();
-    message.textContent = text === '处理中…' ? (syncManager.error || '') : text;
+    message.textContent = text === t('处理中…') ? (syncManager.error || '') : text;
   }
 }
 
 async function migrateLegacy() {
-  if (syncManager.mode !== 'cloud' || !syncManager.ready || syncManager.pending || syncManager.saving) throw new Error('请先完成当前云端同步。');
+  if (syncManager.mode !== 'cloud' || !syncManager.ready || syncManager.pending || syncManager.saving) throw new Error(t('请先完成当前云端同步。'));
   const legacy = await syncManager.readLocal();
-  if (!legacy) throw new Error('此浏览器没有本地数据。你也可以在设置中导入 JSON 备份。');
-  if (!await askConfirm('将本地内容复制到云端', '将用此浏览器本地内容替换当前账户的云端内容，本地副本仍会保留。是否继续？')) return;
+  if (!legacy) throw new Error(t('此浏览器没有本地数据。你也可以在设置中导入 JSON 备份。'));
+  if (!await askConfirm(t('将本地内容复制到云端'), t('将用此浏览器本地内容替换当前账户的云端内容，本地副本仍会保留。是否继续？'))) return;
   setAppData(normalizeAppData(legacy));
   if (!await syncManager.saveData()) {
     // Keep the imported content available for export/retry after a failed save.
     applySettings(); render();
-    throw new Error(syncManager.error || '上传失败，旧版本地数据仍然保留。');
+    throw new Error(syncManager.error || t('上传失败，旧版本地数据仍然保留。'));
   }
   applySettings(); render();
-  message.textContent = '本地内容已复制到云端，浏览器中的本地内容仍然保留。';
+  message.textContent = t('本地内容已复制到云端，浏览器中的本地内容仍然保留。');
 }
