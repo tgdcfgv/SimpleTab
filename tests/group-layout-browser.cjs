@@ -14,7 +14,7 @@ const assert = require('node:assert/strict');
     await page.evaluate(async () => {
       const { appData } = await import('./js/storage.js');
       appData.groups.splice(0, appData.groups.length, ...Array.from({ length: 6 }, (_, index) => ({
-        id: `layout-${index}`, name: '很长的分组名称用于检查窄列布局和标题渐隐效果',
+        id: `layout-${index}`, name: index === 0 ? '工作' : '很长的分组名称用于检查窄列布局和标题显示效果',
         linksPerRow: 'auto', collapsed: false,
         links: Array.from({ length: 6 }, (_, link) => ({
           id: `link-${index}-${link}`, title: '网站名称很长 VeryLongUnbrokenWebsiteTitleForOverflow',
@@ -50,6 +50,9 @@ const assert = require('node:assert/strict');
             }
             for (const header of document.querySelectorAll('.group-header')) {
               if (header.scrollWidth > header.clientWidth + 1) problems.push('header overflow');
+              const title = header.querySelector('.group-title');
+              if (getComputedStyle(title).maskImage !== 'none') problems.push('faded group title');
+              if (title.textContent === '工作' && title.scrollWidth > title.clientWidth) problems.push('clipped short group title');
             }
             return problems;
           });

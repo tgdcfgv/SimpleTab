@@ -81,8 +81,7 @@
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 12px), transparent);
-  mask-image: linear-gradient(to right, #000 calc(100% - 12px), transparent);
+  text-overflow: ellipsis;
 }
 
 .group-collapsed-icons {
