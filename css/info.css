@@ -182,3 +182,22 @@ h3 { color: var(--text-primary); font-size: 16px; line-height: 2; font-weight: 6
 @media (prefers-contrast: more) {
   :root { --text-secondary: var(--text-primary); --text-tertiary: var(--text-primary); --border-color: currentColor; }
 }
+
+/* Language names stay in their own scripts so the selector is always recognizable. */
+.info-language {
+  max-width: 140px;
+  min-height: 44px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+@media (max-width: 720px) {
+  .top-bar-inner { padding-inline: 16px; gap: 8px; flex-wrap: wrap; }
+  .top-bar-actions { display: grid; grid-template-columns: auto minmax(0, 1fr) auto 44px; width: 100%; gap: 8px; }
+  .top-bar-actions .top-link { min-width: 0; font-size: 12px; line-height: 1.4; }
+  .info-language { max-width: 100px; }
+}

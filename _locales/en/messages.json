@@ -1910,5 +1910,417 @@
   "ui_search_2": {
     "message": "Sogou",
     "description": "搜狗"
+  },
+  "info_000": {
+    "message": "Privacy Policy · SimTab",
+    "description": "隐私政策 · SimTab"
+  },
+  "info_001": {
+    "message": "Skip to content",
+    "description": "跳至正文"
+  },
+  "info_002": {
+    "message": "Main navigation",
+    "description": "主导航"
+  },
+  "info_003": {
+    "message": "Download extension",
+    "description": "扩展下载"
+  },
+  "info_004": {
+    "message": "Open SimTab",
+    "description": "打开 SimTab"
+  },
+  "info_005": {
+    "message": "Toggle theme",
+    "description": "切换主题"
+  },
+  "info_006": {
+    "message": "SIMTAB / PRIVACY & DATA",
+    "description": "SIMTAB / 隐私与数据"
+  },
+  "info_008": {
+    "message": "Learn where your content is stored, when it is accessed,",
+    "description": "了解你的内容存在哪里，何时会被访问，"
+  },
+  "info_009": {
+    "message": "and how to manage and delete it.",
+    "description": "以及如何管理和删除。"
+  },
+  "info_010": {
+    "message": "For the extension and web app",
+    "description": "适用于扩展与网页版"
+  },
+  "info_011": {
+    "message": "Updated",
+    "description": "更新于"
+  },
+  "info_012": {
+    "message": "October 22, 2026",
+    "description": "2026 年 10 月 22 日"
+  },
+  "info_013": {
+    "message": "Privacy policy summary",
+    "description": "隐私政策摘要"
+  },
+  "info_014": {
+    "message": "Local use",
+    "description": "本地使用"
+  },
+  "info_015": {
+    "message": "No sign-in required. Sites and settings stay in this browser.",
+    "description": "无需登录，网站与设置保存在当前浏览器。"
+  },
+  "info_016": {
+    "message": "Optional sync",
+    "description": "按需同步"
+  },
+  "info_017": {
+    "message": "Sign in and confirm to use separate account content in the cloud.",
+    "description": "登录并确认后，使用独立的账户云端内容。"
+  },
+  "info_018": {
+    "message": "Your permission",
+    "description": "主动授权"
+  },
+  "info_019": {
+    "message": "We ask for your permission before reading browser bookmarks.",
+    "description": "读取浏览器收藏夹前，会先请求你的授权。"
+  },
+  "info_020": {
+    "message": "On this page",
+    "description": "本页内容"
+  },
+  "info_021": {
+    "message": "Section navigation",
+    "description": "章节跳转"
+  },
+  "info_022": {
+    "message": "Account and cloud data",
+    "description": "账户与云端数据"
+  },
+  "info_024": {
+    "message": "Quick capture",
+    "description": "快捷收藏"
+  },
+  "info_025": {
+    "message": "Bookmarks and imported files",
+    "description": "收藏夹与导入文件"
+  },
+  "info_026": {
+    "message": "Network requests and third parties",
+    "description": "联网请求与第三方"
+  },
+  "info_027": {
+    "message": "Permissions",
+    "description": "权限用途"
+  },
+  "info_028": {
+    "message": "Deletion and control",
+    "description": "删除与控制"
+  },
+  "info_029": {
+    "message": "Contact and updates",
+    "description": "联系与更新"
+  },
+  "info_030": {
+    "message": "Full privacy policy",
+    "description": "隐私政策全文"
+  },
+  "info_031": {
+    "message": "SimTab uses Supabase for email registration, sign-in, and its cloud database, hosted in Singapore. The current interface uses email verification codes: Supabase Auth processes your email address and code, and the configured email provider, Resend, delivers the code. The app does not require a password or store plaintext passwords. After you sign in and choose to save to the cloud, spaces, groups, website titles and URLs, ordering, themes, and custom icon URLs (older settings may also contain remote wallpaper URLs) are uploaded to your account's cloud record. Database access is isolated by account. Supabase processes the network information and logs needed to provide the service.",
+    "description": "SimTab 使用 Supabase 提供邮箱注册、登录及云端数据库，项目位于新加坡。当前界面使用邮箱验证码登录，邮箱与验证码由 Supabase Auth 处理，验证码邮件通过配置的邮件服务商 Resend 发送；应用不要求设置密码，也不会保存明文密码。登录并选择保存到云端后，空间、分组、网站标题与地址、排序、主题及自定义图标地址（旧版配置还可能包含远程壁纸地址）会上传并保存在当前账户的云端记录中。数据库按账户隔离访问。Supabase 会处理服务所需的网络信息和日志。"
+  },
+  "info_032": {
+    "message": "You can use SimTab without signing in. When signed out, sites and settings stay in this browser. After signing in, you can choose cloud content or save the current page's content to the cloud. The app does not read or write account settings before you confirm your choice.",
+    "description": "无需登录即可使用。未登录时，网站和设置保存在当前浏览器。登录后，你可以选择使用云端内容，或将当前页面保存到云端；确认选择前，应用不会读写账户配置。"
+  },
+  "info_033": {
+    "message": "Local and cloud content are stored separately and are not automatically merged. Copying local content to the cloud replaces the current account's content and keeps a local copy. Signing out restores local content. Changes not yet synced to the cloud remain only in the current page.",
+    "description": "本地内容与云端内容独立保存，不会自动合并。将本地内容复制到云端会替换当前账户内容，本地副本仍会保留；退出登录后恢复本地内容。云端未同步的更改仅保留在当前页面。"
+  },
+  "info_034": {
+    "message": "The extension uses browser local storage; the web app uses ",
+    "description": "扩展使用浏览器本地存储，网页版使用"
+  },
+  "info_035": {
+    "message": "; sign-in credentials are also stored in ",
+    "description": "；登录凭证也保存在"
+  },
+  "info_036": {
+    "message": " to keep you signed in.",
+    "description": "，用于维持登录状态。"
+  },
+  "info_037": {
+    "message": "Uploaded wallpapers are stored separately in this browser and do not sync to your cloud account. When you export a JSON backup, it includes the local wallpaper. Importing a backup that contains a wallpaper stores the image in this browser. Clearing browser data or uninstalling the extension may delete local wallpapers.",
+    "description": "上传的壁纸独立保存在当前浏览器，不随账户同步到云端。主动导出 JSON 备份时，文件会包含本机壁纸；导入含有壁纸的备份时，图片会保存到当前浏览器。清除浏览器数据或卸载扩展可能删除本机壁纸。"
+  },
+  "info_038": {
+    "message": "The extension reads the current page's title and URL only after you click its toolbar icon, use its shortcut, or select its page context-menu action. Drafts are held in browser session storage. After you confirm a space and group, the site is saved locally or to the cloud according to the current mode. Cancelling adds nothing.",
+    "description": "仅在你点击扩展工具栏图标、使用快捷键或选择页面右键菜单后，扩展才读取当前页面标题和网址。草稿暂存于浏览器会话存储，确认空间和分组后按当前本地或云端状态保存；取消不会添加网站。"
+  },
+  "info_039": {
+    "message": "Drafts are cleared when saved, cancelled, or when the browser closes. A failed save may retain a draft for retry. Unhandled drafts expire after 30 minutes and are cleaned up during a later capture. The extension does not read page bodies, browsing history, or other tabs you have not explicitly selected.",
+    "description": "草稿在保存、取消或关闭浏览器时清除；保存失败时可能保留，以便重试。未处理的草稿在 30 分钟后失效，并在后续收藏时清理。扩展不读取页面正文、浏览历史或其他未主动选择的标签页。"
+  },
+  "info_040": {
+    "message": "Only after you open Browser bookmarks in the extension and grant bookmark permission does SimTab read bookmark titles, URLs, and folder paths through the browser API, so you can view and select links to add. SimTab never creates, modifies, or deletes native browser bookmarks. You can revoke permission in extension management. The web app cannot read browser bookmarks directly.",
+    "description": "只有在你打开扩展中的“我的收藏夹”并同意书签权限后，SimTab 才会通过浏览器的书签接口读取书签标题、网址和文件夹路径，用于展示和选择添加。SimTab 不创建、修改或删除浏览器原有书签。你可以在扩展管理中撤销权限。网页版不能直接读取收藏夹。"
+  },
+  "info_041": {
+    "message": "HTML bookmark files and JSON backups you select are read and parsed locally. Imported content is saved in the browser when signed out and to your account's cloud content when signed in. Exported files may contain private URLs; keep them secure.",
+    "description": "你主动选择的 HTML 书签文件和 JSON 备份在本地读取和解析，导入后的内容在未登录时保存在浏览器，登录后保存到当前账户云端。导出文件可能包含你的私人网址，请自行保管。"
+  },
+  "info_042": {
+    "message": "The extension uses the browser's favicon API for default icons; the browser may fetch or cache icons under its own rules. The web app gets website icons through ",
+    "description": "扩展的默认图标使用浏览器提供的 favicon 接口；浏览器可能按自身规则获取或缓存图标。网页版默认通过"
+  },
+  "info_043": {
+    "message": " by default. That service may receive the requested website's hostname, your network address, and standard request information. If an icon fails to load or times out, a text icon is generated locally.",
+    "description": "获取网站图标，该服务可能收到所请求网站的主机名、网络地址和常规请求信息。图标加载失败或超时后，会在本地生成文字图标。"
+  },
+  "info_044": {
+    "message": "Preset or custom remote icons send requests to the image provider. Imported older backups that contain third-party icon URLs also cause requests to those URLs. Third parties may retain access logs under their own policies.",
+    "description": "预设或你自定义的远程图标会向图片提供方发出请求。旧备份若含有第三方图标地址，导入后也会请求这些地址。第三方可能按其政策记录访问日志。"
+  },
+  "info_045": {
+    "message": "When you search, your query is sent to your selected search engine. As you type, Bing's suggestion service receives requests for suggestions. Opening a website takes you directly to that website, whose own privacy policy applies.",
+    "description": "搜索时，你输入的搜索词会传给你选择的搜索引擎，输入时会向 Bing 建议接口获取联想词。打开网站会直接访问该网站，其数据处理适用对方的隐私政策。"
+  },
+  "info_046": {
+    "message": "Cloudflare hosts the web app. When you visit, Cloudflare processes IP addresses, request information, and security logs needed to provide the service. GitHub provides source code, downloads, and issue reporting.",
+    "description": "网页版由 Cloudflare 托管。访问页面时 Cloudflare 会处理提供网络服务所需的 IP 地址、请求信息和安全日志。GitHub 提供源码、下载及问题反馈服务。"
+  },
+  "info_047": {
+    "message": "The app does not scrape website bodies. The extension does not load or execute remote scripts.",
+    "description": "应用不抓取目标网页正文；扩展不加载或执行远程脚本。"
+  },
+  "info_048": {
+    "message": ": Save and read local sites and settings when signed out, and read local content when you explicitly copy it to the cloud. Session storage temporarily holds capture drafts you initiate.",
+    "description": "：保存和读取未登录时的本地网站及设置，也可读取本地内容供你主动复制到云端；会话存储暂存你主动发起的收藏草稿。"
+  },
+  "info_049": {
+    "message": "Host permissions",
+    "description": "网站访问权限"
+  },
+  "info_050": {
+    "message": ": Access this app's Supabase domain for sign-in and sync, and Bing endpoints for search suggestions.",
+    "description": "：访问本应用的 Supabase 域名以完成登录与同步；访问 Bing 接口以获取搜索联想词。"
+  },
+  "info_051": {
+    "message": ": Temporarily read the current page title and URL for saving after you invoke the toolbar action or shortcut.",
+    "description": "：在你主动点击工具栏图标或使用快捷键后，临时读取当前页面标题和网址以便收藏。"
+  },
+  "info_052": {
+    "message": ": Provide the Save current page to SimTab page context-menu action.",
+    "description": "：提供“保存当前页面到 SimTab”页面右键菜单。"
+  },
+  "info_053": {
+    "message": ": Display website icons in the extension.",
+    "description": "：在扩展界面显示网站图标。"
+  },
+  "info_054": {
+    "message": " (optional): Read bookmarks for selective import after you grant permission.",
+    "description": "（可选）：在你主动授权后读取收藏夹供选择导入。"
+  },
+  "info_055": {
+    "message": "You can delete sites or groups and remove custom wallpaper. Changes are saved in the browser when signed out and synced to the cloud when signed in. The web app, extension, and other devices signed in to the same account can access the same data. Signing out clears the local sign-in state and restores local content.",
+    "description": "你可删除应用中的网站或分组、移除自定义壁纸，未登录时修改保存在浏览器，登录后修改同步到云端。网页、扩展和其他设备登录同一账户后可读取同一份数据。退出登录清除本机登录状态，并恢复本地内容。"
+  },
+  "info_056": {
+    "message": "Clearing browser data or uninstalling the extension may delete local content but does not delete cloud records. Downloaded backups must be deleted separately.",
+    "description": "清除浏览器数据或卸载扩展可能删除本地内容，但不会删除云端记录。已下载到磁盘的备份需单独删除。"
+  },
+  "info_057": {
+    "message": "To delete your account and all cloud records, contact the maintainer using the project feedback channel below. Do not include passwords, sign-in credentials, or private URLs in public reports.",
+    "description": "如需删除账户及全部云端记录，请通过下方项目反馈渠道联系维护者。请勿在公开反馈中提供密码、登录凭据或私人网址。"
+  },
+  "info_058": {
+    "message": "The project is maintained by GitHub account tgdcfgv. For privacy questions, use the ",
+    "description": "项目由 GitHub 账户 tgdcfgv 维护。隐私问题可通过"
+  },
+  "info_059": {
+    "message": "project issues page",
+    "description": "项目反馈页面"
+  },
+  "info_060": {
+    "message": ". Do not upload private bookmarks or credentials to public issues. We update this policy when features or data processing change.",
+    "description": "联系；请勿在公开问题中上传私人收藏夹或凭据。功能或数据处理方式发生变化时，我们会同步更新本政策。"
+  },
+  "info_061": {
+    "message": "· Simple. Organized. Focused.",
+    "description": "· 简洁，有序，专注。"
+  },
+  "info_062": {
+    "message": "Footer navigation",
+    "description": "页脚导航"
+  },
+  "info_063": {
+    "message": "Feedback and support",
+    "description": "反馈与支持"
+  },
+  "info_064": {
+    "message": "Download Extension · SimTab",
+    "description": "扩展下载 · SimTab"
+  },
+  "info_065": {
+    "message": "SIMTAB / BROWSER EXTENSION",
+    "description": "SIMTAB / 浏览器扩展"
+  },
+  "info_066": {
+    "message": "Make every new tab",
+    "description": "让每个新标签页，"
+  },
+  "info_067": {
+    "message": "a place for everything.",
+    "description": "都井然有序。"
+  },
+  "info_068": {
+    "message": "Keep favorite sites close and make saving and organizing easier.",
+    "description": "把常用网站留在手边，让收藏与整理更轻松。"
+  },
+  "info_069": {
+    "message": "Version 1.0.5",
+    "description": "版本 1.0.5"
+  },
+  "info_070": {
+    "message": "Download the SimTab extension",
+    "description": "下载 SimTab 扩展"
+  },
+  "info_071": {
+    "message": "Available in Microsoft Edge Add-ons, with manual installation from GitHub also supported.",
+    "description": "已上线 Microsoft Edge 加载项商店，也可从 GitHub 手动安装。"
+  },
+  "info_072": {
+    "message": "Install from Edge Add-ons",
+    "description": "从 Edge 商店安装"
+  },
+  "info_073": {
+    "message": "Other Chromium browsers: manual installation",
+    "description": "其他 Chromium 浏览器：手动安装"
+  },
+  "info_074": {
+    "message": "Go to ",
+    "description": "前往"
+  },
+  "info_075": {
+    "message": " and download ",
+    "description": "下载"
+  },
+  "info_076": {
+    "message": ", then follow the steps below. Edge users can use the store link above.",
+    "description": "，然后按以下步骤安装。Edge 用户可直接使用上方商店入口。"
+  },
+  "info_077": {
+    "message": "Download and unzip",
+    "description": "下载并解压"
+  },
+  "info_078": {
+    "message": "Unzip the ZIP file and keep the extracted folder. Keep it after installation too: the browser still needs to read the extension files from it.",
+    "description": "解压 ZIP 文件，保留解压后的文件夹。安装完成后也请保留，浏览器仍需从中读取扩展文件。"
+  },
+  "info_079": {
+    "message": "Open extension management",
+    "description": "打开扩展管理"
+  },
+  "info_080": {
+    "message": "Copy the appropriate address below into your browser's address bar, open it, then enable Developer mode.",
+    "description": "复制下方对应地址，粘贴到浏览器地址栏并打开，再开启“开发者模式”或“开发人员模式”。"
+  },
+  "info_081": {
+    "message": "Copy Chrome extensions address",
+    "description": "复制 Chrome 扩展地址"
+  },
+  "info_082": {
+    "message": "Copy",
+    "description": "复制"
+  },
+  "info_083": {
+    "message": "Copy Edge extensions address",
+    "description": "复制 Edge 扩展地址"
+  },
+  "info_084": {
+    "message": "In other Chromium browsers, open extension management from the browser menu.",
+    "description": "其他 Chromium 浏览器可从菜单进入扩展管理页面。"
+  },
+  "info_085": {
+    "message": "Load the extension folder",
+    "description": "加载扩展文件夹"
+  },
+  "info_086": {
+    "message": "Click Load unpacked and select the folder containing ",
+    "description": "点击“加载解压缩的扩展”，选择包含"
+  },
+  "info_087": {
+    "message": ".",
+    "description": "的文件夹。"
+  },
+  "info_088": {
+    "message": "Open a new tab",
+    "description": "打开新标签页"
+  },
+  "info_089": {
+    "message": "New tabs will show SimTab. If the browser asks whether to keep the change, choose to keep it.",
+    "description": "新标签页将显示 SimTab。如浏览器询问是否保留此更改，选择保留即可。"
+  },
+  "info_090": {
+    "message": "Usage instructions",
+    "description": "使用说明"
+  },
+  "info_091": {
+    "message": "Get started",
+    "description": "开始使用"
+  },
+  "info_092": {
+    "message": "Bring your bookmarks",
+    "description": "把收藏带过来"
+  },
+  "info_093": {
+    "message": "Open Browser bookmarks in the extension's website library, grant permission, then select bookmarks to add.",
+    "description": "在扩展的网站库中打开“我的收藏夹”，授权后即可选择添加书签。"
+  },
+  "info_094": {
+    "message": "In the web app, import an exported browser bookmark HTML file in Settings → Data.",
+    "description": "网页版可在“设置 → 数据”中导入浏览器导出的 HTML 书签文件。"
+  },
+  "info_095": {
+    "message": "Sync across devices",
+    "description": "在设备间同步"
+  },
+  "info_096": {
+    "message": "Sign in to the same account in the web app and extension, then choose cloud content to access the same collection.",
+    "description": "网页与扩展登录同一账户，并选择使用云端内容，即可访问同一份收藏。"
+  },
+  "info_097": {
+    "message": "Use local content when signed out; signing out restores it. Copying local content to the cloud replaces account content and keeps a local copy.",
+    "description": "未登录时使用本地内容，退出登录后恢复本地内容。将本地内容复制到云端会替换账户内容，并保留本地副本。"
+  },
+  "info_098": {
+    "message": "Backup and restore",
+    "description": "备份与恢复"
+  },
+  "info_099": {
+    "message": "Export a JSON backup in Settings → Data. Restoring a backup replaces current content, so export a copy first.",
+    "description": "在“设置 → 数据”中导出 JSON 备份。恢复备份会覆盖当前内容，操作前请先导出留存。"
+  },
+  "info_100": {
+    "message": "About data and permissions",
+    "description": "了解数据与权限"
+  },
+  "info_101": {
+    "message": "Page language",
+    "description": "页面语言"
+  },
+  "info_102": {
+    "message": "Switch to light mode",
+    "description": "切换为浅色模式"
+  },
+  "info_103": {
+    "message": "Switch to dark mode",
+    "description": "切换为深色模式"
+  },
+  "info_104": {
+    "message": "Copied",
+    "description": "已复制"
   }
 }

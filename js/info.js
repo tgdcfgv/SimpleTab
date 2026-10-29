@@ -1,10 +1,54 @@
+import { LANGUAGES, getLocale, loadLocale, t } from './i18n.js';
+
 /**
  * SimTab Info Pages Utilities (install.html & privacy.html)
  * Lightweight, CSP-compliant, zero external dependencies.
  */
 
-(() => {
+(async () => {
   'use strict';
+
+  // Capture only these static information pages, never user-authored app content.
+  // Keep the original nodes so switching language preserves links, code and icons.
+  const textNodes = [];
+  const walker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (!node.parentElement.closest('script, style, select') && node.textContent.trim()) {
+      textNodes.push([node, node.textContent]);
+    }
+  }
+  const attributes = [];
+  document.querySelectorAll('[title], [aria-label]').forEach(element => {
+    for (const name of ['title', 'aria-label']) {
+      if (element.hasAttribute(name)) attributes.push([element, name, element.getAttribute(name)]);
+    }
+  });
+  const languageSelect = document.getElementById('infoLanguage');
+  let catalogLoaded = false;
+  function renderLanguage() {
+    for (const [node, source] of textNodes) node.textContent = t(source);
+    for (const [element, name, source] of attributes) element.setAttribute(name, t(source));
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.textContent = t(button.classList.contains('copied') ? '已复制' : '复制');
+    });
+    if (languageSelect) languageSelect.value = catalogLoaded ? getLocale() : 'zh_CN';
+    document.documentElement.lang = catalogLoaded ? getLocale().replace('_', '-') : 'zh-CN';
+  }
+  let language = getLocale();
+  try {
+    if (globalThis.chrome?.storage?.local) {
+      const stored = await chrome.storage.local.get(['appData', 'simtab-language']);
+      language = stored['simtab-language'] || localStorage.getItem('simtab-language') || stored.appData?.settings?.language || language;
+    }
+    await loadLocale(language);
+    catalogLoaded = true;
+  } catch (error) {
+    console.error('Could not load information page language', error);
+    // Static source remains usable if the catalog cannot be loaded.
+    document.documentElement.lang = 'zh-CN';
+  }
+  renderLanguage();
 
   // --- Theme Management ---
   function getSavedThemePreference() {
@@ -42,12 +86,12 @@
     if (!btn) return;
     if (activeTheme === 'dark') {
       btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun" aria-hidden="true" style="--ui-icon-size: 18px"><circle cx="12" cy="12" r="4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="m17.66 17.66 1.41 1.41" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.34 17.66-1.41 1.41" /> <path d="m19.07 4.93-1.41 1.41" /></svg>`;
-      btn.title = '切换为浅色模式';
-      btn.setAttribute('aria-label', '切换为浅色模式');
+      btn.title = t('切换为浅色模式');
+      btn.setAttribute('aria-label', t('切换为浅色模式'));
     } else {
       btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon" aria-hidden="true" style="--ui-icon-size: 18px"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></svg>`;
-      btn.title = '切换为深色模式';
-      btn.setAttribute('aria-label', '切换为深色模式');
+      btn.title = t('切换为深色模式');
+      btn.setAttribute('aria-label', t('切换为深色模式'));
     }
   }
 
@@ -62,7 +106,26 @@
   });
 
   // --- Initialize interactive features on DOM ready ---
-  document.addEventListener('DOMContentLoaded', () => {
+  function initialize() {
+    languageSelect?.addEventListener('change', async () => {
+      const next = languageSelect.value;
+      if (!LANGUAGES.some(item => item.id === next)) return;
+      languageSelect.disabled = true;
+      try {
+        await loadLocale(next);
+        catalogLoaded = true;
+        renderLanguage();
+        applyTheme(currentPreference);
+        if (globalThis.chrome?.storage?.local) {
+          await chrome.storage.local.set({ 'simtab-language': next });
+        }
+      } catch (error) {
+        languageSelect.value = getLocale();
+        console.error('Could not change information page language', error);
+      } finally {
+        languageSelect.disabled = false;
+      }
+    });
     // 1. Theme toggle button click
     const themeBtn = document.getElementById('themeToggleBtn');
     if (themeBtn) {
@@ -86,28 +149,20 @@
 
         try {
           await navigator.clipboard.writeText(textToCopy);
-          const originalText = btn.innerHTML;
-          btn.classList.add('copied');
-          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check" aria-hidden="true" style="--ui-icon-size: 14px"><circle cx="12" cy="12" r="10" /> <path d="m16 9-5.5 5.5L8 12" /></svg> 已复制`;
-          setTimeout(() => {
-            btn.classList.remove('copied');
-            btn.innerHTML = originalText;
-          }, 2000);
         } catch {
-          // Fallback if clipboard API fails
           const input = document.createElement('textarea');
           input.value = textToCopy;
           document.body.appendChild(input);
           input.select();
           document.execCommand('copy');
-          document.body.removeChild(input);
-          btn.classList.add('copied');
-          btn.textContent = '已复制';
-          setTimeout(() => {
-            btn.classList.remove('copied');
-            btn.textContent = '复制';
-          }, 2000);
+          input.remove();
         }
+        btn.classList.add('copied');
+        btn.textContent = t('已复制');
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.textContent = t('复制');
+        }, 2000);
       });
     });
 
@@ -141,5 +196,7 @@
         sections.forEach(sec => observer.observe(sec));
       }
     }
-  });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  else initialize();
 })();
