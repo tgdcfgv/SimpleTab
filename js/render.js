@@ -36,9 +36,17 @@ export function render() {
     c.addEventListener('dragover', (e) => {
       if (draggedItemType !== 'group') return;
       e.preventDefault();
+      if (c.contains(draggedItem) || e.target.closest('.group-card')) {
+        c.classList.remove('drag-over-col');
+        return;
+      }
       c.classList.add('drag-over-col');
     });
-    c.addEventListener('dragleave', () => c.classList.remove('drag-over-col'));
+    c.addEventListener('dragleave', (e) => {
+      if (!c.contains(e.relatedTarget)) {
+        c.classList.remove('drag-over-col');
+      }
+    });
     c.addEventListener('drop', (e) => {
       if (draggedItemType !== 'group') return;
       e.preventDefault();
@@ -67,9 +75,14 @@ export function render() {
     card.addEventListener('dragend', handleDragEnd);
 
     card.addEventListener('dragover', (e) => {
-      if (draggedItemType !== 'group' || draggedItem === card) return;
+      if (draggedItemType !== 'group') return;
       e.preventDefault();
       e.stopPropagation();
+      card.closest('.group-col')?.classList.remove('drag-over-col');
+      if (draggedItem === card) {
+        card.classList.remove('drag-over-top', 'drag-over-bottom');
+        return;
+      }
       const rect = card.getBoundingClientRect();
       const mid = rect.top + rect.height / 2;
       if (e.clientY < mid) {
@@ -81,15 +94,18 @@ export function render() {
       }
     });
 
-    card.addEventListener('dragleave', () => {
-      card.classList.remove('drag-over-top', 'drag-over-bottom');
+    card.addEventListener('dragleave', (e) => {
+      if (!card.contains(e.relatedTarget)) {
+        card.classList.remove('drag-over-top', 'drag-over-bottom');
+      }
     });
 
     card.addEventListener('drop', (e) => {
-      if (draggedItemType !== 'group' || draggedItem === card) return;
+      if (draggedItemType !== 'group') return;
       e.preventDefault();
       e.stopPropagation();
       card.classList.remove('drag-over-top', 'drag-over-bottom');
+      if (draggedItem === card) return;
       const sourceId = draggedItem.dataset.id;
       const targetColIndex = parseInt(card.closest('.group-col').dataset.colIndex);
       const rect = card.getBoundingClientRect();
@@ -224,6 +240,42 @@ export function render() {
 
   cols.forEach(col => {
     container.appendChild(col);
+  });
+}
+
+export function syncGroupDomAfterSiteDrag() {
+  const openLinksInNewTab = !!appData.settings.openLinksInNewTab;
+  const linkTargetAttrs = openLinksInNewTab ? ' target="_blank" rel="noopener noreferrer"' : '';
+
+  document.querySelectorAll('.group-card[data-id]').forEach(card => {
+    const group = appData.groups.find(item => item.id === card.dataset.id);
+    if (!group) return;
+
+    const grid = card.querySelector('.sites-grid');
+    if (grid) {
+      const hasSites = grid.querySelector(':scope > .site-btn') !== null;
+      const emptyState = grid.querySelector(':scope > .empty-group-state');
+      if (!hasSites && !emptyState) {
+        grid.innerHTML = t`<div class="empty-group-state">拖拽网站到此处</div>`;
+      } else if (hasSites && emptyState) {
+        emptyState.remove();
+      }
+    }
+
+    const collapsedIcons = card.querySelector('.group-collapsed-icons');
+    if (collapsedIcons) {
+      collapsedIcons.innerHTML = group.links.slice(0, 6).map(link => {
+        const iconSrc = letterBadge(link.url, link.title);
+        return `
+          <a href="${escapeHTML(link.url)}" class="collapsed-icon-link" title="${escapeHTML(link.title)}"${linkTargetAttrs}>
+            <img src="${escapeHTML(iconSrc)}" alt="" loading="lazy">
+          </a>
+        `;
+      }).join('');
+      collapsedIcons.querySelectorAll('.collapsed-icon-link img').forEach((image, index) => {
+        loadSiteIcon(image, group.links[index]);
+      });
+    }
   });
 }
 

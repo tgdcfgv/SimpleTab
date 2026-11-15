@@ -1,6 +1,6 @@
 import { t } from './i18n.js';
 import { appData, syncManager } from './storage.js';
-import { render } from './render.js';
+import { render, syncGroupDomAfterSiteDrag } from './render.js';
 import { extractDroppedLink } from './urls.js';
 
 
@@ -8,10 +8,11 @@ export let draggedItem = null;
 export let draggedItemType = null; // 'site', 'dock-site', 'dock-item' or 'group'
 let siteOrderChanged = false;
 
-function captureSiteRects() {
-  return new Map(
-    Array.from(document.querySelectorAll('.site-btn')).map(item => [item, item.getBoundingClientRect()])
-  );
+function captureSiteRects(grids) {
+  const elements = grids?.length
+    ? grids.flatMap(grid => Array.from(grid.querySelectorAll(':scope > .site-btn')))
+    : Array.from(document.querySelectorAll('.site-btn'));
+  return new Map(elements.map(item => [item, item.getBoundingClientRect()]));
 }
 
 function getLayoutPosition(element) {
@@ -26,12 +27,18 @@ function getLayoutPosition(element) {
   return { left, top };
 }
 
-function animateSiteReflow(previousRects) {
-  document.querySelectorAll('.site-btn').forEach(item => {
+function animateSiteReflow(previousRects, grids) {
+  const elements = grids?.length
+    ? grids.flatMap(grid => Array.from(grid.querySelectorAll(':scope > .site-btn')))
+    : Array.from(document.querySelectorAll('.site-btn'));
+
+  elements.forEach(item => {
     if (item === draggedItem) return;
     const previous = previousRects.get(item);
     if (!previous) return;
-    item.getAnimations().forEach(animation => animation.cancel());
+    item.getAnimations().forEach(animation => {
+      if (!(animation instanceof CSSTransition)) animation.cancel();
+    });
     const current = item.getBoundingClientRect();
     const deltaX = previous.left - current.left;
     const deltaY = previous.top - current.top;
@@ -43,8 +50,8 @@ function animateSiteReflow(previousRects) {
         { transform: 'translate(0, 0)' }
       ],
       {
-        duration: 190,
-        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
+        duration: 280,
+        easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
       }
     );
   });
@@ -74,12 +81,13 @@ function moveDraggedSite(targetGrid, referenceNode = null) {
     : draggedItem.parentElement === targetGrid && draggedItem === targetGrid.lastElementChild;
   if (isAlreadyPlaced) return;
 
-  const previousRects = captureSiteRects();
+  const affectedGrids = [...new Set([draggedItem.parentElement, targetGrid].filter(Boolean))];
+  const previousRects = captureSiteRects(affectedGrids);
   targetGrid.querySelector('.empty-group-state')?.remove();
   targetGrid.insertBefore(draggedItem, referenceNode);
   syncSiteOrderFromDom();
   siteOrderChanged = true;
-  animateSiteReflow(previousRects);
+  animateSiteReflow(previousRects, affectedGrids);
 }
 
 export function handleDragStart(e) {
@@ -106,7 +114,10 @@ export function handleGroupDragStart(e) {
   draggedItem.classList.add('group-drag-surface');
   e.dataTransfer.setDragImage(draggedItem, e.clientX - draggedItem.getBoundingClientRect().left, e.clientY - draggedItem.getBoundingClientRect().top);
   const card = draggedItem;
-  setTimeout(() => { if (draggedItem === card) card.classList.add('dragging-group'); }, 0);
+  setTimeout(() => {
+    card.classList.remove('group-drag-surface');
+    if (draggedItem === card) card.classList.add('dragging-group');
+  }, 0);
 }
 
 export function handleDockDragStart(e) {
@@ -121,12 +132,14 @@ export function handleDockDragStart(e) {
 export function moveGroupTo(sourceId, colIndex, targetId = null, position = 'after') {
   // Persist the visible placement before reordering so drops work at every width.
   const columns = document.querySelectorAll('#groupsContainer > .group-col');
+  const prevPlacement = appData.groups.map(g => `${g.id}:${g.column}:${g.columnCount}`).join('|');
   columns.forEach((column, index) => {
     column.querySelectorAll(':scope > .group-card').forEach(card => {
       const group = appData.groups.find(item => item.id === card.dataset.id);
       if (group) { group.column = index; group.columnCount = columns.length; }
     });
   });
+  const visiblePlacement = appData.groups.map(g => `${g.id}:${g.column}:${g.columnCount}`).join('|');
   const sourceIndex = appData.groups.findIndex(g => g.id === sourceId);
   if (sourceIndex === -1) return;
   const sourceGroup = appData.groups[sourceIndex];
@@ -148,6 +161,8 @@ export function moveGroupTo(sourceId, colIndex, targetId = null, position = 'aft
     }
     appData.groups.splice(insertIndex, 0, sourceGroup);
   }
+  const nextPlacement = appData.groups.map(g => `${g.id}:${g.column}:${g.columnCount}`).join('|');
+  if (nextPlacement === visiblePlacement && prevPlacement === nextPlacement) return;
   syncManager.saveData();
   render();
 }
@@ -176,8 +191,8 @@ export function handleDragEnd(e) {
   document.querySelectorAll('.drag-over-col').forEach(el => el.classList.remove('drag-over-col'));
   document.querySelectorAll('.sites-grid.is-sorting').forEach(grid => grid.classList.remove('is-sorting'));
   if (draggedItemType === 'site' && siteOrderChanged) {
+    syncGroupDomAfterSiteDrag();
     syncManager.saveData();
-    render();
   }
   draggedItem = null;
   draggedItemType = null;
@@ -191,30 +206,135 @@ export function handleDragOverGroup(e) {
   if (!grid) return;
   e.dataTransfer.dropEffect = 'move';
 
-  const items = Array.from(grid.querySelectorAll(':scope > .site-btn'))
-    .filter(item => item !== draggedItem);
+  const allItems = Array.from(grid.querySelectorAll(':scope > .site-btn'));
+  const currentIndex = allItems.indexOf(draggedItem);
+  const gridRect = grid.getBoundingClientRect();
+  const pointerX = e.clientX - gridRect.left + grid.scrollLeft;
+  const pointerY = e.clientY - gridRect.top + grid.scrollTop;
+  const gridLayout = getLayoutPosition(grid);
+
+  if (currentIndex !== -1) {
+    if (allItems.length <= 1) return;
+
+    const slots = allItems.map((item, index) => {
+      const itemLayout = getLayoutPosition(item);
+      const left = itemLayout.left - gridLayout.left;
+      const top = itemLayout.top - gridLayout.top;
+      const width = item.offsetWidth;
+      const height = item.offsetHeight;
+      return {
+        item,
+        index,
+        left,
+        top,
+        width,
+        height,
+        right: left + width,
+        bottom: top + height,
+        centerX: left + width / 2,
+        centerY: top + height / 2
+      };
+    });
+
+    const currentSlot = slots[currentIndex];
+    if (
+      pointerX >= currentSlot.left - 2 &&
+      pointerX <= currentSlot.right + 2 &&
+      pointerY >= currentSlot.top - 2 &&
+      pointerY <= currentSlot.bottom + 2
+    ) {
+      return;
+    }
+
+    const rows = [];
+    slots.forEach(slot => {
+      let row = rows.find(candidate => Math.abs(candidate.top - slot.top) < 4);
+      if (!row) {
+        row = { top: slot.top, height: slot.height, bottom: slot.bottom, centerY: slot.centerY, items: [] };
+        rows.push(row);
+      }
+      row.items.push(slot);
+    });
+    rows.sort((a, b) => a.top - b.top);
+    rows.forEach((row, idx) => {
+      row.rowIndex = idx;
+      row.items.sort((a, b) => a.left - b.left);
+    });
+
+    const currentRowIndex = rows.findIndex(r => r.items.some(s => s.index === currentIndex));
+    let rowIndex = rows.length - 1;
+    for (let index = 0; index < rows.length - 1; index++) {
+      const midY = (rows[index].centerY + rows[index + 1].centerY) / 2;
+      const hysteresis = index === currentRowIndex
+        ? rows[index].height * 0.15
+        : index + 1 === currentRowIndex
+          ? -rows[index + 1].height * 0.15
+          : 0;
+      if (pointerY < midY + hysteresis) {
+        rowIndex = index;
+        break;
+      }
+    }
+
+    const row = rows[rowIndex];
+    if (rowIndex > currentRowIndex && pointerY < row.top + row.height * 0.2) return;
+    if (rowIndex < currentRowIndex && pointerY > row.bottom - row.height * 0.2) return;
+
+    let targetSlot = null;
+    const lastInRow = row.items.at(-1);
+    const firstInRow = row.items[0];
+    if (pointerX > lastInRow.right) {
+      if (rowIndex === rows.length - 1) {
+        moveDraggedSite(grid, null);
+        return;
+      }
+      targetSlot = lastInRow;
+    } else if (pointerX < firstInRow.left) {
+      targetSlot = firstInRow;
+    } else {
+      const hoveredSlot = row.items.find(s => pointerX >= s.left && pointerX <= s.right);
+      if (!hoveredSlot || hoveredSlot.item === draggedItem) return;
+      if (rowIndex === currentRowIndex) {
+        const edgeInset = hoveredSlot.width * 0.28;
+        if (currentIndex < hoveredSlot.index && pointerX < hoveredSlot.left + edgeInset) return;
+        if (currentIndex > hoveredSlot.index && pointerX > hoveredSlot.right - edgeInset) return;
+      } else {
+        const crossInset = hoveredSlot.width * 0.08;
+        if (pointerX < hoveredSlot.left + crossInset || pointerX > hoveredSlot.right - crossInset) return;
+      }
+      targetSlot = hoveredSlot;
+    }
+
+    if (!targetSlot || targetSlot.item === draggedItem) return;
+    const referenceNode = currentIndex < targetSlot.index
+      ? targetSlot.item.nextElementSibling
+      : targetSlot.item;
+    moveDraggedSite(grid, referenceNode);
+    return;
+  }
+
+  const items = allItems.filter(item => item !== draggedItem);
   if (items.length === 0) {
     moveDraggedSite(grid);
     return;
   }
 
-  const gridRect = grid.getBoundingClientRect();
-  const pointerX = e.clientX - gridRect.left + grid.scrollLeft;
-  const pointerY = e.clientY - gridRect.top + grid.scrollTop;
-  const gridLayout = getLayoutPosition(grid);
   const rows = [];
-
   items.forEach(item => {
     const itemLayout = getLayoutPosition(item);
+    const top = itemLayout.top - gridLayout.top;
+    const height = item.offsetHeight;
     const metric = {
       item,
       left: itemLayout.left - gridLayout.left,
-      top: itemLayout.top - gridLayout.top,
-      width: item.offsetWidth
+      top,
+      width: item.offsetWidth,
+      height,
+      centerY: top + height / 2
     };
-    let row = rows.find(candidate => Math.abs(candidate.top - metric.top) < 2);
+    let row = rows.find(candidate => Math.abs(candidate.top - metric.top) < 4);
     if (!row) {
-      row = { top: metric.top, items: [] };
+      row = { top: metric.top, centerY: metric.centerY, items: [] };
       rows.push(row);
     }
     row.items.push(metric);
@@ -224,7 +344,7 @@ export function handleDragOverGroup(e) {
 
   let rowIndex = rows.length - 1;
   for (let index = 0; index < rows.length - 1; index++) {
-    const boundary = (rows[index].top + rows[index + 1].top) / 2;
+    const boundary = (rows[index].centerY + rows[index + 1].centerY) / 2;
     if (pointerY < boundary) {
       rowIndex = index;
       break;

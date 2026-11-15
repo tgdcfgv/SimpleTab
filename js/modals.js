@@ -5,7 +5,7 @@ import { safeWebUrl, safeImageUrl, deriveSiteTitle } from './urls.js';
 import { icon } from './icons.js';
 import { appData, SEARCH_ENGINES, syncManager } from './storage.js';
 import { generateId, getFaviconUrl } from './utils.js';
-import { invalidateSiteIcon } from './site-icons.js';
+import { invalidateSiteIcon, refreshAllSiteIcons } from './site-icons.js';
 import { applySettings, render } from './render.js';
 import { searchInput, showResults } from './search.js';
 import { appStoreModal, currentStoreGroupId, renderAppStoreCategory, renderStoreGroupSelection, renderStoreMenu, setStoreSelectionFromGroup } from './store.js';
@@ -670,6 +670,30 @@ document.getElementById('clearWallpaperBtn').addEventListener('click', async () 
     applySettings();
     await updateWallpaperPreview();
   } catch (error) { showToast(t`移除壁纸失败：${error.message}`); }
+});
+
+async function handleRefreshIcons() {
+  const buttons = document.querySelectorAll('[data-refresh-icons]');
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    btn.textContent = t('正在刷新…');
+  });
+  try {
+    await refreshAllSiteIcons();
+    render();
+    showToast(t('图标已刷新'));
+  } catch (error) {
+    showToast(t`图标刷新失败：${error.message}`);
+  } finally {
+    buttons.forEach(btn => {
+      btn.disabled = false;
+      btn.textContent = t('刷新图标');
+    });
+  }
+}
+
+document.querySelectorAll('[data-refresh-icons]').forEach(button => {
+  button.addEventListener('click', handleRefreshIcons);
 });
 
 document.getElementById('exportBtnNew').addEventListener('click', async () => {

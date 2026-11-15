@@ -189,7 +189,7 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
   .custom-select-trigger-global, .custom-option-global, .context-menu-item,
   .store-link-item, .space-editor-item, .profile-avatar-input,
   .number-stepper, .card-display-control
-):not(#settingsModal, #settingsModal *):not(.space-dock-btn.active, .modal-close-btn, .search-container .custom-select-trigger-global):not(:disabled):hover {
+):not(#settingsModal, #settingsModal *):not(.space-dock-btn.active, .modal-close-btn, .search-container .custom-select-trigger-global, .sites-grid.is-sorting .site-btn, .dragging, .dragging-group):not(:disabled):hover {
   background: var(--control-hover-bg) !important;
   border-color: transparent;
   box-shadow: none;

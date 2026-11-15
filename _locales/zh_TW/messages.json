@@ -2180,8 +2180,8 @@
     "description": "把常用网站留在手边，让收藏与整理更轻松。"
   },
   "info_069": {
-    "message": "版本 1.0.5",
-    "description": "版本 1.0.5"
+    "message": "版本 1.0.6",
+    "description": "版本 1.0.6"
   },
   "info_070": {
     "message": "下載 SimTab 擴充功能",
@@ -2322,5 +2322,213 @@
   "info_104": {
     "message": "已複製",
     "description": "已复制"
+  },
+  "ui_0472": {
+    "message": "網站圖示快取",
+    "description": "网站图标缓存"
+  },
+  "ui_0473": {
+    "message": "清除本機圖示快取並重新擷取所有網站圖示",
+    "description": "清空本地图标缓存并重新获取所有网站图标"
+  },
+  "ui_0474": {
+    "message": "重新整理圖示",
+    "description": "刷新图标"
+  },
+  "ui_0475": {
+    "message": "正在重新整理…",
+    "description": "正在刷新…"
+  },
+  "ui_0476": {
+    "message": "圖示已重新整理",
+    "description": "图标已刷新"
+  },
+  "ui_0477": {
+    "message": "圖示重新整理失敗：{0}",
+    "description": "图标刷新失败：{0}"
+  },
+  "ui_0478": {
+    "message": "子分類篩選",
+    "description": "二级分类筛选"
+  },
+  "ui_0479": {
+    "message": "全部",
+    "description": "全部"
+  },
+  "ui_0480": {
+    "message": "全選本組",
+    "description": "全选本组"
+  },
+  "ui_0481": {
+    "message": "取消本組",
+    "description": "取消本组"
+  },
+  "ui_0482": {
+    "message": "根目錄書籤",
+    "description": "根目录书签"
+  },
+  "ui_0483": {
+    "message": "常用推薦",
+    "description": "常用推荐"
+  },
+  "ui_0484": {
+    "message": "對話與助手",
+    "description": "对话与助手"
+  },
+  "ui_0485": {
+    "message": "AI 辦公與智慧體",
+    "description": "AI 办公与智能体"
+  },
+  "ui_0486": {
+    "message": "AI 程式設計與開發",
+    "description": "AI 编程与开发"
+  },
+  "ui_0487": {
+    "message": "視覺與音訊生成",
+    "description": "视觉与音频生成"
+  },
+  "ui_0488": {
+    "message": "文件與筆記",
+    "description": "文档与笔记"
+  },
+  "ui_0489": {
+    "message": "團隊協作與溝通",
+    "description": "团队协作与沟通"
+  },
+  "ui_0490": {
+    "message": "任務與專案管理",
+    "description": "任务与项目管理"
+  },
+  "ui_0491": {
+    "message": "白板與流程圖",
+    "description": "白板与流程图"
+  },
+  "ui_0492": {
+    "message": "信箱與行事曆",
+    "description": "邮箱与日程"
+  },
+  "ui_0493": {
+    "message": "辦公實用工具",
+    "description": "办公实用工具"
+  },
+  "ui_0494": {
+    "message": "程式碼託管與協作",
+    "description": "代码托管与协作"
+  },
+  "ui_0495": {
+    "message": "雲端服務與部署",
+    "description": "云服务与部署"
+  },
+  "ui_0496": {
+    "message": "開發工具與文件",
+    "description": "开发工具与文档"
+  },
+  "ui_0497": {
+    "message": "技術社群與題庫",
+    "description": "技术社区与题库"
+  },
+  "ui_0498": {
+    "message": "設計工具與原型",
+    "description": "设计工具与原型"
+  },
+  "ui_0499": {
+    "message": "靈感與作品社群",
+    "description": "灵感与作品社区"
+  },
+  "ui_0500": {
+    "message": "高畫質圖庫與影片",
+    "description": "高清图库与视频"
+  },
+  "ui_0501": {
+    "message": "圖示、字型與動效",
+    "description": "图标、字体与动效"
+  },
+  "ui_0502": {
+    "message": "配色與影像處理",
+    "description": "配色与图像处理"
+  },
+  "ui_0503": {
+    "message": "熱門社群",
+    "description": "热门社区"
+  },
+  "ui_0504": {
+    "message": "國際社交與論壇",
+    "description": "国际社交与论坛"
+  },
+  "ui_0505": {
+    "message": "即時通訊與頻道",
+    "description": "即时通讯与频道"
+  },
+  "ui_0506": {
+    "message": "音樂與 Podcast",
+    "description": "音乐与播客"
+  },
+  "ui_0507": {
+    "message": "影片、影視與創作",
+    "description": "视频、影视与创作"
+  },
+  "ui_0508": {
+    "message": "遊戲與直播",
+    "description": "游戏与直播"
+  },
+  "ui_0509": {
+    "message": "音樂與文化媒體",
+    "description": "音乐与文化媒体"
+  },
+  "ui_0510": {
+    "message": "科技與數位",
+    "description": "科技与数码"
+  },
+  "ui_0511": {
+    "message": "財經與商業",
+    "description": "财经与商业"
+  },
+  "ui_0512": {
+    "message": "綜合新聞與國際媒體",
+    "description": "综合新闻与国际媒体"
+  },
+  "ui_0513": {
+    "message": "論文檢索與文獻",
+    "description": "论文检索与文献"
+  },
+  "ui_0514": {
+    "message": "線上課程與資料科學",
+    "description": "在线课程与数据科学"
+  },
+  "ui_0515": {
+    "message": "百科、計算與電子書",
+    "description": "百科、计算与电子书"
+  },
+  "ui_0516": {
+    "message": "華語網碟與快傳",
+    "description": "国内网盘与快传"
+  },
+  "ui_0517": {
+    "message": "國際雲端儲存",
+    "description": "国际云端存储"
+  },
+  "ui_0518": {
+    "message": "綜合電商與海淘",
+    "description": "综合电商与海淘"
+  },
+  "ui_0519": {
+    "message": "導購、潮流與二手",
+    "description": "导购、潮流与二手"
+  },
+  "ui_0520": {
+    "message": "在地生活與外送",
+    "description": "本地生活与外卖"
+  },
+  "ui_0521": {
+    "message": "地圖與叫車",
+    "description": "地图与打车"
+  },
+  "ui_0522": {
+    "message": "機酒預訂與票務",
+    "description": "机酒预订与票务"
+  },
+  "ui_0523": {
+    "message": "航班與行程服務",
+    "description": "航班与行程服务"
   }
 }

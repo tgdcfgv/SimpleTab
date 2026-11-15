@@ -1,5 +1,5 @@
 import { escapeHTML, getFaviconUrl } from './utils.js';
-import { readIconCache, writeIconCache } from './icon-cache.js';
+import { clearIconCache, readIconCache, writeIconCache } from './icon-cache.js';
 
 const colors = ['#4338CA', '#0369A1', '#047857', '#A16207', '#B91C1C', '#A21CAF', '#6D28D9', '#0F766E'];
 const requests = new Map();
@@ -31,6 +31,22 @@ export async function invalidateSiteIcon(url) {
   const source = getFaviconUrl(url);
   requests.delete(source);
   await writeIconCache(source, null);
+}
+
+export async function refreshAllSiteIcons(links = [], { timeoutMs = 5000 } = {}) {
+  requests.clear();
+  nativeFallbacks.clear();
+  await clearIconCache();
+  if (Array.isArray(links) && links.length > 0) {
+    const sources = new Set();
+    for (const link of links) {
+      if (!link?.url && !link?.customIcon) continue;
+      sources.add(link.customIcon || getFaviconUrl(link.url));
+    }
+    await Promise.allSettled(
+      Array.from(sources, source => resolveIcon(source, timeoutMs).promise)
+    );
+  }
 }
 
 function localImage(image) {

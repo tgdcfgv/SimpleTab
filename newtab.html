@@ -344,6 +344,15 @@
               <div class="setting-copy"><label for="iconSizeSlider" data-i18n="图标大小">图标大小</label></div>
               <div class="setting-control setting-slider"><input type="range" id="iconSizeSlider" min="16" max="48" value="24"><span id="iconSizeValue">24px</span></div>
             </div>
+            <div class="setting-item">
+              <div class="setting-copy">
+                <span data-i18n="网站图标缓存">网站图标缓存</span>
+                <small data-i18n="清空本地图标缓存并重新获取所有网站图标">清空本地图标缓存并重新获取所有网站图标</small>
+              </div>
+              <div class="setting-control">
+                <button type="button" class="btn secondary btn-sm" id="refreshIconsBtn" data-refresh-icons data-i18n="刷新图标">刷新图标</button>
+              </div>
+            </div>
 
           </div>
 
@@ -478,7 +487,10 @@
             <p id="guideImportStatus" role="status" aria-live="polite"></p>
           </div>
           <h5 class="settings-subheading" data-i18n="网站整理">网站整理</h5>
-          <div class="settings-group"><div class="setting-item"><div class="setting-copy"><span data-i18n="批量编辑网站">批量编辑网站</span><small data-i18n="搜索、多选、移动或删除所有空间的网站">搜索、多选、移动或删除所有空间的网站</small></div><div class="setting-control"><button type="button" class="btn secondary btn-sm" id="openBulkEditor" data-i18n="批量编辑">批量编辑</button></div></div></div>
+          <div class="settings-group">
+            <div class="setting-item"><div class="setting-copy"><span data-i18n="批量编辑网站">批量编辑网站</span><small data-i18n="搜索、多选、移动或删除所有空间的网站">搜索、多选、移动或删除所有空间的网站</small></div><div class="setting-control"><button type="button" class="btn secondary btn-sm" id="openBulkEditor" data-i18n="批量编辑">批量编辑</button></div></div>
+            <div class="setting-item"><div class="setting-copy"><span data-i18n="网站图标缓存">网站图标缓存</span><small data-i18n="清空本地图标缓存并重新获取所有网站图标">清空本地图标缓存并重新获取所有网站图标</small></div><div class="setting-control"><button type="button" class="btn secondary btn-sm" id="refreshDataIconsBtn" data-refresh-icons data-i18n="刷新图标">刷新图标</button></div></div>
+          </div>
           <!-- 2. Backup / Import / Export 独立成清晰区域 -->
           <h5 class="settings-subheading" data-i18n="JSON 备份与恢复">JSON 备份与恢复</h5>
           <div class="settings-group">
@@ -515,7 +527,7 @@
               <img src="icons/icon-48.png" width="48" height="48" alt="SimTab">
               <div>
                 <h5>SimTab</h5>
-                <span id="appVersion">v1.0.5</span>
+                <span id="appVersion">v1.0.6</span>
               </div>
             </div>
             <p id="extensionEnvironment" data-i18n="将常用网站放在每一个新标签页。">将常用网站放在每一个新标签页。</p>

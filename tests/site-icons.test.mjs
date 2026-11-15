@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { letterBadge, loadSiteIcon } from '../js/site-icons.js';
+import { letterBadge, loadSiteIcon, refreshAllSiteIcons } from '../js/site-icons.js';
 
 test('badges use a readable initial and a stable color without remote resources', () => {
   const decode = value => decodeURIComponent(value.split(',')[1]);
@@ -187,4 +187,28 @@ test('expired successful icons stay visible while a background refresh fails', a
     assert.equal(attempts, 2);
     assert.equal(next.src, link.customIcon, 'a refresh outage must not replace it with a badge');
   } finally { globalThis.Image = previousImage; Date.now = previousNow; }
+});
+
+test('refreshAllSiteIcons clears in-memory requests so icons are re-fetched immediately', async () => {
+  const previousImage = globalThis.Image;
+  let attempts = 0;
+  globalThis.Image = class {
+    naturalWidth = 32;
+    set src(value) {
+      attempts++;
+      queueMicrotask(() => this.onload?.());
+    }
+    removeAttribute() {}
+  };
+  const image = () => ({ src: '', addEventListener() {} });
+  const link = { url: 'https://refresh-icon.test/', customIcon: 'https://icons.test/refresh-good' };
+  try {
+    await loadSiteIcon(image(), link);
+    assert.equal(attempts, 1);
+    await loadSiteIcon(image(), link);
+    assert.equal(attempts, 1, 'cached icon does not trigger a second fetch before refresh');
+    await refreshAllSiteIcons();
+    await loadSiteIcon(image(), link);
+    assert.equal(attempts, 2, 'after refreshAllSiteIcons, loadSiteIcon fetches fresh');
+  } finally { globalThis.Image = previousImage; }
 });

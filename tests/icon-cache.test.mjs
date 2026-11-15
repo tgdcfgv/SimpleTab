@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readIconCache, writeIconCache } from '../js/icon-cache.js';
+import { clearIconCache, readIconCache, writeIconCache } from '../js/icon-cache.js';
 
 const KEY = 'simtab.site-icons.v1';
 const values = new Map();
 globalThis.localStorage = {
   getItem: key => values.get(key) ?? null,
-  setItem: (key, value) => values.set(key, value)
+  setItem: (key, value) => values.set(key, value),
+  removeItem: key => values.delete(key)
 };
 const png = 'data:image/png;base64,AAAA';
 
@@ -53,4 +54,14 @@ test('corrupt and unavailable storage do not prevent icons from loading', async 
   localStorage.setItem = () => { throw new Error('quota'); };
   try { await assert.doesNotReject(writeIconCache('https://icons.test/new', { value: png, expiresAt: Date.now() + 1000 })); }
   finally { localStorage.setItem = set; }
+});
+
+test('clearIconCache removes all cached icon entries without touching appData', async () => {
+  values.clear();
+  values.set('appData', 'guest');
+  await writeIconCache('https://icons.test/one', { value: png, expiresAt: Date.now() + 1000 });
+  assert.equal((await readIconCache()).length, 1);
+  await clearIconCache();
+  assert.deepEqual(await readIconCache(), []);
+  assert.equal(values.get('appData'), 'guest');
 });

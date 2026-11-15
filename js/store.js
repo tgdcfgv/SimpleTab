@@ -12,6 +12,7 @@ import { closeAllModals, modalOverlay, openGroupModal } from './modals.js';
 export const appStoreModal = document.getElementById('appStoreModal');
 export let selectedStoreLinks = [];
 export let activeStoreCategoryId = null; // initialized lazily
+export let activeStoreSubcategory = 'all';
 export let currentStoreGroupId = null;
 const BROWSER_BOOKMARKS_TYPE = 'browser-bookmarks';
 const BROWSER_BOOKMARK_SOURCE = 'browser-bookmark';
@@ -181,12 +182,31 @@ export function renderStoreMenu() {
     btn.dataset.categoryId = category.id;
     btn.innerHTML = `<span>${category.name}</span><span class="store-menu-count">${category.links.length}</span>`;
     btn.addEventListener('click', () => {
+      if (activeStoreCategoryId !== category.id) {
+        activeStoreSubcategory = 'all';
+      }
       activeStoreCategoryId = category.id;
       renderAppStoreCategory();
       renderStoreMenu();
     });
     menu.appendChild(btn);
   });
+}
+
+function getCategorySections(category) {
+  const groups = new Map();
+  const isBookmarks = category.dynamicType === BROWSER_BOOKMARKS_TYPE;
+  const fallbackName = isBookmarks ? t('根目录书签') : t('常用推荐');
+
+  category.links.forEach(link => {
+    const sectionName = (isBookmarks ? link.bookmarkPath : link.section) || fallbackName;
+    if (!groups.has(sectionName)) {
+      groups.set(sectionName, []);
+    }
+    groups.get(sectionName).push(link);
+  });
+
+  return Array.from(groups.entries(), ([name, links]) => ({ name, links }));
 }
 
 export async function renderAppStoreCategory() {
@@ -248,66 +268,181 @@ export async function renderAppStoreCategory() {
   const categoryDiv = document.createElement('div');
   categoryDiv.className = 'store-category';
 
+  const headerRow = document.createElement('div');
+  headerRow.className = 'store-category-header';
+
   const title = document.createElement('h4');
   title.className = 'store-category-title';
   title.textContent = category.name;
-  categoryDiv.appendChild(title);
+  headerRow.appendChild(title);
 
-  const grid = document.createElement('div');
-  grid.className = 'store-links-grid';
+  const sections = getCategorySections(category);
+  if (activeStoreSubcategory !== 'all' && !sections.some(s => s.name === activeStoreSubcategory)) {
+    activeStoreSubcategory = 'all';
+  }
+
+  if (sections.length > 1) {
+    const subnav = document.createElement('div');
+    subnav.className = 'store-subnav';
+    subnav.setAttribute('role', 'tablist');
+    subnav.setAttribute('aria-label', t('二级分类筛选'));
+
+    const allBtn = document.createElement('button');
+    allBtn.type = 'button';
+    allBtn.className = `store-subnav-pill ${activeStoreSubcategory === 'all' ? 'active' : ''}`;
+    allBtn.setAttribute('aria-selected', String(activeStoreSubcategory === 'all'));
+    allBtn.innerHTML = `<span>${t('全部')}</span><span class="store-subnav-count">${category.links.length}</span>`;
+    allBtn.addEventListener('click', () => {
+      activeStoreSubcategory = 'all';
+      renderAppStoreCategory();
+    });
+    subnav.appendChild(allBtn);
+
+    sections.forEach(section => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      const isActive = activeStoreSubcategory === section.name;
+      pill.className = `store-subnav-pill ${isActive ? 'active' : ''}`;
+      pill.setAttribute('aria-selected', String(isActive));
+      pill.innerHTML = `<span>${section.name}</span><span class="store-subnav-count">${section.links.length}</span>`;
+      pill.addEventListener('click', () => {
+        activeStoreSubcategory = section.name;
+        renderAppStoreCategory();
+      });
+      subnav.appendChild(pill);
+    });
+
+    headerRow.appendChild(subnav);
+  }
+
+  categoryDiv.appendChild(headerRow);
 
   if (category.links.length === 0) {
+    const grid = document.createElement('div');
+    grid.className = 'store-links-grid';
     const empty = document.createElement('div');
     empty.className = 'empty-group-state';
     empty.textContent = category.dynamicType === BROWSER_BOOKMARKS_TYPE
       ? t('收藏夹中暂无可添加的网站')
       : t('此分类暂无内容');
     grid.appendChild(empty);
+    categoryDiv.appendChild(grid);
+    content.appendChild(categoryDiv);
+    updateStoreSelectionCount();
+    return;
   }
 
-  category.links.forEach(link => {
-    const label = document.createElement('label');
-    label.className = 'store-link-item';
+  const visibleSections = activeStoreSubcategory === 'all'
+    ? sections
+    : sections.filter(s => s.name === activeStoreSubcategory);
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.value = link.url;
-    checkbox.className = 'store-checkbox';
-    checkbox.checked = selectedMap.has(link.url);
+  const sectionsContainer = document.createElement('div');
+  sectionsContainer.className = 'store-sections-container';
 
-    checkbox.addEventListener('change', (e) => {
-      if (e.target.checked) {
-        selectedMap.set(link.url, link);
-      } else {
-        selectedMap.delete(link.url);
-      }
+  visibleSections.forEach(section => {
+    const sectionEl = document.createElement('section');
+    sectionEl.className = 'store-subcategory-section';
+
+    const subHeader = document.createElement('div');
+    subHeader.className = 'store-subcategory-header';
+
+    const subTitleWrap = document.createElement('div');
+    subTitleWrap.className = 'store-subcategory-heading';
+
+    const subTitle = document.createElement('h5');
+    subTitle.className = 'store-subcategory-title';
+    subTitle.textContent = section.name;
+
+    const subCount = document.createElement('span');
+    subCount.className = 'store-subcategory-count';
+    subCount.textContent = section.links.length;
+
+    subTitleWrap.appendChild(subTitle);
+    subTitleWrap.appendChild(subCount);
+
+    const toggleSectionBtn = document.createElement('button');
+    toggleSectionBtn.type = 'button';
+    toggleSectionBtn.className = 'store-subcategory-toggle';
+
+    const updateSectionToggleLabel = () => {
+      const allSelected = section.links.every(l => selectedMap.has(l.url));
+      toggleSectionBtn.textContent = allSelected ? t('取消本组') : t('全选本组');
+      toggleSectionBtn.classList.toggle('is-all-selected', allSelected);
+    };
+    updateSectionToggleLabel();
+
+    subHeader.appendChild(subTitleWrap);
+    subHeader.appendChild(toggleSectionBtn);
+    sectionEl.appendChild(subHeader);
+
+    const grid = document.createElement('div');
+    grid.className = 'store-links-grid';
+
+    const checkboxes = [];
+
+    section.links.forEach(link => {
+      const label = document.createElement('label');
+      label.className = 'store-link-item';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = link.url;
+      checkbox.className = 'store-checkbox';
+      checkbox.checked = selectedMap.has(link.url);
+      checkboxes.push({ checkbox, link });
+
+      checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          selectedMap.set(link.url, link);
+        } else {
+          selectedMap.delete(link.url);
+        }
+        selectedStoreLinks = Array.from(selectedMap.values());
+        updateSectionToggleLabel();
+        updateStoreSelectionCount();
+      });
+
+      const icon = document.createElement('img');
+      loadSiteIcon(icon, link);
+      icon.alt = '';
+      icon.className = 'store-icon';
+
+      const span = document.createElement('span');
+      span.textContent = link.name;
+      if (link.bookmarkPath) span.title = `${link.bookmarkPath} / ${link.name}`;
+      span.className = 'store-name';
+
+      const circleCheck = document.createElement('span');
+      circleCheck.className = 'store-circle-check';
+      circleCheck.innerHTML = lucideIcon('check', 11).replace('stroke="currentColor"', 'stroke="white"');
+
+      label.appendChild(checkbox);
+      label.appendChild(icon);
+      label.appendChild(span);
+      label.appendChild(circleCheck);
+      grid.appendChild(label);
+    });
+
+    toggleSectionBtn.addEventListener('click', () => {
+      const shouldSelectAll = !section.links.every(l => selectedMap.has(l.url));
+      checkboxes.forEach(({ checkbox, link }) => {
+        checkbox.checked = shouldSelectAll;
+        if (shouldSelectAll) {
+          selectedMap.set(link.url, link);
+        } else {
+          selectedMap.delete(link.url);
+        }
+      });
       selectedStoreLinks = Array.from(selectedMap.values());
+      updateSectionToggleLabel();
       updateStoreSelectionCount();
     });
 
-    const icon = document.createElement('img');
-    loadSiteIcon(icon, link);
-    icon.alt = '';
-    icon.className = 'store-icon';
-
-    const span = document.createElement('span');
-    span.textContent = link.name;
-    if (link.bookmarkPath) span.title = `${link.bookmarkPath} / ${link.name}`;
-    span.className = 'store-name';
-
-    // Circle-check indicator on right side
-    const circleCheck = document.createElement('span');
-    circleCheck.className = 'store-circle-check';
-    circleCheck.innerHTML = lucideIcon('check', 11).replace('stroke="currentColor"', 'stroke="white"');
-
-    label.appendChild(checkbox);
-    label.appendChild(icon);
-    label.appendChild(span);
-    label.appendChild(circleCheck);
-    grid.appendChild(label);
+    sectionEl.appendChild(grid);
+    sectionsContainer.appendChild(sectionEl);
   });
 
-  categoryDiv.appendChild(grid);
+  categoryDiv.appendChild(sectionsContainer);
   content.appendChild(categoryDiv);
   updateStoreSelectionCount();
 }
@@ -374,6 +509,7 @@ export function renderAppStore() {
   ensureStoreLayout();
   browserBookmarksLoaded = false;
   activeStoreCategoryId = activeStoreCategoryId || linkStore[0]?.id || null;
+  activeStoreSubcategory = 'all';
   const addStoreLinksBtn = document.getElementById('addStoreLinksBtn');
   if (addStoreLinksBtn) {
     addStoreLinksBtn.innerHTML = t('保存选中 (<span id="selectedLinksCount">0</span>)');

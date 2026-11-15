@@ -53,5 +53,19 @@ test('new-user profiles follow language while existing bookmarks and search choi
   assert(defaultSearchSettings('ja').enabledSearchEngines.includes('yahoo-jp'));
   assert.deepEqual(['zh_CN','zh_TW','ja','en'].map(searchRegion), ['cn','tw','jp','us']);
   await loadLocale('zh_CN');
+  const zhCatalog = catalogForLocale('zh_CN');
+  const aiLinks = zhCatalog.find(group => group.id === 'ai').links;
+  for (const expectedName of ['腾讯Workbuddy', '千问办公', '豆包工作', 'Google Notebook', 'Meta Muse']) {
+    assert(aiLinks.some(link => link.name === expectedName), `missing ${expectedName}`);
+  }
+  for (const group of zhCatalog.filter(item => !item.dynamicType)) {
+    assert(group.links.every(link => typeof link.section === 'string' && link.section.length > 0), `missing section in ${group.id}`);
+  }
+  await loadLocale('en');
+  const enCatalog = catalogForLocale('en');
+  for (const group of enCatalog.filter(item => !item.dynamicType)) {
+    assert(!group.links.some(link => /[\u3400-\u9fff]/.test(link.section || '')), `untranslated section in ${group.id}`);
+  }
+  await loadLocale('zh_CN');
   globalThis.fetch = nativeFetch;
 });

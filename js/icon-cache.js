@@ -48,3 +48,15 @@ export async function writeIconCache(source, entry) {
     else await commit();
   } catch { /* Icons still work when local storage is full or unavailable. */ }
 }
+
+export async function clearIconCache() {
+  const commit = async () => {
+    const store = globalThis.chrome?.storage?.local;
+    if (store) await store.set({ [KEY]: {} });
+    else localStorage.setItem(KEY, '{}');
+  };
+  try {
+    if (globalThis.navigator?.locks) await navigator.locks.request('simtab-icon-cache', commit);
+    else await commit();
+  } catch { /* Ignore storage errors when clearing cache. */ }
+}

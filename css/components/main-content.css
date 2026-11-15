@@ -177,7 +177,6 @@
   overflow: hidden;
   opacity: 1;
   transform: translateY(0);
-  will-change: grid-template-rows, opacity, transform;
   transition:
     grid-template-rows var(--expand-duration) var(--expand-ease),
     opacity var(--expand-fade-duration) ease,
@@ -244,12 +243,17 @@
   position: relative;
   min-width: 0;
   overflow: hidden;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 }
 
 .site-btn:hover {
   background: var(--item-hover-bg);
   border-color: var(--card-border);
+}
+
+.sites-grid.is-sorting .site-btn:hover {
+  background: transparent !important;
+  border-color: transparent !important;
 }
 
 .site-btn img {
