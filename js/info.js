@@ -1,4 +1,5 @@
 import { LANGUAGES, getLocale, loadLocale, t } from './i18n.js';
+import { updateCustomSelectOptions, updateCustomSelectTrigger } from './custom-select.js';
 
 /**
  * SimTab Info Pages Utilities (install.html & privacy.html)
@@ -14,7 +15,7 @@ import { LANGUAGES, getLocale, loadLocale, t } from './i18n.js';
   const walker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_TEXT);
   while (walker.nextNode()) {
     const node = walker.currentNode;
-    if (!node.parentElement.closest('script, style, select') && node.textContent.trim()) {
+    if (!node.parentElement.closest('script, style, select, .custom-select-container') && node.textContent.trim()) {
       textNodes.push([node, node.textContent]);
     }
   }
@@ -25,6 +26,11 @@ import { LANGUAGES, getLocale, loadLocale, t } from './i18n.js';
     }
   });
   const languageSelect = document.getElementById('infoLanguage');
+  let language = getLocale();
+  if (languageSelect) {
+    languageSelect.value = language;
+    updateCustomSelectOptions(languageSelect);
+  }
   let catalogLoaded = false;
   function renderLanguage() {
     for (const [node, source] of textNodes) node.textContent = t(source);
@@ -32,10 +38,12 @@ import { LANGUAGES, getLocale, loadLocale, t } from './i18n.js';
     document.querySelectorAll('[data-copy]').forEach(button => {
       button.textContent = t(button.classList.contains('copied') ? '已复制' : '复制');
     });
-    if (languageSelect) languageSelect.value = catalogLoaded ? getLocale() : 'zh_CN';
+    if (languageSelect) {
+      languageSelect.value = catalogLoaded ? getLocale() : 'zh_CN';
+      updateCustomSelectTrigger(languageSelect);
+    }
     document.documentElement.lang = catalogLoaded ? getLocale().replace('_', '-') : 'zh-CN';
   }
-  let language = getLocale();
   try {
     if (globalThis.chrome?.storage?.local) {
       const stored = await chrome.storage.local.get(['appData', 'simtab-language']);
@@ -110,7 +118,10 @@ import { LANGUAGES, getLocale, loadLocale, t } from './i18n.js';
     languageSelect?.addEventListener('change', async () => {
       const next = languageSelect.value;
       if (!LANGUAGES.some(item => item.id === next)) return;
+      const trigger = languageSelect.nextElementSibling?.querySelector('.custom-select-trigger-global');
+      const hadFocus = document.activeElement === trigger;
       languageSelect.disabled = true;
+      if (trigger) trigger.disabled = true;
       try {
         await loadLocale(next);
         catalogLoaded = true;
@@ -121,9 +132,14 @@ import { LANGUAGES, getLocale, loadLocale, t } from './i18n.js';
         }
       } catch (error) {
         languageSelect.value = getLocale();
+        updateCustomSelectTrigger(languageSelect);
         console.error('Could not change information page language', error);
       } finally {
         languageSelect.disabled = false;
+        if (trigger) {
+          trigger.disabled = false;
+          if (hadFocus) trigger.focus({ preventScroll: true });
+        }
       }
     });
     // 1. Theme toggle button click
