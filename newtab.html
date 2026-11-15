@@ -225,7 +225,7 @@
     <!-- 设置弹窗 -->
     <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" tabindex="-1">
         <button type="button" class="settings-close-btn modal-close-btn" id="closeSettingsBtn" aria-label="关闭设置" title="关闭" data-i18n-aria-label="关闭设置" data-i18n-title="关闭">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
         </button>
       <div class="settings-body">
         <nav class="settings-sidebar" aria-label="设置分类" data-i18n-aria-label="设置分类">
@@ -262,7 +262,7 @@
         <section class="settings-section active" id="settingsGeneral">
           <div class="settings-section-heading"><div><h4 data-i18n="常规">常规</h4><p data-i18n="让每一次打开，都更顺手。">让每一次打开，都更顺手。</p></div></div>
           <h5 class="settings-subheading" data-i18n="语言">语言</h5>
-          <div class="settings-group"><div class="setting-item"><div class="setting-copy"><label for="languageSelect" data-i18n="界面语言">界面语言</label><small data-i18n="切换后将重新加载页面">切换后将重新加载页面</small></div><div class="setting-control"><select id="languageSelect" class="setting-select" data-native="true"><option value="zh_CN">简体中文</option><option value="en">English</option><option value="zh_TW">繁體中文</option><option value="ja">日本語</option></select></div></div></div>
+          <div class="settings-group"><div class="setting-item"><div class="setting-copy"><label for="languageSelect" data-i18n="界面语言">界面语言</label><small data-i18n="切换后将重新加载页面">切换后将重新加载页面</small></div><div class="setting-control"><select id="languageSelect" class="setting-select"><option value="zh_CN">简体中文</option><option value="en">English</option><option value="zh_TW">繁體中文</option><option value="ja">日本語</option></select></div></div></div>
           <h5 class="settings-subheading" data-i18n="浏览行为">浏览行为</h5>
           <div class="settings-group">
             <div class="setting-item">
@@ -475,23 +475,7 @@
 
         <section class="settings-section" id="settingsData">
           <div class="settings-section-heading"><div><h4 data-i18n="数据">数据</h4><p data-i18n="导入收藏夹、整理网站，以及备份和恢复你的数据。">导入收藏夹、整理网站，以及备份和恢复你的数据。</p></div></div>
-          <h5 class="settings-subheading" data-i18n="一键迁移收藏夹">一键迁移收藏夹</h5>
-          <div class="settings-group migration-guide">
-            <p data-i18n="先从电脑浏览器导出收藏夹，再选择 HTML 文件，在大纲中预览后导入当前空间。">先从电脑浏览器导出收藏夹，再选择 HTML 文件，在大纲中预览后导入当前空间。</p>
-            <div class="guide-browser-options" role="group" aria-label="选择浏览器教程" data-i18n-aria-label="选择浏览器教程"><button type="button" class="btn secondary" data-guide="edge" aria-pressed="true">Edge</button><button type="button" class="btn secondary" data-guide="chrome" aria-pressed="false">Chrome</button><button type="button" class="btn secondary" data-guide="safari" aria-pressed="false">Safari</button></div>
-            <div id="migrationGuide"></div>
-            <button type="button" class="btn primary" id="guideImportBtn" data-i18n="选择书签 HTML 并预览">选择书签 HTML 并预览</button>
-            <input type="file" id="bookmarkFile" accept=".html,.htm,text/html" hidden>
-            <p id="bookmarkImportStatus" hidden></p>
-            <p class="settings-help" data-i18n="导入前可在大纲中预览、移动或删除网站；保存后按原收藏夹目录新增分组，现有网站会保留。相同文件内的重复网址会自动合并；一次最多 5000 条、5 MB。">导入前可在大纲中预览、移动或删除网站；保存后按原收藏夹目录新增分组，现有网站会保留。相同文件内的重复网址会自动合并；一次最多 5000 条、5 MB。</p>
-            <p id="guideImportStatus" role="status" aria-live="polite"></p>
-          </div>
-          <h5 class="settings-subheading" data-i18n="网站整理">网站整理</h5>
-          <div class="settings-group">
-            <div class="setting-item"><div class="setting-copy"><span data-i18n="批量编辑网站">批量编辑网站</span><small data-i18n="搜索、多选、移动或删除所有空间的网站">搜索、多选、移动或删除所有空间的网站</small></div><div class="setting-control"><button type="button" class="btn secondary btn-sm" id="openBulkEditor" data-i18n="批量编辑">批量编辑</button></div></div>
-            <div class="setting-item"><div class="setting-copy"><span data-i18n="网站图标缓存">网站图标缓存</span><small data-i18n="清空本地图标缓存并重新获取所有网站图标">清空本地图标缓存并重新获取所有网站图标</small></div><div class="setting-control"><button type="button" class="btn secondary btn-sm" id="refreshDataIconsBtn" data-refresh-icons data-i18n="刷新图标">刷新图标</button></div></div>
-          </div>
-          <!-- 2. Backup / Import / Export 独立成清晰区域 -->
+          <!-- 1. Backup / Import / Export 放在最上面 -->
           <h5 class="settings-subheading" data-i18n="JSON 备份与恢复">JSON 备份与恢复</h5>
           <div class="settings-group">
             <div class="setting-item">
@@ -514,7 +498,24 @@
                 </label>
               </div>
             </div>
-
+          </div>
+          <!-- 2. 网站整理 -->
+          <h5 class="settings-subheading" data-i18n="网站整理">网站整理</h5>
+          <div class="settings-group">
+            <div class="setting-item"><div class="setting-copy"><span data-i18n="批量编辑网站">批量编辑网站</span><small data-i18n="搜索、多选、移动或删除所有空间的网站">搜索、多选、移动或删除所有空间的网站</small></div><div class="setting-control"><button type="button" class="btn secondary btn-sm" id="openBulkEditor" data-i18n="批量编辑">批量编辑</button></div></div>
+            <div class="setting-item"><div class="setting-copy"><span data-i18n="网站图标缓存">网站图标缓存</span><small data-i18n="清空本地图标缓存并重新获取所有网站图标">清空本地图标缓存并重新获取所有网站图标</small></div><div class="setting-control"><button type="button" class="btn secondary btn-sm" id="refreshDataIconsBtn" data-refresh-icons data-i18n="刷新图标">刷新图标</button></div></div>
+          </div>
+          <!-- 3. 导入提示 -->
+          <h5 class="settings-subheading" data-i18n="一键迁移收藏夹">一键迁移收藏夹</h5>
+          <div class="settings-group migration-guide">
+            <p data-i18n="先从电脑浏览器导出收藏夹，再选择 HTML 文件，在大纲中预览后导入当前空间。">先从电脑浏览器导出收藏夹，再选择 HTML 文件，在大纲中预览后导入当前空间。</p>
+            <div class="guide-browser-options" role="group" aria-label="选择浏览器教程" data-i18n-aria-label="选择浏览器教程"><button type="button" class="btn secondary" data-guide="edge" aria-pressed="true">Edge</button><button type="button" class="btn secondary" data-guide="chrome" aria-pressed="false">Chrome</button><button type="button" class="btn secondary" data-guide="safari" aria-pressed="false">Safari</button></div>
+            <div id="migrationGuide"></div>
+            <button type="button" class="btn primary" id="guideImportBtn" data-i18n="选择书签 HTML 并预览">选择书签 HTML 并预览</button>
+            <input type="file" id="bookmarkFile" accept=".html,.htm,text/html" hidden>
+            <p id="bookmarkImportStatus" hidden></p>
+            <p class="settings-help" data-i18n="导入前可在大纲中预览、移动或删除网站；保存后按原收藏夹目录新增分组，现有网站会保留。相同文件内的重复网址会自动合并；一次最多 5000 条、5 MB。">导入前可在大纲中预览、移动或删除网站；保存后按原收藏夹目录新增分组，现有网站会保留。相同文件内的重复网址会自动合并；一次最多 5000 条、5 MB。</p>
+            <p id="guideImportStatus" role="status" aria-live="polite"></p>
           </div>
 
         </section>
@@ -559,6 +560,9 @@
 
     <!-- 网站库弹窗 -->
     <div id="appStoreModal" class="modal hidden">
+      <button type="button" class="store-close-btn modal-close-btn" id="closeAppStoreIconBtn" aria-label="关闭" title="关闭" data-i18n-aria-label="关闭" data-i18n-title="关闭">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
+      </button>
       <h3 data-i18n="网站库">网站库</h3>
       <div id="appStoreContent" class="store-content">
         <!-- Categories and links will be rendered here -->
@@ -619,7 +623,7 @@
 
   <dialog id="onboardingDialog" class="modal onboarding-modal" aria-labelledby="onboardingTitle">
     <button type="button" class="onboarding-close-btn modal-close-btn" id="profileCloseBtn" aria-label="关闭" title="关闭" hidden data-i18n-aria-label="关闭" data-i18n-title="关闭">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
     </button>
     <section id="welcomeStep" class="onboarding-step">
       <div class="welcome-mark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" /></svg></div>
@@ -643,7 +647,7 @@
   </dialog>
 
   <dialog id="bulkEditorDialog" class="modal bulk-editor" aria-labelledby="bulkEditorTitle">
-    <div class="bulk-heading"><div><h3 id="bulkEditorTitle" data-i18n="批量编辑网站">批量编辑网站</h3><p id="bulkSpaceName"></p></div><div class="bulk-heading-actions"><button type="button" class="btn secondary" id="bulkImportBookmarks" data-i18n="导入收藏夹">导入收藏夹</button><button type="button" class="bulk-close" id="bulkClose" aria-label="关闭批量编辑" title="关闭" data-i18n-aria-label="关闭批量编辑" data-i18n-title="关闭">×</button></div></div>
+    <div class="bulk-heading"><div><h3 id="bulkEditorTitle" data-i18n="批量编辑网站">批量编辑网站</h3><p id="bulkSpaceName"></p></div><div class="bulk-heading-actions"><button type="button" class="btn secondary" id="bulkImportBookmarks" data-i18n="导入收藏夹">导入收藏夹</button><button type="button" class="bulk-close modal-close-btn" id="bulkClose" aria-label="关闭批量编辑" title="关闭" data-i18n-aria-label="关闭批量编辑" data-i18n-title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" aria-hidden="true"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg></button></div></div>
     <div class="bulk-filters"><div class="bulk-search-field"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.34-4.34"/></svg><input type="search" id="bulkSearch" placeholder="搜索所有分组的网站名称或网址" aria-label="全局搜索网站" data-i18n-placeholder="搜索所有分组的网站名称或网址" data-i18n-aria-label="全局搜索网站"><button type="button" id="bulkClearSearch" class="bulk-icon-button" aria-label="清空搜索" title="清空搜索" hidden data-i18n-aria-label="清空搜索" data-i18n-title="清空搜索">×</button></div></div>
     <div class="bulk-master-detail">
       <aside class="bulk-sidebar" aria-label="分组导航与拖放区" data-i18n-aria-label="分组导航与拖放区">

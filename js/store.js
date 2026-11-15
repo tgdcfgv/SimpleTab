@@ -2,6 +2,7 @@ import { t } from './i18n.js';
 import { icon as lucideIcon } from './icons.js';
 import { appData, syncManager } from './storage.js';
 import { linkStore } from './catalog.js';
+import { safeWebUrl } from './urls.js';
 import { generateId } from './utils.js';
 import { loadSiteIcon } from './site-icons.js';
 import { render } from './render.js';
@@ -17,11 +18,21 @@ export let currentStoreGroupId = null;
 const BROWSER_BOOKMARKS_TYPE = 'browser-bookmarks';
 const BROWSER_BOOKMARK_SOURCE = 'browser-bookmark';
 let browserBookmarksLoaded = false;
+const userAddedLinks = new Map();
+const userRemovedUrls = new Set();
+
+export function normalizeStoreUrl(url) {
+  return safeWebUrl(url) || String(url || '').trim();
+}
 
 export function getStoreLinkMap() {
   const map = new Map();
   linkStore.forEach(category => {
-    category.links.forEach(link => map.set(link.url, link));
+    if (category.dynamicType === BROWSER_BOOKMARKS_TYPE && !browserBookmarksLoaded) return;
+    category.links.forEach(link => {
+      const key = normalizeStoreUrl(link.url);
+      if (key) map.set(key, link);
+    });
   });
   return map;
 }
@@ -30,14 +41,45 @@ export function setStoreSelectionFromGroup(groupId) {
   currentStoreGroupId = groupId;
   const group = appData.groups.find(g => g.id === groupId);
   const storeLinkMap = getStoreLinkMap();
-  selectedStoreLinks = group
-    ? group.links.map(link => storeLinkMap.get(link.url)).filter(Boolean)
-    : [];
+  const merged = new Map();
+  if (group) {
+    group.links.forEach(link => {
+      const key = normalizeStoreUrl(link.url);
+      if (!key || userRemovedUrls.has(key)) return;
+      const storeLink = storeLinkMap.get(key);
+      if (storeLink) merged.set(key, storeLink);
+    });
+  }
+  userAddedLinks.forEach((link, key) => {
+    merged.set(key, link);
+  });
+  selectedStoreLinks = Array.from(merged.values());
   updateStoreSelectionCount();
 }
 
 export function getSelectedStoreMap() {
-  return new Map(selectedStoreLinks.map(link => [link.url, link]));
+  return new Map(selectedStoreLinks.map(link => [normalizeStoreUrl(link.url), link]));
+}
+
+function isStoreLinkSelected(link) {
+  const key = normalizeStoreUrl(link?.url);
+  return Boolean(key) && selectedStoreLinks.some(item => normalizeStoreUrl(item.url) === key);
+}
+
+function setStoreLinkSelected(link, checked) {
+  const key = normalizeStoreUrl(link?.url);
+  if (!key) return;
+  const map = getSelectedStoreMap();
+  if (checked) {
+    userAddedLinks.set(key, link);
+    userRemovedUrls.delete(key);
+    map.set(key, link);
+  } else {
+    userAddedLinks.delete(key);
+    userRemovedUrls.add(key);
+    map.delete(key);
+  }
+  selectedStoreLinks = Array.from(map.values());
 }
 
 export function updateStoreSelectionCount() {
@@ -123,12 +165,17 @@ function mergeBookmarkSelectionFromGroup(category) {
   const selectedMap = new Map(
     selectedStoreLinks
       .filter(link => link.type !== BROWSER_BOOKMARKS_TYPE)
-      .map(link => [link.url, link])
+      .map(link => [normalizeStoreUrl(link.url), link])
   );
-  const categoryMap = new Map(category.links.map(link => [link.url, link]));
+  const categoryMap = new Map(category.links.map(link => [normalizeStoreUrl(link.url), link]));
   group.links.forEach(link => {
-    const bookmark = categoryMap.get(link.url);
-    if (bookmark) selectedMap.set(bookmark.url, bookmark);
+    const key = normalizeStoreUrl(link.url);
+    if (!key || userRemovedUrls.has(key)) return;
+    const bookmark = categoryMap.get(key);
+    if (bookmark) selectedMap.set(key, bookmark);
+  });
+  userAddedLinks.forEach((link, key) => {
+    selectedMap.set(key, link);
   });
   selectedStoreLinks = Array.from(selectedMap.values());
 }
@@ -227,6 +274,7 @@ export async function renderAppStoreCategory() {
     message.textContent = t('正在读取我的收藏夹…');
     state.appendChild(message);
     content.appendChild(state);
+    updateStoreSelectionCount();
 
     if (!globalThis.chrome?.runtime?.id || !globalThis.chrome?.permissions?.request) {
       message.textContent = t('网页版无法直接读取浏览器收藏夹。可在“设置 → 账户与同步”导入书签 HTML 文件，或使用扩展版。');
@@ -264,7 +312,6 @@ export async function renderAppStoreCategory() {
     return;
   }
 
-  const selectedMap = getSelectedStoreMap();
   const categoryDiv = document.createElement('div');
   categoryDiv.className = 'store-category';
 
@@ -365,7 +412,7 @@ export async function renderAppStoreCategory() {
     toggleSectionBtn.className = 'store-subcategory-toggle';
 
     const updateSectionToggleLabel = () => {
-      const allSelected = section.links.every(l => selectedMap.has(l.url));
+      const allSelected = section.links.every(l => isStoreLinkSelected(l));
       toggleSectionBtn.textContent = allSelected ? t('取消本组') : t('全选本组');
       toggleSectionBtn.classList.toggle('is-all-selected', allSelected);
     };
@@ -388,16 +435,11 @@ export async function renderAppStoreCategory() {
       checkbox.type = 'checkbox';
       checkbox.value = link.url;
       checkbox.className = 'store-checkbox';
-      checkbox.checked = selectedMap.has(link.url);
+      checkbox.checked = isStoreLinkSelected(link);
       checkboxes.push({ checkbox, link });
 
       checkbox.addEventListener('change', (e) => {
-        if (e.target.checked) {
-          selectedMap.set(link.url, link);
-        } else {
-          selectedMap.delete(link.url);
-        }
-        selectedStoreLinks = Array.from(selectedMap.values());
+        setStoreLinkSelected(link, e.target.checked);
         updateSectionToggleLabel();
         updateStoreSelectionCount();
       });
@@ -424,16 +466,11 @@ export async function renderAppStoreCategory() {
     });
 
     toggleSectionBtn.addEventListener('click', () => {
-      const shouldSelectAll = !section.links.every(l => selectedMap.has(l.url));
+      const shouldSelectAll = !section.links.every(l => isStoreLinkSelected(l));
       checkboxes.forEach(({ checkbox, link }) => {
         checkbox.checked = shouldSelectAll;
-        if (shouldSelectAll) {
-          selectedMap.set(link.url, link);
-        } else {
-          selectedMap.delete(link.url);
-        }
+        setStoreLinkSelected(link, shouldSelectAll);
       });
-      selectedStoreLinks = Array.from(selectedMap.values());
       updateSectionToggleLabel();
       updateStoreSelectionCount();
     });
@@ -508,6 +545,10 @@ export function renderStoreGroupSelection(selectedId) {
 export function renderAppStore() {
   ensureStoreLayout();
   browserBookmarksLoaded = false;
+  userAddedLinks.clear();
+  userRemovedUrls.clear();
+  const bookmarkCategory = linkStore.find(c => c.dynamicType === BROWSER_BOOKMARKS_TYPE);
+  if (bookmarkCategory) bookmarkCategory.links = [];
   activeStoreCategoryId = activeStoreCategoryId || linkStore[0]?.id || null;
   activeStoreSubcategory = 'all';
   const addStoreLinksBtn = document.getElementById('addStoreLinksBtn');
@@ -550,6 +591,7 @@ export function renderAppStore() {
 }
 
 document.getElementById('closeAppStoreBtn').addEventListener('click', closeAllModals);
+document.getElementById('closeAppStoreIconBtn')?.addEventListener('click', closeAllModals);
 
 document.getElementById('appStoreBtn').addEventListener('click', () => {
   if (!appData) return;
@@ -572,18 +614,21 @@ document.getElementById('addStoreLinksBtn').addEventListener('click', async () =
   const storeUrlSet = new Set(getStoreLinkMap().keys());
   delete group.browserBookmarksEnabled;
   group.links = group.links.filter(link => {
-    if (link.source === BROWSER_BOOKMARK_SOURCE && browserBookmarksLoaded) {
-      return selectedMap.has(link.url);
+    const key = normalizeStoreUrl(link.url);
+    if (link.source === BROWSER_BOOKMARK_SOURCE) {
+      return !browserBookmarksLoaded || selectedMap.has(key);
     }
-    return !storeUrlSet.has(link.url) || selectedMap.has(link.url);
+    return !storeUrlSet.has(key) || selectedMap.has(key);
   });
 
   selectedStoreLinks.forEach(link => {
-    if (!group.links.find(existing => existing.url === link.url)) {
+    const key = normalizeStoreUrl(link.url);
+    if (!key) return;
+    if (!group.links.some(existing => normalizeStoreUrl(existing.url) === key)) {
       const savedLink = {
         id: generateId(),
         title: link.name,
-        url: link.url
+        url: safeWebUrl(link.url) || link.url
       };
       if (link.type === BROWSER_BOOKMARKS_TYPE) {
         savedLink.source = BROWSER_BOOKMARK_SOURCE;
@@ -594,9 +639,9 @@ document.getElementById('addStoreLinksBtn').addEventListener('click', async () =
     }
   });
 
+  render();
   try {
     if (!await syncManager.saveData()) throw new Error(syncManager.error || t('更改尚未保存，请重试同步'));
-    render();
     closeAllModals();
   } catch (error) {
     setStoreStatus(t`保存失败：${error.message}`, 'warning');

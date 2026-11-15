@@ -38,7 +38,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
         }));
         assert.deepEqual(han, [], `Untranslated English UI: ${han.join('\n')}`);
         const before = await page.evaluate(async () => (await import('./js/storage.js')).appData.spaces);
-        await page.selectOption('#languageSelect', 'ja');
+        await page.selectOption('#languageSelect', 'ja', { force: true });
         await page.waitForFunction(() => document.documentElement.lang === 'ja');
         await page.waitForFunction(() => !document.querySelector('.app-container').inert);
         assert.deepEqual(await page.evaluate(async () => (await import('./js/storage.js')).appData.spaces), before);
@@ -66,7 +66,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
     await page.goto(APP_URL);
     await page.waitForFunction(() => !document.querySelector('.app-container').inert);
     await page.click('#settingsBtn');
-    await page.selectOption('#languageSelect', 'ja');
+    await page.selectOption('#languageSelect', 'ja', { force: true });
     await page.waitForFunction(() => document.documentElement.lang === 'ja' && !document.querySelector('.app-container').inert);
     await page.evaluate(() => {
       const snapshot = JSON.parse(localStorage.getItem('mock:appData'));

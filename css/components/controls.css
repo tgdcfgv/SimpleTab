@@ -23,17 +23,17 @@
   box-shadow: none;
   font-family: inherit;
 }
-.btn:hover:not(:disabled),
-.custom-select-trigger-global:hover:not(:disabled),
-#settingsModal .custom-select-trigger-global:hover:not(:disabled) {
+.btn:not([aria-pressed="true"]):hover:not(:disabled),
+.custom-select-container:not(.open) .custom-select-trigger-global:hover:not(:disabled),
+#settingsModal .custom-select-container:not(.open) .custom-select-trigger-global:hover:not(:disabled) {
   border-color: var(--control-hover-border);
   box-shadow: none;
   transform: none;
 }
-.btn.secondary:hover:not(:disabled),
-.btn.quiet:hover:not(:disabled),
-.custom-select-trigger-global:hover:not(:disabled),
-#settingsModal .custom-select-trigger-global:hover:not(:disabled) {
+.btn.secondary:not([aria-pressed="true"]):hover:not(:disabled),
+.btn.quiet:not([aria-pressed="true"]):hover:not(:disabled),
+.custom-select-container:not(.open) .custom-select-trigger-global:hover:not(:disabled),
+#settingsModal .custom-select-container:not(.open) .custom-select-trigger-global:hover:not(:disabled) {
   background: var(--control-hover-bg);
 }
 
@@ -76,7 +76,7 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
   background: transparent;
   border: 1px solid transparent;
 }
-.custom-option-global:hover, .context-menu-item:hover {
+.custom-option-global:not(.active):hover, .context-menu-item:hover {
   background: var(--control-hover-bg);
   border-color: var(--control-hover-border);
 }
@@ -162,8 +162,8 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 .store-circle-check { border-color: transparent; background: var(--bg-muted); }
 
 .settings-nav-btn, .store-menu-btn, .store-menu-btn.active { border: 1px solid transparent; }
-.settings-nav-btn:hover:not(:disabled), .store-menu-btn:hover { border-color: var(--control-hover-border); }
-#settingsModal .settings-nav-btn:hover:not(:disabled) {
+.settings-nav-btn:not(.active):hover:not(:disabled), .store-menu-btn:not(.active):hover { border-color: var(--control-hover-border); }
+#settingsModal .settings-nav-btn:not(.active):hover:not(:disabled) {
   background: var(--control-hover-bg);
   border-color: transparent;
 }
@@ -189,7 +189,7 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
   .custom-select-trigger-global, .custom-option-global, .context-menu-item,
   .store-link-item, .space-editor-item, .profile-avatar-input,
   .number-stepper, .card-display-control
-):not(#settingsModal, #settingsModal *):not(.space-dock-btn.active, .modal-close-btn, .search-container .custom-select-trigger-global, .sites-grid.is-sorting .site-btn, .dragging, .dragging-group):not(:disabled):hover {
+):not(#settingsModal, #settingsModal *):not(.active, [aria-pressed="true"], [aria-selected="true"], [aria-current="page"], .store-link-item:has(input:checked), .space-dock-btn.active, .modal-close-btn, .search-container .custom-select-trigger-global, .sites-grid.is-sorting .site-btn, .dragging, .dragging-group):not(:disabled):hover {
   background: var(--control-hover-bg) !important;
   border-color: transparent;
   box-shadow: none;
@@ -197,7 +197,7 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 }
 
 /* Filled buttons need readable text when their hover background turns gray. */
-:is(.btn.primary, .btn.danger, .group-select-btn.active):not(#settingsModal, #settingsModal *):not(:disabled):hover {
+:is(.btn.primary, .btn.danger):not(#settingsModal, #settingsModal *):not(:disabled):hover {
   color: var(--text-primary) !important;
 }
 
@@ -297,7 +297,7 @@ select:focus:hover:not(:disabled) { border-color: var(--control-hover-border); }
 .group-count-option:disabled { cursor: not-allowed; }
 
 /* Buttons stay in place across every dialog, including account settings. */
-:is(button, [role="button"], a.btn):hover {
+:is(button, [role="button"], a.btn):not([aria-pressed="true"]):hover {
   transform: none !important;
   box-shadow: none !important;
 }

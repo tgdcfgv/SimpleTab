@@ -1,5 +1,6 @@
 /* Store Modal */
 #appStoreModal {
+  position: relative;
   width: min(960px, calc(100vw - 32px)) !important;
   max-width: calc(100vw - 32px) !important;
   height: min(860px, calc(100dvh - 40px));
@@ -15,8 +16,16 @@
   display: none !important;
 }
 
+#appStoreModal .store-close-btn {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  z-index: 2;
+}
+
 #appStoreModal h3 {
   margin-bottom: 16px;
+  padding-right: 36px;
   flex-shrink: 0;
 }
 
@@ -57,7 +66,7 @@
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.store-menu-btn:hover {
+.store-menu-btn:not(.active):hover {
   background: var(--item-hover-bg);
 }
 
@@ -346,6 +355,11 @@
     height: calc(100dvh - 32px);
     max-height: calc(100dvh - 32px) !important;
     padding: 18px;
+  }
+
+  #appStoreModal .store-close-btn {
+    top: 16px;
+    right: 16px;
   }
 
   .store-shell {

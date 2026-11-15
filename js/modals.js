@@ -541,6 +541,7 @@ export function openSettingsModal(panelId) {
   accentColorInput.value = accentColor;
 
   const settingSelectValues = {
+    languageSelect: getLocale(),
     openModeSelect: appData.settings.openLinksInNewTab ? 'new-tab' : 'current-tab',
     themeSelect: appData.settings.theme || 'system',
     groupColumnsSelect: String(appData.settings.groupColumns || 'auto'),
@@ -891,6 +892,8 @@ export function updateCustomSelectTrigger(select) {
 }
 
 export function initAllCustomSelects() {
+  const languageSelect = document.getElementById('languageSelect');
+  if (languageSelect) languageSelect.value = getLocale();
   document.querySelectorAll('select').forEach(updateCustomSelectOptions);
   
   if (!window.customSelectListenerAdded) {
@@ -1032,8 +1035,10 @@ document.getElementById('groupColumnsSelect').addEventListener('change', event =
 // Save before reloading so every module starts in the selected language.
 document.getElementById('languageSelect').addEventListener('change', async event => {
   const select = event.target;
+  const trigger = select.nextElementSibling?.querySelector('.custom-select-trigger-global');
   const previous = getLocale();
   select.disabled = true;
+  if (trigger) trigger.disabled = true;
   try {
     await loadLocale(select.value);
     appData.settings.language = select.value;
@@ -1044,6 +1049,10 @@ document.getElementById('languageSelect').addEventListener('change', async event
     appData.settings.language = previous;
     await loadLocale(previous);
     select.value = previous;
+    updateCustomSelectTrigger(select);
     showToast(error.message);
-  } finally { select.disabled = false; }
+  } finally {
+    select.disabled = false;
+    if (trigger) trigger.disabled = false;
+  }
 });

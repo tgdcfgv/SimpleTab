@@ -367,7 +367,7 @@ input[type="color"] {
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.custom-option-global:hover {
+.custom-option-global:not(.active):hover {
   background: var(--bg-subtle);
 }
 
@@ -559,7 +559,7 @@ select {
   flex-shrink: 0;
 }
 
-.group-select-btn:hover {
+.group-select-btn:not(.active):hover {
   border-color: var(--accent-color);
   color: var(--accent-color);
 }
