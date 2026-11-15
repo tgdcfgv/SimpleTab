@@ -209,18 +209,9 @@
 }
 .store-category-header {
   flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   margin-bottom: 14px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--card-border);
-}
-.store-category-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-color);
-  margin: 0;
 }
 .store-subnav {
   display: flex;
@@ -316,8 +307,11 @@
   transition: border-color 0.18s, background 0.18s;
 }
 .store-link-item:has(input:checked) .store-circle-check {
-  border-color: var(--primary-color);
+  border-color: transparent;
   background: var(--primary-gradient, var(--primary-color));
+  background-origin: border-box;
+  background-clip: border-box;
+  background-repeat: no-repeat;
 }
 .store-circle-check svg {
   display: none;

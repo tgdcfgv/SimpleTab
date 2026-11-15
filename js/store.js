@@ -318,20 +318,15 @@ export async function renderAppStoreCategory() {
   const categoryDiv = document.createElement('div');
   categoryDiv.className = 'store-category';
 
-  const headerRow = document.createElement('div');
-  headerRow.className = 'store-category-header';
-
-  const title = document.createElement('h4');
-  title.className = 'store-category-title';
-  title.textContent = category.name;
-  headerRow.appendChild(title);
-
   const sections = getCategorySections(category);
   if (activeStoreSubcategory !== 'all' && !sections.some(s => s.name === activeStoreSubcategory)) {
     activeStoreSubcategory = 'all';
   }
 
   if (sections.length > 1) {
+    const headerRow = document.createElement('div');
+    headerRow.className = 'store-category-header';
+
     const subnav = document.createElement('div');
     subnav.className = 'store-subnav';
     subnav.setAttribute('role', 'tablist');
@@ -363,9 +358,8 @@ export async function renderAppStoreCategory() {
     });
 
     headerRow.appendChild(subnav);
+    categoryDiv.appendChild(headerRow);
   }
-
-  categoryDiv.appendChild(headerRow);
 
   if (category.links.length === 0) {
     const grid = document.createElement('div');

@@ -126,7 +126,7 @@
   box-shadow: none;
 }
 .space-dock-btn { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; }
-.space-dock-btn.active, .space-dock-btn.active:hover { color: var(--accent-fg, var(--bg-color)); background: var(--primary-gradient, var(--primary-color)); }
+.space-dock-btn.active, .space-dock-btn.active:hover { color: var(--accent-fg, var(--bg-color)); background: var(--primary-gradient, var(--primary-color)); background-origin: border-box; background-clip: border-box; background-repeat: no-repeat; border-color: transparent; }
 .space-tab-hint { font-size: 12px; font-weight: 700; gap: 6px; }
 .space-tab-hint > svg { display: none; }
 [data-dock-position="bottom"] .space-tab-hint { width: auto; min-width: 62px; padding: 0 8px; }
