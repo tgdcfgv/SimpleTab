@@ -99,10 +99,12 @@
 
   /* Accent Tokens - Light */
   --accent-color: #6366F1;
+  --accent-gradient: var(--accent-color);
   --accent-hover: #4F46E5;
   --accent-fg: #FFFFFF;
   --accent-subtle: rgba(99, 102, 241, 0.12);
   --primary-color: var(--accent-color);
+  --primary-gradient: var(--accent-gradient);
   --primary-hover: var(--accent-hover);
   --primary-fg: var(--accent-fg);
 

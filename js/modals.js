@@ -314,12 +314,15 @@ document.getElementById('siteForm').addEventListener('submit', (e) => {
     return;
   }
   if (id) {
-    let oldLink;
+    let oldLink = null;
+    let oldGroup = null;
+    let oldIndex = -1;
     for (const g of appData.groups) {
       const index = g.links.findIndex(l => l.id === id);
       if (index !== -1) {
         oldLink = g.links[index];
-        g.links.splice(index, 1);
+        oldGroup = g;
+        oldIndex = index;
         break;
       }
     }
@@ -330,7 +333,10 @@ document.getElementById('siteForm').addEventListener('submit', (e) => {
       if (customIcon) oldLink.customIcon = customIcon;
       else delete oldLink.customIcon;
       delete oldLink.favicon; // 不再持久化存储 favicon
-      newGroup.links.push(oldLink);
+      if (oldGroup.id !== targetGroupId) {
+        oldGroup.links.splice(oldIndex, 1);
+        newGroup.links.push(oldLink);
+      }
     }
   } else {
     const newGroup = appData.groups.find(g => g.id === targetGroupId);
@@ -525,6 +531,65 @@ async function updateWallpaperPreview() {
   } catch (error) { showToast(t`无法读取壁纸：${error.message}`); }
 }
 
+const GRADIENT_ANGLES = [
+  { angle: 135, label: '135° ↘' },
+  { angle: 90, label: '90° →' },
+  { angle: 180, label: '180° ↓' },
+  { angle: 45, label: '45° ↗' }
+];
+let stagedAccentCount = 1;
+let stagedGradientAngle = 135;
+
+function getStagedAccentColors() {
+  const inputs = [
+    document.getElementById('accentColorInput'),
+    document.getElementById('accentColorInput2'),
+    document.getElementById('accentColorInput3')
+  ];
+  return inputs.slice(0, stagedAccentCount).map(input => input?.value || '#6366f1');
+}
+
+function updateAccentGradientUI() {
+  const input2 = document.getElementById('accentColorInput2');
+  const input3 = document.getElementById('accentColorInput3');
+  const addBtn = document.getElementById('addAccentColorBtn');
+  const removeBtn = document.getElementById('removeAccentColorBtn');
+  const angleBtn = document.getElementById('accentGradientAngleBtn');
+  const preview = document.getElementById('accentGradientPreview');
+  if (!input2 || !input3 || !addBtn || !removeBtn || !angleBtn || !preview) return;
+
+  input2.hidden = stagedAccentCount < 2;
+  input3.hidden = stagedAccentCount < 3;
+  addBtn.hidden = stagedAccentCount >= 3;
+  removeBtn.hidden = stagedAccentCount <= 1;
+  angleBtn.hidden = stagedAccentCount <= 1;
+
+  const angleInfo = GRADIENT_ANGLES.find(item => item.angle === stagedGradientAngle) || GRADIENT_ANGLES[0];
+  angleBtn.textContent = angleInfo.label;
+
+  const colors = getStagedAccentColors();
+  preview.hidden = stagedAccentCount <= 1;
+  preview.style.background = stagedAccentCount > 1
+    ? `linear-gradient(${stagedGradientAngle}deg, ${colors.join(', ')})`
+    : colors[0];
+}
+
+function syncAccentControlsFromSettings() {
+  const rawColors = Array.isArray(appData.settings.accentColors) && appData.settings.accentColors.length
+    ? appData.settings.accentColors.slice(0, 3)
+    : [appData.settings.accentColor || '#6366f1'];
+  stagedAccentCount = Math.min(3, Math.max(1, rawColors.length));
+  stagedGradientAngle = [45, 90, 135, 180].includes(Number(appData.settings.accentGradientAngle))
+    ? Number(appData.settings.accentGradientAngle)
+    : 135;
+  const defaults = ['#6366f1', '#8b5cf6', '#ec4899'];
+  ['accentColorInput', 'accentColorInput2', 'accentColorInput3'].forEach((id, index) => {
+    const input = document.getElementById(id);
+    if (input) input.value = rawColors[index] || defaults[index];
+  });
+  updateAccentGradientUI();
+}
+
 // Settings Modal
 export function openSettingsModal(panelId) {
   document.getElementById('languageSelect').value = getLocale();
@@ -536,19 +601,19 @@ export function openSettingsModal(panelId) {
   updateWallpaperPreview();
   renderSearchEngineSettings();
 
-  const accentColorInput = document.getElementById('accentColorInput');
-  const accentColor = appData.settings.accentColor || '#6366f1';
-  accentColorInput.value = accentColor;
+  syncAccentControlsFromSettings();
 
   const settingSelectValues = {
     languageSelect: getLocale(),
     openModeSelect: appData.settings.openLinksInNewTab ? 'new-tab' : 'current-tab',
     themeSelect: appData.settings.theme || 'system',
     groupColumnsSelect: String(appData.settings.groupColumns || 'auto'),
+    collapsedIconCountSelect: String(appData.settings.collapsedIconCount ?? 6),
     dockPositionSelect: appData.settings.dockPosition || 'bottom'
   };
   Object.entries(settingSelectValues).forEach(([id, value]) => {
     const select = document.getElementById(id);
+    if (!select) return;
     select.value = value;
     updateCustomSelectTrigger(select);
   });
@@ -620,8 +685,35 @@ document.querySelectorAll('[data-dock-setting]').forEach(input => {
   });
 });
 
+['accentColorInput', 'accentColorInput2', 'accentColorInput3'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', updateAccentGradientUI);
+});
+
+document.getElementById('addAccentColorBtn')?.addEventListener('click', () => {
+  if (stagedAccentCount < 3) {
+    stagedAccentCount += 1;
+    updateAccentGradientUI();
+  }
+});
+
+document.getElementById('removeAccentColorBtn')?.addEventListener('click', () => {
+  if (stagedAccentCount > 1) {
+    stagedAccentCount -= 1;
+    updateAccentGradientUI();
+  }
+});
+
+document.getElementById('accentGradientAngleBtn')?.addEventListener('click', () => {
+  const idx = GRADIENT_ANGLES.findIndex(item => item.angle === stagedGradientAngle);
+  stagedGradientAngle = GRADIENT_ANGLES[(idx + 1) % GRADIENT_ANGLES.length].angle;
+  updateAccentGradientUI();
+});
+
 document.getElementById('applyAccentColorBtn').addEventListener('click', () => {
-  appData.settings.accentColor = document.getElementById('accentColorInput').value;
+  const colors = getStagedAccentColors();
+  appData.settings.accentColors = colors;
+  appData.settings.accentColor = colors[0];
+  appData.settings.accentGradientAngle = stagedGradientAngle;
   syncManager.saveData();
   applySettings();
 });
@@ -914,7 +1006,7 @@ export function openContextMenu(x, y, { siteBtn = null, host = document.body, cr
   host.appendChild(menu);
   // A top-layer menu uses viewport coordinates even inside an animated dialog.
   if (typeof menu.showPopover === 'function') menu.setAttribute('popover', 'manual');
-  document.getElementById('contextBulkEditor').style.display = creationOnly ? 'none' : '';
+  document.getElementById('contextBulkEditor').style.display = (creationOnly || siteBtn) ? 'none' : '';
   document.getElementById('contextSettings').style.display = creationOnly ? 'none' : '';
   document.getElementById('contextAddSpace').style.display = creationOnly ? 'flex' : 'none';
   const contextAddSite = document.getElementById('contextAddSite');
@@ -1029,6 +1121,11 @@ document.getElementById('contextDeleteSite').addEventListener('click', () => {
 
 document.getElementById('groupColumnsSelect').addEventListener('change', event => {
   appData.settings.groupColumns = event.target.value === 'auto' ? 'auto' : Number(event.target.value);
+  syncManager.saveData(); render();
+});
+
+document.getElementById('collapsedIconCountSelect')?.addEventListener('change', event => {
+  appData.settings.collapsedIconCount = Number(event.target.value);
   syncManager.saveData(); render();
 });
 

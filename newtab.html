@@ -262,7 +262,7 @@
         <section class="settings-section active" id="settingsGeneral">
           <div class="settings-section-heading"><div><h4 data-i18n="常规">常规</h4><p data-i18n="让每一次打开，都更顺手。">让每一次打开，都更顺手。</p></div></div>
           <h5 class="settings-subheading" data-i18n="语言">语言</h5>
-          <div class="settings-group"><div class="setting-item"><div class="setting-copy"><label for="languageSelect" data-i18n="界面语言">界面语言</label><small data-i18n="切换后将重新加载页面">切换后将重新加载页面</small></div><div class="setting-control"><select id="languageSelect" class="setting-select"><option value="zh_CN">简体中文</option><option value="en">English</option><option value="zh_TW">繁體中文</option><option value="ja">日本語</option></select></div></div></div>
+          <div class="settings-group"><div class="setting-item"><div class="setting-copy"><label for="languageSelect" data-i18n="界面语言">界面语言</label><small data-i18n="切换后将重新加载页面">切换后将重新加载页面</small></div><div class="setting-control"><select id="languageSelect" class="setting-select"><option value="zh_CN">简体中文</option><option value="en">English</option><option value="zh_TW">繁體中文</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="de">Deutsch</option><option value="pt_BR">Português</option><option value="fr">Français</option></select></div></div></div>
           <h5 class="settings-subheading" data-i18n="浏览行为">浏览行为</h5>
           <div class="settings-group">
             <div class="setting-item">
@@ -299,11 +299,22 @@
                 </select>
               </div>
             </div>
-            <div class="setting-item">
-              <div class="setting-copy"><label for="accentColorInput" data-i18n="强调色">强调色</label></div>
+            <div class="setting-item accent-color-setting">
+              <div class="setting-copy">
+                <label for="accentColorInput" data-i18n="主题色">主题色</label>
+                <small data-i18n="至多可选择三种颜色进行渐变设计">至多可选择三种颜色进行渐变设计</small>
+              </div>
               <div class="setting-control">
                 <div class="accent-color-control">
-                  <input type="color" id="accentColorInput" value="#6366f1" aria-label="选择强调色" data-i18n-aria-label="选择强调色">
+                  <div class="accent-color-stops" role="group" aria-label="主题色列表" data-i18n-aria-label="主题色列表">
+                    <input type="color" id="accentColorInput" value="#6366f1" aria-label="选择强调色" data-i18n-aria-label="选择强调色">
+                    <input type="color" id="accentColorInput2" value="#8b5cf6" aria-label="第二种渐变色" data-i18n-aria-label="第二种渐变色" hidden>
+                    <input type="color" id="accentColorInput3" value="#ec4899" aria-label="第三种渐变色" data-i18n-aria-label="第三种渐变色" hidden>
+                    <button type="button" class="btn secondary btn-sm accent-stop-btn" id="addAccentColorBtn" title="添加渐变色" aria-label="添加渐变色" data-i18n-title="添加渐变色" data-i18n-aria-label="添加渐变色">+</button>
+                    <button type="button" class="btn secondary btn-sm accent-stop-btn" id="removeAccentColorBtn" title="移除渐变色" aria-label="移除渐变色" data-i18n-title="移除渐变色" data-i18n-aria-label="移除渐变色" hidden>−</button>
+                  </div>
+                  <button type="button" class="btn secondary btn-sm accent-angle-btn" id="accentGradientAngleBtn" title="切换渐变方向" aria-label="切换渐变方向" data-i18n-title="切换渐变方向" data-i18n-aria-label="切换渐变方向" hidden>135° ↘</button>
+                  <span class="accent-gradient-preview" id="accentGradientPreview" aria-hidden="true" hidden></span>
                   <button type="button" class="btn secondary btn-sm accent-apply-btn" id="applyAccentColorBtn" data-i18n="应用">应用</button>
                 </div>
               </div>
@@ -363,6 +374,7 @@
           <h5 class="settings-subheading" data-i18n="分组与密度">分组与密度</h5>
           <div class="settings-group">
             <div class="setting-item"><div class="setting-copy"><label for="groupColumnsSelect" data-i18n="分组列数">分组列数</label><small data-i18n="自适应随窗口调整；固定列数在窄屏下自动减少">自适应随窗口调整；固定列数在窄屏下自动减少</small></div><div class="setting-control"><select id="groupColumnsSelect"><option value="auto" data-i18n="自适应">自适应</option><option value="1" data-i18n="1 列">1 列</option><option value="2" data-i18n="2 列">2 列</option><option value="3" data-i18n="3 列">3 列</option><option value="4" data-i18n="4 列">4 列</option><option value="5" data-i18n="5 列">5 列</option><option value="6" data-i18n="6 列">6 列</option></select></div></div>
+            <div class="setting-item"><div class="setting-copy"><label for="collapsedIconCountSelect" data-i18n="分组收起显示图标数">分组收起显示图标数</label><small data-i18n="分组收起时最多显示的网站图标数，超出宽度将自动隐藏">分组收起时最多显示的网站图标数，超出宽度将自动隐藏</small></div><div class="setting-control"><select id="collapsedIconCountSelect" class="setting-select"><option value="0" data-i18n="不显示">不显示</option><option value="4" data-i18n="4 个">4 个</option><option value="6" data-i18n="6 个">6 个</option><option value="8" data-i18n="8 个">8 个</option><option value="10" data-i18n="10 个">10 个</option><option value="12" data-i18n="12 个">12 个</option><option value="16" data-i18n="16 个">16 个</option></select></div></div>
             <div class="setting-item">
               <div class="setting-copy"><label for="compactModeToggle" data-i18n="紧凑模式">紧凑模式</label></div>
               <div class="setting-control">
@@ -573,7 +585,7 @@
       </div>
       <div class="modal-actions">
         <button type="button" class="btn secondary" id="closeAppStoreBtn" data-i18n="取消">取消</button>
-        <button type="button" class="btn primary" id="addStoreLinksBtn"><span data-i18n="添加选中 (">添加选中 (</span><span id="selectedLinksCount">0</span>)</button>
+        <button type="button" class="btn primary" id="addStoreLinksBtn" disabled><span data-i18n="保存选中">保存选中</span><span id="selectedLinksCount" class="store-selected-badge">0</span></button>
       </div>
     </div>
 

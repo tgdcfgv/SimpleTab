@@ -2530,5 +2530,293 @@
   "ui_0523": {
     "message": "Flight Tracking & Trip Tools",
     "description": "航班与行程服务"
+  },
+  "ui_0524": {
+    "message": "Study & Reference",
+    "description": "学习参考"
+  },
+  "ui_0525": {
+    "message": "Productivity",
+    "description": "效率办公"
+  },
+  "ui_0526": {
+    "message": "Development",
+    "description": "开发技术"
+  },
+  "ui_0527": {
+    "message": "Design",
+    "description": "设计创意"
+  },
+  "ui_0528": {
+    "message": "Visual Assets",
+    "description": "图像素材"
+  },
+  "ui_0529": {
+    "message": "Communities",
+    "description": "社交社区"
+  },
+  "ui_0530": {
+    "message": "Entertainment",
+    "description": "影音娱乐"
+  },
+  "ui_0531": {
+    "message": "Tech News",
+    "description": "科技资讯"
+  },
+  "ui_0532": {
+    "message": "Education",
+    "description": "学术教育"
+  },
+  "ui_0533": {
+    "message": "Cloud Storage",
+    "description": "云盘存储"
+  },
+  "ui_0534": {
+    "message": "Shopping",
+    "description": "购物生活"
+  },
+  "ui_0535": {
+    "message": "Maps & Travel",
+    "description": "地图出行"
+  },
+  "ui_0536": {
+    "message": "Chat Assistants",
+    "description": "对话助手"
+  },
+  "ui_0537": {
+    "message": "Smart Workspace",
+    "description": "智能办公"
+  },
+  "ui_0538": {
+    "message": "AI Coding",
+    "description": "AI 编程"
+  },
+  "ui_0539": {
+    "message": "Creative AI",
+    "description": "创作生成"
+  },
+  "ui_0540": {
+    "message": "Docs & Notes",
+    "description": "文档笔记"
+  },
+  "ui_0541": {
+    "message": "Teamwork",
+    "description": "团队协作"
+  },
+  "ui_0542": {
+    "message": "Project Management",
+    "description": "项目管理"
+  },
+  "ui_0543": {
+    "message": "Whiteboards",
+    "description": "思维白板"
+  },
+  "ui_0544": {
+    "message": "Mail & Calendar",
+    "description": "邮箱日程"
+  },
+  "ui_0545": {
+    "message": "Office Utilities",
+    "description": "办公工具"
+  },
+  "ui_0546": {
+    "message": "Code Hosting",
+    "description": "代码托管"
+  },
+  "ui_0547": {
+    "message": "Cloud & Deploy",
+    "description": "云端部署"
+  },
+  "ui_0548": {
+    "message": "Dev Tools",
+    "description": "开发工具"
+  },
+  "ui_0549": {
+    "message": "Tech Communities",
+    "description": "技术社区"
+  },
+  "ui_0550": {
+    "message": "Inspiration",
+    "description": "灵感社区"
+  },
+  "ui_0551": {
+    "message": "Stock Photos",
+    "description": "高清图库"
+  },
+  "ui_0552": {
+    "message": "Icons & Fonts",
+    "description": "图标字体"
+  },
+  "ui_0553": {
+    "message": "Image Tools",
+    "description": "图像处理"
+  },
+  "ui_0554": {
+    "message": "General Forums",
+    "description": "综合社区"
+  },
+  "ui_0555": {
+    "message": "Social Feeds",
+    "description": "社交动态"
+  },
+  "ui_0556": {
+    "message": "Messaging",
+    "description": "即时通讯"
+  },
+  "ui_0557": {
+    "message": "Music & Audio",
+    "description": "音乐播客"
+  },
+  "ui_0558": {
+    "message": "Video & Film",
+    "description": "影视视频"
+  },
+  "ui_0559": {
+    "message": "Gaming & Streams",
+    "description": "游戏直播"
+  },
+  "ui_0560": {
+    "message": "Culture Media",
+    "description": "文化媒体"
+  },
+  "ui_0561": {
+    "message": "Tech & Digital",
+    "description": "科技数码"
+  },
+  "ui_0562": {
+    "message": "Business & Finance",
+    "description": "商业财经"
+  },
+  "ui_0563": {
+    "message": "News Media",
+    "description": "新闻媒体"
+  },
+  "ui_0564": {
+    "message": "Academic Papers",
+    "description": "学术文献"
+  },
+  "ui_0565": {
+    "message": "Online Courses",
+    "description": "在线课程"
+  },
+  "ui_0566": {
+    "message": "Encyclopedia",
+    "description": "知识百科"
+  },
+  "ui_0567": {
+    "message": "Cloud Drives",
+    "description": "云端网盘"
+  },
+  "ui_0568": {
+    "message": "File Transfer",
+    "description": "同步快传"
+  },
+  "ui_0569": {
+    "message": "Online Shopping",
+    "description": "综合电商"
+  },
+  "ui_0570": {
+    "message": "Deals & Picks",
+    "description": "好物导购"
+  },
+  "ui_0571": {
+    "message": "Local Life",
+    "description": "本地生活"
+  },
+  "ui_0572": {
+    "message": "Navigation",
+    "description": "地图导航"
+  },
+  "ui_0573": {
+    "message": "Travel Booking",
+    "description": "旅行预订"
+  },
+  "ui_0574": {
+    "message": "Flight & Transit",
+    "description": "航班出行"
+  },
+  "ui_0575": {
+    "message": "Save selected",
+    "description": "保存选中"
+  },
+  "ui_0576": {
+    "message": "Collapsed group icons",
+    "description": "分组收起显示图标数"
+  },
+  "ui_0577": {
+    "message": "Maximum site icons shown when a group is collapsed; excess icons hide automatically",
+    "description": "分组收起时最多显示的网站图标数，超出宽度将自动隐藏"
+  },
+  "ui_0578": {
+    "message": "None",
+    "description": "不显示"
+  },
+  "ui_0579": {
+    "message": "4",
+    "description": "4 个"
+  },
+  "ui_0580": {
+    "message": "6",
+    "description": "6 个"
+  },
+  "ui_0581": {
+    "message": "8",
+    "description": "8 个"
+  },
+  "ui_0582": {
+    "message": "10",
+    "description": "10 个"
+  },
+  "ui_0583": {
+    "message": "12",
+    "description": "12 个"
+  },
+  "ui_0584": {
+    "message": "16",
+    "description": "16 个"
+  },
+  "ui_0585": {
+    "message": "Available on the Chrome Web Store and Microsoft Edge Add-ons, or install manually from GitHub.",
+    "description": "已上线 Chrome 应用商店与 Microsoft Edge 加载项商店，也可从 GitHub 手动安装。"
+  },
+  "ui_0586": {
+    "message": "Install from Chrome Web Store",
+    "description": "从 Chrome 商店安装"
+  },
+  "ui_0587": {
+    "message": ", then follow the steps below. Chrome and Edge users can install directly from the store buttons above.",
+    "description": "，然后按以下步骤安装。Chrome 与 Edge 用户可直接使用上方商店入口。"
+  },
+  "ui_0588": {
+    "message": "Theme color",
+    "description": "主题色"
+  },
+  "ui_0589": {
+    "message": "Choose up to three colors for a custom gradient",
+    "description": "至多可选择三种颜色进行渐变设计"
+  },
+  "ui_0590": {
+    "message": "Theme colors",
+    "description": "主题色列表"
+  },
+  "ui_0591": {
+    "message": "Second gradient color",
+    "description": "第二种渐变色"
+  },
+  "ui_0592": {
+    "message": "Third gradient color",
+    "description": "第三种渐变色"
+  },
+  "ui_0593": {
+    "message": "Add gradient color",
+    "description": "添加渐变色"
+  },
+  "ui_0594": {
+    "message": "Remove gradient color",
+    "description": "移除渐变色"
+  },
+  "ui_0595": {
+    "message": "Change gradient direction",
+    "description": "切换渐变方向"
   }
 }

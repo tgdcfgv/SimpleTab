@@ -62,11 +62,17 @@ export const syncManager = {
     if (!el) return;
     const labels = { local: this.cloudUnavailable ? t('云端不可用 · 本地已保存') : t('本地已保存'), saved: t('云端已保存'), unsynced: t('有未保存更改'), syncing: t('云端同步中…'),
       signedout: t('请登录以使用云端数据'), error: this.conflict ? t('存在同步冲突 · 点击处理') : (this.mode === 'local' ? t('本地保存失败 · 点击重试') : t('同步失败 · 点击重试')) };
-    let dotClass = 'status-dot';
-    if (this.status === 'syncing') dotClass = 'status-dot syncing';
-    else if (this.status === 'error') dotClass = 'status-dot error';
-    else if (this.conflict) dotClass = 'status-dot conflict';
-    else if (this.status === 'unsynced') dotClass = 'status-dot unsynced';
+    let state = 'saved';
+    if (this.status === 'syncing') state = 'syncing';
+    else if (this.conflict) state = 'conflict';
+    else if (this.status === 'error') state = 'error';
+    else if (this.status === 'unsynced') state = 'unsynced';
+    else if (this.status === 'signedout') state = 'signedout';
+    else if (this.cloudUnavailable) state = 'unavailable';
+    else if (this.status === 'local') state = 'local';
+    const dotClass = `status-dot ${state}`;
+    el.dataset.state = state;
+    el.dataset.mode = this.mode;
     el.querySelector('.status-dot').className = dotClass;
     el.querySelector('.status-text').textContent = labels[this.status];
     el.title = this.error || (this.cloudUnavailable ? t('当前使用本地内容，点击重试读取云端内容') : this.mode === 'local' ? t('数据保存在此浏览器，登录后切换到云端内容') : t('点击同步云端数据'));

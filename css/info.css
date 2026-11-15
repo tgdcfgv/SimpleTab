@@ -102,8 +102,11 @@ code { font: .85em/1.6 var(--font-mono); background: var(--bg-subtle); border-ra
 .download-identity img { border-radius: 14px; }
 .download-identity h2 { font-size: 18px; font-weight: 600; }
 .download-identity p { color: var(--text-secondary); font-size: 13px; margin-top: 4px; }
-.button { flex-shrink: 0; min-height: 48px; display: inline-flex; justify-content: center; align-items: center; gap: 10px; padding: 10px 22px; color: #fff; background: var(--accent-hover); border-radius: 10px; font-size: 14px; font-weight: 600; transition: background .15s; }
+.download-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; flex-shrink: 0; }
+.button { flex-shrink: 0; min-height: 48px; display: inline-flex; justify-content: center; align-items: center; gap: 10px; padding: 10px 22px; color: #fff; background: var(--accent-hover); border-radius: 10px; font-size: 14px; font-weight: 600; transition: background .15s, border-color .15s, color .15s; }
 .button:hover { background: #4338ca; color: #fff; text-decoration: none; }
+.button.secondary { background: var(--bg-subtle); color: var(--text-primary); border: 1px solid var(--border-color); }
+.button.secondary:hover { background: var(--accent-subtle); color: var(--text-link); border-color: var(--text-link); }
 .install-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 64px; align-items: start; margin-top: 52px; }
 .steps-list { list-style: none; counter-reset: steps; margin: 28px 0 0; padding: 0; }
 .steps-list > li { position: relative; padding: 0 0 30px 48px; counter-increment: steps; }
@@ -165,7 +168,8 @@ h3 { color: var(--text-primary); font-size: 16px; line-height: 2; font-weight: 6
   .download-identity { gap: 14px; }
   .download-identity img { width: 44px; height: 44px; border-radius: 11px; }
   .download-identity h2 { font-size: 16px; }
-  .download-panel .button { display: flex; margin-top: 20px; }
+  .download-actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+  .download-panel .button { display: flex; width: 100%; }
   .install-layout { margin-top: 0; }
   .steps-list > li { padding-left: 42px; }
   .install-notes { padding: 20px; }

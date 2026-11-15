@@ -87,12 +87,20 @@
   text-overflow: ellipsis;
 }
 
+.group-card.is-collapsed .group-title {
+  flex-shrink: 0;
+  max-width: 50%;
+}
+
 .group-collapsed-icons {
   display: none;
   align-items: center;
+  align-content: flex-start;
+  flex-wrap: wrap;
   gap: 6px;
+  height: 28px;
   margin-left: 8px;
-  flex: 0 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
 }

@@ -41,7 +41,7 @@ const CHINESE_DEFAULT_DATA = {
     },
     {
       id: "g3",
-      name: "学习与参考",
+      name: "学习参考",
       collapsed: false,
       links: [
         { id: "l10", title: "中国知网", url: "https://www.cnki.net" },
@@ -70,6 +70,7 @@ const CHINESE_DEFAULT_DATA = {
   ],
   settings: {
     groupColumns: "auto",
+    collapsedIconCount: 6,
     compactMode: false,
     cardDisplayMode: "icon-text",
     iconSize: 24,
@@ -78,6 +79,8 @@ const CHINESE_DEFAULT_DATA = {
     enabledSearchEngines: ["bing", "baidu"],
     theme: "system",
     accentColor: "#6366f1",
+    accentColors: ["#6366f1"],
+    accentGradientAngle: 135,
     dockPosition: "bottom",
     dockEnabled: true,
     showDockAccountButton: true,
@@ -95,16 +98,35 @@ const CHINESE_DEFAULT_DATA = {
 };
 
 
+const WIKIPEDIA_URLS = {
+  zh_TW: 'https://zh.wikipedia.org/zh-tw/',
+  ja: 'https://ja.wikipedia.org',
+  ko: 'https://ko.wikipedia.org',
+  es: 'https://es.wikipedia.org',
+  de: 'https://de.wikipedia.org',
+  pt_BR: 'https://pt.wikipedia.org',
+  fr: 'https://fr.wikipedia.org'
+};
+
+export function normalizeHexColor(value, fallback = null) {
+  if (typeof value !== 'string') return fallback;
+  const match = value.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!match) return fallback;
+  const hex = match[1].toLowerCase();
+  return '#' + (hex.length === 3 ? hex.split('').map(c => c + c).join('') : hex);
+}
+
 export function defaultSearchSettings(language = getLocale()) {
-  return language === 'zh_CN'
-    ? { searchEngine: 'bing', enabledSearchEngines: ['bing', 'baidu'] }
-    : { searchEngine: 'google', enabledSearchEngines: language === 'ja'
-      ? ['google', 'yahoo-jp', 'bing', 'duckduckgo'] : ['google', 'bing', 'duckduckgo'] };
+  if (language === 'zh_CN') return { searchEngine: 'bing', enabledSearchEngines: ['bing', 'baidu'] };
+  if (language === 'ja') return { searchEngine: 'google', enabledSearchEngines: ['google', 'yahoo-jp', 'bing', 'duckduckgo'] };
+  if (language === 'ko') return { searchEngine: 'google', enabledSearchEngines: ['google', 'naver', 'bing', 'duckduckgo'] };
+  return { searchEngine: 'google', enabledSearchEngines: ['google', 'bing', 'duckduckgo'] };
 }
 export function searchEnginesForLocale(language = getLocale()) {
   const order = language === 'zh_CN' ? ['bing', 'baidu', 'google']
     : language === 'ja' ? ['google', 'yahoo-jp', 'bing', 'duckduckgo', 'naver']
-      : ['google', 'bing', 'duckduckgo', 'yahoo', 'naver'];
+      : language === 'ko' ? ['google', 'naver', 'bing', 'duckduckgo', 'yahoo']
+        : ['google', 'bing', 'duckduckgo', 'yahoo', 'naver'];
   return ALL_SEARCH_ENGINES.map(engine => ({ ...engine, name: t(engine.name) })).sort((a, b) => {
     const rank = id => order.includes(id) ? order.indexOf(id) : order.length;
     return rank(a.id) - rank(b.id);
@@ -118,7 +140,7 @@ export function createDefaultData(language = getLocale()) {
     const sites = [
       [['YouTube', 'https://www.youtube.com'], ['Reddit', 'https://www.reddit.com'], ['GitHub', 'https://github.com'], ['Gmail', 'https://mail.google.com']],
       [['ChatGPT', 'https://chatgpt.com'], ['Claude', 'https://claude.ai'], ['Gemini', 'https://gemini.google.com'], ['Perplexity', 'https://www.perplexity.ai']],
-      [['Wikipedia', language === 'ja' ? 'https://ja.wikipedia.org' : language === 'zh_TW' ? 'https://zh.wikipedia.org/zh-tw/' : 'https://en.wikipedia.org'], ['Coursera', 'https://www.coursera.org'], ['Notion', 'https://www.notion.so']],
+      [['Wikipedia', WIKIPEDIA_URLS[language] || 'https://en.wikipedia.org'], ['Coursera', 'https://www.coursera.org'], ['Notion', 'https://www.notion.so']],
       [['Figma', 'https://www.figma.com'], ['Canva', 'https://www.canva.com'], ['Unsplash', 'https://unsplash.com']], []
     ];
     data.groups.forEach((group, index) => {
@@ -146,7 +168,13 @@ export function createTemporaryGroup(index = 0) {
 export function ensureTemporaryGroup(groups, index = 0) {
   if (!Array.isArray(groups)) return [createTemporaryGroup(index)];
   groups = groups.filter(group => group && typeof group === 'object' && !Array.isArray(group));
-  const hasTemporaryGroup = groups.some(group => group.kind === 'temporary' || ['临时收藏', '暫存收藏', 'Inbox', '一時保存'].includes(group.name));
+  const temporaryNames = new Set([
+    '临时收藏', '暫存收藏', 'Inbox', '一時保存',
+    '임시 보관함', 'Bandeja temporal', 'Eingang', 'Temporär',
+    'Caixa de entrada', 'Caixa temporária', 'Boîte de réception', 'Temporaire',
+    t(TEMPORARY_GROUP_NAME)
+  ]);
+  const hasTemporaryGroup = groups.some(group => group.kind === 'temporary' || temporaryNames.has(group.name));
   return hasTemporaryGroup ? groups : [...groups, createTemporaryGroup(index)];
 }
 
@@ -189,7 +217,20 @@ export function normalizeAppData(data) {
     ...(normalized.settings || {})
   };
   if (!LANGUAGES.some(item => item.id === normalized.settings.language)) normalized.settings.language = getLocale();
+  const rawSettings = data?.settings && typeof data.settings === 'object' ? data.settings : {};
+  const fallbackAccent = normalizeHexColor(rawSettings.accentColor, '#6366f1');
+  const validStops = Array.isArray(rawSettings.accentColors)
+    ? rawSettings.accentColors.map(c => normalizeHexColor(c, null)).filter(Boolean).slice(0, 3)
+    : [];
+  normalized.settings.accentColors = validStops.length > 0 ? validStops : [fallbackAccent];
+  normalized.settings.accentColor = normalized.settings.accentColors[0];
+  const gradientAngle = Number(normalized.settings.accentGradientAngle);
+  normalized.settings.accentGradientAngle = [45, 90, 135, 180].includes(gradientAngle) ? gradientAngle : 135;
   if (![1, 2, 3, 4, 5, 6].includes(normalized.settings.groupColumns)) normalized.settings.groupColumns = 'auto';
+  const collapsedCount = Number(normalized.settings.collapsedIconCount);
+  normalized.settings.collapsedIconCount = Number.isInteger(collapsedCount) && collapsedCount >= 0 && collapsedCount <= 24
+    ? collapsedCount
+    : 6;
   if (normalized.settings.dockPosition === 'hidden') {
     normalized.settings.dockEnabled = false;
     normalized.settings.dockPosition = 'bottom';

@@ -32,23 +32,49 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: var(--color-success);
+  background-color: #10B981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
   flex-shrink: 0;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.status-dot.saved {
+  background-color: #10B981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
+}
+
+.status-dot.local {
+  background-color: #64748B;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.15);
+}
+
+[data-theme="dark"] .status-dot.local {
+  background-color: #94A3B8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.16);
 }
 
 .status-dot.syncing {
-  background-color: var(--color-info);
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-info) 60%, transparent);
-  animation: pulse-dot 1.6s infinite ease-in-out;
+  background-color: #3B82F6;
+  box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.55);
+  animation: pulse-dot 1.5s infinite ease-in-out;
+}
+
+.status-dot.unsynced,
+.status-dot.unavailable {
+  background-color: #F59E0B;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
 }
 
 .status-dot.error,
 .status-dot.conflict {
-  background-color: var(--color-warning);
+  background-color: #EF4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
+.status-dot.signedout,
 .status-dot.offline {
   background-color: var(--text-tertiary);
+  box-shadow: none;
 }
 
 @keyframes pulse-dot {

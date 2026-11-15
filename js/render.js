@@ -121,7 +121,7 @@ export function render() {
         ${icon('chevron-down', 16, 'fold-icon', `transform: rotate(${group.collapsed ? '-90deg' : '0'});`)}
         <span class="group-title" title="${escapeHTML(group.name)}">${escapeHTML(group.name)}</span>
         <div class="group-collapsed-icons">
-          ${group.links.slice(0, 6).map(link => {
+          ${group.links.slice(0, appData.settings.collapsedIconCount ?? 6).map(link => {
             const iconSrc = letterBadge(link.url, link.title);
             return `
             <a href="${escapeHTML(link.url)}" class="collapsed-icon-link" title="${escapeHTML(link.title)}"${linkTargetAttrs}>
@@ -264,7 +264,7 @@ export function syncGroupDomAfterSiteDrag() {
 
     const collapsedIcons = card.querySelector('.group-collapsed-icons');
     if (collapsedIcons) {
-      collapsedIcons.innerHTML = group.links.slice(0, 6).map(link => {
+      collapsedIcons.innerHTML = group.links.slice(0, appData.settings.collapsedIconCount ?? 6).map(link => {
         const iconSrc = letterBadge(link.url, link.title);
         return `
           <a href="${escapeHTML(link.url)}" class="collapsed-icon-link" title="${escapeHTML(link.title)}"${linkTargetAttrs}>
@@ -344,20 +344,40 @@ export function initSpaceShortcuts() {
 }
 
 
-export function getContrastForeground(hexColor) {
-  if (!hexColor || typeof hexColor !== 'string') return '#FFFFFF';
+function colorLuminance(hexColor) {
+  if (!hexColor || typeof hexColor !== 'string') return 0;
   let hex = hexColor.trim().replace(/^#/, '');
   if (hex.length === 3) {
     hex = hex.split('').map(c => c + c).join('');
   }
-  if (hex.length !== 6) return '#FFFFFF';
+  if (hex.length !== 6) return 0;
   const r = parseInt(hex.substring(0, 2), 16) / 255;
   const g = parseInt(hex.substring(2, 4), 16) / 255;
   const b = parseInt(hex.substring(4, 6), 16) / 255;
-  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return '#FFFFFF';
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return 0;
   const toLinear = c => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
-  const luminance = 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
-  return luminance > 0.35 ? '#0F172A' : '#FFFFFF';
+  return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+}
+
+export function getContrastForeground(colorOrColors) {
+  const list = Array.isArray(colorOrColors)
+    ? colorOrColors.filter(c => typeof c === 'string' && /^#[0-9a-f]{3}([0-9a-f]{3})?$/i.test(c.trim()))
+    : (typeof colorOrColors === 'string' && /^#[0-9a-f]{3}([0-9a-f]{3})?$/i.test(colorOrColors.trim()) ? [colorOrColors] : []);
+  if (!list.length) return '#FFFFFF';
+  const avgLuminance = list.reduce((sum, hex) => sum + colorLuminance(hex), 0) / list.length;
+  return avgLuminance > 0.35 ? '#0F172A' : '#FFFFFF';
+}
+
+export function buildAccentGradient(settings = {}) {
+  const validStops = Array.isArray(settings.accentColors)
+    ? settings.accentColors.filter(c => typeof c === 'string' && /^#[0-9a-f]{3}([0-9a-f]{3})?$/i.test(c.trim())).slice(0, 3)
+    : [];
+  const primary = validStops[0] || (typeof settings.accentColor === 'string' && /^#[0-9a-f]{3}([0-9a-f]{3})?$/i.test(settings.accentColor.trim()) ? settings.accentColor.trim() : '#6366f1');
+  const colors = validStops.length > 0 ? validStops : [primary];
+  const angle = [45, 90, 135, 180].includes(Number(settings.accentGradientAngle)) ? Number(settings.accentGradientAngle) : 135;
+  const isGradient = colors.length > 1;
+  const gradient = isGradient ? `linear-gradient(${angle}deg, ${colors.join(', ')})` : primary;
+  return { primary, colors, angle, gradient, isGradient };
 }
 
 let wallpaperRender = 0;
@@ -382,12 +402,15 @@ export function applySettings() {
   document.documentElement.dataset.dockPosition = appData.settings.dockEnabled === false ? 'hidden' : (appData.settings.dockPosition || 'bottom');
   updateDockVisibility();
   document.documentElement.style.setProperty('--pure-icon-size', (appData.settings.iconSize || 24) + 'px');
-  const accent = appData.settings.accentColor || '#6366f1';
-  const accentFg = getContrastForeground(accent);
+  const { primary: accent, colors: accentColors, gradient: accentGradient, isGradient } = buildAccentGradient(appData.settings);
+  const accentFg = getContrastForeground(accentColors);
   document.documentElement.style.setProperty('--accent-color', accent);
+  document.documentElement.style.setProperty('--accent-gradient', accentGradient);
   document.documentElement.style.setProperty('--accent-fg', accentFg);
   document.documentElement.style.setProperty('--primary-color', accent);
+  document.documentElement.style.setProperty('--primary-gradient', accentGradient);
   document.documentElement.style.setProperty('--primary-fg', accentFg);
+  document.documentElement.dataset.accentGradient = String(isGradient);
 
   const tabHint = document.getElementById('spaceTabHint');
   const editButton = document.getElementById('spaceEditBtn');

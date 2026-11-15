@@ -42,6 +42,17 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
       for (const id of controls) assert.equal(await page.locator(`#${id}`).evaluate(el => el.closest('.settings-section').id), panel);
     }
     await page.click('[data-settings-panel="settingsAppearance"]');
+    assert.equal(await page.locator('#accentColorInput2').isHidden(), true);
+    await page.click('#addAccentColorBtn');
+    assert.equal(await page.locator('#accentColorInput2').isVisible(), true);
+    assert.equal(await page.locator('#accentGradientAngleBtn').isVisible(), true);
+    await page.click('#addAccentColorBtn');
+    assert.equal(await page.locator('#accentColorInput3').isVisible(), true);
+    assert.equal(await page.locator('#addAccentColorBtn').isHidden(), true);
+    await page.click('#accentGradientAngleBtn');
+    assert.equal(await page.locator('#accentGradientAngleBtn').innerText(), '90° →');
+    await page.click('#applyAccentColorBtn');
+    assert.match(await page.locator('html').evaluate(el => el.style.getPropertyValue('--accent-gradient')), /^linear-gradient\(90deg,/);
     assert.equal(await page.locator('#iconSizeSetting').isVisible(), false);
     const displayRowHeight = await page.locator('.card-display-setting').evaluate(el => el.offsetHeight);
     await page.click('button[data-card-mode="icon-only"]');

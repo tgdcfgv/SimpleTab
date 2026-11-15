@@ -8,12 +8,16 @@ import { searchRegion } from '../js/search-locale.js';
 const nativeFetch = globalThis.fetch;
 globalThis.fetch = async url => new Response(await readFile(url));
 
-test('browser language variants resolve to the four supported locales', () => {
-  for (const [input, expected] of [['zh-Hans-CN','zh_CN'],['zh-Hant','zh_TW'],['zh-HK','zh_TW'],['zh-MO','zh_TW'],['ja-JP','ja'],['en-GB','en'],['fr-FR','en']]) assert.equal(resolveLocale(input), expected);
+test('browser language variants resolve to the supported locales', () => {
+  for (const [input, expected] of [
+    ['zh-Hans-CN','zh_CN'],['zh-Hant','zh_TW'],['zh-HK','zh_TW'],['zh-MO','zh_TW'],
+    ['ja-JP','ja'],['ko-KR','ko'],['es-ES','es'],['es-419','es'],['de-DE','de'],['de-AT','de'],['de-CH','de'],
+    ['pt-BR','pt_BR'],['pt-PT','pt_BR'],['fr-FR','fr'],['fr-CA','fr'],['en-GB','en'],['it-IT','en']
+  ]) assert.equal(resolveLocale(input), expected);
 });
 
 test('catalogs have matching keys and substitution parameters', async () => {
-  const catalogs = await Promise.all(['zh_CN','en','zh_TW','ja'].map(lang => readFile(new URL(`../_locales/${lang}/messages.json`, import.meta.url), 'utf8').then(JSON.parse)));
+  const catalogs = await Promise.all(['zh_CN','en','zh_TW','ja','ko','es','de','pt_BR','fr'].map(lang => readFile(new URL(`../_locales/${lang}/messages.json`, import.meta.url), 'utf8').then(JSON.parse)));
   const parameters = text => [...text.matchAll(/\{\d+\}/g)].map(match => match[0]).sort();
   for (const catalog of catalogs) {
     assert.deepEqual(Object.keys(catalog), Object.keys(catalogs[0]));
@@ -34,7 +38,7 @@ test('translations preserve user substitutions and support markup fragments', as
 });
 
 test('new-user profiles follow language while existing bookmarks and search choices survive', async () => {
-  for (const language of ['zh_CN','en','zh_TW','ja']) {
+  for (const language of ['zh_CN','en','zh_TW','ja','ko','es','de','pt_BR','fr']) {
     await loadLocale(language);
     const fresh = createDefaultData();
     assert.equal(fresh.settings.language, language);
@@ -51,7 +55,8 @@ test('new-user profiles follow language while existing bookmarks and search choi
     assert.equal(ensureTemporaryGroup([{ kind: 'temporary', name: 'My inbox', links: [] }]).length, 1);
   }
   assert(defaultSearchSettings('ja').enabledSearchEngines.includes('yahoo-jp'));
-  assert.deepEqual(['zh_CN','zh_TW','ja','en'].map(searchRegion), ['cn','tw','jp','us']);
+  assert(defaultSearchSettings('ko').enabledSearchEngines.includes('naver'));
+  assert.deepEqual(['zh_CN','zh_TW','ja','ko','es','de','pt_BR','fr','en'].map(searchRegion), ['cn','tw','jp','kr','es','de','br','fr','us']);
   await loadLocale('zh_CN');
   const zhCatalog = catalogForLocale('zh_CN');
   const aiLinks = zhCatalog.find(group => group.id === 'ai').links;
@@ -59,7 +64,9 @@ test('new-user profiles follow language while existing bookmarks and search choi
     assert(aiLinks.some(link => link.name === expectedName), `missing ${expectedName}`);
   }
   for (const group of zhCatalog.filter(item => !item.dynamicType)) {
+    assert(!group.name.includes('与') && !group.name.includes('国际') && !group.name.includes('国内'), `disallowed category name ${group.name}`);
     assert(group.links.every(link => typeof link.section === 'string' && link.section.length > 0), `missing section in ${group.id}`);
+    assert(group.links.every(link => !link.section.includes('与') && !link.section.includes('国际') && !link.section.includes('国内')), `disallowed section in ${group.id}`);
   }
   await loadLocale('en');
   const enCatalog = catalogForLocale('en');

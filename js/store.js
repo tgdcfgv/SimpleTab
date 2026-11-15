@@ -84,10 +84,13 @@ function setStoreLinkSelected(link, checked) {
 
 export function updateStoreSelectionCount() {
   const count = selectedStoreLinks.length;
-  document.getElementById('selectedLinksCount').textContent = count;
+  const badge = document.getElementById('selectedLinksCount');
+  if (badge) badge.textContent = count;
+  const addBtn = document.getElementById('addStoreLinksBtn');
+  if (addBtn) addBtn.disabled = count === 0;
   const status = document.getElementById('storeStatusMsg');
-  if (status) {
-    status.textContent = count > 0 ? t`已选择 ${count} 项` : '';
+  if (status && !status.classList.contains('warning') && !status.classList.contains('success')) {
+    status.textContent = '';
     status.className = 'store-status';
   }
 }
@@ -379,107 +382,50 @@ export async function renderAppStoreCategory() {
     return;
   }
 
-  const visibleSections = activeStoreSubcategory === 'all'
-    ? sections
-    : sections.filter(s => s.name === activeStoreSubcategory);
+  const visibleLinks = activeStoreSubcategory === 'all'
+    ? category.links
+    : sections.filter(s => s.name === activeStoreSubcategory).flatMap(s => s.links);
 
-  const sectionsContainer = document.createElement('div');
-  sectionsContainer.className = 'store-sections-container';
+  const grid = document.createElement('div');
+  grid.className = 'store-links-grid';
 
-  visibleSections.forEach(section => {
-    const sectionEl = document.createElement('section');
-    sectionEl.className = 'store-subcategory-section';
+  visibleLinks.forEach(link => {
+    const label = document.createElement('label');
+    label.className = 'store-link-item';
 
-    const subHeader = document.createElement('div');
-    subHeader.className = 'store-subcategory-header';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = link.url;
+    checkbox.className = 'store-checkbox';
+    checkbox.checked = isStoreLinkSelected(link);
 
-    const subTitleWrap = document.createElement('div');
-    subTitleWrap.className = 'store-subcategory-heading';
-
-    const subTitle = document.createElement('h5');
-    subTitle.className = 'store-subcategory-title';
-    subTitle.textContent = section.name;
-
-    const subCount = document.createElement('span');
-    subCount.className = 'store-subcategory-count';
-    subCount.textContent = section.links.length;
-
-    subTitleWrap.appendChild(subTitle);
-    subTitleWrap.appendChild(subCount);
-
-    const toggleSectionBtn = document.createElement('button');
-    toggleSectionBtn.type = 'button';
-    toggleSectionBtn.className = 'store-subcategory-toggle';
-
-    const updateSectionToggleLabel = () => {
-      const allSelected = section.links.every(l => isStoreLinkSelected(l));
-      toggleSectionBtn.textContent = allSelected ? t('取消本组') : t('全选本组');
-      toggleSectionBtn.classList.toggle('is-all-selected', allSelected);
-    };
-    updateSectionToggleLabel();
-
-    subHeader.appendChild(subTitleWrap);
-    subHeader.appendChild(toggleSectionBtn);
-    sectionEl.appendChild(subHeader);
-
-    const grid = document.createElement('div');
-    grid.className = 'store-links-grid';
-
-    const checkboxes = [];
-
-    section.links.forEach(link => {
-      const label = document.createElement('label');
-      label.className = 'store-link-item';
-
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.value = link.url;
-      checkbox.className = 'store-checkbox';
-      checkbox.checked = isStoreLinkSelected(link);
-      checkboxes.push({ checkbox, link });
-
-      checkbox.addEventListener('change', (e) => {
-        setStoreLinkSelected(link, e.target.checked);
-        updateSectionToggleLabel();
-        updateStoreSelectionCount();
-      });
-
-      const icon = document.createElement('img');
-      loadSiteIcon(icon, link);
-      icon.alt = '';
-      icon.className = 'store-icon';
-
-      const span = document.createElement('span');
-      span.textContent = link.name;
-      if (link.bookmarkPath) span.title = `${link.bookmarkPath} / ${link.name}`;
-      span.className = 'store-name';
-
-      const circleCheck = document.createElement('span');
-      circleCheck.className = 'store-circle-check';
-      circleCheck.innerHTML = lucideIcon('check', 11).replace('stroke="currentColor"', 'stroke="white"');
-
-      label.appendChild(checkbox);
-      label.appendChild(icon);
-      label.appendChild(span);
-      label.appendChild(circleCheck);
-      grid.appendChild(label);
-    });
-
-    toggleSectionBtn.addEventListener('click', () => {
-      const shouldSelectAll = !section.links.every(l => isStoreLinkSelected(l));
-      checkboxes.forEach(({ checkbox, link }) => {
-        checkbox.checked = shouldSelectAll;
-        setStoreLinkSelected(link, shouldSelectAll);
-      });
-      updateSectionToggleLabel();
+    checkbox.addEventListener('change', (e) => {
+      setStoreLinkSelected(link, e.target.checked);
       updateStoreSelectionCount();
     });
 
-    sectionEl.appendChild(grid);
-    sectionsContainer.appendChild(sectionEl);
+    const icon = document.createElement('img');
+    loadSiteIcon(icon, link);
+    icon.alt = '';
+    icon.className = 'store-icon';
+
+    const span = document.createElement('span');
+    span.textContent = link.name;
+    if (link.bookmarkPath) span.title = `${link.bookmarkPath} / ${link.name}`;
+    span.className = 'store-name';
+
+    const circleCheck = document.createElement('span');
+    circleCheck.className = 'store-circle-check';
+    circleCheck.innerHTML = lucideIcon('check', 11).replace('stroke="currentColor"', 'stroke="white"');
+
+    label.appendChild(checkbox);
+    label.appendChild(icon);
+    label.appendChild(span);
+    label.appendChild(circleCheck);
+    grid.appendChild(label);
   });
 
-  categoryDiv.appendChild(sectionsContainer);
+  categoryDiv.appendChild(grid);
   content.appendChild(categoryDiv);
   updateStoreSelectionCount();
 }
@@ -553,7 +499,8 @@ export function renderAppStore() {
   activeStoreSubcategory = 'all';
   const addStoreLinksBtn = document.getElementById('addStoreLinksBtn');
   if (addStoreLinksBtn) {
-    addStoreLinksBtn.innerHTML = t('保存选中 (<span id="selectedLinksCount">0</span>)');
+    addStoreLinksBtn.innerHTML = `<span data-i18n="保存选中">${t('保存选中')}</span><span id="selectedLinksCount" class="store-selected-badge">0</span>`;
+    addStoreLinksBtn.disabled = true;
   }
 
   const storeGroupSelectEl = document.getElementById('storeGroupSelect');

@@ -50,8 +50,8 @@ function animateSiteReflow(previousRects, grids) {
         { transform: 'translate(0, 0)' }
       ],
       {
-        duration: 280,
-        easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+        duration: 200,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
       }
     );
   });
@@ -238,10 +238,10 @@ export function handleDragOverGroup(e) {
 
     const currentSlot = slots[currentIndex];
     if (
-      pointerX >= currentSlot.left - 2 &&
-      pointerX <= currentSlot.right + 2 &&
-      pointerY >= currentSlot.top - 2 &&
-      pointerY <= currentSlot.bottom + 2
+      pointerX >= currentSlot.left &&
+      pointerX <= currentSlot.right &&
+      pointerY >= currentSlot.top &&
+      pointerY <= currentSlot.bottom
     ) {
       return;
     }
@@ -261,25 +261,19 @@ export function handleDragOverGroup(e) {
       row.items.sort((a, b) => a.left - b.left);
     });
 
-    const currentRowIndex = rows.findIndex(r => r.items.some(s => s.index === currentIndex));
-    let rowIndex = rows.length - 1;
-    for (let index = 0; index < rows.length - 1; index++) {
-      const midY = (rows[index].centerY + rows[index + 1].centerY) / 2;
-      const hysteresis = index === currentRowIndex
-        ? rows[index].height * 0.15
-        : index + 1 === currentRowIndex
-          ? -rows[index + 1].height * 0.15
-          : 0;
-      if (pointerY < midY + hysteresis) {
-        rowIndex = index;
-        break;
+    let rowIndex = rows.findIndex(r => pointerY >= r.top && pointerY <= r.bottom);
+    if (rowIndex === -1) {
+      rowIndex = rows.length - 1;
+      for (let index = 0; index < rows.length - 1; index++) {
+        const midY = (rows[index].centerY + rows[index + 1].centerY) / 2;
+        if (pointerY < midY) {
+          rowIndex = index;
+          break;
+        }
       }
     }
 
     const row = rows[rowIndex];
-    if (rowIndex > currentRowIndex && pointerY < row.top + row.height * 0.2) return;
-    if (rowIndex < currentRowIndex && pointerY > row.bottom - row.height * 0.2) return;
-
     let targetSlot = null;
     const lastInRow = row.items.at(-1);
     const firstInRow = row.items[0];
@@ -294,14 +288,6 @@ export function handleDragOverGroup(e) {
     } else {
       const hoveredSlot = row.items.find(s => pointerX >= s.left && pointerX <= s.right);
       if (!hoveredSlot || hoveredSlot.item === draggedItem) return;
-      if (rowIndex === currentRowIndex) {
-        const edgeInset = hoveredSlot.width * 0.28;
-        if (currentIndex < hoveredSlot.index && pointerX < hoveredSlot.left + edgeInset) return;
-        if (currentIndex > hoveredSlot.index && pointerX > hoveredSlot.right - edgeInset) return;
-      } else {
-        const crossInset = hoveredSlot.width * 0.08;
-        if (pointerX < hoveredSlot.left + crossInset || pointerX > hoveredSlot.right - crossInset) return;
-      }
       targetSlot = hoveredSlot;
     }
 
@@ -352,7 +338,7 @@ export function handleDragOverGroup(e) {
   }
 
   const row = rows[rowIndex];
-  const referenceInRow = row.items.find(metric => pointerX < metric.left + metric.width / 2);
+  const referenceInRow = row.items.find(metric => pointerX <= metric.left + metric.width);
   const referenceNode = referenceInRow?.item || rows[rowIndex + 1]?.items[0]?.item || null;
   moveDraggedSite(grid, referenceNode);
 }

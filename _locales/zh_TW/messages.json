@@ -2530,5 +2530,293 @@
   "ui_0523": {
     "message": "航班與行程服務",
     "description": "航班与行程服务"
+  },
+  "ui_0524": {
+    "message": "學習參考",
+    "description": "学习参考"
+  },
+  "ui_0525": {
+    "message": "效率辦公",
+    "description": "效率办公"
+  },
+  "ui_0526": {
+    "message": "開發技術",
+    "description": "开发技术"
+  },
+  "ui_0527": {
+    "message": "設計創意",
+    "description": "设计创意"
+  },
+  "ui_0528": {
+    "message": "圖像素材",
+    "description": "图像素材"
+  },
+  "ui_0529": {
+    "message": "社交社群",
+    "description": "社交社区"
+  },
+  "ui_0530": {
+    "message": "影音娛樂",
+    "description": "影音娱乐"
+  },
+  "ui_0531": {
+    "message": "科技資訊",
+    "description": "科技资讯"
+  },
+  "ui_0532": {
+    "message": "學術教育",
+    "description": "学术教育"
+  },
+  "ui_0533": {
+    "message": "雲端硬碟",
+    "description": "云盘存储"
+  },
+  "ui_0534": {
+    "message": "購物生活",
+    "description": "购物生活"
+  },
+  "ui_0535": {
+    "message": "地圖出行",
+    "description": "地图出行"
+  },
+  "ui_0536": {
+    "message": "對話助手",
+    "description": "对话助手"
+  },
+  "ui_0537": {
+    "message": "智慧辦公",
+    "description": "智能办公"
+  },
+  "ui_0538": {
+    "message": "AI 程式開發",
+    "description": "AI 编程"
+  },
+  "ui_0539": {
+    "message": "創作生成",
+    "description": "创作生成"
+  },
+  "ui_0540": {
+    "message": "文件筆記",
+    "description": "文档笔记"
+  },
+  "ui_0541": {
+    "message": "團隊協作",
+    "description": "团队协作"
+  },
+  "ui_0542": {
+    "message": "專案管理",
+    "description": "项目管理"
+  },
+  "ui_0543": {
+    "message": "思維白板",
+    "description": "思维白板"
+  },
+  "ui_0544": {
+    "message": "信箱日程",
+    "description": "邮箱日程"
+  },
+  "ui_0545": {
+    "message": "辦公工具",
+    "description": "办公工具"
+  },
+  "ui_0546": {
+    "message": "程式碼託管",
+    "description": "代码托管"
+  },
+  "ui_0547": {
+    "message": "雲端部署",
+    "description": "云端部署"
+  },
+  "ui_0548": {
+    "message": "開發工具",
+    "description": "开发工具"
+  },
+  "ui_0549": {
+    "message": "技術社群",
+    "description": "技术社区"
+  },
+  "ui_0550": {
+    "message": "靈感社群",
+    "description": "灵感社区"
+  },
+  "ui_0551": {
+    "message": "高畫質圖庫",
+    "description": "高清图库"
+  },
+  "ui_0552": {
+    "message": "圖示字型",
+    "description": "图标字体"
+  },
+  "ui_0553": {
+    "message": "影像處理",
+    "description": "图像处理"
+  },
+  "ui_0554": {
+    "message": "綜合社群",
+    "description": "综合社区"
+  },
+  "ui_0555": {
+    "message": "社交動態",
+    "description": "社交动态"
+  },
+  "ui_0556": {
+    "message": "即時通訊",
+    "description": "即时通讯"
+  },
+  "ui_0557": {
+    "message": "音樂播客",
+    "description": "音乐播客"
+  },
+  "ui_0558": {
+    "message": "影視影片",
+    "description": "影视视频"
+  },
+  "ui_0559": {
+    "message": "遊戲直播",
+    "description": "游戏直播"
+  },
+  "ui_0560": {
+    "message": "文化媒體",
+    "description": "文化媒体"
+  },
+  "ui_0561": {
+    "message": "科技數位",
+    "description": "科技数码"
+  },
+  "ui_0562": {
+    "message": "商業財經",
+    "description": "商业财经"
+  },
+  "ui_0563": {
+    "message": "新聞媒體",
+    "description": "新闻媒体"
+  },
+  "ui_0564": {
+    "message": "學術文獻",
+    "description": "学术文献"
+  },
+  "ui_0565": {
+    "message": "線上課程",
+    "description": "在线课程"
+  },
+  "ui_0566": {
+    "message": "知識百科",
+    "description": "知识百科"
+  },
+  "ui_0567": {
+    "message": "雲端網碟",
+    "description": "云端网盘"
+  },
+  "ui_0568": {
+    "message": "同步快傳",
+    "description": "同步快传"
+  },
+  "ui_0569": {
+    "message": "綜合電商",
+    "description": "综合电商"
+  },
+  "ui_0570": {
+    "message": "好物導購",
+    "description": "好物导购"
+  },
+  "ui_0571": {
+    "message": "在地生活",
+    "description": "本地生活"
+  },
+  "ui_0572": {
+    "message": "地圖導航",
+    "description": "地图导航"
+  },
+  "ui_0573": {
+    "message": "旅行預訂",
+    "description": "旅行预订"
+  },
+  "ui_0574": {
+    "message": "航班出行",
+    "description": "航班出行"
+  },
+  "ui_0575": {
+    "message": "儲存選取",
+    "description": "保存选中"
+  },
+  "ui_0576": {
+    "message": "群組收合顯示圖示數",
+    "description": "分组收起显示图标数"
+  },
+  "ui_0577": {
+    "message": "群組收合時最多顯示的網站圖示數，超出寬度將自動隱藏",
+    "description": "分组收起时最多显示的网站图标数，超出宽度将自动隐藏"
+  },
+  "ui_0578": {
+    "message": "不顯示",
+    "description": "不显示"
+  },
+  "ui_0579": {
+    "message": "4 個",
+    "description": "4 个"
+  },
+  "ui_0580": {
+    "message": "6 個",
+    "description": "6 个"
+  },
+  "ui_0581": {
+    "message": "8 個",
+    "description": "8 个"
+  },
+  "ui_0582": {
+    "message": "10 個",
+    "description": "10 个"
+  },
+  "ui_0583": {
+    "message": "12 個",
+    "description": "12 个"
+  },
+  "ui_0584": {
+    "message": "16 個",
+    "description": "16 个"
+  },
+  "ui_0585": {
+    "message": "已上架 Chrome 線上應用程式商店與 Microsoft Edge 附加元件商店，也可從 GitHub 手動安裝。",
+    "description": "已上线 Chrome 应用商店与 Microsoft Edge 加载项商店，也可从 GitHub 手动安装。"
+  },
+  "ui_0586": {
+    "message": "從 Chrome 商店安裝",
+    "description": "从 Chrome 商店安装"
+  },
+  "ui_0587": {
+    "message": "，然後按以下步驟安裝。Chrome 與 Edge 使用者可直接使用上方商店入口。",
+    "description": "，然后按以下步骤安装。Chrome 与 Edge 用户可直接使用上方商店入口。"
+  },
+  "ui_0588": {
+    "message": "主題色",
+    "description": "主题色"
+  },
+  "ui_0589": {
+    "message": "至多可選擇三種顏色進行漸層設計",
+    "description": "至多可选择三种颜色进行渐变设计"
+  },
+  "ui_0590": {
+    "message": "主題色清單",
+    "description": "主题色列表"
+  },
+  "ui_0591": {
+    "message": "第二種漸層色",
+    "description": "第二种渐变色"
+  },
+  "ui_0592": {
+    "message": "第三種漸層色",
+    "description": "第三种渐变色"
+  },
+  "ui_0593": {
+    "message": "新增漸層色",
+    "description": "添加渐变色"
+  },
+  "ui_0594": {
+    "message": "移除漸層色",
+    "description": "移除渐变色"
+  },
+  "ui_0595": {
+    "message": "切換漸層方向",
+    "description": "切换渐变方向"
   }
 }

@@ -2530,5 +2530,293 @@
   "ui_0523": {
     "message": "フライト追跡・旅程管理",
     "description": "航班与行程服务"
+  },
+  "ui_0524": {
+    "message": "学習・リファレンス",
+    "description": "学习参考"
+  },
+  "ui_0525": {
+    "message": "仕事効率化",
+    "description": "效率办公"
+  },
+  "ui_0526": {
+    "message": "開発・技術",
+    "description": "开发技术"
+  },
+  "ui_0527": {
+    "message": "デザイン",
+    "description": "设计创意"
+  },
+  "ui_0528": {
+    "message": "画像・素材",
+    "description": "图像素材"
+  },
+  "ui_0529": {
+    "message": "コミュニティ",
+    "description": "社交社区"
+  },
+  "ui_0530": {
+    "message": "エンタメ",
+    "description": "影音娱乐"
+  },
+  "ui_0531": {
+    "message": "テックニュース",
+    "description": "科技资讯"
+  },
+  "ui_0532": {
+    "message": "学術・教育",
+    "description": "学术教育"
+  },
+  "ui_0533": {
+    "message": "クラウドストレージ",
+    "description": "云盘存储"
+  },
+  "ui_0534": {
+    "message": "ショッピング",
+    "description": "购物生活"
+  },
+  "ui_0535": {
+    "message": "地図・旅行",
+    "description": "地图出行"
+  },
+  "ui_0536": {
+    "message": "対話アシスタント",
+    "description": "对话助手"
+  },
+  "ui_0537": {
+    "message": "スマートワーク",
+    "description": "智能办公"
+  },
+  "ui_0538": {
+    "message": "AI コーディング",
+    "description": "AI 编程"
+  },
+  "ui_0539": {
+    "message": "クリエイティブ生成",
+    "description": "创作生成"
+  },
+  "ui_0540": {
+    "message": "ドキュメント・ノート",
+    "description": "文档笔记"
+  },
+  "ui_0541": {
+    "message": "チーム連携",
+    "description": "团队协作"
+  },
+  "ui_0542": {
+    "message": "プロジェクト管理",
+    "description": "项目管理"
+  },
+  "ui_0543": {
+    "message": "ホワイトボード",
+    "description": "思维白板"
+  },
+  "ui_0544": {
+    "message": "メール・カレンダー",
+    "description": "邮箱日程"
+  },
+  "ui_0545": {
+    "message": "オフィスツール",
+    "description": "办公工具"
+  },
+  "ui_0546": {
+    "message": "コードホスティング",
+    "description": "代码托管"
+  },
+  "ui_0547": {
+    "message": "クラウド・デプロイ",
+    "description": "云端部署"
+  },
+  "ui_0548": {
+    "message": "開発ツール",
+    "description": "开发工具"
+  },
+  "ui_0549": {
+    "message": "技術コミュニティ",
+    "description": "技术社区"
+  },
+  "ui_0550": {
+    "message": "インスピレーション",
+    "description": "灵感社区"
+  },
+  "ui_0551": {
+    "message": "ストックフォト",
+    "description": "高清图库"
+  },
+  "ui_0552": {
+    "message": "アイコン・フォント",
+    "description": "图标字体"
+  },
+  "ui_0553": {
+    "message": "画像編集ツール",
+    "description": "图像处理"
+  },
+  "ui_0554": {
+    "message": "総合コミュニティ",
+    "description": "综合社区"
+  },
+  "ui_0555": {
+    "message": "ソーシャル",
+    "description": "社交动态"
+  },
+  "ui_0556": {
+    "message": "メッセージング",
+    "description": "即时通讯"
+  },
+  "ui_0557": {
+    "message": "音楽・ポッドキャスト",
+    "description": "音乐播客"
+  },
+  "ui_0558": {
+    "message": "動画・映画",
+    "description": "影视视频"
+  },
+  "ui_0559": {
+    "message": "ゲーム・配信",
+    "description": "游戏直播"
+  },
+  "ui_0560": {
+    "message": "カルチャーメディア",
+    "description": "文化媒体"
+  },
+  "ui_0561": {
+    "message": "テック・デジタル",
+    "description": "科技数码"
+  },
+  "ui_0562": {
+    "message": "ビジネス・金融",
+    "description": "商业财经"
+  },
+  "ui_0563": {
+    "message": "ニュースメディア",
+    "description": "新闻媒体"
+  },
+  "ui_0564": {
+    "message": "学術文献",
+    "description": "学术文献"
+  },
+  "ui_0565": {
+    "message": "オンライン講座",
+    "description": "在线课程"
+  },
+  "ui_0566": {
+    "message": "知識・百科事典",
+    "description": "知识百科"
+  },
+  "ui_0567": {
+    "message": "クラウドドライブ",
+    "description": "云端网盘"
+  },
+  "ui_0568": {
+    "message": "ファイル転送・同期",
+    "description": "同步快传"
+  },
+  "ui_0569": {
+    "message": "総合通販",
+    "description": "综合电商"
+  },
+  "ui_0570": {
+    "message": "おすすめ・フリマ",
+    "description": "好物导购"
+  },
+  "ui_0571": {
+    "message": "ローカルサービス",
+    "description": "本地生活"
+  },
+  "ui_0572": {
+    "message": "地図・ナビ",
+    "description": "地图导航"
+  },
+  "ui_0573": {
+    "message": "旅行予約",
+    "description": "旅行预订"
+  },
+  "ui_0574": {
+    "message": "フライト・交通",
+    "description": "航班出行"
+  },
+  "ui_0575": {
+    "message": "選択を保存",
+    "description": "保存选中"
+  },
+  "ui_0576": {
+    "message": "折りたたみ時のアイコン表示数",
+    "description": "分组收起显示图标数"
+  },
+  "ui_0577": {
+    "message": "グループ折りたたみ時に表示する最大アイコン数（幅を超える分は自動的に隠れます）",
+    "description": "分组收起时最多显示的网站图标数，超出宽度将自动隐藏"
+  },
+  "ui_0578": {
+    "message": "非表示",
+    "description": "不显示"
+  },
+  "ui_0579": {
+    "message": "4 個",
+    "description": "4 个"
+  },
+  "ui_0580": {
+    "message": "6 個",
+    "description": "6 个"
+  },
+  "ui_0581": {
+    "message": "8 個",
+    "description": "8 个"
+  },
+  "ui_0582": {
+    "message": "10 個",
+    "description": "10 个"
+  },
+  "ui_0583": {
+    "message": "12 個",
+    "description": "12 个"
+  },
+  "ui_0584": {
+    "message": "16 個",
+    "description": "16 个"
+  },
+  "ui_0585": {
+    "message": "Chrome ウェブストアと Microsoft Edge アドオンで公開中。GitHub から手動でインストールすることもできます。",
+    "description": "已上线 Chrome 应用商店与 Microsoft Edge 加载项商店，也可从 GitHub 手动安装。"
+  },
+  "ui_0586": {
+    "message": "Chrome ストアからインストール",
+    "description": "从 Chrome 商店安装"
+  },
+  "ui_0587": {
+    "message": " をダウンロードし、以下の手順に従ってインストールしてください。Chrome と Edge の方は上のストアボタンから直接追加できます。",
+    "description": "，然后按以下步骤安装。Chrome 与 Edge 用户可直接使用上方商店入口。"
+  },
+  "ui_0588": {
+    "message": "テーマカラー",
+    "description": "主题色"
+  },
+  "ui_0589": {
+    "message": "最大 3 色まで選んでグラデーションを設定できます",
+    "description": "至多可选择三种颜色进行渐变设计"
+  },
+  "ui_0590": {
+    "message": "テーマカラー一覧",
+    "description": "主题色列表"
+  },
+  "ui_0591": {
+    "message": "2 つ目のグラデーション色",
+    "description": "第二种渐变色"
+  },
+  "ui_0592": {
+    "message": "3 つ目のグラデーション色",
+    "description": "第三种渐变色"
+  },
+  "ui_0593": {
+    "message": "グラデーション色を追加",
+    "description": "添加渐变色"
+  },
+  "ui_0594": {
+    "message": "グラデーション色を削除",
+    "description": "移除渐变色"
+  },
+  "ui_0595": {
+    "message": "グラデーションの向きを変更",
+    "description": "切换渐变方向"
   }
 }

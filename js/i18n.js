@@ -2,13 +2,21 @@
 // the translator: template substitutions are inserted only after translation.
 export const LANGUAGES = [
   { id: 'zh_CN', name: '简体中文' }, { id: 'en', name: 'English' },
-  { id: 'zh_TW', name: '繁體中文' }, { id: 'ja', name: '日本語' }
+  { id: 'zh_TW', name: '繁體中文' }, { id: 'ja', name: '日本語' },
+  { id: 'ko', name: '한국어' }, { id: 'es', name: 'Español' },
+  { id: 'de', name: 'Deutsch' }, { id: 'pt_BR', name: 'Português' },
+  { id: 'fr', name: 'Français' }
 ];
 export function resolveLocale(value = '') {
   const tag = String(value).replaceAll('_', '-').toLowerCase();
   if (/^zh-(tw|hk|mo|hant)(-|$)/.test(tag)) return 'zh_TW';
   if (tag === 'zh' || tag.startsWith('zh-')) return 'zh_CN';
   if (tag === 'ja' || tag.startsWith('ja-')) return 'ja';
+  if (tag === 'ko' || tag.startsWith('ko-')) return 'ko';
+  if (tag === 'es' || tag.startsWith('es-')) return 'es';
+  if (tag === 'de' || tag.startsWith('de-')) return 'de';
+  if (tag === 'pt' || tag.startsWith('pt-')) return 'pt_BR';
+  if (tag === 'fr' || tag.startsWith('fr-')) return 'fr';
   return 'en';
 }
 function initialLocale() {

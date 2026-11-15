@@ -1,0 +1,2822 @@
+{
+  "extensionName": {
+    "message": "SimTab - Nouvel onglet minimaliste"
+  },
+  "extensionDescription": {
+    "message": "Organisez vos sites localement sans connexion, ou connectez-vous pour synchroniser un contenu cloud distinct sur tous vos appareils."
+  },
+  "savePage": {
+    "message": "Enregistrer cette page dans SimTab"
+  },
+  "captureFailed": {
+    "message": "Impossible d’ouvrir la fenêtre d’enregistrement. Veuillez réessayer."
+  },
+  "ui_0000": {
+    "message": "Paramètres",
+    "description": "设置"
+  },
+  "ui_0001": {
+    "message": "Général",
+    "description": "常规"
+  },
+  "ui_0002": {
+    "message": "Apparence",
+    "description": "外观"
+  },
+  "ui_0003": {
+    "message": "Disposition",
+    "description": "布局"
+  },
+  "ui_0004": {
+    "message": "Compte",
+    "description": "账户"
+  },
+  "ui_0005": {
+    "message": "Données",
+    "description": "数据"
+  },
+  "ui_0006": {
+    "message": "À propos",
+    "description": "关于"
+  },
+  "ui_0007": {
+    "message": "Langue",
+    "description": "语言"
+  },
+  "ui_0008": {
+    "message": "Langue d’affichage",
+    "description": "界面语言"
+  },
+  "ui_0009": {
+    "message": "La page sera rechargée après le changement de langue",
+    "description": "切换后将重新加载页面"
+  },
+  "ui_0010": {
+    "message": "SimTab · Nouvel onglet",
+    "description": "SimTab · 新标签页"
+  },
+  "ui_0011": {
+    "message": "Rechercher dans les sites enregistrés ou appuyer sur Entrée…",
+    "description": "搜索已保存的网站，或直接回车搜索..."
+  },
+  "ui_0012": {
+    "message": "Cliquer pour synchroniser les données cloud",
+    "description": "点击同步云端数据"
+  },
+  "ui_0013": {
+    "message": "Chargement des données…",
+    "description": "正在读取数据…"
+  },
+  "ui_0014": {
+    "message": "Dock",
+    "description": "程序坞"
+  },
+  "ui_0015": {
+    "message": "Se connecter ou créer un compte",
+    "description": "登录或创建账户"
+  },
+  "ui_0016": {
+    "message": "Ajouter un groupe",
+    "description": "添加分组"
+  },
+  "ui_0017": {
+    "message": "Ajouter un site",
+    "description": "添加网站"
+  },
+  "ui_0018": {
+    "message": "Bibliothèque de sites",
+    "description": "网站库"
+  },
+  "ui_0019": {
+    "message": "Appuyer sur Tab pour changer d’espace",
+    "description": "按 Tab 切换空间"
+  },
+  "ui_0020": {
+    "message": "Modifier les espaces",
+    "description": "编辑空间"
+  },
+  "ui_0021": {
+    "message": "Retour",
+    "description": "返回上一步"
+  },
+  "ui_0022": {
+    "message": "Fermer",
+    "description": "关闭"
+  },
+  "ui_0023": {
+    "message": "Bienvenue sur SimTab",
+    "description": "欢迎使用 Sim Tab"
+  },
+  "ui_0024": {
+    "message": "Connectez-vous ou créez un compte pour synchroniser vos raccourcis, votre disposition et vos paramètres.",
+    "description": "登录或创建账户，同步你的快捷方式、布局和设置。"
+  },
+  "ui_0025": {
+    "message": "Envoyer le code",
+    "description": "发送验证码"
+  },
+  "ui_0026": {
+    "message": "Un compte est créé automatiquement lors de la première utilisation",
+    "description": "首次使用将自动创建账户"
+  },
+  "ui_0027": {
+    "message": "En continuant, vous acceptez les",
+    "description": "继续即表示你同意"
+  },
+  "ui_0028": {
+    "message": "Conditions d’utilisation",
+    "description": "《服务条款》"
+  },
+  "ui_0029": {
+    "message": "et la",
+    "description": "和"
+  },
+  "ui_0030": {
+    "message": "Politique de confidentialité",
+    "description": "《隐私政策》"
+  },
+  "ui_0031": {
+    "message": "Saisir le code de vérification",
+    "description": "输入验证码"
+  },
+  "ui_0032": {
+    "message": "Code envoyé à",
+    "description": "验证码已发送至"
+  },
+  "ui_0033": {
+    "message": "Code de vérification à 8 chiffres",
+    "description": "8 位验证码输入"
+  },
+  "ui_0034": {
+    "message": "Code par e-mail à 8 chiffres",
+    "description": "8 位邮箱验证码"
+  },
+  "ui_0035": {
+    "message": "Vérifier et se connecter",
+    "description": "验证并登录"
+  },
+  "ui_0036": {
+    "message": "Aucun e-mail reçu ? Vérifiez vos courriers indésirables ou renvoyez-le plus tard.",
+    "description": "未收到邮件？请检查垃圾邮件，或稍后重新发送。"
+  },
+  "ui_0037": {
+    "message": "Renvoyer (60 s)",
+    "description": "重新发送 (60s)"
+  },
+  "ui_0038": {
+    "message": "Changer d’adresse e-mail",
+    "description": "更换邮箱"
+  },
+  "ui_0039": {
+    "message": "URL",
+    "description": "网址"
+  },
+  "ui_0040": {
+    "message": "Nom",
+    "description": "名称"
+  },
+  "ui_0041": {
+    "message": "Laisser vide pour détecter automatiquement",
+    "description": "留空自动获取"
+  },
+  "ui_0042": {
+    "message": "Icône personnalisée",
+    "description": "自定义图标"
+  },
+  "ui_0043": {
+    "message": "Facultatif ; laisser vide pour une détection automatique",
+    "description": "可选，留空自动获取"
+  },
+  "ui_0044": {
+    "message": "Utiliser l’icône par défaut",
+    "description": "使用默认图标"
+  },
+  "ui_0045": {
+    "message": "Groupe",
+    "description": "所属分组"
+  },
+  "ui_0046": {
+    "message": "Annuler",
+    "description": "取消"
+  },
+  "ui_0047": {
+    "message": "Enregistrer",
+    "description": "保存"
+  },
+  "ui_0048": {
+    "message": "Nom du groupe",
+    "description": "分组名称"
+  },
+  "ui_0049": {
+    "message": "p. ex. Outils de design",
+    "description": "例如：设计工具"
+  },
+  "ui_0050": {
+    "message": "Éléments par ligne",
+    "description": "一行显示个数"
+  },
+  "ui_0051": {
+    "message": "Auto",
+    "description": "自动"
+  },
+  "ui_0052": {
+    "message": "Fermer les paramètres",
+    "description": "关闭设置"
+  },
+  "ui_0053": {
+    "message": "Catégories de paramètres",
+    "description": "设置分类"
+  },
+  "ui_0054": {
+    "message": "Faites de chaque nouvel onglet un espace à votre mesure.",
+    "description": "让每一次打开，都更顺手。"
+  },
+  "ui_0055": {
+    "message": "Navigation",
+    "description": "浏览行为"
+  },
+  "ui_0056": {
+    "message": "Ouvrir les liens dans",
+    "description": "打开方式"
+  },
+  "ui_0057": {
+    "message": "Onglet actuel",
+    "description": "当前标签页"
+  },
+  "ui_0058": {
+    "message": "Nouvel onglet",
+    "description": "新标签页"
+  },
+  "ui_0059": {
+    "message": "Recherche par défaut",
+    "description": "默认搜索"
+  },
+  "ui_0060": {
+    "message": "Moteur de recherche par défaut",
+    "description": "默认搜索引擎"
+  },
+  "ui_0061": {
+    "message": "Utilisé pour les recherches ; choisissez parmi les moteurs activés",
+    "description": "用于搜索框搜索；可从已启用的快捷引擎中选择"
+  },
+  "ui_0062": {
+    "message": "Moteurs de recherche rapide",
+    "description": "快捷引擎"
+  },
+  "ui_0063": {
+    "message": "Choisissez les moteurs disponibles dans la barre de recherche. Gardez-en au moins un activé.",
+    "description": "选择搜索框中可快速切换的引擎，至少保留一个。"
+  },
+  "ui_0064": {
+    "message": "Donnez à votre nouvel onglet un style qui vous plaît.",
+    "description": "为你的新标签页，选一种喜欢的样子。"
+  },
+  "ui_0065": {
+    "message": "Thème et style",
+    "description": "主题与视觉"
+  },
+  "ui_0066": {
+    "message": "Thème",
+    "description": "主题模式"
+  },
+  "ui_0067": {
+    "message": "Clair",
+    "description": "浅色"
+  },
+  "ui_0068": {
+    "message": "Sombre",
+    "description": "深色"
+  },
+  "ui_0069": {
+    "message": "Système",
+    "description": "跟随系统"
+  },
+  "ui_0070": {
+    "message": "Couleur d’accentuation",
+    "description": "强调色"
+  },
+  "ui_0071": {
+    "message": "Choisir la couleur d’accentuation",
+    "description": "选择强调色"
+  },
+  "ui_0072": {
+    "message": "Appliquer",
+    "description": "应用"
+  },
+  "ui_0073": {
+    "message": "Fond d’écran personnalisé",
+    "description": "自定义壁纸"
+  },
+  "ui_0074": {
+    "message": "Enregistré dans ce navigateur, inclus dans les sauvegardes et jamais envoyé vers le cloud",
+    "description": "仅保存在当前浏览器，可随备份导出，不上传云端"
+  },
+  "ui_0075": {
+    "message": "Choisir un fond d’écran",
+    "description": "选择壁纸图片"
+  },
+  "ui_0076": {
+    "message": "Choisir une image",
+    "description": "选择图片"
+  },
+  "ui_0077": {
+    "message": "Aperçu du fond d’écran actuel",
+    "description": "当前壁纸缩略图"
+  },
+  "ui_0078": {
+    "message": "Importer une autre image",
+    "description": "重新上传"
+  },
+  "ui_0079": {
+    "message": "Supprimer",
+    "description": "移除"
+  },
+  "ui_0080": {
+    "message": "Cartes de sites",
+    "description": "网站卡片"
+  },
+  "ui_0081": {
+    "message": "Affichage des liens",
+    "description": "链接显示方式"
+  },
+  "ui_0082": {
+    "message": "Icône + texte",
+    "description": "图标 + 文字"
+  },
+  "ui_0083": {
+    "message": "Icônes uniquement",
+    "description": "仅图标"
+  },
+  "ui_0084": {
+    "message": "Taille des icônes",
+    "description": "图标大小"
+  },
+  "ui_0085": {
+    "message": "Organisez les groupes, la densité d’affichage et le Dock.",
+    "description": "安排分组结构、显示密度和程序坞。"
+  },
+  "ui_0086": {
+    "message": "Groupes et densité",
+    "description": "分组与密度"
+  },
+  "ui_0087": {
+    "message": "Colonnes de groupes",
+    "description": "分组列数"
+  },
+  "ui_0088": {
+    "message": "Auto s’adapte à la fenêtre ; le nombre fixe de colonnes diminue sur les écrans étroits",
+    "description": "自适应随窗口调整；固定列数在窄屏下自动减少"
+  },
+  "ui_0089": {
+    "message": "Auto",
+    "description": "自适应"
+  },
+  "ui_0090": {
+    "message": "1 colonne",
+    "description": "1 列"
+  },
+  "ui_0091": {
+    "message": "2 colonnes",
+    "description": "2 列"
+  },
+  "ui_0092": {
+    "message": "3 colonnes",
+    "description": "3 列"
+  },
+  "ui_0093": {
+    "message": "4 colonnes",
+    "description": "4 列"
+  },
+  "ui_0094": {
+    "message": "5 colonnes",
+    "description": "5 列"
+  },
+  "ui_0095": {
+    "message": "6 colonnes",
+    "description": "6 列"
+  },
+  "ui_0096": {
+    "message": "Mode compact",
+    "description": "紧凑模式"
+  },
+  "ui_0097": {
+    "message": "Dock",
+    "description": "程序坞（Dock）"
+  },
+  "ui_0098": {
+    "message": "Afficher le Dock",
+    "description": "显示程序坞"
+  },
+  "ui_0099": {
+    "message": "Position",
+    "description": "显示位置"
+  },
+  "ui_0100": {
+    "message": "Gauche",
+    "description": "左侧"
+  },
+  "ui_0101": {
+    "message": "Droite",
+    "description": "右侧"
+  },
+  "ui_0102": {
+    "message": "Bas",
+    "description": "底部"
+  },
+  "ui_0103": {
+    "message": "Boutons du Dock",
+    "description": "程序坞按钮"
+  },
+  "ui_0104": {
+    "message": "Avatar du compte",
+    "description": "账户头像"
+  },
+  "ui_0105": {
+    "message": "Astuce de la touche Tab",
+    "description": "Tab 切换提示"
+  },
+  "ui_0106": {
+    "message": "Boutons d’espace",
+    "description": "空间按钮"
+  },
+  "ui_0107": {
+    "message": "Masquez chaque bouton individuellement. Faites un clic droit sur une zone vide de la page d’accueil pour ouvrir les paramètres.",
+    "description": "每个按钮都可独立隐藏。也可以右键点击主页空白处打开设置。"
+  },
+  "ui_0108": {
+    "message": "Gérez votre compte, votre profil et la synchronisation cloud.",
+    "description": "管理登录身份、个人资料与云端同步。"
+  },
+  "ui_0109": {
+    "message": "Compte cloud",
+    "description": "云端账户"
+  },
+  "ui_0110": {
+    "message": "Non connecté",
+    "description": "未登录账户"
+  },
+  "ui_0111": {
+    "message": "Connectez-vous pour synchroniser vos raccourcis et paramètres entre vos appareils",
+    "description": "登录后可跨设备自动同步快捷方式与设置"
+  },
+  "ui_0112": {
+    "message": "Se connecter ou s’inscrire",
+    "description": "登录或注册"
+  },
+  "ui_0113": {
+    "message": "Modifier l’avatar et le pseudo",
+    "description": "点击修改头像与昵称"
+  },
+  "ui_0114": {
+    "message": "Synchronisé",
+    "description": "已同步"
+  },
+  "ui_0115": {
+    "message": "Synchroniser maintenant",
+    "description": "立即同步"
+  },
+  "ui_0116": {
+    "message": "Se déconnecter",
+    "description": "退出登录"
+  },
+  "ui_0117": {
+    "message": "Données cloud",
+    "description": "云端数据维护"
+  },
+  "ui_0118": {
+    "message": "Remplacer les données cloud par les données locales de ce navigateur. La copie locale est conservée.",
+    "description": "用此浏览器本地内容替换云端内容，本地副本仍会保留"
+  },
+  "ui_0119": {
+    "message": "Copier les données locales vers le cloud",
+    "description": "上传本地至云端"
+  },
+  "ui_0120": {
+    "message": "Ignorer les modifications et recharger les données cloud",
+    "description": "放弃本地并重新拉取"
+  },
+  "ui_0121": {
+    "message": "Supprimer le compte",
+    "description": "注销账户"
+  },
+  "ui_0122": {
+    "message": "Supprimer définitivement votre compte et vos données cloud. Cette action est irréversible.",
+    "description": "永久删除账户及云端数据，此操作无法撤销"
+  },
+  "ui_0123": {
+    "message": "Les données locales sont stockées dans ce navigateur. La connexion affiche les données cloud.",
+    "description": "未登录数据保存在此浏览器；登录后显示云端内容。"
+  },
+  "ui_0124": {
+    "message": "Politique de confidentialité",
+    "description": "隐私政策"
+  },
+  "ui_0125": {
+    "message": "Importez des favoris, organisez vos sites et sauvegardez ou restaurez vos données.",
+    "description": "导入收藏夹、整理网站，以及备份和恢复你的数据。"
+  },
+  "ui_0126": {
+    "message": "Importer des favoris",
+    "description": "一键迁移收藏夹"
+  },
+  "ui_0127": {
+    "message": "Exportez les favoris de votre navigateur, puis choisissez le fichier HTML pour prévisualiser et importer dans l’espace actuel.",
+    "description": "先从电脑浏览器导出收藏夹，再选择 HTML 文件，在大纲中预览后导入当前空间。"
+  },
+  "ui_0128": {
+    "message": "Instructions selon le navigateur",
+    "description": "选择浏览器教程"
+  },
+  "ui_0129": {
+    "message": "Choisir le fichier HTML de favoris et prévisualiser",
+    "description": "选择书签 HTML 并预览"
+  },
+  "ui_0130": {
+    "message": "Prévisualisez, déplacez ou supprimez des sites avant d’enregistrer. Les dossiers d’origine deviennent de nouveaux groupes ; les sites existants sont conservés. Les URL en double dans le fichier sont fusionnées. Limite : 5 000 favoris, 5 Mo.",
+    "description": "导入前可在大纲中预览、移动或删除网站；保存后按原收藏夹目录新增分组，现有网站会保留。相同文件内的重复网址会自动合并；一次最多 5000 条、5 MB。"
+  },
+  "ui_0131": {
+    "message": "Organiser les sites",
+    "description": "网站整理"
+  },
+  "ui_0132": {
+    "message": "Modification groupée des sites",
+    "description": "批量编辑网站"
+  },
+  "ui_0133": {
+    "message": "Rechercher, sélectionner, déplacer ou supprimer des sites dans tous les espaces",
+    "description": "搜索、多选、移动或删除所有空间的网站"
+  },
+  "ui_0134": {
+    "message": "Modification groupée",
+    "description": "批量编辑"
+  },
+  "ui_0135": {
+    "message": "Sauvegarde et restauration JSON",
+    "description": "JSON 备份与恢复"
+  },
+  "ui_0136": {
+    "message": "Exporter une sauvegarde",
+    "description": "导出数据备份"
+  },
+  "ui_0137": {
+    "message": "Enregistrer tous les espaces, groupes, URL et préférences au format JSON",
+    "description": "保存所有空间、分组、网址和偏好设置（JSON）"
+  },
+  "ui_0138": {
+    "message": "Exporter en JSON",
+    "description": "导出 JSON"
+  },
+  "ui_0139": {
+    "message": "Restaurer une sauvegarde",
+    "description": "恢复数据备份"
+  },
+  "ui_0140": {
+    "message": "Restaurer depuis un fichier JSON (remplace le contenu actuel)",
+    "description": "从 JSON 文件恢复（将覆盖当前内容）"
+  },
+  "ui_0141": {
+    "message": "Choisir un fichier",
+    "description": "选择文件"
+  },
+  "ui_0142": {
+    "message": "Version, raccourcis clavier et assistance du projet.",
+    "description": "版本信息、快捷键与项目支持。"
+  },
+  "ui_0143": {
+    "message": "À propos de SimTab",
+    "description": "关于 SimTab"
+  },
+  "ui_0144": {
+    "message": "Vos sites favoris dans chaque nouvel onglet.",
+    "description": "将常用网站放在每一个新标签页。"
+  },
+  "ui_0145": {
+    "message": "L’extension remplace votre nouvel onglet et peut lire vos favoris avec votre autorisation.",
+    "description": "扩展版可替换新标签页，并在你授权后读取收藏夹。"
+  },
+  "ui_0146": {
+    "message": "Installation de l’extension",
+    "description": "扩展安装说明"
+  },
+  "ui_0147": {
+    "message": "Code source",
+    "description": "开源项目"
+  },
+  "ui_0148": {
+    "message": "Signaler un problème",
+    "description": "反馈问题"
+  },
+  "ui_0149": {
+    "message": "Raccourcis clavier",
+    "description": "快捷键一览"
+  },
+  "ui_0150": {
+    "message": "Passer à l’espace suivant",
+    "description": "切换到下一个空间"
+  },
+  "ui_0151": {
+    "message": "Sur la page d’accueil, en dehors des champs de saisie et des fenêtres",
+    "description": "主页中使用，输入或弹窗内不生效"
+  },
+  "ui_0152": {
+    "message": "Sélectionner un résultat de recherche",
+    "description": "选择搜索结果"
+  },
+  "ui_0153": {
+    "message": "Dans la barre de recherche",
+    "description": "搜索框中使用"
+  },
+  "ui_0154": {
+    "message": "Ouvrir le résultat ou lancer la recherche",
+    "description": "打开结果或搜索"
+  },
+  "ui_0155": {
+    "message": "Compléter la suggestion sélectionnée",
+    "description": "补全选中的搜索建议"
+  },
+  "ui_0156": {
+    "message": "Fermer les paramètres ou la fenêtre de gestion",
+    "description": "关闭设置或管理弹窗"
+  },
+  "ui_0157": {
+    "message": "Appuyer sur Échap dans la barre de recherche pour masquer les suggestions",
+    "description": "搜索框中按 Esc 可关闭搜索建议"
+  },
+  "ui_0158": {
+    "message": "Enregistrer la page actuelle (extension)",
+    "description": "保存当前网页（扩展版）"
+  },
+  "ui_0159": {
+    "message": "Raccourci par défaut ; modifiable dans les paramètres des raccourcis d’extension du navigateur",
+    "description": "默认快捷键，可在浏览器的扩展快捷键设置中修改"
+  },
+  "ui_0160": {
+    "message": "Réorganiser les groupes ou les sites",
+    "description": "调整分组或网站顺序"
+  },
+  "ui_0161": {
+    "message": "Sélectionnez un site ou un groupe dans l’éditeur groupé, puis appuyez sur Alt + Haut/Bas",
+    "description": "在批量编辑弹窗中聚焦网站或分组行后，按 Alt 加上下方向键"
+  },
+  "ui_0162": {
+    "message": "Ajouter au groupe",
+    "description": "添加到分组"
+  },
+  "ui_0163": {
+    "message": "Ajouter la sélection (",
+    "description": "添加选中 ("
+  },
+  "ui_0164": {
+    "message": "Confirmer l’action",
+    "description": "确认操作"
+  },
+  "ui_0165": {
+    "message": "Supprimer",
+    "description": "删除"
+  },
+  "ui_0166": {
+    "message": "Nouvel espace",
+    "description": "新建空间"
+  },
+  "ui_0167": {
+    "message": "Modifier le site",
+    "description": "编辑网站"
+  },
+  "ui_0168": {
+    "message": "Supprimer le site",
+    "description": "删除网站"
+  },
+  "ui_0169": {
+    "message": "Bienvenue dans votre nouvel espace",
+    "description": "欢迎来到你的新起点"
+  },
+  "ui_0170": {
+    "message": "Votre compte est prêt. Retrouvez vos sites et votre disposition favorite sur tous vos appareils.",
+    "description": "账户已准备就绪。让常用的网站和喜欢的布局，随你前往每一台设备。"
+  },
+  "ui_0171": {
+    "message": "OK",
+    "description": "确定"
+  },
+  "ui_0172": {
+    "message": "Personnalisez votre profil",
+    "description": "让这里更像你"
+  },
+  "ui_0173": {
+    "message": "Choisissez un avatar et indiquez votre pseudo.",
+    "description": "选一个头像，再告诉我们怎么称呼你。"
+  },
+  "ui_0174": {
+    "message": "Avatar emoji",
+    "description": "Emoji 头像"
+  },
+  "ui_0175": {
+    "message": "Saisissez ou collez un emoji comme avatar",
+    "description": "输入或粘贴一个 Emoji 作为头像"
+  },
+  "ui_0176": {
+    "message": "Pseudo",
+    "description": "昵称"
+  },
+  "ui_0177": {
+    "message": "Votre pseudo",
+    "description": "你的昵称"
+  },
+  "ui_0178": {
+    "message": "Importer des favoris",
+    "description": "导入收藏夹"
+  },
+  "ui_0179": {
+    "message": "Fermer l’éditeur groupé",
+    "description": "关闭批量编辑"
+  },
+  "ui_0180": {
+    "message": "Rechercher des noms de sites ou des URL dans tous les groupes",
+    "description": "搜索所有分组的网站名称或网址"
+  },
+  "ui_0181": {
+    "message": "Rechercher dans tous les sites",
+    "description": "全局搜索网站"
+  },
+  "ui_0182": {
+    "message": "Effacer la recherche",
+    "description": "清空搜索"
+  },
+  "ui_0183": {
+    "message": "Navigation des groupes et zone de dépôt",
+    "description": "分组导航与拖放区"
+  },
+  "ui_0184": {
+    "message": "Sélectionner un groupe",
+    "description": "选择分组"
+  },
+  "ui_0185": {
+    "message": "Tous les sites",
+    "description": "全部网站"
+  },
+  "ui_0186": {
+    "message": "Groupes",
+    "description": "分组"
+  },
+  "ui_0187": {
+    "message": "Afficher les espaces vides",
+    "description": "显示空空间"
+  },
+  "ui_0188": {
+    "message": "Tout développer",
+    "description": "全部展开"
+  },
+  "ui_0189": {
+    "message": "Tout réduire",
+    "description": "全部折叠"
+  },
+  "ui_0190": {
+    "message": "Tout sélectionner dans cette vue",
+    "description": "全选当前视图"
+  },
+  "ui_0191": {
+    "message": "Déplacer les sites sélectionnés",
+    "description": "移动所选网站"
+  },
+  "ui_0192": {
+    "message": "Déplacer vers le groupe",
+    "description": "移动到分组"
+  },
+  "ui_0193": {
+    "message": "Supprimer la sélection",
+    "description": "删除所选"
+  },
+  "ui_0194": {
+    "message": "Nouveau",
+    "description": "新建"
+  },
+  "ui_0195": {
+    "message": "Modifications non enregistrées. Enregistrez pour appliquer.",
+    "description": "有未保存的更改，点击保存后生效"
+  },
+  "ui_0196": {
+    "message": "Les modifications prendront effet après l’enregistrement",
+    "description": "更改将在保存后生效"
+  },
+  "ui_0197": {
+    "message": "Enregistrer les modifications",
+    "description": "保存更改"
+  },
+  "ui_0198": {
+    "message": "Ignorer les modifications ?",
+    "description": "放弃修改？"
+  },
+  "ui_0199": {
+    "message": "Vous avez des modifications non enregistrées. Voulez-vous les ignorer ?",
+    "description": "有未保存的更改，确定要放弃修改吗？"
+  },
+  "ui_0200": {
+    "message": "Continuer la modification",
+    "description": "继续编辑"
+  },
+  "ui_0201": {
+    "message": "Ignorer les modifications",
+    "description": "放弃修改"
+  },
+  "ui_0202": {
+    "message": "Nom de l’espace",
+    "description": "空间名称"
+  },
+  "ui_0203": {
+    "message": "p. ex. Travail, Études",
+    "description": "例如：工作、学习"
+  },
+  "ui_0204": {
+    "message": "Le nouvel espace sera appliqué lorsque vous enregistrerez les modifications.",
+    "description": "新空间将在保存更改后生效。"
+  },
+  "ui_0205": {
+    "message": "Enregistrer la page actuelle",
+    "description": "保存当前页面"
+  },
+  "ui_0206": {
+    "message": "Espace",
+    "description": "空间"
+  },
+  "ui_0207": {
+    "message": "Enregistrer le site",
+    "description": "保存网站"
+  },
+  "ui_0208": {
+    "message": "Confirmer",
+    "description": "确认"
+  },
+  "ui_0209": {
+    "message": "La suppression de votre compte efface définitivement votre profil, vos raccourcis cloud et vos paramètres. Les données locales de ce navigateur sont conservées. Pour conserver vos données cloud, exportez d’abord une sauvegarde sous Données. Vérifiez votre adresse e-mail pour confirmer la suppression.",
+    "description": "注销后，账户、个人资料及云端的快捷方式和设置将永久删除，无法恢复。此浏览器原有的本地内容会保留。如需保留云端内容，请先到「数据」导出备份。验证邮箱后确认注销。"
+  },
+  "ui_0210": {
+    "message": "E-mail de vérification",
+    "description": "验证邮箱"
+  },
+  "ui_0211": {
+    "message": "Code de vérification par e-mail",
+    "description": "邮箱验证码"
+  },
+  "ui_0212": {
+    "message": "Saisissez le code reçu par e-mail",
+    "description": "输入邮件中的验证码"
+  },
+  "ui_0213": {
+    "message": "Obtenir un code",
+    "description": "获取验证码"
+  },
+  "ui_0214": {
+    "message": "Supprimer définitivement le compte",
+    "description": "永久注销账户"
+  },
+  "ui_0215": {
+    "message": "Modifier le profil",
+    "description": "编辑个人资料"
+  },
+  "ui_0216": {
+    "message": "Veuillez saisir un pseudo",
+    "description": "请输入昵称"
+  },
+  "ui_0217": {
+    "message": "Veuillez saisir un emoji comme avatar",
+    "description": "请输入一个 Emoji 作为头像"
+  },
+  "ui_0218": {
+    "message": "Enregistrement…",
+    "description": "正在保存…"
+  },
+  "ui_0219": {
+    "message": "Profil mis à jour",
+    "description": "个人资料已更新"
+  },
+  "ui_0220": {
+    "message": "Échec de l’enregistrement. Veuillez réessayer.",
+    "description": "保存失败，请重试"
+  },
+  "ui_0221": {
+    "message": "Relâcher pour ajouter à « {0} »",
+    "description": "松开添加到「{0}」"
+  },
+  "ui_0222": {
+    "message": "Relâcher pour ajouter le site",
+    "description": "松开添加网站"
+  },
+  "ui_0223": {
+    "message": "{0} (glisser pour réorganiser, retirer ou remettre dans un groupe)",
+    "description": "{0}（拖动排序，拖出移除或拖回分组）"
+  },
+  "ui_0224": {
+    "message": "Retirer du Dock",
+    "description": "从程序坞移除"
+  },
+  "ui_0225": {
+    "message": "Retirer le raccourci pour « {0} » ?",
+    "description": "移除「{0}」的快捷图标？"
+  },
+  "ui_0226": {
+    "message": "Glisser hors du Dock pour retirer",
+    "description": "拖出程序坞移除"
+  },
+  "ui_0227": {
+    "message": "Relâcher pour retirer",
+    "description": "松开移除"
+  },
+  "ui_0228": {
+    "message": "Retiré du Dock",
+    "description": "已从程序坞移除"
+  },
+  "ui_0229": {
+    "message": "Le stockage du fond d’écran est occupé. Fermez les anciens onglets et réessayez.",
+    "description": "壁纸存储被其他页面占用，请关闭旧页面后重试。"
+  },
+  "ui_0230": {
+    "message": "Choisissez une image PNG, JPEG, GIF, WebP ou AVIF de 10 Mo maximum.",
+    "description": "请选择不超过 10 MB 的 PNG、JPEG、GIF、WebP 或 AVIF 图片。"
+  },
+  "ui_0231": {
+    "message": "{0} éléments sélectionnés",
+    "description": "已选择 {0} 项"
+  },
+  "ui_0232": {
+    "message": "Les favoris du navigateur ne sont pas disponibles ici",
+    "description": "当前环境无法读取浏览器收藏夹"
+  },
+  "ui_0233": {
+    "message": "Catégories de sites",
+    "description": "网站分类"
+  },
+  "ui_0234": {
+    "message": "Chargement des favoris…",
+    "description": "正在读取我的收藏夹…"
+  },
+  "ui_0235": {
+    "message": "La version web ne peut pas lire directement les favoris du navigateur. Importez un fichier HTML de favoris dans Paramètres → Données, ou utilisez l’extension.",
+    "description": "网页版无法直接读取浏览器收藏夹。可在“设置 → 账户与同步”导入书签 HTML 文件，或使用扩展版。"
+  },
+  "ui_0236": {
+    "message": "Voir le guide d’installation de l’extension",
+    "description": "查看扩展安装方法"
+  },
+  "ui_0237": {
+    "message": "Autorisez l’accès aux favoris pour afficher vos favoris.",
+    "description": "需要允许读取书签，才能显示我的收藏夹。"
+  },
+  "ui_0238": {
+    "message": "Autoriser l’accès aux favoris",
+    "description": "允许读取收藏夹"
+  },
+  "ui_0239": {
+    "message": "Impossible de charger les favoris : {0}",
+    "description": "读取收藏夹失败：{0}"
+  },
+  "ui_0240": {
+    "message": "Aucun favori disponible à ajouter",
+    "description": "收藏夹中暂无可添加的网站"
+  },
+  "ui_0241": {
+    "message": "Cette catégorie est vide",
+    "description": "此分类暂无内容"
+  },
+  "ui_0242": {
+    "message": "+ Nouveau groupe",
+    "description": "+ 新建分组"
+  },
+  "ui_0243": {
+    "message": "Enregistrer la sélection (",
+    "description": "保存选中 ("
+  },
+  "ui_0244": {
+    "message": "Sélectionnez un groupe valide",
+    "description": "请选择有效分组"
+  },
+  "ui_0245": {
+    "message": "Les modifications ne sont pas enregistrées. Réessayez la synchronisation.",
+    "description": "更改尚未保存，请重试同步"
+  },
+  "ui_0246": {
+    "message": "Échec de l’enregistrement : {0}",
+    "description": "保存失败：{0}"
+  },
+  "ui_0247": {
+    "message": "L’opération a échoué. Réessayez plus tard.",
+    "description": "操作失败，请稍后重试。"
+  },
+  "ui_0248": {
+    "message": "Le compte a changé. Rouvrez cette fenêtre.",
+    "description": "账户已更改，请重新打开此窗口。"
+  },
+  "ui_0249": {
+    "message": "Code envoyé. Vérifiez vos e-mails et ne partagez pas ce code.",
+    "description": "验证码已发送，请查收邮箱。请勿向他人透露验证码。"
+  },
+  "ui_0250": {
+    "message": "Renvoyer dans {0} s",
+    "description": "{0} 秒后重发"
+  },
+  "ui_0251": {
+    "message": "Obtenir un nouveau code",
+    "description": "重新获取"
+  },
+  "ui_0252": {
+    "message": "Suppression du compte…",
+    "description": "正在注销账户…"
+  },
+  "ui_0253": {
+    "message": "Compte supprimé. Les données locales de ce navigateur ont été restaurées.",
+    "description": "账户已注销，已恢复此浏览器的本地内容"
+  },
+  "ui_0254": {
+    "message": "Modifier",
+    "description": "编辑"
+  },
+  "ui_0255": {
+    "message": "Supprimer le groupe",
+    "description": "删除分组"
+  },
+  "ui_0256": {
+    "message": "Supprimer le groupe « {0} » et tous ses sites ?",
+    "description": "确定要删除分组 \"{0}\" 及其包含的所有网站吗？"
+  },
+  "ui_0257": {
+    "message": "Glisser des sites ici",
+    "description": "拖拽网站到此处"
+  },
+  "ui_0258": {
+    "message": "Accueil",
+    "description": "主页"
+  },
+  "ui_0259": {
+    "message": "Travail",
+    "description": "工作"
+  },
+  "ui_0260": {
+    "message": "Favoris",
+    "description": "收藏"
+  },
+  "ui_0261": {
+    "message": "Essentiels",
+    "description": "常用"
+  },
+  "ui_0262": {
+    "message": "Outils IA",
+    "description": "AI 工具"
+  },
+  "ui_0263": {
+    "message": "Apprentissage et références",
+    "description": "学习与参考"
+  },
+  "ui_0264": {
+    "message": "Outils de design",
+    "description": "设计工具"
+  },
+  "ui_0265": {
+    "message": "Boîte de réception",
+    "description": "临时收藏"
+  },
+  "ui_0266": {
+    "message": "Groupe sans titre",
+    "description": "未命名分组"
+  },
+  "ui_0267": {
+    "message": "Espace sans titre",
+    "description": "未命名空间"
+  },
+  "ui_0268": {
+    "message": "Espace {0}",
+    "description": "空间 {0}"
+  },
+  "ui_0269": {
+    "message": "Données de configuration non valides",
+    "description": "无效的配置数据"
+  },
+  "ui_0270": {
+    "message": "Impossible de charger le fond d’écran local",
+    "description": "无法读取本机壁纸"
+  },
+  "ui_0271": {
+    "message": "Le lien de vérification n’est pas valide ou a expiré. Demandez un nouvel e-mail et utilisez le dernier lien.",
+    "description": "验证链接无效或已过期，请重新发送邮件并使用最新链接。"
+  },
+  "ui_0272": {
+    "message": "Lien de vérification incomplet. Copiez le lien en entier.",
+    "description": "验证链接不完整，请复制完整链接。"
+  },
+  "ui_0273": {
+    "message": "Échec de la connexion. Réessayez plus tard.",
+    "description": "连接失败，请稍后重试"
+  },
+  "ui_0274": {
+    "message": "Le service cloud est indisponible. Réessayez plus tard.",
+    "description": "云端服务暂时无法响应，请稍后重试"
+  },
+  "ui_0275": {
+    "message": "Adresse e-mail ou mot de passe incorrect",
+    "description": "邮箱或密码不正确"
+  },
+  "ui_0276": {
+    "message": "Vérifiez votre adresse e-mail avant de vous connecter",
+    "description": "请先完成邮箱验证，再登录"
+  },
+  "ui_0277": {
+    "message": "L’envoi d’e-mails n’est pas activé pour cette adresse. Contactez l’administrateur pour configurer le service SMTP.",
+    "description": "邮件服务尚未开放此邮箱，请联系管理员配置 SMTP 发信服务"
+  },
+  "ui_0278": {
+    "message": "Trop de tentatives. Réessayez plus tard.",
+    "description": "操作过于频繁，请稍后再试"
+  },
+  "ui_0279": {
+    "message": "Le code ou le lien a expiré. Demandez-en un nouveau.",
+    "description": "验证码或验证链接已过期，请重新获取"
+  },
+  "ui_0280": {
+    "message": "Code ou lien non valide. Saisissez-le à nouveau ou demandez un nouvel e-mail.",
+    "description": "验证码或验证链接无效，请重新输入或获取新邮件"
+  },
+  "ui_0281": {
+    "message": "Code ou lien non valide. Saisissez-le à nouveau.",
+    "description": "验证码或验证链接无效，请重新输入"
+  },
+  "ui_0282": {
+    "message": "Utilisez un mot de passe plus long et plus complexe",
+    "description": "密码强度不足，请使用更长、更复杂的密码"
+  },
+  "ui_0283": {
+    "message": "La requête cloud a échoué. Veuillez réessayer.",
+    "description": "云端请求失败，请重试。"
+  },
+  "ui_0284": {
+    "message": "La vérification n’a pas renvoyé de session valide. Demandez un nouvel e-mail.",
+    "description": "验证未返回有效登录信息，请重新获取邮件。"
+  },
+  "ui_0285": {
+    "message": "Ce lien ne contient aucune information de vérification valide. Copiez le lien complet.",
+    "description": "此链接中未包含有效的验证信息，请复制完整链接。"
+  },
+  "ui_0286": {
+    "message": "Saisissez le code reçu par e-mail ou le lien de vérification complet.",
+    "description": "请输入邮件中的验证码或完整验证链接。"
+  },
+  "ui_0287": {
+    "message": "La session a expiré. Veuillez vous reconnecter.",
+    "description": "登录已失效，请重新登录。"
+  },
+  "ui_0288": {
+    "message": "Le compte a changé. Actualisez la page et réessayez.",
+    "description": "账户已更改，请刷新后重试。"
+  },
+  "ui_0289": {
+    "message": "Un autre appareil a mis à jour les données. Exportez vos modifications non enregistrées, puis cliquez sur « Recharger les données cloud ».",
+    "description": "其他设备已更新数据。请先导出未保存的更改，再点击“读取云端版本”。"
+  },
+  "ui_0290": {
+    "message": "Ajouter un site ou un groupe",
+    "description": "添加网站或分组"
+  },
+  "ui_0291": {
+    "message": " · {0} résultats",
+    "description": " · 匹配 {0} 个"
+  },
+  "ui_0292": {
+    "message": "{0} sites sélectionnés{1}",
+    "description": "已选 {0} 个网站{1}"
+  },
+  "ui_0293": {
+    "message": "Sélectionner tous les sites correspondants",
+    "description": "全选当前筛选结果"
+  },
+  "ui_0294": {
+    "message": "Résultats de recherche ({0})",
+    "description": "搜索结果 ({0})"
+  },
+  "ui_0295": {
+    "message": "Tous les sites ({0})",
+    "description": "全部网站 ({0})"
+  },
+  "ui_0296": {
+    "message": "Déplacer vers le groupe…",
+    "description": "移动到分组…"
+  },
+  "ui_0297": {
+    "message": "+ Nouveau groupe…",
+    "description": "+ 新建分组..."
+  },
+  "ui_0298": {
+    "message": "Colonne 1",
+    "description": "第一列"
+  },
+  "ui_0299": {
+    "message": "Colonne 2",
+    "description": "第二列"
+  },
+  "ui_0300": {
+    "message": "Colonne 3",
+    "description": "第三列"
+  },
+  "ui_0301": {
+    "message": "Colonne 4",
+    "description": "第四列"
+  },
+  "ui_0302": {
+    "message": "Colonne 5",
+    "description": "第五列"
+  },
+  "ui_0303": {
+    "message": "Colonne 6",
+    "description": "第六列"
+  },
+  "ui_0304": {
+    "message": "Colonne {0}",
+    "description": "第 {0} 列"
+  },
+  "ui_0305": {
+    "message": "Aucun groupe · Déposer des groupes ici",
+    "description": "暂无分组 · 可拖入此列"
+  },
+  "ui_0306": {
+    "message": "{0}, glisser ou maintenir appuyé pour organiser, ou appuyer sur Alt + Haut/Bas pour réorganiser",
+    "description": "{0}，拖拽或触屏长按整理，或按 Alt 加上下方向键排序"
+  },
+  "ui_0307": {
+    "message": "Sélectionner le groupe {0} et ses sites",
+    "description": "选择分组{0}及其网站"
+  },
+  "ui_0308": {
+    "message": "{0} (double-cliquer ou appuyer sur F2 pour renommer)",
+    "description": "{0}（双击或按 F2 改名）"
+  },
+  "ui_0309": {
+    "message": "Renommer le groupe",
+    "description": "重命名分组"
+  },
+  "ui_0310": {
+    "message": "Supprimer le groupe et ses sites",
+    "description": "删除分组及其网站"
+  },
+  "ui_0311": {
+    "message": "Sélectionner l’espace {0} et son contenu",
+    "description": "选择空间{0}及其内容"
+  },
+  "ui_0312": {
+    "message": "{0} (double-cliquer pour renommer)",
+    "description": "{0}（双击改名）"
+  },
+  "ui_0313": {
+    "message": "Renommer l’espace",
+    "description": "重命名空间"
+  },
+  "ui_0314": {
+    "message": "Sélectionner {0}",
+    "description": "选择{0}"
+  },
+  "ui_0315": {
+    "message": "Cliquer pour sélectionner, double-cliquer pour modifier",
+    "description": "单击选择，双击编辑"
+  },
+  "ui_0316": {
+    "message": "Nom du site",
+    "description": "网站名称"
+  },
+  "ui_0317": {
+    "message": "URL du site",
+    "description": "网站网址"
+  },
+  "ui_0318": {
+    "message": "Modifier {0}",
+    "description": "编辑{0}"
+  },
+  "ui_0319": {
+    "message": "Ouvrir dans un nouvel onglet",
+    "description": "在新标签页打开"
+  },
+  "ui_0320": {
+    "message": "Ouvrir {0}",
+    "description": "打开{0}"
+  },
+  "ui_0321": {
+    "message": "Supprimer {0}",
+    "description": "删除{0}"
+  },
+  "ui_0322": {
+    "message": "Aucun site correspondant",
+    "description": "没有匹配的网站"
+  },
+  "ui_0323": {
+    "message": "Aucun site ici. Importez des favoris ou déplacez des sites depuis un autre groupe.",
+    "description": "此处还没有网站，可导入收藏夹或从其他分组移动"
+  },
+  "ui_0324": {
+    "message": "Liste des sites",
+    "description": "网站列表"
+  },
+  "ui_0325": {
+    "message": "Aucun site · Déposer des sites ici",
+    "description": "暂无网站 · 可拖入此分组"
+  },
+  "ui_0326": {
+    "message": "Saisissez une URL HTTP ou HTTPS valide",
+    "description": "请输入有效的 HTTP 或 HTTPS 网址"
+  },
+  "ui_0327": {
+    "message": "Tous les espaces · Cliquer pour sélectionner, double-cliquer pour modifier, glisser ou maintenir appuyé pour organiser",
+    "description": "全部空间 · 单击选择，双击编辑名称与网址，拖拽整理（触屏长按）"
+  },
+  "ui_0328": {
+    "message": "Groupe « {0} » créé. Enregistrez pour appliquer.",
+    "description": "已新建分组“{0}”，保存后生效"
+  },
+  "ui_0329": {
+    "message": "Site « {0} » créé. Enregistrez pour appliquer.",
+    "description": "已新建网站“{0}”，保存后生效"
+  },
+  "ui_0330": {
+    "message": "Saisissez un nom d’espace",
+    "description": "请输入空间名称"
+  },
+  "ui_0331": {
+    "message": "Espace « {0} » créé. Enregistrez pour appliquer.",
+    "description": "已新建空间“{0}”，保存后生效"
+  },
+  "ui_0332": {
+    "message": "{0} sites déplacés vers « {1} ». Enregistrez pour appliquer.",
+    "description": "已移动 {0} 个网站到“{1}”，保存后生效"
+  },
+  "ui_0333": {
+    "message": "Conservez au moins un espace. Désélectionnez d’abord un espace.",
+    "description": "至少保留一个空间，请先取消选择一个空间"
+  },
+  "ui_0334": {
+    "message": "{0} espaces",
+    "description": "{0} 个空间"
+  },
+  "ui_0335": {
+    "message": "{0} groupes",
+    "description": "{0} 个分组"
+  },
+  "ui_0336": {
+    "message": "{0} sites",
+    "description": "{0} 个网站"
+  },
+  "ui_0337": {
+    "message": "{0} supprimé(s)",
+    "description": "已删除 {0}"
+  },
+  "ui_0338": {
+    "message": "Annuler",
+    "description": "撤销"
+  },
+  "ui_0339": {
+    "message": "Éléments supprimés et contenu restaurés",
+    "description": "已恢复删除的对象及其内容"
+  },
+  "ui_0340": {
+    "message": "Groupes réorganisés. Enregistrez pour appliquer.",
+    "description": "分组顺序已调整，保存后生效"
+  },
+  "ui_0341": {
+    "message": "Groupe déplacé vers la colonne cible. Enregistrez pour appliquer.",
+    "description": "分组已移至目标列，保存后生效"
+  },
+  "ui_0342": {
+    "message": "Sites réorganisés. Enregistrez pour appliquer.",
+    "description": "网站顺序已调整，保存后生效"
+  },
+  "ui_0343": {
+    "message": "Certaines URL ne sont pas valides. Corrigez-les avant d’enregistrer.",
+    "description": "有网站的网址无效，请修改后保存"
+  },
+  "ui_0344": {
+    "message": "Les données des sites ont changé. Fermez puis rouvrez l’éditeur groupé.",
+    "description": "网站数据已发生变化，请关闭并重新打开批量编辑后再操作。"
+  },
+  "ui_0345": {
+    "message": "Modifications enregistrées",
+    "description": "更改已保存"
+  },
+  "ui_0346": {
+    "message": "Modifications appliquées mais non enregistrées. Réessayez la synchronisation dans les paramètres ou exportez une sauvegarde.",
+    "description": "更改已应用，但保存失败，请返回设置重试同步或导出备份。"
+  },
+  "ui_0347": {
+    "message": "Favoris importés et enregistrés. Consultez-les sur la page d’accueil.",
+    "description": "收藏夹已导入并保存，可在主页查看。"
+  },
+  "ui_0348": {
+    "message": "Veuillez réessayer",
+    "description": "请重试"
+  },
+  "ui_0349": {
+    "message": "« {0} » : {1} sites prêts à être importés. Organisez-les puis enregistrez.",
+    "description": "“{0}”：{1} 个网站待导入，可先整理，保存后生效"
+  },
+  "ui_0350": {
+    "message": "Importation annulée. Les favoris n’ont pas été enregistrés.",
+    "description": "已取消导入，收藏夹未保存。"
+  },
+  "ui_0351": {
+    "message": "Renvoyer ({0} s)",
+    "description": "重新发送 ({0}s)"
+  },
+  "ui_0352": {
+    "message": "Renvoyer",
+    "description": "重新发送"
+  },
+  "ui_0353": {
+    "message": "Saisissez une adresse e-mail valide",
+    "description": "请输入有效的邮箱地址"
+  },
+  "ui_0354": {
+    "message": "Envoi…",
+    "description": "正在发送…"
+  },
+  "ui_0355": {
+    "message": "Compte créé. La synchronisation SimTab est activée.",
+    "description": "账户已创建，Sim Tab 同步已开启"
+  },
+  "ui_0356": {
+    "message": "Connecté",
+    "description": "登录成功"
+  },
+  "ui_0357": {
+    "message": "Saisissez le code à 8 chiffres reçu par e-mail",
+    "description": "请输入邮件中的 8 位数字验证码"
+  },
+  "ui_0358": {
+    "message": "Vérification…",
+    "description": "正在验证…"
+  },
+  "ui_0359": {
+    "message": "La vérification a échoué. Vérifiez votre code.",
+    "description": "验证失败，请确认验证码有效"
+  },
+  "ui_0360": {
+    "message": "Code renvoyé",
+    "description": "验证码已重新发送"
+  },
+  "ui_0361": {
+    "message": "SimTab protège vos données et votre vie privée",
+    "description": "Sim Tab 致力于保护你的数据安全与隐私"
+  },
+  "ui_0362": {
+    "message": "Saisissez une URL HTTP ou HTTPS valide.",
+    "description": "请输入有效的 HTTP 或 HTTPS 网址。"
+  },
+  "ui_0363": {
+    "message": "L’espace ou le groupe cible a changé. Sélectionnez-le à nouveau.",
+    "description": "目标空间或分组已变更，请重新选择。"
+  },
+  "ui_0364": {
+    "message": "Compte et synchronisation",
+    "description": "账户与同步"
+  },
+  "ui_0365": {
+    "message": "{0} · Compte et synchronisation",
+    "description": "{0} · 账户与同步"
+  },
+  "ui_0366": {
+    "message": "Choisir les données à synchroniser",
+    "description": "选择同步内容"
+  },
+  "ui_0367": {
+    "message": "Utilisation des données cloud. La déconnexion restaure les données locales de ce navigateur.",
+    "description": "当前使用账户云端内容；退出登录后恢复此浏览器的本地内容。"
+  },
+  "ui_0368": {
+    "message": "Utilisation des données locales. Réessayer la synchronisation bascule sur les données cloud tout en conservant la copie locale.",
+    "description": "当前使用此浏览器的本地内容；重试同步后切换到独立的云端内容，本地内容会保留。"
+  },
+  "ui_0369": {
+    "message": "Synchronisation…",
+    "description": "正在同步…"
+  },
+  "ui_0370": {
+    "message": "Connecté. Choisissez d’utiliser les données cloud ou d’enregistrer cette page dans le cloud.",
+    "description": "已登录。请选择使用云端内容，或将当前页面保存到云端。"
+  },
+  "ui_0371": {
+    "message": "Synchronisez vos raccourcis, votre disposition et vos préférences entre vos appareils.",
+    "description": "快捷方式、布局和偏好设置可以在你的设备之间同步。"
+  },
+  "ui_0372": {
+    "message": "Utilisation des données cloud de votre compte. La déconnexion restaure les données locales.",
+    "description": "当前使用账户的云端内容。退出登录后恢复此浏览器的本地内容。"
+  },
+  "ui_0373": {
+    "message": "Recharger les données cloud",
+    "description": "读取云端版本"
+  },
+  "ui_0374": {
+    "message": "Les modifications non enregistrées seront ignorées. Exportez d’abord les données que vous souhaitez conserver.",
+    "description": "将放弃当前页面未保存的更改。请先导出需要保留的数据。"
+  },
+  "ui_0375": {
+    "message": "Utilisez au moins 8 caractères pour votre mot de passe.",
+    "description": "注册密码至少需要 8 位。"
+  },
+  "ui_0376": {
+    "message": "E-mail de vérification envoyé. Collez le lien reçu ci-dessous, ou validez-le dans votre messagerie avant de revenir vous connecter.",
+    "description": "验证邮件已发送。可将邮件中的验证链接粘贴到下方完成验证，也可在邮件中验证后返回登录。"
+  },
+  "ui_0377": {
+    "message": "Le compte a changé dans un autre onglet. Exportez les données non enregistrées avant d’actualiser.",
+    "description": "账户已在其他标签页更改。请先导出未保存的内容，再刷新页面。"
+  },
+  "ui_0378": {
+    "message": "Les données locales ne sont pas enregistrées. Exportez une sauvegarde ou réessayez avant de vous connecter.",
+    "description": "本地内容尚未保存，请先导出备份或重试，再登录。"
+  },
+  "ui_0379": {
+    "message": "La déconnexion entraînera la perte des modifications non enregistrées. Continuer ?",
+    "description": "还有未保存的更改，退出会丢失这些更改。是否继续？"
+  },
+  "ui_0380": {
+    "message": "Déconnecté",
+    "description": "已退出登录"
+  },
+  "ui_0381": {
+    "message": "Traitement…",
+    "description": "处理中…"
+  },
+  "ui_0382": {
+    "message": "L’opération a échoué. Veuillez réessayer.",
+    "description": "操作失败，请重试。"
+  },
+  "ui_0383": {
+    "message": "Terminez d’abord la synchronisation cloud en cours.",
+    "description": "请先完成当前云端同步。"
+  },
+  "ui_0384": {
+    "message": "Aucune donnée locale dans ce navigateur. Vous pouvez importer une sauvegarde JSON dans les paramètres.",
+    "description": "此浏览器没有本地数据。你也可以在设置中导入 JSON 备份。"
+  },
+  "ui_0385": {
+    "message": "Copier les données locales vers le cloud",
+    "description": "将本地内容复制到云端"
+  },
+  "ui_0386": {
+    "message": "Remplacer les données cloud par les données locales de ce navigateur ? La copie locale sera conservée.",
+    "description": "将用此浏览器本地内容替换当前账户的云端内容，本地副本仍会保留。是否继续？"
+  },
+  "ui_0387": {
+    "message": "L’envoi a échoué. Les données locales précédentes sont conservées.",
+    "description": "上传失败，旧版本地数据仍然保留。"
+  },
+  "ui_0388": {
+    "message": "Données locales copiées vers le cloud. La copie locale est conservée.",
+    "description": "本地内容已复制到云端，浏览器中的本地内容仍然保留。"
+  },
+  "ui_0389": {
+    "message": "Un autre onglet a mis à jour les données locales. Exportez vos modifications, puis actualisez et réessayez pour éviter d’écraser de nouveaux favoris.",
+    "description": "其他标签页已更新本地内容。请先导出当前更改，再刷新页面后重试，避免覆盖新收藏。"
+  },
+  "ui_0390": {
+    "message": "Ce navigateur ne prend pas en charge l’enregistrement sécurisé sur plusieurs onglets. Utilisez un navigateur plus récent.",
+    "description": "当前浏览器不支持安全的多标签页保存，请使用新版浏览器。"
+  },
+  "ui_0391": {
+    "message": "Impossible de nettoyer le brouillon d’enregistrement",
+    "description": "无法清理收藏草稿"
+  },
+  "ui_0392": {
+    "message": "Enregistrer dans les données locales de ce navigateur",
+    "description": "保存到此浏览器的本地内容"
+  },
+  "ui_0393": {
+    "message": "Enregistrer dans le compte cloud {0}",
+    "description": "保存到云端账户 {0}"
+  },
+  "ui_0394": {
+    "message": "Le brouillon a expiré. Enregistrez à nouveau depuis la page d’origine.",
+    "description": "收藏草稿已过期，请回到原页面重新收藏。"
+  },
+  "ui_0395": {
+    "message": "Cette page ne peut pas être enregistrée. Utilisez cette fonction sur une page HTTP ou HTTPS.",
+    "description": "当前页面无法收藏，请在 HTTP 或 HTTPS 网页上使用此功能。"
+  },
+  "ui_0396": {
+    "message": "La source de données a changé. Confirmez la destination avant d’enregistrer.",
+    "description": "内容来源已更改，请确认目标空间和分组后保存。"
+  },
+  "ui_0397": {
+    "message": "La source de données a changé. Confirmez à nouveau la destination.",
+    "description": "内容来源已更改，请重新确认保存位置。"
+  },
+  "ui_0398": {
+    "message": "Certaines modifications ne sont pas enregistrées. Réessayez la synchronisation.",
+    "description": "尚有未保存内容，请重试同步。"
+  },
+  "ui_0399": {
+    "message": "Impossible de charger les dernières données. Veuillez réessayer.",
+    "description": "无法读取最新内容，请重试。"
+  },
+  "ui_0400": {
+    "message": "Échec de l’enregistrement. Veuillez réessayer.",
+    "description": "保存失败，请重试。"
+  },
+  "ui_0401": {
+    "message": "Enregistré dans « {0} / {1} ».",
+    "description": "已保存到「{0} / {1}」。"
+  },
+  "ui_0402": {
+    "message": "Cette URL figure déjà dans « {0} / {1} ».",
+    "description": "此网址已在「{0} / {1}」中，无需重复添加。"
+  },
+  "ui_0403": {
+    "message": "Voir le site enregistré",
+    "description": "查看已保存的网站"
+  },
+  "ui_0404": {
+    "message": "Vos modifications restent sur cette page. Gardez-la ouverte et réessayez.",
+    "description": "更改仍在当前页面，请保持页面打开并重试。"
+  },
+  "ui_0405": {
+    "message": "Garder la page ouverte",
+    "description": "保留页面，稍后处理"
+  },
+  "ui_0406": {
+    "message": "Le nombre de colonnes ne peut pas être modifié en mode icônes uniquement",
+    "description": "纯图标状态下无法更改列数"
+  },
+  "ui_0407": {
+    "message": "Modifier le groupe",
+    "description": "编辑分组"
+  },
+  "ui_0408": {
+    "message": "Saisissez d’abord une URL HTTP ou HTTPS valide.",
+    "description": "请先输入有效的 HTTP 或 HTTPS 网址。"
+  },
+  "ui_0409": {
+    "message": "Sélectionnez un groupe",
+    "description": "请选择一个分组"
+  },
+  "ui_0410": {
+    "message": "Saisissez une URL d’image HTTP/HTTPS ou des données d’image valides.",
+    "description": "请输入有效的 HTTP/HTTPS 图片地址或图片数据。"
+  },
+  "ui_0411": {
+    "message": "Importer à nouveau un fond d’écran",
+    "description": "重新上传壁纸图片"
+  },
+  "ui_0412": {
+    "message": "Impossible de charger le fond d’écran : {0}",
+    "description": "无法读取壁纸：{0}"
+  },
+  "ui_0413": {
+    "message": "Impossible d’enregistrer le fond d’écran : {0}",
+    "description": "壁纸保存失败：{0}"
+  },
+  "ui_0414": {
+    "message": "Impossible de supprimer le fond d’écran : {0}",
+    "description": "移除壁纸失败：{0}"
+  },
+  "ui_0415": {
+    "message": "Échec de l’exportation : {0}",
+    "description": "导出失败：{0}"
+  },
+  "ui_0416": {
+    "message": "Choisir un moteur de recherche",
+    "description": "选择搜索引擎"
+  },
+  "ui_0417": {
+    "message": "Supprimer le site « {0} » ?",
+    "description": "确定删除网站 \"{0}\" 吗？"
+  },
+  "ui_0418": {
+    "message": "Cloud indisponible · Enregistré localement",
+    "description": "云端不可用 · 本地已保存"
+  },
+  "ui_0419": {
+    "message": "Enregistré localement",
+    "description": "本地已保存"
+  },
+  "ui_0420": {
+    "message": "Enregistré dans le cloud",
+    "description": "云端已保存"
+  },
+  "ui_0421": {
+    "message": "Modifications non enregistrées",
+    "description": "有未保存更改"
+  },
+  "ui_0422": {
+    "message": "Synchronisation avec le cloud…",
+    "description": "云端同步中…"
+  },
+  "ui_0423": {
+    "message": "Connectez-vous pour utiliser les données cloud",
+    "description": "请登录以使用云端数据"
+  },
+  "ui_0424": {
+    "message": "Conflit de synchronisation · Cliquer pour résoudre",
+    "description": "存在同步冲突 · 点击处理"
+  },
+  "ui_0425": {
+    "message": "Échec de l’enregistrement local · Cliquer pour réessayer",
+    "description": "本地保存失败 · 点击重试"
+  },
+  "ui_0426": {
+    "message": "Échec de la synchronisation · Cliquer pour réessayer",
+    "description": "同步失败 · 点击重试"
+  },
+  "ui_0427": {
+    "message": "Utilisation des données locales. Cliquez pour réessayer de charger les données cloud.",
+    "description": "当前使用本地内容，点击重试读取云端内容"
+  },
+  "ui_0428": {
+    "message": "Les données sont enregistrées dans ce navigateur. Connectez-vous pour passer aux données cloud.",
+    "description": "数据保存在此浏览器，登录后切换到云端内容"
+  },
+  "ui_0429": {
+    "message": "Impossible de charger les données locales ou de migrer le fond d’écran : {0}. Les données existantes sont conservées. Vérifiez le stockage du navigateur et actualisez.",
+    "description": "读取本地数据或迁移壁纸失败：{0}。原数据未被清理，请检查浏览器存储后刷新。"
+  },
+  "ui_0430": {
+    "message": "Synchronisation indisponible. Affichage des dernières données de compte mises en cache. {0}",
+    "description": "暂时无法同步，当前显示上次同步的账户缓存。{0}"
+  },
+  "ui_0431": {
+    "message": "La session a expiré. Exportez les données non enregistrées avant d’actualiser et de vous reconnecter.",
+    "description": "登录已失效。请先导出未保存的内容，再刷新页面重新登录。"
+  },
+  "ui_0432": {
+    "message": "Cloud indisponible. Utilisation des données locales de ce navigateur. Cliquez sur synchroniser pour réessayer. {0}{1}",
+    "description": "云端暂时不可用，当前使用此浏览器的本地内容。可点击同步重试。{0}{1}"
+  },
+  "ui_0433": {
+    "message": " ; {0}",
+    "description": "；{0}"
+  },
+  "ui_0434": {
+    "message": "Enregistrement cloud supprimé. Déconnectez-vous puis reconnectez-vous.",
+    "description": "云端记录已移除，请退出后重新登录。"
+  },
+  "ui_0435": {
+    "message": "Données importées mais non enregistrées. Gardez cette page ouverte et réessayez ou exportez une sauvegarde.",
+    "description": "内容已导入，但保存失败。请保持页面打开并重试保存或导出备份。"
+  },
+  "ui_0436": {
+    "message": "Fichier de sauvegarde non valide !",
+    "description": "无效的备份文件！"
+  },
+  "ui_0437": {
+    "message": "Échec de l’importation : {0}",
+    "description": "导入失败：{0}"
+  },
+  "ui_0438": {
+    "message": "Vous utilisez l’extension. Autorisez l’accès sous « Mes favoris » dans la bibliothèque de sites.",
+    "description": "你正在使用扩展版，可在热门网站的“我的收藏夹”中授权读取书签。"
+  },
+  "ui_0439": {
+    "message": "Favoris importés",
+    "description": "导入的收藏夹"
+  },
+  "ui_0440": {
+    "message": "Choisissez un fichier HTML de favoris de moins de 5 Mo.",
+    "description": "请选择小于 5 MB 的书签 HTML 文件。"
+  },
+  "ui_0441": {
+    "message": "Aucun favori HTTP/HTTPS trouvé dans le fichier.",
+    "description": "文件中没有可导入的 HTTP/HTTPS 书签。"
+  },
+  "ui_0442": {
+    "message": "Importez jusqu’à 5 000 favoris à la fois. Divisez le fichier et réessayez.",
+    "description": "一次最多导入 5000 条书签，请拆分文件后重试。"
+  },
+  "ui_0443": {
+    "message": "{0} favoris chargés. Prévisualisez-les et enregistrez-les dans l’éditeur.",
+    "description": "已读取 {0} 条书签，请在大纲中预览并保存。"
+  },
+  "ui_0444": {
+    "message": "Échec de l’importation. Veuillez réessayer.",
+    "description": "导入失败，请重试。"
+  },
+  "ui_0445": {
+    "message": "Mes favoris",
+    "description": "我的收藏夹"
+  },
+  "ui_0446": {
+    "message": "Productivité",
+    "description": "效率与办公"
+  },
+  "ui_0447": {
+    "message": "Développement",
+    "description": "开发与技术"
+  },
+  "ui_0448": {
+    "message": "Design et inspiration",
+    "description": "设计与灵感"
+  },
+  "ui_0449": {
+    "message": "Images et ressources",
+    "description": "图片与素材"
+  },
+  "ui_0450": {
+    "message": "Réseaux sociaux et communautés",
+    "description": "社交与社区"
+  },
+  "ui_0451": {
+    "message": "Musique et divertissement",
+    "description": "影音与娱乐"
+  },
+  "ui_0452": {
+    "message": "Tech et actualités",
+    "description": "科技与资讯"
+  },
+  "ui_0453": {
+    "message": "Apprentissage et recherche",
+    "description": "学习与学术"
+  },
+  "ui_0454": {
+    "message": "Stockage cloud",
+    "description": "云盘与存储"
+  },
+  "ui_0455": {
+    "message": "Shopping et style de vie",
+    "description": "购物与生活"
+  },
+  "ui_0456": {
+    "message": "Cartes et voyages",
+    "description": "地图与出行"
+  },
+  "ui_0457": {
+    "message": "Exporter les favoris depuis Edge",
+    "description": "从 Edge 导出收藏夹"
+  },
+  "ui_0458": {
+    "message": "Ouvrez Edge et choisissez « … » → « Favoris », ou saisissez",
+    "description": "在电脑上打开 Edge，点击右上角“…” →“收藏夹”。也可以在地址栏输入"
+  },
+  "ui_0459": {
+    "message": "Dans le volet Favoris, choisissez « … » → « Exporter les favoris ».",
+    "description": "点击收藏夹面板中的“…” →“导出收藏夹”。"
+  },
+  "ui_0460": {
+    "message": "Enregistrez le fichier HTML, puis revenez ici et sélectionnez-le.",
+    "description": "将文件保存为 HTML，回到这里选择该文件。"
+  },
+  "ui_0461": {
+    "message": "Exporter les favoris depuis Chrome",
+    "description": "从 Chrome 导出书签"
+  },
+  "ui_0462": {
+    "message": "Ouvrez Chrome et choisissez « ⋮ » → « Favoris et listes » → « Gestionnaire de favoris », ou saisissez",
+    "description": "在电脑上打开 Chrome，点击右上角“⋮” →“书签和清单” →“书签管理器”。也可以在地址栏输入"
+  },
+  "ui_0463": {
+    "message": "Dans le gestionnaire de favoris, choisissez « ⋮ » → « Exporter les favoris ».",
+    "description": "点击书签管理器右上角的“⋮” →“导出书签”。"
+  },
+  "ui_0464": {
+    "message": "Enregistrez le fichier HTML, puis revenez ici et sélectionnez-le.",
+    "description": "保存 HTML 文件，回到这里选择该文件。"
+  },
+  "ui_0465": {
+    "message": "Aide de Chrome",
+    "description": "Chrome 官方说明"
+  },
+  "ui_0466": {
+    "message": "Exporter les signets depuis Safari (Mac)",
+    "description": "从 Safari 导出书签（Mac）"
+  },
+  "ui_0467": {
+    "message": "Dans Safari, choisissez Fichier → Exporter les données de navigation vers un fichier (ou Exporter depuis Safari selon la version).",
+    "description": "打开 Safari，在屏幕顶部菜单选择“文件” →“将浏览数据导出到文件”（部分版本显示“从 Safari 导出”）。"
+  },
+  "ui_0468": {
+    "message": "Sélectionnez uniquement Signets et exportez. Si vous obtenez un fichier ZIP, décompressez-le et trouvez le fichier HTML des signets.",
+    "description": "仅选择“书签”并导出。如果得到 ZIP 文件，先双击解压，再找到其中的书签 HTML 文件。"
+  },
+  "ui_0469": {
+    "message": "Dans les anciennes versions de Safari, choisissez Fichier → Exporter → Signets pour enregistrer au format HTML.",
+    "description": "旧版 Safari 可直接选择“文件” →“导出” →“书签”，保存为 HTML。"
+  },
+  "ui_0470": {
+    "message": "Revenez ici et sélectionnez le fichier HTML exporté.",
+    "description": "回到这里，选择导出的 HTML 文件。"
+  },
+  "ui_0471": {
+    "message": "Aide de Safari",
+    "description": "Safari 官方说明"
+  },
+  "ui_search_0": {
+    "message": "Baidu",
+    "description": "百度"
+  },
+  "ui_search_1": {
+    "message": "360 Search",
+    "description": "360 搜索"
+  },
+  "ui_search_2": {
+    "message": "Sogou",
+    "description": "搜狗"
+  },
+  "info_000": {
+    "message": "Politique de confidentialité · SimTab",
+    "description": "隐私政策 · SimTab"
+  },
+  "info_001": {
+    "message": "Aller au contenu",
+    "description": "跳至正文"
+  },
+  "info_002": {
+    "message": "Navigation principale",
+    "description": "主导航"
+  },
+  "info_003": {
+    "message": "Télécharger l’extension",
+    "description": "扩展下载"
+  },
+  "info_004": {
+    "message": "Ouvrir SimTab",
+    "description": "打开 SimTab"
+  },
+  "info_005": {
+    "message": "Changer de thème",
+    "description": "切换主题"
+  },
+  "info_006": {
+    "message": "SIMTAB / CONFIDENTIALITÉ ET DONNÉES",
+    "description": "SIMTAB / 隐私与数据"
+  },
+  "info_008": {
+    "message": "Découvrez où votre contenu est stocké, quand il est consulté,",
+    "description": "了解你的内容存在哪里，何时会被访问，"
+  },
+  "info_009": {
+    "message": "et comment le gérer et le supprimer.",
+    "description": "以及如何管理和删除。"
+  },
+  "info_010": {
+    "message": "Pour l’extension et l’application web",
+    "description": "适用于扩展与网页版"
+  },
+  "info_011": {
+    "message": "Mis à jour le",
+    "description": "更新于"
+  },
+  "info_012": {
+    "message": "22 octobre 2026",
+    "description": "2026 年 10 月 22 日"
+  },
+  "info_013": {
+    "message": "Résumé de la politique de confidentialité",
+    "description": "隐私政策摘要"
+  },
+  "info_014": {
+    "message": "Utilisation locale",
+    "description": "本地使用"
+  },
+  "info_015": {
+    "message": "Aucune connexion requise. Vos sites et paramètres restent dans ce navigateur.",
+    "description": "无需登录，网站与设置保存在当前浏览器。"
+  },
+  "info_016": {
+    "message": "Synchronisation facultative",
+    "description": "按需同步"
+  },
+  "info_017": {
+    "message": "Connectez-vous et confirmez pour utiliser un contenu de compte distinct dans le cloud.",
+    "description": "登录并确认后，使用独立的账户云端内容。"
+  },
+  "info_018": {
+    "message": "Avec votre autorisation",
+    "description": "主动授权"
+  },
+  "info_019": {
+    "message": "Nous demandons votre autorisation avant de lire les favoris du navigateur.",
+    "description": "读取浏览器收藏夹前，会先请求你的授权。"
+  },
+  "info_020": {
+    "message": "Sur cette page",
+    "description": "本页内容"
+  },
+  "info_021": {
+    "message": "Navigation des sections",
+    "description": "章节跳转"
+  },
+  "info_022": {
+    "message": "Compte et données cloud",
+    "description": "账户与云端数据"
+  },
+  "info_024": {
+    "message": "Ajout rapide",
+    "description": "快捷收藏"
+  },
+  "info_025": {
+    "message": "Favoris et fichiers importés",
+    "description": "收藏夹与导入文件"
+  },
+  "info_026": {
+    "message": "Requêtes réseau et services tiers",
+    "description": "联网请求与第三方"
+  },
+  "info_027": {
+    "message": "Autorisations",
+    "description": "权限用途"
+  },
+  "info_028": {
+    "message": "Suppression et contrôle",
+    "description": "删除与控制"
+  },
+  "info_029": {
+    "message": "Contact et mises à jour",
+    "description": "联系与更新"
+  },
+  "info_030": {
+    "message": "Politique de confidentialité complète",
+    "description": "隐私政策全文"
+  },
+  "info_031": {
+    "message": "SimTab utilise Supabase pour l’inscription par e-mail, la connexion et sa base de données cloud, hébergée à Singapour. L’interface actuelle utilise des codes de vérification par e-mail : Supabase Auth traite votre adresse e-mail et votre code, et le fournisseur d’e-mails configuré, Resend, envoie le code. L’application n’exige pas de mot de passe et ne stocke aucun mot de passe en clair. Une fois connecté et après avoir choisi d’enregistrer dans le cloud, les espaces, les groupes, les titres et URL des sites, l’ordre, les thèmes et les URL d’icônes personnalisées (les anciennes configurations peuvent aussi contenir des URL de fonds d’écran distants) sont envoyés et enregistrés dans les données cloud de votre compte. L’accès à la base de données est isolé par compte. Supabase traite les informations réseau et les journaux nécessaires à la fourniture du service.",
+    "description": "SimTab 使用 Supabase 提供邮箱注册、登录及云端数据库，项目位于新加坡。当前界面使用邮箱验证码登录，邮箱与验证码由 Supabase Auth 处理，验证码邮件通过配置的邮件服务商 Resend 发送；应用不要求设置密码，也不会保存明文密码。登录并选择保存到云端后，空间、分组、网站标题与地址、排序、主题及自定义图标地址（旧版配置还可能包含远程壁纸地址）会上传并保存在当前账户的云端记录中。数据库按账户隔离访问。Supabase 会处理服务所需的网络信息和日志。"
+  },
+  "info_032": {
+    "message": "Vous pouvez utiliser SimTab sans vous connecter. Lorsque vous êtes déconnecté, vos sites et paramètres restent dans ce navigateur. Après connexion, vous pouvez choisir d’utiliser le contenu cloud ou d’enregistrer le contenu de la page actuelle dans le cloud. L’application ne lit ni n’écrit les paramètres du compte avant confirmation de votre choix.",
+    "description": "无需登录即可使用。未登录时，网站和设置保存在当前浏览器。登录后，你可以选择使用云端内容，或将当前页面保存到云端；确认选择前，应用不会读写账户配置。"
+  },
+  "info_033": {
+    "message": "Les contenus locaux et cloud sont stockés séparément et ne sont pas fusionnés automatiquement. La copie du contenu local vers le cloud remplace le contenu du compte actuel tout en conservant une copie locale. La déconnexion restaure le contenu local. Les modifications non encore synchronisées avec le cloud restent uniquement sur la page actuelle.",
+    "description": "本地内容与云端内容独立保存，不会自动合并。将本地内容复制到云端会替换当前账户内容，本地副本仍会保留；退出登录后恢复本地内容。云端未同步的更改仅保留在当前页面。"
+  },
+  "info_034": {
+    "message": "L’extension utilise le stockage local du navigateur ; l’application web utilise ",
+    "description": "扩展使用浏览器本地存储，网页版使用"
+  },
+  "info_035": {
+    "message": " ; les identifiants de session sont également stockés dans ",
+    "description": "；登录凭证也保存在"
+  },
+  "info_036": {
+    "message": " afin de maintenir votre connexion.",
+    "description": "，用于维持登录状态。"
+  },
+  "info_037": {
+    "message": "Les fonds d’écran importés sont stockés séparément dans ce navigateur et ne sont pas synchronisés avec votre compte cloud. Lorsque vous exportez une sauvegarde JSON, celle-ci inclut le fond d’écran local. L’importation d’une sauvegarde contenant un fond d’écran enregistre l’image dans ce navigateur. L’effacement des données de navigation ou la désinstallation de l’extension peut supprimer les fonds d’écran locaux.",
+    "description": "上传的壁纸独立保存在当前浏览器，不随账户同步到云端。主动导出 JSON 备份时，文件会包含本机壁纸；导入含有壁纸的备份时，图片会保存到当前浏览器。清除浏览器数据或卸载扩展可能删除本机壁纸。"
+  },
+  "info_038": {
+    "message": "L’extension ne lit le titre et l’URL de la page actuelle qu’après un clic sur son icône dans la barre d’outils, l’utilisation de son raccourci clavier ou la sélection de son action dans le menu contextuel de la page. Les brouillons sont conservés temporairement dans le stockage de session du navigateur. Après confirmation d’un espace et d’un groupe, le site est enregistré localement ou dans le cloud selon le mode actif. L’annulation n’ajoute aucun site.",
+    "description": "仅在你点击扩展工具栏图标、使用快捷键或选择页面右键菜单后，扩展才读取当前页面标题和网址。草稿暂存于浏览器会话存储，确认空间和分组后按当前本地或云端状态保存；取消不会添加网站。"
+  },
+  "info_039": {
+    "message": "Les brouillons sont effacés lors de l’enregistrement, de l’annulation ou à la fermeture du navigateur. En cas d’échec de l’enregistrement, le brouillon peut être conservé pour permettre un nouvel essai. Les brouillons non traités expirent au bout de 30 minutes et sont nettoyés lors d’un enregistrement ultérieur. L’extension ne lit pas le contenu des pages, l’historique de navigation ni les autres onglets que vous n’avez pas explicitement sélectionnés.",
+    "description": "草稿在保存、取消或关闭浏览器时清除；保存失败时可能保留，以便重试。未处理的草稿在 30 分钟后失效，并在后续收藏时清理。扩展不读取页面正文、浏览历史或其他未主动选择的标签页。"
+  },
+  "info_040": {
+    "message": "Ce n’est qu’après avoir ouvert « Mes favoris » dans l’extension et accordé l’autorisation d’accès aux favoris que SimTab lit les titres, les URL et les chemins de dossiers des favoris via l’API du navigateur, afin de vous permettre de les afficher et de les sélectionner. SimTab ne crée, ne modifie ni ne supprime jamais les favoris natifs du navigateur. Vous pouvez révoquer cette autorisation dans la gestion des extensions. L’application web ne peut pas lire directement les favoris du navigateur.",
+    "description": "只有在你打开扩展中的“我的收藏夹”并同意书签权限后，SimTab 才会通过浏览器的书签接口读取书签标题、网址和文件夹路径，用于展示和选择添加。SimTab 不创建、修改或删除浏览器原有书签。你可以在扩展管理中撤销权限。网页版不能直接读取收藏夹。"
+  },
+  "info_041": {
+    "message": "Les fichiers HTML de favoris et les sauvegardes JSON que vous sélectionnez sont lus et analysés localement. Le contenu importé est enregistré dans le navigateur lorsque vous êtes déconnecté, et dans les données cloud de votre compte lorsque vous êtes connecté. Les fichiers exportés peuvent contenir des URL privées ; conservez-les en lieu sûr.",
+    "description": "你主动选择的 HTML 书签文件和 JSON 备份在本地读取和解析，导入后的内容在未登录时保存在浏览器，登录后保存到当前账户云端。导出文件可能包含你的私人网址，请自行保管。"
+  },
+  "info_042": {
+    "message": "L’extension utilise l’API de favicon du navigateur pour les icônes par défaut ; le navigateur peut récupérer ou mettre en cache les icônes selon ses propres règles. L’application web obtient par défaut les icônes de sites via ",
+    "description": "扩展的默认图标使用浏览器提供的 favicon 接口；浏览器可能按自身规则获取或缓存图标。网页版默认通过"
+  },
+  "info_043": {
+    "message": ". Ce service peut recevoir le nom d’hôte du site demandé, votre adresse réseau et les informations de requête standard. Si une icône ne parvient pas à se charger ou dépasse le délai d’attente, une icône textuelle est générée localement.",
+    "description": "获取网站图标，该服务可能收到所请求网站的主机名、网络地址和常规请求信息。图标加载失败或超时后，会在本地生成文字图标。"
+  },
+  "info_044": {
+    "message": "Les icônes distantes prédéfinies ou personnalisées envoient des requêtes au fournisseur d’images. Les anciennes sauvegardes importées contenant des URL d’icônes tierces entraînent également des requêtes vers ces adresses. Les services tiers peuvent conserver des journaux d’accès selon leurs propres politiques.",
+    "description": "预设或你自定义的远程图标会向图片提供方发出请求。旧备份若含有第三方图标地址，导入后也会请求这些地址。第三方可能按其政策记录访问日志。"
+  },
+  "info_045": {
+    "message": "Lorsque vous effectuez une recherche, votre requête est envoyée au moteur de recherche sélectionné. Pendant la saisie, le service de suggestions de Bing reçoit des requêtes pour proposer des suggestions. L’ouverture d’un site vous redirige directement vers celui-ci, où s’applique sa propre politique de confidentialité.",
+    "description": "搜索时，你输入的搜索词会传给你选择的搜索引擎，输入时会向 Bing 建议接口获取联想词。打开网站会直接访问该网站，其数据处理适用对方的隐私政策。"
+  },
+  "info_046": {
+    "message": "Cloudflare héberge l’application web. Lors de votre visite, Cloudflare traite les adresses IP, les informations de requête et les journaux de sécurité nécessaires à la fourniture du service. GitHub fournit l’hébergement du code source, les téléchargements et le suivi des problèmes.",
+    "description": "网页版由 Cloudflare 托管。访问页面时 Cloudflare 会处理提供网络服务所需的 IP 地址、请求信息和安全日志。GitHub 提供源码、下载及问题反馈服务。"
+  },
+  "info_047": {
+    "message": "L’application n’extrait pas le contenu des pages web cibles. L’extension ne charge ni n’exécute de scripts distants.",
+    "description": "应用不抓取目标网页正文；扩展不加载或执行远程脚本。"
+  },
+  "info_048": {
+    "message": " : enregistrer et lire les sites et paramètres locaux hors connexion, et lire le contenu local lorsque vous choisissez explicitement de le copier vers le cloud. Le stockage de session conserve temporairement les brouillons d’enregistrement que vous initiez.",
+    "description": "：保存和读取未登录时的本地网站及设置，也可读取本地内容供你主动复制到云端；会话存储暂存你主动发起的收藏草稿。"
+  },
+  "info_049": {
+    "message": "Autorisations d’hôte",
+    "description": "网站访问权限"
+  },
+  "info_050": {
+    "message": " : accéder au domaine Supabase de cette application pour la connexion et la synchronisation, ainsi qu’aux points de terminaison de Bing pour les suggestions de recherche.",
+    "description": "：访问本应用的 Supabase 域名以完成登录与同步；访问 Bing 接口以获取搜索联想词。"
+  },
+  "info_051": {
+    "message": " : lire temporairement le titre et l’URL de la page actuelle pour l’enregistrer après activation de l’icône de la barre d’outils ou du raccourci clavier.",
+    "description": "：在你主动点击工具栏图标或使用快捷键后，临时读取当前页面标题和网址以便收藏。"
+  },
+  "info_052": {
+    "message": " : fournir l’action « Enregistrer cette page dans SimTab » dans le menu contextuel de la page.",
+    "description": "：提供“保存当前页面到 SimTab”页面右键菜单。"
+  },
+  "info_053": {
+    "message": " : afficher les icônes des sites web dans l’extension.",
+    "description": "：在扩展界面显示网站图标。"
+  },
+  "info_054": {
+    "message": " (facultatif) : lire les favoris pour permettre une importation sélective après que vous avez accordé l’autorisation.",
+    "description": "（可选）：在你主动授权后读取收藏夹供选择导入。"
+  },
+  "info_055": {
+    "message": "Vous pouvez supprimer des sites ou des groupes et retirer un fond d’écran personnalisé. Les modifications sont enregistrées dans le navigateur hors connexion et synchronisées avec le cloud lorsque vous êtes connecté. L’application web, l’extension et les autres appareils connectés au même compte peuvent accéder aux mêmes données. La déconnexion efface l’état de connexion local et restaure le contenu local.",
+    "description": "你可删除应用中的网站或分组、移除自定义壁纸，未登录时修改保存在浏览器，登录后修改同步到云端。网页、扩展和其他设备登录同一账户后可读取同一份数据。退出登录清除本机登录状态，并恢复本地内容。"
+  },
+  "info_056": {
+    "message": "L’effacement des données du navigateur ou la désinstallation de l’extension peut supprimer le contenu local, mais ne supprime pas les enregistrements cloud. Les sauvegardes téléchargées sur votre appareil doivent être supprimées séparément.",
+    "description": "清除浏览器数据或卸载扩展可能删除本地内容，但不会删除云端记录。已下载到磁盘的备份需单独删除。"
+  },
+  "info_057": {
+    "message": "Pour supprimer votre compte et tous les enregistrements cloud, utilisez la fonction de suppression de compte dans les paramètres ou contactez le responsable via le canal de commentaires du projet ci-dessous. N’incluez jamais de mots de passe, d’identifiants de connexion ni d’URL privées dans des signalements publics.",
+    "description": "如需删除账户及全部云端记录，请通过下方项目反馈渠道联系维护者。请勿在公开反馈中提供密码、登录凭据或私人网址。"
+  },
+  "info_058": {
+    "message": "Le projet est maintenu par le compte GitHub tgdcfgv. Pour toute question relative à la confidentialité, utilisez la ",
+    "description": "项目由 GitHub 账户 tgdcfgv 维护。隐私问题可通过"
+  },
+  "info_059": {
+    "message": "page Issues du projet",
+    "description": "项目反馈页面"
+  },
+  "info_060": {
+    "message": ". N’envoyez pas de favoris privés ni d’identifiants dans des tickets publics. Nous mettons à jour cette politique lorsque les fonctionnalités ou le traitement des données évoluent.",
+    "description": "联系；请勿在公开问题中上传私人收藏夹或凭据。功能或数据处理方式发生变化时，我们会同步更新本政策。"
+  },
+  "info_061": {
+    "message": "· Simple. Organisé. Concentré.",
+    "description": "· 简洁，有序，专注。"
+  },
+  "info_062": {
+    "message": "Navigation de pied de page",
+    "description": "页脚导航"
+  },
+  "info_063": {
+    "message": "Commentaires et assistance",
+    "description": "反馈与支持"
+  },
+  "info_064": {
+    "message": "Télécharger l’extension · SimTab",
+    "description": "扩展下载 · SimTab"
+  },
+  "info_065": {
+    "message": "SIMTAB / EXTENSION DE NAVIGATEUR",
+    "description": "SIMTAB / 浏览器扩展"
+  },
+  "info_066": {
+    "message": "Pour que chaque nouvel onglet",
+    "description": "让每个新标签页，"
+  },
+  "info_067": {
+    "message": "soit parfaitement ordonné.",
+    "description": "都井然有序。"
+  },
+  "info_068": {
+    "message": "Gardez vos sites favoris à portée de main et simplifiez l’enregistrement et l’organisation.",
+    "description": "把常用网站留在手边，让收藏与整理更轻松。"
+  },
+  "info_069": {
+    "message": "Version 1.0.6",
+    "description": "版本 1.0.6"
+  },
+  "info_070": {
+    "message": "Télécharger l’extension SimTab",
+    "description": "下载 SimTab 扩展"
+  },
+  "info_071": {
+    "message": "Disponible sur Microsoft Edge Add-ons, avec possibilité d’installation manuelle depuis GitHub.",
+    "description": "已上线 Microsoft Edge 加载项商店，也可从 GitHub 手动安装。"
+  },
+  "info_072": {
+    "message": "Installer depuis Microsoft Edge Add-ons",
+    "description": "从 Edge 商店安装"
+  },
+  "info_073": {
+    "message": "Autres navigateurs Chromium : installation manuelle",
+    "description": "其他 Chromium 浏览器：手动安装"
+  },
+  "info_074": {
+    "message": "Rendez-vous sur ",
+    "description": "前往"
+  },
+  "info_075": {
+    "message": " et téléchargez ",
+    "description": "下载"
+  },
+  "info_076": {
+    "message": ", puis suivez les étapes ci-dessous. Les utilisateurs d’Edge peuvent utiliser directement le lien vers la boutique ci-dessus.",
+    "description": "，然后按以下步骤安装。Edge 用户可直接使用上方商店入口。"
+  },
+  "info_077": {
+    "message": "Télécharger et décompresser",
+    "description": "下载并解压"
+  },
+  "info_078": {
+    "message": "Décompressez le fichier ZIP et conservez le dossier extrait. Conservez-le également après l’installation : le navigateur en a toujours besoin pour lire les fichiers de l’extension.",
+    "description": "解压 ZIP 文件，保留解压后的文件夹。安装完成后也请保留，浏览器仍需从中读取扩展文件。"
+  },
+  "info_079": {
+    "message": "Ouvrir la gestion des extensions",
+    "description": "打开扩展管理"
+  },
+  "info_080": {
+    "message": "Copiez l’adresse correspondante ci-dessous dans la barre d’adresse de votre navigateur, ouvrez-la, puis activez le « Mode développeur ».",
+    "description": "复制下方对应地址，粘贴到浏览器地址栏并打开，再开启“开发者模式”或“开发人员模式”。"
+  },
+  "info_081": {
+    "message": "Copier l’adresse des extensions Chrome",
+    "description": "复制 Chrome 扩展地址"
+  },
+  "info_082": {
+    "message": "Copier",
+    "description": "复制"
+  },
+  "info_083": {
+    "message": "Copier l’adresse des extensions Edge",
+    "description": "复制 Edge 扩展地址"
+  },
+  "info_084": {
+    "message": "Dans les autres navigateurs Chromium, ouvrez la gestion des extensions depuis le menu du navigateur.",
+    "description": "其他 Chromium 浏览器可从菜单进入扩展管理页面。"
+  },
+  "info_085": {
+    "message": "Charger le dossier de l’extension",
+    "description": "加载扩展文件夹"
+  },
+  "info_086": {
+    "message": "Cliquez sur « Charger l’extension non empaquetée » et sélectionnez le dossier contenant ",
+    "description": "点击“加载解压缩的扩展”，选择包含"
+  },
+  "info_087": {
+    "message": ".",
+    "description": "的文件夹。"
+  },
+  "info_088": {
+    "message": "Ouvrir un nouvel onglet",
+    "description": "打开新标签页"
+  },
+  "info_089": {
+    "message": "Les nouveaux onglets afficheront SimTab. Si le navigateur vous demande de confirmer ce changement, choisissez de le conserver.",
+    "description": "新标签页将显示 SimTab。如浏览器询问是否保留此更改，选择保留即可。"
+  },
+  "info_090": {
+    "message": "Guide d’utilisation",
+    "description": "使用说明"
+  },
+  "info_091": {
+    "message": "Premiers pas",
+    "description": "开始使用"
+  },
+  "info_092": {
+    "message": "Importer vos favoris",
+    "description": "把收藏带过来"
+  },
+  "info_093": {
+    "message": "Ouvrez « Mes favoris » dans la bibliothèque de sites de l’extension, accordez l’autorisation, puis sélectionnez les favoris à ajouter.",
+    "description": "在扩展的网站库中打开“我的收藏夹”，授权后即可选择添加书签。"
+  },
+  "info_094": {
+    "message": "Dans l’application web, importez un fichier HTML de favoris exporté depuis votre navigateur dans Paramètres → Données.",
+    "description": "网页版可在“设置 → 数据”中导入浏览器导出的 HTML 书签文件。"
+  },
+  "info_095": {
+    "message": "Synchroniser entre appareils",
+    "description": "在设备间同步"
+  },
+  "info_096": {
+    "message": "Connectez-vous au même compte dans l’application web et dans l’extension, puis choisissez le contenu cloud pour accéder à la même collection.",
+    "description": "网页与扩展登录同一账户，并选择使用云端内容，即可访问同一份收藏。"
+  },
+  "info_097": {
+    "message": "Utilisez le contenu local hors connexion ; la déconnexion le restaure. La copie du contenu local vers le cloud remplace le contenu du compte tout en conservant une copie locale.",
+    "description": "未登录时使用本地内容，退出登录后恢复本地内容。将本地内容复制到云端会替换账户内容，并保留本地副本。"
+  },
+  "info_098": {
+    "message": "Sauvegarde et restauration",
+    "description": "备份与恢复"
+  },
+  "info_099": {
+    "message": "Exportez une sauvegarde JSON dans Paramètres → Données. La restauration d’une sauvegarde remplace le contenu actuel ; exportez donc une copie au préalable.",
+    "description": "在“设置 → 数据”中导出 JSON 备份。恢复备份会覆盖当前内容，操作前请先导出留存。"
+  },
+  "info_100": {
+    "message": "À propos des données et des autorisations",
+    "description": "了解数据与权限"
+  },
+  "info_101": {
+    "message": "Langue de la page",
+    "description": "页面语言"
+  },
+  "info_102": {
+    "message": "Passer en mode clair",
+    "description": "切换为浅色模式"
+  },
+  "info_103": {
+    "message": "Passer en mode sombre",
+    "description": "切换为深色模式"
+  },
+  "info_104": {
+    "message": "Copié",
+    "description": "已复制"
+  },
+  "ui_0472": {
+    "message": "Cache des icônes de sites",
+    "description": "网站图标缓存"
+  },
+  "ui_0473": {
+    "message": "Vider le cache local des icônes et récupérer à nouveau toutes les icônes des sites",
+    "description": "清空本地图标缓存并重新获取所有网站图标"
+  },
+  "ui_0474": {
+    "message": "Actualiser les icônes",
+    "description": "刷新图标"
+  },
+  "ui_0475": {
+    "message": "Actualisation…",
+    "description": "正在刷新…"
+  },
+  "ui_0476": {
+    "message": "Icônes actualisées",
+    "description": "图标已刷新"
+  },
+  "ui_0477": {
+    "message": "Échec de l’actualisation des icônes : {0}",
+    "description": "图标刷新失败：{0}"
+  },
+  "ui_0478": {
+    "message": "Filtre de sous-catégorie",
+    "description": "二级分类筛选"
+  },
+  "ui_0479": {
+    "message": "Tout",
+    "description": "全部"
+  },
+  "ui_0480": {
+    "message": "Sélectionner la section",
+    "description": "全选本组"
+  },
+  "ui_0481": {
+    "message": "Désélectionner la section",
+    "description": "取消本组"
+  },
+  "ui_0482": {
+    "message": "Favoris à la racine",
+    "description": "根目录书签"
+  },
+  "ui_0483": {
+    "message": "À la une",
+    "description": "常用推荐"
+  },
+  "ui_0484": {
+    "message": "Chat et assistants",
+    "description": "对话与助手"
+  },
+  "ui_0485": {
+    "message": "Espace de travail et agents IA",
+    "description": "AI 办公与智能体"
+  },
+  "ui_0486": {
+    "message": "Programmation et dév IA",
+    "description": "AI 编程与开发"
+  },
+  "ui_0487": {
+    "message": "IA image, vidéo et audio",
+    "description": "视觉与音频生成"
+  },
+  "ui_0488": {
+    "message": "Documents et notes",
+    "description": "文档与笔记"
+  },
+  "ui_0489": {
+    "message": "Collaboration et messagerie d’équipe",
+    "description": "团队协作与沟通"
+  },
+  "ui_0490": {
+    "message": "Tâches et gestion de projet",
+    "description": "任务与项目管理"
+  },
+  "ui_0491": {
+    "message": "Tableaux blancs et diagrammes",
+    "description": "白板与流程图"
+  },
+  "ui_0492": {
+    "message": "E-mail et calendrier",
+    "description": "邮箱与日程"
+  },
+  "ui_0493": {
+    "message": "Outils bureautiques",
+    "description": "办公实用工具"
+  },
+  "ui_0494": {
+    "message": "Hébergement de code et Git",
+    "description": "代码托管与协作"
+  },
+  "ui_0495": {
+    "message": "Cloud et déploiement",
+    "description": "云服务与部署"
+  },
+  "ui_0496": {
+    "message": "Outils de dév et documentation",
+    "description": "开发工具与文档"
+  },
+  "ui_0497": {
+    "message": "Communautés tech et exercices de code",
+    "description": "技术社区与题库"
+  },
+  "ui_0498": {
+    "message": "Outils de design et prototypage",
+    "description": "设计工具与原型"
+  },
+  "ui_0499": {
+    "message": "Inspiration et galeries",
+    "description": "灵感与作品社区"
+  },
+  "ui_0500": {
+    "message": "Banques d’images et vidéos",
+    "description": "高清图库与视频"
+  },
+  "ui_0501": {
+    "message": "Icônes, polices et animation",
+    "description": "图标、字体与动效"
+  },
+  "ui_0502": {
+    "message": "Palettes de couleurs et outils d’image",
+    "description": "配色与图像处理"
+  },
+  "ui_0503": {
+    "message": "Communautés populaires",
+    "description": "热门社区"
+  },
+  "ui_0504": {
+    "message": "Réseaux sociaux et forums internationaux",
+    "description": "国际社交与论坛"
+  },
+  "ui_0505": {
+    "message": "Messagerie et chaînes",
+    "description": "即时通讯与频道"
+  },
+  "ui_0506": {
+    "message": "Musique et podcasts",
+    "description": "音乐与播客"
+  },
+  "ui_0507": {
+    "message": "Vidéo, streaming et création",
+    "description": "视频、影视与创作"
+  },
+  "ui_0508": {
+    "message": "Jeux vidéo et diffusions en direct",
+    "description": "游戏与直播"
+  },
+  "ui_0509": {
+    "message": "Médias musicaux et culturels",
+    "description": "音乐与文化媒体"
+  },
+  "ui_0510": {
+    "message": "Tech et produits numériques",
+    "description": "科技与数码"
+  },
+  "ui_0511": {
+    "message": "Finance et économie",
+    "description": "财经与商业"
+  },
+  "ui_0512": {
+    "message": "Actualités mondiales et médias",
+    "description": "综合新闻与国际媒体"
+  },
+  "ui_0513": {
+    "message": "Articles scientifiques et littérature",
+    "description": "论文检索与文献"
+  },
+  "ui_0514": {
+    "message": "Cours en ligne et science des données",
+    "description": "在线课程与数据科学"
+  },
+  "ui_0515": {
+    "message": "Encyclopédies, calcul et livres numériques",
+    "description": "百科、计算与电子书"
+  },
+  "ui_0516": {
+    "message": "Disques cloud et transfert (Chine)",
+    "description": "国内网盘与快传"
+  },
+  "ui_0517": {
+    "message": "Stockage cloud international",
+    "description": "国际云端存储"
+  },
+  "ui_0518": {
+    "message": "Places de marché en ligne",
+    "description": "综合电商与海淘"
+  },
+  "ui_0519": {
+    "message": "Bons plans, mode et seconde main",
+    "description": "导购、潮流与二手"
+  },
+  "ui_0520": {
+    "message": "Services locaux et livraison",
+    "description": "本地生活与外卖"
+  },
+  "ui_0521": {
+    "message": "Cartes et VTC",
+    "description": "地图与打车"
+  },
+  "ui_0522": {
+    "message": "Vols, hôtels et billetterie",
+    "description": "机酒预订与票务"
+  },
+  "ui_0523": {
+    "message": "Suivi des vols et outils de voyage",
+    "description": "航班与行程服务"
+  },
+  "ui_0524": {
+    "message": "Études et références",
+    "description": "学习参考"
+  },
+  "ui_0525": {
+    "message": "Productivité",
+    "description": "效率办公"
+  },
+  "ui_0526": {
+    "message": "Développement",
+    "description": "开发技术"
+  },
+  "ui_0527": {
+    "message": "Design",
+    "description": "设计创意"
+  },
+  "ui_0528": {
+    "message": "Ressources visuelles",
+    "description": "图像素材"
+  },
+  "ui_0529": {
+    "message": "Communautés",
+    "description": "社交社区"
+  },
+  "ui_0530": {
+    "message": "Divertissement",
+    "description": "影音娱乐"
+  },
+  "ui_0531": {
+    "message": "Actualités tech",
+    "description": "科技资讯"
+  },
+  "ui_0532": {
+    "message": "Éducation",
+    "description": "学术教育"
+  },
+  "ui_0533": {
+    "message": "Stockage cloud",
+    "description": "云盘存储"
+  },
+  "ui_0534": {
+    "message": "Shopping",
+    "description": "购物生活"
+  },
+  "ui_0535": {
+    "message": "Cartes et voyages",
+    "description": "地图出行"
+  },
+  "ui_0536": {
+    "message": "Assistants de chat",
+    "description": "对话助手"
+  },
+  "ui_0537": {
+    "message": "Bureautique intelligente",
+    "description": "智能办公"
+  },
+  "ui_0538": {
+    "message": "Code IA",
+    "description": "AI 编程"
+  },
+  "ui_0539": {
+    "message": "IA créative",
+    "description": "创作生成"
+  },
+  "ui_0540": {
+    "message": "Docs et notes",
+    "description": "文档笔记"
+  },
+  "ui_0541": {
+    "message": "Travail d’équipe",
+    "description": "团队协作"
+  },
+  "ui_0542": {
+    "message": "Gestion de projet",
+    "description": "项目管理"
+  },
+  "ui_0543": {
+    "message": "Tableaux blancs",
+    "description": "思维白板"
+  },
+  "ui_0544": {
+    "message": "E-mail et agenda",
+    "description": "邮箱日程"
+  },
+  "ui_0545": {
+    "message": "Outils bureautiques",
+    "description": "办公工具"
+  },
+  "ui_0546": {
+    "message": "Hébergement de code",
+    "description": "代码托管"
+  },
+  "ui_0547": {
+    "message": "Cloud et déploiement",
+    "description": "云端部署"
+  },
+  "ui_0548": {
+    "message": "Outils de dév",
+    "description": "开发工具"
+  },
+  "ui_0549": {
+    "message": "Communautés tech",
+    "description": "技术社区"
+  },
+  "ui_0550": {
+    "message": "Inspiration",
+    "description": "灵感社区"
+  },
+  "ui_0551": {
+    "message": "Banques d’images",
+    "description": "高清图库"
+  },
+  "ui_0552": {
+    "message": "Icônes et polices",
+    "description": "图标字体"
+  },
+  "ui_0553": {
+    "message": "Outils d’image",
+    "description": "图像处理"
+  },
+  "ui_0554": {
+    "message": "Forums généraux",
+    "description": "综合社区"
+  },
+  "ui_0555": {
+    "message": "Réseaux sociaux",
+    "description": "社交动态"
+  },
+  "ui_0556": {
+    "message": "Messagerie",
+    "description": "即时通讯"
+  },
+  "ui_0557": {
+    "message": "Musique et audio",
+    "description": "音乐播客"
+  },
+  "ui_0558": {
+    "message": "Vidéo et cinéma",
+    "description": "影视视频"
+  },
+  "ui_0559": {
+    "message": "Jeux et streams",
+    "description": "游戏直播"
+  },
+  "ui_0560": {
+    "message": "Médias culturels",
+    "description": "文化媒体"
+  },
+  "ui_0561": {
+    "message": "Tech et numérique",
+    "description": "科技数码"
+  },
+  "ui_0562": {
+    "message": "Économie et finance",
+    "description": "商业财经"
+  },
+  "ui_0563": {
+    "message": "Médias d’actualité",
+    "description": "新闻媒体"
+  },
+  "ui_0564": {
+    "message": "Articles académiques",
+    "description": "学术文献"
+  },
+  "ui_0565": {
+    "message": "Cours en ligne",
+    "description": "在线课程"
+  },
+  "ui_0566": {
+    "message": "Encyclopédies",
+    "description": "知识百科"
+  },
+  "ui_0567": {
+    "message": "Disques cloud",
+    "description": "云端网盘"
+  },
+  "ui_0568": {
+    "message": "Transfert de fichiers",
+    "description": "同步快传"
+  },
+  "ui_0569": {
+    "message": "Boutiques en ligne",
+    "description": "综合电商"
+  },
+  "ui_0570": {
+    "message": "Guides d’achat",
+    "description": "好物导购"
+  },
+  "ui_0571": {
+    "message": "Vie locale",
+    "description": "本地生活"
+  },
+  "ui_0572": {
+    "message": "Navigation",
+    "description": "地图导航"
+  },
+  "ui_0573": {
+    "message": "Réservation de voyages",
+    "description": "旅行预订"
+  },
+  "ui_0574": {
+    "message": "Vols et transports",
+    "description": "航班出行"
+  },
+  "ui_0575": {
+    "message": "Enregistrer la sélection",
+    "description": "保存选中"
+  },
+  "ui_0576": {
+    "message": "Icônes des groupes réduits",
+    "description": "分组收起显示图标数"
+  },
+  "ui_0577": {
+    "message": "Nombre maximal d’icônes de sites affichées lorsqu’un groupe est réduit ; les icônes supplémentaires sont masquées automatiquement",
+    "description": "分组收起时最多显示的网站图标数，超出宽度将自动隐藏"
+  },
+  "ui_0578": {
+    "message": "Aucune",
+    "description": "不显示"
+  },
+  "ui_0579": {
+    "message": "4",
+    "description": "4 个"
+  },
+  "ui_0580": {
+    "message": "6",
+    "description": "6 个"
+  },
+  "ui_0581": {
+    "message": "8",
+    "description": "8 个"
+  },
+  "ui_0582": {
+    "message": "10",
+    "description": "10 个"
+  },
+  "ui_0583": {
+    "message": "12",
+    "description": "12 个"
+  },
+  "ui_0584": {
+    "message": "16",
+    "description": "16 个"
+  },
+  "ui_0585": {
+    "message": "Disponible sur le Chrome Web Store et Microsoft Edge Add-ons, ou en installation manuelle depuis GitHub.",
+    "description": "已上线 Chrome 应用商店与 Microsoft Edge 加载项商店，也可从 GitHub 手动安装。"
+  },
+  "ui_0586": {
+    "message": "Installer depuis le Chrome Web Store",
+    "description": "从 Chrome 商店安装"
+  },
+  "ui_0587": {
+    "message": ", puis suivez les étapes ci-dessous. Les utilisateurs de Chrome et d’Edge peuvent installer l’extension directement via les boutons des boutiques ci-dessus.",
+    "description": "，然后按以下步骤安装。Chrome 与 Edge 用户可直接使用上方商店入口。"
+  },
+  "ui_0588": {
+    "message": "Couleur du thème",
+    "description": "主题色"
+  },
+  "ui_0589": {
+    "message": "Choisissez jusqu’à trois couleurs pour un dégradé personnalisé",
+    "description": "至多可选择三种颜色进行渐变设计"
+  },
+  "ui_0590": {
+    "message": "Couleurs du thème",
+    "description": "主题色列表"
+  },
+  "ui_0591": {
+    "message": "Deuxième couleur du dégradé",
+    "description": "第二种渐变色"
+  },
+  "ui_0592": {
+    "message": "Troisième couleur du dégradé",
+    "description": "第三种渐变色"
+  },
+  "ui_0593": {
+    "message": "Ajouter une couleur au dégradé",
+    "description": "添加渐变色"
+  },
+  "ui_0594": {
+    "message": "Retirer la couleur du dégradé",
+    "description": "移除渐变色"
+  },
+  "ui_0595": {
+    "message": "Changer la direction du dégradé",
+    "description": "切换渐变方向"
+  }
+}

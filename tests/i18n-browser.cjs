@@ -19,7 +19,7 @@ const APP_URL = process.env.SIMTAB_TEST_URL || 'http://127.0.0.1:8091/newtab.htm
       assert.equal(await page.locator('#searchEngineSelect').inputValue(), engine);
       await page.click('#settingsBtn');
       assert.equal(await page.locator('#settingsTitle').innerText(), heading);
-      assert.equal(await page.locator('#languageSelect option').count(), 4);
+      assert.equal(await page.locator('#languageSelect option').count(), 9);
       await page.screenshot({ path: `/tmp/simtab-language-${lang}.png`, animations: 'disabled' });
       await page.click('[data-settings-panel="settingsData"]');
       if (lang === 'en') assert.match(await page.locator('#migrationGuide').innerText(), /Export bookmarks from Edge/);

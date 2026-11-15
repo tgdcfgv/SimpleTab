@@ -106,9 +106,12 @@
 
 ## 📦 安装与使用指南
 
-### 方式一：从 Microsoft Edge 商店安装（推荐）
+### 方式一：从官方扩展商店安装（推荐）
 
-SimTab 已在 [Microsoft Edge 加载项商店](https://microsoftedge.microsoft.com/addons/detail/ahlkdagbagbfcjiapfndghdbjjahdpep) 上线。点击「获取」即可安装，后续版本由浏览器自动更新。
+SimTab 已在各大浏览器官方扩展商店上线，点击即可安装，后续版本由浏览器自动更新：
+
+- **Chrome 应用商店**：[SimTab - 极简新标签页](https://chromewebstore.google.com/detail/bgblikhaejclbfagcbjeahiekoogpadh?utm_source=item-share-cb)
+- **Microsoft Edge 加载项商店**：[SimTab - 极简新标签页](https://microsoftedge.microsoft.com/addons/detail/ahlkdagbagbfcjiapfndghdbjjahdpep)
 
 ### 方式二：从 GitHub Releases 手动安装
 

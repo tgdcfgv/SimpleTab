@@ -75,6 +75,9 @@ test('Dock defaults hide the store and migrate legacy hidden position without lo
   const defaults = normalizeAppData(null).settings;
   assert.equal(defaults.showDockStoreButton, false);
   assert.equal(defaults.dockEnabled, true);
+  assert.equal(defaults.collapsedIconCount, 6);
+  assert.equal(normalizeAppData({ settings: { collapsedIconCount: 12 } }).settings.collapsedIconCount, 12);
+  assert.equal(normalizeAppData({ settings: { collapsedIconCount: -3 } }).settings.collapsedIconCount, 6);
   const hidden = normalizeAppData({ settings: { dockPosition: 'hidden' } }).settings;
   assert.equal(hidden.dockEnabled, false);
   assert.equal(hidden.dockPosition, 'bottom');
@@ -153,4 +156,30 @@ test('dock ordering accepts unique typed item keys and ignores malformed saved v
     'site:dock-1', 'action:settingsBtn', null, 42, {}, 'settingsBtn', 'site:'] } });
   assert.deepEqual(data.settings.dockOrder, ['action:settingsBtn', 'space:space-home', 'site:dock-1']);
   assert.deepEqual(normalizeAppData({}).settings.dockOrder, []);
+});
+
+test('accent colors support single color and up to three gradient stops with angle normalization', () => {
+  const single = normalizeAppData({ settings: { accentColor: '#FF5500' } }).settings;
+  assert.equal(single.accentColor, '#ff5500');
+  assert.deepEqual(single.accentColors, ['#ff5500']);
+  assert.equal(single.accentGradientAngle, 135);
+
+  const multi = normalizeAppData({
+    settings: {
+      accentColors: ['#6366f1', '#8b5cf6', '#ec4899', '#10b981'],
+      accentGradientAngle: 90
+    }
+  }).settings;
+  assert.deepEqual(multi.accentColors, ['#6366f1', '#8b5cf6', '#ec4899']);
+  assert.equal(multi.accentColor, '#6366f1');
+  assert.equal(multi.accentGradientAngle, 90);
+
+  const invalid = normalizeAppData({
+    settings: {
+      accentColors: ['not-a-color', null],
+      accentGradientAngle: 999
+    }
+  }).settings;
+  assert.deepEqual(invalid.accentColors, ['#6366f1']);
+  assert.equal(invalid.accentGradientAngle, 135);
 });
